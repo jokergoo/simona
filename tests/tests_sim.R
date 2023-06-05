@@ -12,10 +12,18 @@ library(testthat)
 parents  = c("a", "a", "b", "b", "c", "d")
 children = c("b", "c", "c", "d", "e", "f")
 
-dag = createOntologyDAG(parents, children)
+annotation = list(
+	"a" = 1:3,
+	"b" = 3:4,
+	"c" = 5,
+	"d" = 7,
+	"e" = 4:7,
+	"f" = 8
+)
 
-lca = LCA_term(dag)
-lca = structure(dag@terms[lca], dim = dim(lca), dimnames = list(dag@terms, dag@terms))
+dag = create_ontology_DAG(parents, children, annotation = annotation)
+
+lca = LCA_term(dag, c("a", "b", "c", "d", "e", "f"))
 
 test_that("test LCA_term", {
 	expect_equal(lca["e", "f"], "b")
@@ -30,8 +38,8 @@ test_that("test LCA_term", {
 	expect_equal(lca["a", "b"], "a")
 })
 
-lca_terms = LCA_term(dag);lca_terms = structure(dag@terms[lca_terms], dim = dim(lca_terms), dimnames = list(dag@terms, dag@terms))
-lca = LCA_depth(dag); dimnames(lca) = list(dag@terms, dag@terms)
+lca = LCA_depth(dag, c("a", "b", "c", "d", "e", "f"))
+lca_terms = LCA_term(dag, c("a", "b", "c", "d", "e", "f"))
 depth = dag_depth(dag); names(depth) = dag@terms
 
 test_that("test LCA_depth", {
@@ -45,5 +53,18 @@ test_that("test LCA_depth", {
 	expect_equal(depth[[ lca_terms["d", "d"] ]], lca["d", "d"])
 	expect_equal(depth[[ lca_terms["a", "a"] ]], lca["a", "a"])
 	expect_equal(depth[[ lca_terms["a", "b"] ]], lca["a", "b"])
+})
+
+mica = MICA_IC(dag, letters[1:6], IC_method = "IC_universal")
+ic = IC_universal(dag)
+
+test_that("test MICA_term", {
+	for(i in 1:10) {
+		nodes = sample(c("a", "b", "c", "d", "e", "f"), 2)
+		expect_equal(
+			mica[nodes[1], nodes[2]], 
+			max(ic[dag_ancestor_from_two_groups(dag, nodes[1], nodes[2], "intersect", FALSE)])
+		)
+	}
 })
 
