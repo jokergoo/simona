@@ -23,98 +23,43 @@ children = c("b", "c", "c", "d", "e", "f")
 
 dag = create_ontology_DAG(parents, children)
 
-test_that("test topological sorting", {
-	expect_equal(
-		dag_depth(dag)[dag@tpl_sorted],
-		sort(dag_depth(dag))
-	)
-})
-
-test_that("test dag_depth", {
-	expect_equal(
-		dag_depth(dag, use_cache = FALSE),
-		dag_depth_R(dag)
-	)
-	expect_equal(
-		dag_depth(dag, use_cache = FALSE),
-		c(0, 1, 2, 2, 3, 3)
-	)
-})
-
-test_that("test dag_height", {
-	expect_equal(
-		dag_height(dag, use_cache = FALSE),
-		dag_height_R(dag)
-	)
-	expect_equal(
-		dag_height(dag, use_cache = FALSE),
-		c(3, 2, 1, 1, 0, 0)
-	)
-})
-
-test_that("test n_children/n_parents/n_leaves", {
-	expect_equal(
-		n_offspring(dag),
-		c(5, 4, 1, 1, 0, 0)
-	)
-	expect_equal(
-		n_ancestor(dag),
-		c(0, 1, 2, 2, 3, 3)
-	)
-	expect_equal(
-		n_leaves(dag),
-		c(2, 2, 1, 1, 0, 0)
-	)
-})
 
 test_that("test IC_universal", {
 	expect_equal(
-		IC_universal_recursive(dag, F),
-		IC_universal_bfs(dag, F)
-	)
-	expect_equal(
-		IC_universal_recursive(dag, F),
+		IC_universal(dag, F),
 		-log(c(1, 1/2, 1/8, 1/4, 1/8, 1/4))
 	)
 })
 
 test_that("test reachability", {
 	expect_equal(
-		reachability_bfs(dag, F),
-		reachability_recursive(dag, F)
-	)
-	expect_equal(
-		reachability_bfs(dag, F),
+		reachability(dag, F),
 		c(3, 2, 1, 1, 1, 1)
 	)
 })
 
 test_that("test totipotency", {
 	expect_equal(
-		totipotency_bfs(dag, F),
-		totipotency_recursive(dag, F)
-	)
-	expect_equal(
-		totipotency_bfs(dag, F),
+		totipotency(dag, F),
 		c(1, 5/6, 1/3, 1/3, 1/6, 1/6)
 	)
 })
 
 test_that("test IC_Meng_2012", {
 	expect_equal(
-		IC_Meng_2012(dag, FALSE),
+		IC_Meng_2012(dag, correct = FALSE, FALSE),
 		c(0, 0, log(2)/log(3)*(1-log(4/3)/log(6)), log(2)/log(3)*(1-log(4/3)/log(6)), 1, 1)
 	)
 	expect_equal(
-		IC_Meng_2012(dag, FALSE, correct = TRUE),
+		IC_Meng_2012(dag, correct = TRUE, FALSE),
 		c(0, log(1+1)/log(3+1)*(1-log(8/3)/log(6)), log(2+1)/log(3+1)*(1-log(4/3)/log(6)), log(2+1)/log(3+1)*(1-log(4/3)/log(6)), 1, 1)
 	)
 })
-IC_Zhou_2008(dag)
-IC_Seco_2004(dag)
-IC_Zhang_2006(dag)
-IC_Seddiqui_2010(dag)
-IC_Sanchez_2011(dag)
+IC_Zhou_2008(dag, FALSE)
+IC_Seco_2004(dag, FALSE)
+IC_Zhang_2006(dag, FALSE)
+IC_Seddiqui_2010(dag, FALSE)
+IC_Sanchez_2011(dag, FALSE)
 
 test_that("test IC_Wang_2007", {
 	expect_error(
@@ -165,56 +110,38 @@ test_that("test IC_annotation", {
 	)
 })
 
-dag = create_ontology_DAG(parents, children, relations = rep("isa", length(parents)), 
+#####################
+#   b--d--f
+#  / \
+# a---c--e
+# upstream -> downstream
+
+parents  = c("a", "a", "b", "b", "c", "d")
+children = c("b", "c", "c", "d", "e", "f")
+
+
+dag = create_ontology_DAG(parents, children, relations = c("isa", "part of", "isa", "part of", "isa", "part of"), 
 	annotation = annotation)
-IC_Wang_2007(dag)
-
-##### test GOBP
-dag = create_ontology_DAG_from_GO_db("BP")
-
-test_that("test dag_depth", {
+test_that("test IC_Wang_2007", {
 	expect_equal(
-		dag_depth(dag, use_cache = FALSE),
-		dag_depth_R(dag)
+		IC_Wang_2007(dag, c("isa" = 0.7, "part of" = 0.6)),
+		c(1, 1.7, 2.3, 2.02, 2.61, 2.212)
 	)
 })
 
-test_that("test dag_height", {
-	expect_equal(
-		dag_height(dag, use_cache = FALSE),
-		dag_height_R(dag)
-	)
-})
 
-test_that("test IC_universal", {
-	expect_equal(
-		IC_universal_recursive(dag, F),
-		IC_universal_bfs(dag, F)
-	)
-})
-
-test_that("test reachability", {
-	expect_equal(
-		reachability_bfs(dag, F),
-		reachability_recursive(dag, F)
-	)
-})
-
-test_that("test totipotency", {
-	expect_equal(
-		totipotency_bfs(dag, F),
-		totipotency_recursive(dag, F)
-	)
-})
-
-invisible({
-IC_Meng_2012(dag, F)
-IC_Zhou_2008(dag, F)
-IC_Seco_2004(dag, F)
-IC_Zhang_2006(dag, F)
-IC_Seddiqui_2010(dag, F)
-IC_Sanchez_2011(dag, F)
-IC_Wang_2007(dag, F)
+### test annotation
+dag = create_ontology_DAG_from_GO_db("BP", org_db = "org.Hs.eg.db")
+ic = IC_annotation(dag)
+names(ic) = dag@terms
+test_that("test n_annotations", {
+	for(i in 1:10) {
+		x = sample(dag@terms, 1)
+		an = dag_ancestor(dag, x)
+		expect_true(
+			all(ic[an] <= ic[x])
+		)
+	}
 })
 
 if(FALSE) {

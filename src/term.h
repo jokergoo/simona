@@ -1,8 +1,10 @@
 #ifndef __TERMS_
 #define __TERMS__
 
-IntegerVector cpp_n_offspring(S4 dag);
-IntegerVector cpp_dag_depth_bfs(S4 dag, int from_node = 0, bool use_max = true, LogicalVector l_background = LogicalVector(0));
+
+double _calc_wang_s(List lt_children, List lt_children_relations, NumericVector contribution, int i_node, int i_end, LogicalVector l_background);
+NumericVector cpp_ic_wang(S4 dag, NumericVector contribution);
+IntegerVector cpp_max_leaves_id(S4 dag, IntegerVector nodes, NumericVector v);
 
 #endif
 

@@ -53,11 +53,11 @@ dag_children = function(dag, term, in_labels = TRUE) {
 
 #' @rdname dag_parents
 #' @export
-dag_ancestor = function(dag, term, in_labels = TRUE) {
+dag_ancestor = function(dag, term, in_labels = TRUE, include_self = FALSE) {
 	if(length(term) == 1) {
 		i = term_to_node_id(dag, term)
 
-		ancestor = cpp_ancestor(dag, i)
+		ancestor = cpp_ancestor(dag, i, include_self)
 		if(in_labels) {
 			dag@terms[ancestor]
 		} else {
@@ -66,7 +66,7 @@ dag_ancestor = function(dag, term, in_labels = TRUE) {
 	} else {
 		i = term_to_node_id(dag, term)
 
-		ancestor = cpp_ancestor_of_a_group(dag, i)
+		ancestor = cpp_ancestor_of_a_group(dag, i, include_self)
 		if(in_labels) {
 			dag@terms[ancestor]
 		} else {
@@ -77,11 +77,11 @@ dag_ancestor = function(dag, term, in_labels = TRUE) {
 
 #' @rdname dag_parents
 #' @export
-dag_offspring = function(dag, term, in_labels = TRUE) {
+dag_offspring = function(dag, term, in_labels = TRUE, include_self = FALSE) {
 	if(length(term) == 1) {
 		i = term_to_node_id(dag, term)
 
-		offspring = cpp_offspring(dag, i)
+		offspring = cpp_offspring(dag, i, include_self)
 		if(in_labels) {
 			dag@terms[offspring]
 		} else {
@@ -90,7 +90,7 @@ dag_offspring = function(dag, term, in_labels = TRUE) {
 	} else {
 		i = term_to_node_id(dag, term)
 
-		offspring = cpp_offspring_of_a_group(dag, i)
+		offspring = cpp_offspring_of_a_group(dag, i, include_self)
 		if(in_labels) {
 			dag@terms[offspring]
 		} else {
@@ -117,9 +117,9 @@ dag_offspring = function(dag, term, in_labels = TRUE) {
 #' n_offspring(dag)
 #' n_ancestor(dag)
 #' n_leaves(dag)
-n_offspring = function(dag, term = NULL, use_cache = TRUE) {
+n_offspring = function(dag, term = NULL, use_cache = TRUE, include_self = FALSE) {
 	if(is.null(dag@term_env$n_offspring) || !use_cache) {
-		dag@term_env$n_offspring = cpp_n_offspring(dag)
+		dag@term_env$n_offspring = cpp_n_offspring(dag, include_self)
 	}
 	n = dag@term_env$n_offspring
 
@@ -133,9 +133,9 @@ n_offspring = function(dag, term = NULL, use_cache = TRUE) {
 
 #' @rdname n_offspring
 #' @export
-n_ancestor = function(dag, term = NULL, use_cache = TRUE) {
+n_ancestor = function(dag, term = NULL, use_cache = TRUE, include_self = FALSE) {
 	if(is.null(dag@term_env$n_ancestor) || !use_cache) {
-		dag@term_env$n_ancestor = cpp_n_ancestor(dag)
+		dag@term_env$n_ancestor = cpp_n_ancestor(dag, include_self)
 	}
 	n = dag@term_env$n_ancestor
 
@@ -191,7 +191,7 @@ n_children = function(dag, term = NULL, use_cache = TRUE) {
 }
 
 
-dag_ancestor_of_two_groups = function(dag, group1, group2, type = "union", in_labels = FALSE) {
+dag_ancestor_of_two_groups = function(dag, group1, group2, type = "union", in_labels = FALSE, include_self = FALSE) {
 
 	group1 = term_to_node_id(dag, group1)
 	group2 = term_to_node_id(dag, group2)
@@ -201,10 +201,66 @@ dag_ancestor_of_two_groups = function(dag, group1, group2, type = "union", in_la
 	if(is.na(type)) {
 		stop("Values of `type` can only be one of 'union', 'intersect', 'group 1' and 'group 2'.")
 	}
-	ancestor = cpp_ancestor_of_two_groups(dag, group1, group2, type)
+	ancestor = cpp_ancestor_of_two_groups(dag, group1, group2, type, include_self)
 	if(in_labels) {
 		dag@terms[ancestor]
 	} else {
 		ancestor
 	}
+}
+
+
+
+#' Depth and height of the DAG
+#' 
+#' @param dag A `ontology_DAG` object.
+#' @param use_cache Internally used.
+#' @details
+#' The depth of a term in the DAG is defined as the maximal distance to the root. The height
+#' of a term in the DAG is the maximal finite distance to the leaf nodes.
+#' 
+#' @return An integer vector.
+#' @export
+#' @examples
+#' parents  = c("a", "a", "b", "b", "c", "d")
+#' children = c("b", "c", "c", "d", "e", "f")
+#' dag = create_ontology_DAG(parents, children)
+#' dag_depth(dag)
+#' dag_height(dag)
+dag_depth = function(dag, use_cache = TRUE) {
+	if(is.null(dag@term_env$dag_depth) || !use_cache) {
+		d = cpp_dag_depth(dag)
+		dag@term_env$dag_depth = d
+	}
+	dag@term_env$dag_depth
+}
+
+#' @rdname dag_depth
+#' @export
+dag_height = function(dag, use_cache = TRUE) {
+	if(is.null(dag@term_env$dag_height) | !use_cache) {
+		d = cpp_dag_height(dag)
+		dag@term_env$dag_height = d
+	}
+	dag@term_env$dag_height
+}
+
+#' @rdname dag_depth
+#' @export
+dag_dist_to_root = function(dag, use_cache = TRUE) {
+	if(is.null(dag@term_env$dag_dist_to_root) || !use_cache) {
+		d = cpp_dag_dist_to_root(dag)
+		dag@term_env$dag_dist_to_root = d
+	}
+	dag@term_env$dag_dist_to_root
+}
+
+#' @rdname dag_depth
+#' @export
+dag_dist_to_leaves = function(dag, use_cache = TRUE) {
+	if(is.null(dag@term_env$dag_dist_to_leaves) || !use_cache) {
+		d = cpp_dag_dist_to_leaves(dag)
+		dag@term_env$dag_dist_to_leaves = d
+	}
+	dag@term_env$dag_dist_to_leaves
 }

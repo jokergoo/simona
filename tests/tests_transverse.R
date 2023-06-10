@@ -14,7 +14,6 @@ children = c("b", "c", "c", "d", "e", "f")
 
 dag = create_ontology_DAG(parents, children)
 
-
 test_that("test transverse", {
 	for(letter in c("a", "b", "c", "d", "e", "f")) {
 		expect_true(all(dag_parents(dag, letter) %in% dag_ancestor(dag, letter)))
@@ -86,4 +85,41 @@ test_that("test cpp_is_reachable", {
 	lm = cpp_is_reachable(dag, 1:6, TRUE)
 	expect_true(lm[2, 3])
 	expect_false(lm[3, 2])
+})
+
+
+test_that("test topological sorting", {
+	expect_equal(
+		dag_depth(dag)[dag@tpl_sorted],
+		sort(dag_depth(dag))
+	)
+})
+
+test_that("test dag_depth", {
+	expect_equal(
+		dag_depth(dag, use_cache = FALSE),
+		c(0, 1, 2, 2, 3, 3)
+	)
+})
+
+test_that("test dag_height", {
+	expect_equal(
+		dag_height(dag, use_cache = FALSE),
+		c(3, 2, 1, 1, 0, 0)
+	)
+})
+
+test_that("test n_children/n_parents/n_leaves", {
+	expect_equal(
+		n_offspring(dag),
+		c(5, 4, 1, 1, 0, 0)
+	)
+	expect_equal(
+		n_ancestor(dag),
+		c(0, 1, 2, 2, 3, 3)
+	)
+	expect_equal(
+		n_leaves(dag),
+		c(2, 2, 1, 1, 0, 0)
+	)
 })

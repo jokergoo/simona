@@ -1,10 +1,22 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-void reset_logical_vector_to_false(LogicalVector& vec) {
-	int n = vec.size();
+void reset_logical_vector_to_false(LogicalVector& x) {
+	int n = x.size();
 	for(int i = 0; i < n; i ++) {
-		vec[i] = false;
+		x[i] = false;
+	}
+}
+
+void reset_numeric_vector_to_zero(NumericVector& x) {
+	for(int i = 0; i < x.size(); i ++) {
+		x[i] = 0;
+	}
+}
+
+void reset_integer_vector_to_zero(IntegerVector& x) {
+	for(int i = 0; i < x.size(); i ++) {
+		x[i] = 0;
 	}
 }
 
@@ -41,6 +53,7 @@ LogicalVector integer_to_logical_vector(IntegerVector i, int n) {
 	}
 	return l;
 }
+
 
 // [[Rcpp::export]]
 IntegerVector cpp_match_index(IntegerVector ind1, IntegerVector ind2) {

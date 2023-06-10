@@ -23,39 +23,94 @@ children = c("b", "c", "c", "d", "e", "f")
 
 dag = create_ontology_DAG(parents, children)
 
-shortest_path_length(dag, from  = letters[1:6])
-longest_path_length(dag, from  = letters[1:6])
-
-shortest_path_length(dag, from  = letters[1:3], to = letters[3:6])
-
-test_that("test finding paths", {
+test_that("test tpl paths", {
 	expect_equal(
-		shortest_path(dag, 1, 3),
+		cpp_tpl_shortest_path_length(dag, 1, 3),
+		1
+	)
+	expect_equal(
+		cpp_tpl_shortest_path_length(dag, 1, 5),
+		2
+	)
+	expect_equal(
+		cpp_tpl_longest_path_length(dag, 1, 3),
+		2
+	)
+	expect_equal(
+		cpp_tpl_longest_path_length(dag, 1, 5),
+		3
+	)
+	expect_equal(
+		cpp_tpl_shortest_path_length(dag, 1, 4),
+		cpp_tpl_longest_path_length(dag, 1, 4)
+	)
+
+	## path
+	expect_equal(
+		cpp_tpl_shortest_path(dag, 1, 3),
 		c(1, 3)
 	)
 	expect_equal(
-		shortest_path(dag, 1, 3, in_labels = TRUE),
-		c("a", "c")
+		cpp_tpl_shortest_path(dag, 1, 5),
+		c(1, 3, 5)
 	)
 	expect_equal(
-		longest_path(dag, 1, 3),
+		cpp_tpl_longest_path(dag, 1, 3),
 		c(1, 2, 3)
 	)
 	expect_equal(
-		longest_path(dag, 1, 3, in_labels = TRUE),
-		c("a", "b", "c")
+		cpp_tpl_longest_path(dag, 1, 5),
+		c(1, 2, 3, 5)
 	)
+	expect_equal(
+		cpp_tpl_shortest_path(dag, 1, 4),
+		cpp_tpl_longest_path(dag, 1, 4)
+	)
+
+	## test the other distance method
+	m = cpp_longest_distances_directed(dag, 1:6)
+	for(i in 1:6) {
+		for(j in 1:6) {
+			expect_equal(
+				m[i, j],
+				cpp_tpl_longest_path_length(dag, i, j)
+			)
+		}
+	}
+	
+	m = cpp_shortest_distances_directed(dag, 1:6)
+	for(i in 1:6) {
+		for(j in 1:6) {
+			expect_equal(
+				m[i, j],
+				cpp_tpl_shortest_path_length(dag, i, j)
+			)
+		}
+	}
+})
+
+### test on GO BP
+
+dag = create_ontology_DAG_from_GO_db()
+depth = dag_depth(dag)
+
+test_that("test two dist methods with GO BP", {
+	for(i in 1:10) {
+		go_id_1 = sample(dag@terms[depth > 5], 1)
+		go_id_2 = sample(dag_ancestor(dag, go_id_1), 1)
+		j = which(dag@terms == go_id_1)
+		i = which(dag@terms == go_id_2)
+
+		expect_equal(
+			cpp_tpl_shortest_path_length(dag, i, j),
+			cpp_shortest_distances_directed(dag, c(i, j))[1, 2]
+		)
+
+		expect_equal(
+			cpp_tpl_longest_path_length(dag, i, j),
+			cpp_longest_distances_directed(dag, c(i, j))[1, 2]
+		)
+	}
 })
 
 
-parents  = c("a", "a", "b", "b", "c", "d")
-children = c("b", "c", "c", "d", "e", "f")
-
-dag = create_ontology_DAG(parents, children, rep("isa", 6))
-
-shortest_path_length(dag, from  = letters[1:6], weight = c("isa" = 0.6))
-shortest_path_length(dag, from  = letters[1:6], weight = 0.6)
-
-dag = create_ontology_DAG(parents, children, c("small", "normal", "small", "normal", "normal", "normal"))
-shortest_path_length(dag, from  = letters[1:6], weight = c("small" = 0.2, "normal" = 1))
-shortest_path(dag, "a", "c", weight = c("small" = 0.2, "normal" = 1))

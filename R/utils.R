@@ -1,6 +1,8 @@
 
 term_to_node_id = function(dag, term, strict = TRUE) {
-	if(length(term) == 1) {
+	if(is.numeric(term)) {
+		term
+	} else if(length(term) == 1) {
 		i = which(dag@terms == term)
 
 		if(length(i) == 0) {
@@ -14,8 +16,12 @@ term_to_node_id = function(dag, term, strict = TRUE) {
 		if(length(i) == 0) {
 			stop("Cannot find all these terms.")
 		}
-		if(strict && length(i) != length(term)) {
-			stop("Cannot find some of the terms.")
+		if(length(i) != length(term)) {
+			if(strict) {
+				stop("Cannot find some of the terms in the DAG.")
+			} else {
+				message("removed", length(term) - length(i), "terms that cannot be found in the DAG.")
+			}
 		}
 
 		i

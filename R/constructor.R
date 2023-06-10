@@ -127,7 +127,7 @@ create_ontology_DAG = function(parents, children, relations = NULL,
 		annotation = lapply(annotation, function(x) unname(anno2ind[as.character(x)]))
 
 		n_terms = dag@n_terms
-		annotation2 = rep(list(character(0)), n_terms)
+		annotation2 = rep(list(integer(0)), n_terms)
 		term2ind = structure(seq_along(dag@terms), names = dag@terms)
 
 		cn = intersect(dag@terms, names(annotation))
@@ -165,6 +165,19 @@ setMethod("show",
 			depth = object@term_env$dag_depth
 			cat("  Max depth:", max(depth), "\n")
 		}
+
+		depth = dag_depth(dag)
+		tb1 = table(depth)
+		aspect_ratio1 = max(tb1)/quantile(depth, 0.99)
+		aspect_ratio1 = round(aspect_ratio1, 2)
+
+		dist = cpp_dag_dist_from_root(dag)
+		tb2 = table(dist)
+		aspect_ratio2 = max(tb2)/quantile(dist, 0.99)
+		aspect_ratio2 = round(aspect_ratio2, 2)
+
+		cat("  Aspect ratio: ", aspect_ratio1, ":1 (based on the longest_dist to root)\n", sep = "")
+		cat("                ", aspect_ratio2, ":1 (based on the shortest_dist to root)\n", sep = "")
 
 		if(length(object@lt_children_relations)) {
 			cat("  Relations:", paste(attr(object@lt_children_relations, "levels"), collapse = ", "), "\n")

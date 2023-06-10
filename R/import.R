@@ -14,7 +14,7 @@ import_obo = function(file) {
 	id = character(n)
 	lt = vector("list", n)
 	for(i in seq_len(n)) {
-		parsed = .process_obo_term(ln[seq(ind1[i], ind2[i])])
+		parsed = process_obo_term(ln[seq(ind1[i], ind2[i])])
 		if(length(parsed)) {
 			id[i] = parsed$id
 			lt[[i]] = parsed$relations
@@ -28,7 +28,7 @@ import_obo = function(file) {
 	createOntologyDAG(parents = parents, children = children, relations = relations)
 }
 
-.process_obo_term = function(ln) {
+process_obo_term = function(ln) {
 
 	i0 = grep("^is_obsolete:", ln)
 	if(length(i0)) {
