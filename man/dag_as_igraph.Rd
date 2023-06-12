@@ -2,13 +2,22 @@
 % Please edit documentation in R/constructor.R
 \name{dag_as_igraph}
 \alias{dag_as_igraph}
-\title{Convert to the igraph object}
+\title{Convert to an igraph object}
 \usage{
 dag_as_igraph(dag)
 }
 \arguments{
-\item{dag}{A `OntologyDAG` object.}
+\item{dag}{An `ontology_DAG` object.}
+}
+\value{
+An `igraph` object.
 }
 \description{
-Convert to the igraph object
+Convert to an igraph object
+}
+\examples{
+parents  = c("a", "a", "b", "b", "c", "d")
+children = c("b", "c", "c", "d", "e", "f")
+dag = create_ontology_DAG(parents, children)
+dag_as_igraph(dag)
 }

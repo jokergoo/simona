@@ -1,4 +1,4 @@
-#ifndef __TERMS_
+#ifndef __TERMS__
 #define __TERMS__
 
 

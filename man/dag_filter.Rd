@@ -7,16 +7,33 @@
 dag_filter(dag, terms = NULL, relations = NULL, root = NULL, leaves = NULL)
 }
 \arguments{
-\item{dag}{A `OntologyDAG` object.}
+\item{dag}{A `ontology_DAG` object.}
 
-\item{terms}{A vectof of term names.}
+\item{terms}{A vectof of term names. The sub DAG only contains these terms.}
 
-\item{relations}{A vector of relations.}
+\item{relations}{A vector of relations. The sub DAG only contains these relations.}
 
 \item{root}{A vector of root terms. Only their offspring terms are kept.}
 
 \item{leaves}{A vector of leaf terms. Only their ancestor terms are kept.}
 }
+\value{
+An `ontology_DAG` object.
+}
 \description{
 Filter the DAG
+}
+\examples{
+parents  = c("a", "a", "b", "b", "c", "d")
+children = c("b", "c", "c", "d", "e", "f")
+dag = create_ontology_DAG(parents, children)
+dag_filter(dag, terms = c("b", "d", "f"))
+dag_filter(dag, root = "b")
+dag_filter(dag, leaves = c("c", "b"))
+dag_filter(dag, root = "b", leaves = "e")
+
+\dontrun{
+dag = create_ontology_DAG_from_GO_db()
+dag_filter(dag, relations = "isa")
+}
 }

@@ -90,36 +90,36 @@ test_that("test cpp_is_reachable", {
 
 test_that("test topological sorting", {
 	expect_equal(
-		dag_depth(dag)[dag@tpl_sorted],
-		sort(dag_depth(dag))
+		unname(dag_depth(dag)[dag@tpl_sorted]),
+		unname(sort(dag_depth(dag)))
 	)
 })
 
 test_that("test dag_depth", {
 	expect_equal(
-		dag_depth(dag, use_cache = FALSE),
+		unname(dag_depth(dag, use_cache = FALSE)),
 		c(0, 1, 2, 2, 3, 3)
 	)
 })
 
 test_that("test dag_height", {
 	expect_equal(
-		dag_height(dag, use_cache = FALSE),
+		unname(dag_height(dag, use_cache = FALSE)),
 		c(3, 2, 1, 1, 0, 0)
 	)
 })
 
 test_that("test n_children/n_parents/n_leaves", {
 	expect_equal(
-		n_offspring(dag),
+		unname(n_offspring(dag)),
 		c(5, 4, 1, 1, 0, 0)
 	)
 	expect_equal(
-		n_ancestor(dag),
+		unname(n_ancestor(dag)),
 		c(0, 1, 2, 2, 3, 3)
 	)
 	expect_equal(
-		n_leaves(dag),
+		unname(n_leaves(dag)),
 		c(2, 2, 1, 1, 0, 0)
 	)
 })

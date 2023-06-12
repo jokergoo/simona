@@ -25,21 +25,21 @@ dag = create_ontology_DAG(parents, children, relations = c("isa", "part of", "is
 
 # IC_annotation:
 # -c(log(8/8), log(6/8), log(4/8), log(2/8), log(4/8), log(1/8))
-test_that("test sim_XGraSM", {
-	m = 
-})
+# test_that("test sim_XGraSM", {
+# 	m = 
+# })
 
-test_that("test sim_EISI", {
+# test_that("test sim_EISI", {
 
-})
+# })
 
-test_that("test sim_AIC", {
+# test_that("test sim_AIC", {
 
-})
+# })
 
-test_that("test sim_zhong", {
+# test_that("test sim_zhong", {
 
-})
+# })
 
 
 ### Sw:
@@ -64,8 +64,3 @@ test_that("test sim_wang", {
 		(0.36+0.49+0.252+0.42)/(2.61+2.212)
 	)
 })
-
-test_that("test sim_wang_edge", {
-
-})
-

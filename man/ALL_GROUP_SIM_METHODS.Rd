@@ -5,10 +5,13 @@
 \alias{ALL_GROUP_SIM_METHODS}
 \title{All supported group similarity methods}
 \format{
-An object of class \code{character} of length 20.
+An object of class \code{character} of length 28.
 }
 \usage{
 ALL_GROUP_SIM_METHODS
+}
+\value{
+A vector all supported grouped similarity methods.
 }
 \description{
 All supported group similarity methods

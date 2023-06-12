@@ -132,14 +132,13 @@ test_that("test IC_Wang_2007", {
 
 ### test annotation
 dag = create_ontology_DAG_from_GO_db("BP", org_db = "org.Hs.eg.db")
-ic = IC_annotation(dag)
-names(ic) = dag@terms
+n = n_annotations(dag)
 test_that("test n_annotations", {
 	for(i in 1:10) {
 		x = sample(dag@terms, 1)
 		an = dag_ancestor(dag, x)
 		expect_true(
-			all(ic[an] <= ic[x])
+			all(n[an] >= n[x])
 		)
 	}
 })

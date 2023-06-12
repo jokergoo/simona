@@ -25,7 +25,7 @@ import_obo = function(file) {
 	parents = unlist(lt)
 	relations = unlist(lapply(lt, names))
 
-	createOntologyDAG(parents = parents, children = children, relations = relations)
+	create_ontology_DAG(parents = parents, children = children, relations = relations)
 }
 
 process_obo_term = function(ln) {

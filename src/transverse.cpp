@@ -61,6 +61,7 @@ IntegerVector cpp_ancestor(S4 dag, int node, bool include_self = false) {
 	return ancestor;
 }
 
+// [[Rcpp::export]]
 IntegerVector cpp_ancestor_within_background(S4 dag, int node, IntegerVector background, bool include_self = false) {
 	List lt_parents = dag.slot("lt_parents");
 	int n = lt_parents.size();
@@ -136,6 +137,7 @@ IntegerVector cpp_offspring(S4 dag, int node, bool include_self = false) {
 	return offspring;
 }
 
+// [[Rcpp::export]]
 IntegerVector cpp_offspring_within_background(S4 dag, int node, IntegerVector background, bool include_self = false) {
 	List lt_children = dag.slot("lt_children");
 	int n = lt_children.size();

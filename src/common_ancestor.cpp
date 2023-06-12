@@ -85,7 +85,6 @@ NumericMatrix cpp_max_ancestor_v(S4 dag, IntegerVector nodes, NumericVector v) {
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestor = integer_to_logical_vector(all_ancestor - 1, n);
 	
-	double dist = 0;
 	for(int k = 0; k < all_ancestor.size(); k ++) {
 		_find_offspring_within_background(lt_children, all_ancestor[k]-1, l_offspring, l_all_ancestor, true);
 
@@ -107,8 +106,6 @@ NumericMatrix cpp_max_ancestor_v(S4 dag, IntegerVector nodes, NumericVector v) {
 						int id2 = nodes_ind[ offspring[j]-1 ];
 							
 						if(id2 >= 0) {
-							Rcout << score << "\n";
-							Rcout << offspring << "\n";
 							_assign_ancestor_max_value(dag, v, score, all_ancestor[k]-1, id1, id2);
 						}
 					}
@@ -145,7 +142,6 @@ IntegerMatrix cpp_max_ancestor_id(S4 dag, IntegerVector nodes, NumericVector v) 
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestor = integer_to_logical_vector(all_ancestor - 1, n);
 	
-	double dist = 0;
 	for(int k = 0; k < all_ancestor.size(); k ++) {
 		_find_offspring_within_background(lt_children, all_ancestor[k]-1, l_offspring, l_all_ancestor, true);
 
@@ -207,7 +203,6 @@ IntegerMatrix cpp_distances(S4 dag, IntegerVector nodes, int type = 1) { // 1: l
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestor = integer_to_logical_vector(all_ancestor - 1, n);
 	
-	double dist = 0;
 	for(int k = 0; k < all_ancestor.size(); k ++) {
 		_find_offspring_within_background(lt_children, all_ancestor[k]-1, l_offspring, l_all_ancestor, true);
 
@@ -338,6 +333,92 @@ IntegerMatrix cpp_longest_distances_via_LCA(S4 dag, IntegerVector nodes) {
 	return dd;
 }
 
+// [[Rcpp::export]]
+List cpp_longest_distances_from_LCA(S4 dag, IntegerVector nodes) {
+	List lt_children = dag.slot("lt_children");
+	
+	int n = lt_children.size();
+	int m = nodes.size();
+
+	IntegerMatrix dd1(m, m);
+	dd1.fill(-1);
+	IntegerMatrix dd2(m, m);
+	dd2.fill(-1);
+	IntegerMatrix LCA_depth(m, m);
+	LCA_depth.fill(-1);
+	
+	IntegerVector nodes_ind(n, -1);  // mapping between n and m indices
+	for(int i = 0; i < m; i ++) {
+		nodes_ind[ nodes[i]-1 ] = i;
+		dd1(i, i) = 0;
+		dd2(i, i) = 0;
+	}
+
+	if(m <= 1) {
+		List lt = List::create(Named("left") = dd1 , Named("right") = dd2);
+		return lt;
+	}
+
+	IntegerVector all_ancestor = cpp_ancestor_of_a_group(dag, nodes, 1, true);
+	LogicalVector l_offspring(n);
+	LogicalVector l_all_ancestor = integer_to_logical_vector(all_ancestor - 1, n);
+
+	IntegerVector global_depth = cpp_dag_depth(dag);
+	
+	double dist = 0;
+	for(int k = 0; k < all_ancestor.size(); k ++) {
+		_find_offspring_within_background(lt_children, all_ancestor[k]-1, l_offspring, l_all_ancestor, true);
+
+		IntegerVector offspring = _which(l_offspring);
+		reset_logical_vector_to_false(l_offspring);
+
+		int noff = offspring.size();
+
+		if(noff == 0) {
+			continue;
+		}
+		offspring = offspring + 1;
+
+		if(noff > 1) {
+			IntegerVector depth(n);
+			depth = cpp_dag_longest_dist_to_offspring(dag, all_ancestor[k], l_all_ancestor);
+
+			for(int i = 0; i < noff - 1; i ++) {
+				int id1 = nodes_ind[ offspring[i]-1 ];
+				if(id1 >= 0) {
+					for(int j = i+1; j < noff; j ++) {
+						int id2 = nodes_ind[ offspring[j]-1 ];
+						
+						if(id2 >= 0) {
+							if(LCA_depth(id1, id2) < global_depth[ all_ancestor[k]-1 ]) {
+								LCA_depth(id1, id2) = global_depth[ all_ancestor[k]-1 ];
+
+								dd1(id1, id2) = depth[offspring[i] - 1];
+								dd1(id2, id1) = dd1(id1, id2);
+								dd2(id1, id2) = depth[offspring[j] - 1];
+								dd2(id2, id1) = dd2(id1, id2);
+							} else if(LCA_depth(id1, id2) == global_depth[ all_ancestor[k]-1 ]) {
+								dist = depth[offspring[i] - 1] + depth[offspring[j] - 1];
+								if(dd1(id1, id2) == -1 || dist > dd1(id1, id2) + dd2(id1, id2)) {
+									dd1(id1, id2) = depth[offspring[i] - 1];
+									dd1(id2, id1) = dd1(id1, id2);
+									dd2(id1, id2) = depth[offspring[j] - 1];
+									dd2(id2, id1) = dd2(id1, id2);
+								}
+							}
+
+						}
+					}
+				}
+			}
+		}
+	}
+
+	List lt = List::create(Named("left") = dd1 , Named("right") = dd2);
+
+	return lt;
+}
+
 IntegerMatrix cpp_distances_directed(S4 dag, IntegerVector nodes, int type = 1) {
 	List lt_children = dag.slot("lt_children");
 	
@@ -360,7 +441,6 @@ IntegerMatrix cpp_distances_directed(S4 dag, IntegerVector nodes, int type = 1) 
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestor = integer_to_logical_vector(all_ancestor - 1, n);
 	
-	double dist = 0;
 	for(int k = 0; k < m; k ++) {
 		_find_offspring_within_background(lt_children, nodes[k]-1, l_offspring, l_all_ancestor, true);
 

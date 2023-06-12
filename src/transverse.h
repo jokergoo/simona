@@ -20,6 +20,10 @@ IntegerVector cpp_offspring(S4 dag, int node, bool include_self = false);
 IntegerVector cpp_offspring_within_background(S4 dag, int node, IntegerVector background, bool include_self = false);
 void _add_leaves(List lt_children, int i_node, LogicalVector& l_offspring);
 void _find_connected_leaves(List lt_children, int i_node, LogicalVector& l_offspring);
+
+IntegerVector cpp_n_ancestor(S4 dag, bool include_self = false);
+IntegerVector cpp_n_offspring(S4 dag, bool include_self = false);
+IntegerVector cpp_n_leaves(S4 dag);
 IntegerVector cpp_ancestor_of_a_group(S4 dag, IntegerVector nodes, int type = 1, bool include_self = false);
 IntegerVector cpp_ancestor_of_a_group_within_background(S4 dag, IntegerVector nodes, IntegerVector background, int type = 1, bool include_self = false);
 IntegerVector cpp_ancestor_of_two_groups(S4 dag, IntegerVector nodes1, IntegerVector nodes2, int type, bool include_self = false);

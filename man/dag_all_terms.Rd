@@ -7,8 +7,17 @@
 dag_all_terms(dag)
 }
 \arguments{
-\item{dag}{A `OntologyDAG` object.}
+\item{dag}{An `ontology_DAG` object.}
+}
+\value{
+A vector of term names.
 }
 \description{
 Names of all terms
+}
+\examples{
+parents  = c("a", "a", "b", "b", "c", "d")
+children = c("b", "c", "c", "d", "e", "f")
+dag = create_ontology_DAG(parents, children)
+dag_all_terms(dag)
 }

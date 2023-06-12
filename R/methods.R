@@ -2,9 +2,9 @@
 
 #' Information content
 #' 
-#' @param dag A `ontology_DAG` object.
-#' @param IC_method An IC method. All available methods are in [ALL_IC_METHODS].
-#' @param control A list of parameters passing to individual methods
+#' @param dag An `ontology_DAG` object.
+#' @param method An IC method. All available methods are in [ALL_IC_METHODS].
+#' @param control A list of parameters passing to individual methods.
 #' 
 #' @details
 #' When using `IC_annotation`, `annotation` should be already set in [create_ontology_DAG()].
@@ -14,14 +14,9 @@
 #' parents  = c("a", "a", "b", "b", "c", "d")
 #' children = c("b", "c", "c", "d", "e", "f")
 #' dag = create_ontology_DAG(parents, children)
-#' for(method in ALL_IC_METHODS) {
-#'     cat("===", method, "====\n")
-#'     print(term_IC(dag, method)
-#'     cat("\n")
-#' }
-term_IC = function(dag, IC_method, control = list()) {
-	IC_fun = get_IC_method(IC_method)
-	if(IC_method == "IC_Wang_2007") {
+term_IC = function(dag, method, control = list()) {
+	IC_fun = get_IC_method(method)
+	if(method == "IC_Wang_2007") {
 		if(!is.null(control$contribution_factor)) {
 			ic = IC_fun(dag, contribution_factor = control$contribution_factor)
 		}
@@ -41,9 +36,10 @@ get_IC_method = function(method) {
 
 #' Semantic similarity
 #' 
-#' @param dag A `ontology_DAG` object.
+#' @param dag An `ontology_DAG` object.
 #' @param terms A vector of term names.
-#' @param sim_method An IC method. All available methods are in [ALL_TERM_SIM_METHODS].
+#' @param method A similarity method. All available methods are in [ALL_TERM_SIM_METHODS].
+#' @param control A list of parameters passing to individual methods.
 #' 
 #' @return A numeric matrix.
 #' @export
@@ -51,13 +47,8 @@ get_IC_method = function(method) {
 #' parents  = c("a", "a", "b", "b", "c", "d")
 #' children = c("b", "c", "c", "d", "e", "f")
 #' dag = create_ontology_DAG(parents, children)
-#' for(method in ALL_TERM_SIM_METHODS) {
-#'     cat("===", method, "====\n")
-#'     print(term_sim(dag, dag_all_terms(dag), method)
-#'     cat("\n")
-#' }
-term_sim = function(dag, terms, sim_method) {
-	sim_fun = get_term_sim_method(sim_method)
+term_sim = function(dag, terms, method, control = list()) {
+	sim_fun = get_term_sim_method(method)
 
 	sim_fun(dag, terms)
 }
@@ -70,10 +61,20 @@ get_term_sim_method = function(method) {
 }
 
 
-group_sim = function(dag, terms, group_sim_method) {
-	sim_fun = get_group_sim_method(group_sim_method)
+#' Semantic similarity between two groups of terms
+#' 
+#' @param dag An `ontology_DAG` object.
+#' @param group1 A vector of term names.
+#' @param group2 A vector of term names.
+#' @param method A group similarity method. All available methods are in [ALL_GROUP_SIM_METHODS].
+#' @param control A list of parameters passing to individual methods.
+#' 
+#' @return A numeric scalar.
+#' @export
+group_sim = function(dag, group1, group2, method, control = list()) {
+	group_sim_fun = get_group_sim_method(method)
 
-	sim_fun(dag, terms)
+	group_sim_fun(dag, group1, group2)
 }
 
 get_group_sim_method = function(method) {

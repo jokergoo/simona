@@ -1,5 +1,5 @@
-#ifndef __TERMS_
-#define __TERMS__
+#ifndef __DIST__
+#define __DIST__
 
 int cpp_tpl_shortest_path_length(S4 dag, int from, int to);
 int cpp_tpl_longest_path_length(S4 dag, int from, int to);

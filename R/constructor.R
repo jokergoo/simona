@@ -1,6 +1,8 @@
 
 
 #' The ontology_DAG class
+#' 
+#' @export ontology_DAG
 #' @exportClass ontology_DAG
 ontology_DAG = setClass("ontology_DAG",
 	slots = c("lt_parents" = "list",
@@ -30,6 +32,9 @@ ontology_DAG = setClass("ontology_DAG",
 #' 
 #' @return An `ontology_DAG` object.
 #' @export
+#' @importFrom methods new
+#' @import Rcpp
+#' @useDynLib ontsim, .registration = TRUE
 create_ontology_DAG = function(parents, children, relations = NULL, 
 	source = "Ontology", annotation = NULL) {
 
@@ -112,7 +117,7 @@ create_ontology_DAG = function(parents, children, relations = NULL,
 	dag@term_env$n_parents = sapply(lt_parents, length)
 	dag@term_env$n_children = sapply(lt_children, length)
 
-	tpl_order = order(dag_depth(dag), dag@term_env$n_children, dag@term_env$n_parents)
+	tpl_order = order(dag_depth(dag), dag@term_env$n_children, dag@term_env$n_parents, dag@terms)
 	dag@tpl_sorted = seq_len(n_terms)[tpl_order]
 	dag@tpl_pos = seq_len(n_terms)
 	
@@ -147,8 +152,9 @@ create_ontology_DAG = function(parents, children, relations = NULL,
 
 #' Print the ontology_DAG object
 #' 
-#' @param dag An `ontology_DAG` object.
-#' @exportMethod
+#' @param object An `ontology_DAG` object.
+#' @exportMethod show
+#' @importFrom stats quantile
 setMethod("show",
 	signature = "ontology_DAG",
 	definition = function(object) {
@@ -166,12 +172,12 @@ setMethod("show",
 			cat("  Max depth:", max(depth), "\n")
 		}
 
-		depth = dag_depth(dag)
+		depth = dag_depth(object)
 		tb1 = table(depth)
 		aspect_ratio1 = max(tb1)/quantile(depth, 0.99)
 		aspect_ratio1 = round(aspect_ratio1, 2)
 
-		dist = cpp_dag_dist_from_root(dag)
+		dist = cpp_dag_dist_from_root(object)
 		tb2 = table(dist)
 		aspect_ratio2 = max(tb2)/quantile(dist, 0.99)
 		aspect_ratio2 = round(aspect_ratio2, 2)
@@ -248,7 +254,7 @@ create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = c("isa",
 #' @param j Ignored.
 #' @param ... Ignored.
 #' 
-#' @exportMethod
+#' @exportMethod [[
 setMethod("[[", 
 	signature = c("ontology_DAG", "character", "missing"),
 	definition = function(x, i, j, ...) {
@@ -264,7 +270,7 @@ setMethod("[[",
 #' @param ... Ignored.
 #' @param drop Ignored.
 #' 
-#' @exportMethod 
+#' @exportMethod [
 setMethod("[", 
 	signature = c("ontology_DAG", "character", "missing", "ANY"),
 	definition = function(x, i, j, ..., drop = FALSE) {
@@ -278,7 +284,7 @@ setMethod("[",
 #' 
 #' @return A vector of term names.
 #' @export
-#' @example
+#' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
 #' children = c("b", "c", "c", "d", "e", "f")
 #' dag = create_ontology_DAG(parents, children)
@@ -287,13 +293,37 @@ dag_all_terms = function(dag) {
 	dag@terms
 }
 
+#' Root or leaves of the DAG
+#' 
+#' @param dag An `ontology_DAG` object.
+#' @param in_labels Whether the terms are in their names or as the integer indices?
+#' 
+#' @export
+dag_root = function(dag, in_labels = TRUE) {
+	if(in_labels) {
+		dag@terms[dag@root]
+	} else {
+		dag@root
+	}
+}
+
+#' @rdname dag_root
+#' @export
+dag_leaves = function(dag, in_labels = TRUE) {
+	if(in_labels) {
+		dag@terms[dag@leaves]
+	} else {
+		dag@leaves
+	}
+}
+
 #' Convert to an igraph object
 #' 
 #' @param dag An `ontology_DAG` object.
 #' 
 #' @return An `igraph` object.
 #' @export
-#' @example
+#' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
 #' children = c("b", "c", "c", "d", "e", "f")
 #' dag = create_ontology_DAG(parents, children)
@@ -318,7 +348,7 @@ dag_as_igraph = function(dag) {
 
 	g = igraph::graph_from_edgelist(cbind(parents, children))
 	if(!is.null(relations)) {
-		E(g)$relation = relations
+		igraph::set_edge_attr(g, "relation", value = relations)
 	}
 
 	g
@@ -334,7 +364,7 @@ dag_as_igraph = function(dag) {
 #' 
 #' @return An `ontology_DAG` object.
 #' @export
-#' @example
+#' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
 #' children = c("b", "c", "c", "d", "e", "f")
 #' dag = create_ontology_DAG(parents, children)
@@ -377,7 +407,7 @@ dag_filter = function(dag, terms = NULL, relations = NULL, root = NULL, leaves =
 	}
 
 	if(!is.null(relations)) {
-		if(!is.nul(v_relations)) {
+		if(!is.null(v_relations)) {
 			l2 = v_relations %in% relations
 			if(!any(l2)) {
 				stop("Cannot find any relation.")

@@ -4,20 +4,45 @@
 \alias{n_offspring}
 \alias{n_ancestor}
 \alias{n_leaves}
-\title{Number of terms}
+\alias{n_parents}
+\alias{n_children}
+\title{Number of parent/child/ancestor/offspring/leaf terms}
 \usage{
-n_offspring(dag, term = NULL, use_cache = TRUE)
+n_offspring(dag, term = NULL, use_cache = TRUE, include_self = FALSE)
 
-n_ancestor(dag, term = NULL, use_cache = TRUE)
+n_ancestor(dag, term = NULL, use_cache = TRUE, include_self = FALSE)
 
 n_leaves(dag, term = NULL, use_cache = TRUE)
+
+n_parents(dag, term = NULL, use_cache = TRUE)
+
+n_children(dag, term = NULL, use_cache = TRUE)
 }
 \arguments{
-\item{use_cache}{}
+\item{dag}{A `ontology_DAG` object.}
+
+\item{term}{A vector of term names. If the value is `NULL`, it returns for all terms.}
+
+\item{use_cache}{Internally used.}
+
+\item{include_self}{For `n_offspring()` and `n_ancestor()`, this controls whether to also contain the term itself.}
+}
+\value{
+An integer vector.
 }
 \description{
-Number of terms
+Number of parent/child/ancestor/offspring/leaf terms
 }
 \details{
 Leaf nodes have zero `n_leaves` value.
+}
+\examples{
+parents  = c("a", "a", "b", "b", "c", "d")
+children = c("b", "c", "c", "d", "e", "f")
+dag = create_ontology_DAG(parents, children)
+n_parents(dag)
+n_children(dag)
+n_offspring(dag)
+n_ancestor(dag)
+n_leaves(dag)
 }

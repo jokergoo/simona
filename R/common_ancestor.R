@@ -47,18 +47,22 @@ max_ancestor_id = function(dag, terms, value, in_labels = FALSE) {
 #' @param dag A `ontology_DAG` object.
 #' @param terms A vector of term names.
 #' @param IC_method An IC method. Valid values are in [ALL_IC_METHODS].
+#' @param in_labels Whether the terms are in their names or as the integer indices?
 #' 
 #' @return 
-#' `MICA_term()` returns a character matrix of the MICA terms. 
-#' `MICA_IC()` returns a numeric matrix of the IC of the MICA terms.
-#' `LCA_term()` returns a character matrix of the LCA term.
-#' `LCA_depth()` reutrns an integer matrix of the depth of the LCA terms.
+#' - `MICA_term()` returns a character matrix of the MICA terms. 
+#' - `MICA_IC()` returns a numeric matrix of the IC of the MICA terms.
+#' - `LCA_term()` returns a character matrix of the LCA term.
+#' - `LCA_depth()` reutrns an integer matrix of the depth of the LCA terms.
+#' - `NCA_term()` returns a character matrix of the nearest common ancestors.
+#' @export
 MICA_term = function(dag, terms, IC_method, in_labels = TRUE) {
 	ic = term_IC(dag, IC_method)
 	max_ancestor_id(dag, terms, ic, in_labels = in_labels)
 }
 
 #' @rdname MICA_term
+#' @export
 MICA_IC = function(dag, terms, IC_method) {
 	ic = term_IC(dag, IC_method)
 	max_ancestor_v(dag, terms, ic)
@@ -66,6 +70,7 @@ MICA_IC = function(dag, terms, IC_method) {
 
 
 #' @rdname MICA_term
+#' @export
 LCA_term = function(dag, terms, in_labels = TRUE) {
 	depth = dag_depth(dag)
 	
@@ -73,12 +78,15 @@ LCA_term = function(dag, terms, in_labels = TRUE) {
 }
 
 #' @rdname MICA_term
+#' @export
 LCA_depth = function(dag, terms) {
 	depth = dag_depth(dag)
 	
 	max_ancestor_v(dag, terms, depth)
 }
 
+#' @rdname MICA_term
+#' @export
 NCA_term = function(dag, terms, in_labels = TRUE) {
 	if(is.character(terms)) {
 		id = term_to_node_id(dag, terms, strict = FALSE)
@@ -110,6 +118,7 @@ NCA_term = function(dag, terms, in_labels = TRUE) {
 #' and d(c, a) is the longest distance from c to a.
 #' - `shortest_distances_directed()`: it calculates d(a, b). The distance is only calculated when a is an ancestor of b.
 #' - `longest_distances_directed()`: it calculates d(a, b). The distance is only calculated when a is an ancestor of b.
+#' @export
 shortest_distances_via_CA = function(dag, terms) {
 	if(is.character(terms)) {
 		id = term_to_node_id(dag, terms, strict = FALSE)
@@ -123,6 +132,7 @@ shortest_distances_via_CA = function(dag, terms) {
 }
 
 #' @rdname shortest_distances_via_CA
+#' @export
 longest_distances_via_LCA = function(dag, terms) {
 	if(is.character(terms)) {
 		id = term_to_node_id(dag, terms, strict = FALSE)
@@ -136,6 +146,7 @@ longest_distances_via_LCA = function(dag, terms) {
 }
 
 #' @rdname shortest_distances_via_CA
+#' @export
 shortest_distances_directed = function(dag, terms) {
 	if(is.character(terms)) {
 		id = term_to_node_id(dag, terms, strict = FALSE)
@@ -149,6 +160,7 @@ shortest_distances_directed = function(dag, terms) {
 }
 
 #' @rdname shortest_distances_via_CA
+#' @export
 longest_distances_directed = function(dag, terms) {
 	if(is.character(terms)) {
 		id = term_to_node_id(dag, terms, strict = FALSE)

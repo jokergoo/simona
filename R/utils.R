@@ -20,7 +20,7 @@ term_to_node_id = function(dag, term, strict = TRUE) {
 			if(strict) {
 				stop("Cannot find some of the terms in the DAG.")
 			} else {
-				message("removed", length(term) - length(i), "terms that cannot be found in the DAG.")
+				message("removed ", length(term) - length(i), " terms that cannot be found in the DAG.")
 			}
 		}
 
@@ -29,6 +29,8 @@ term_to_node_id = function(dag, term, strict = TRUE) {
 }
 
 
+#' @importFrom utils getFromNamespace install.packages
+#' @importFrom GetoptLong qq
 check_pkg = function(pkg, bioc = FALSE, github = NULL) {
 	if(requireNamespace(pkg, quietly = TRUE)) {
 		return(NULL)
@@ -111,7 +113,7 @@ message_wrap = function (...) {
     message(x)
 }
 
-
+#' @importFrom grDevices col2rgb rgb
 add_transparency = function (col, transparency = 0) {
     rgb(t(col2rgb(col)/255), alpha = 1 - transparency)
 }

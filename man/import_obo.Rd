@@ -2,13 +2,13 @@
 % Please edit documentation in R/import.R
 \name{import_obo}
 \alias{import_obo}
-\title{Import .obo file to an OntologyDAG object}
+\title{Import .obo file to an ontology_DAG object}
 \usage{
 import_obo(file)
 }
 \arguments{
-\item{file}{Path of the file, or an URL. Pass to [base::readLines()].}
+\item{file}{Path of the file or an URL. Pass to [base::readLines()].}
 }
 \description{
-Import .obo file to an OntologyDAG object
+Import .obo file to an ontology_DAG object
 }

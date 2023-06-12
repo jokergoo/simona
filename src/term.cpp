@@ -4,69 +4,6 @@ using namespace Rcpp;
 #include "transverse.h"
 #include "utils.h"
 
-// [[Rcpp::export]]
-IntegerVector cpp_n_annotations(S4 dag) {
-
-	List lt_children = dag.slot("lt_children");
-	List annotation = dag.slot("annotation");
-	List lt_annotation = annotation["list"];
-	CharacterVector anno_names = annotation["names"];
-	int n_all_anno = anno_names.size();
-
-	int n = lt_children.size();
-	IntegerVector n_anno(n, 0);
-
-	LogicalVector l_offspring(n, false);
-	for(int i = 0; i < n; i ++) {
-		_find_offspring(lt_children, i, l_offspring, true);  //include self
-
-		LogicalVector l_anno(n_all_anno, false);
-		for(int j = 0; j < n; j ++) {
-			if(l_offspring[j]) {
-				IntegerVector anno = lt_annotation[j];
-				for(int k = 0; k < anno.size(); k ++) {
-					l_anno[anno[k]-1] = true;
-				}
-			}
-		}
-		n_anno[i] = sum(l_anno);
-
-		reset_logical_vector_to_false(l_offspring);
-	}
-
-	return n_anno;
-}
-
-IntegerMatrix cpp_get_term_annotations(S4 dag, IntegerVector nodes) {
-	List lt_children = dag.slot("lt_children");
-	List annotation = dag.slot("annotation");
-	List lt_annotation = annotation["list"];
-	CharacterVector anno_names = annotation["names"];
-	int n_all_anno = anno_names.size();
-	int m = nodes.size();
-
-	IntegerMatrix m(m, n_all_anno);
-
-	LogicalVector l_offspring(n, false);
-	for(int i = 0; i < m; i ++) {
-		_find_offspring(lt_children, i, l_offspring, true);  //include self
-
-		LogicalVector l_anno(n_all_anno, false);
-		for(int j = 0; j < n; j ++) {
-			if(l_offspring[j]) {
-				IntegerVector anno = lt_annotation[j];
-				for(int k = 0; k < anno.size(); k ++) {
-					l_anno[anno[k]-1] = true;
-					m(i, anno[k]-1) = 1;
-				}
-			}
-		}
-
-		reset_logical_vector_to_false(l_offspring);
-	}
-
-	return m;
-}
 
 // [[Rcpp::export]]
 NumericVector cpp_ic_meng(S4 dag, bool correct) {

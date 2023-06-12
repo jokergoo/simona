@@ -314,7 +314,7 @@ NumericMatrix cpp_sim_zhong(S4 dag, IntegerVector nodes, bool depth_via_LCA) {
 									sigma_a = global_depth[offspring[i] - 1];
 									sigma_b = global_depth[offspring[j] - 1];
 								}
-								sim(id1, id2) = 1 - 1.0/pow(2, sigma_c) - 0.5*(1.0/pow(2, sigma_a) + 1.0/pow(2, sigma_b));
+								sim(id1, id2) = 1 - 1.0/pow(2, sigma_c)*(1- 1.0/pow(2, sigma_a+1) - 1.0/pow(2, sigma_b+1));
 								sim(id2, id1) = sim(id1, id2);
 							} else if(LCA_depth(id1, id2) == global_depth[all_ancestor[k]-1]) {
 								if(sim(id1, id2) >= 0) {
@@ -326,7 +326,7 @@ NumericMatrix cpp_sim_zhong(S4 dag, IntegerVector nodes, bool depth_via_LCA) {
 										sigma_a = global_depth[offspring[i] - 1];
 										sigma_b = global_depth[offspring[j] - 1];
 									}
-									sim_new = 1 - 1.0/pow(2, sigma_c) - 0.5*(1.0/pow(2, sigma_a) + 1.0/pow(2, sigma_b));
+									sim_new = 1 - 1.0/pow(2, sigma_c)*(1- 1.0/pow(2, sigma_a+1) - 1.0/pow(2, sigma_b+1));
 									if(sim_new < sim(id1, id2)) {
 										sim(id1, id2) = sim_new;
 										sim(id2, id1) = sim(id1, id2);
@@ -343,7 +343,7 @@ NumericMatrix cpp_sim_zhong(S4 dag, IntegerVector nodes, bool depth_via_LCA) {
 	return sim;
 }
 
-const int PI = 3.1415926;
+const double PI = 3.1415926;
 
 
 // [[Rcpp::export]]
@@ -365,21 +365,26 @@ NumericMatrix cpp_sim_shen(S4 dag, IntegerVector nodes, NumericVector ic) {
 
 	for(int i = 0; i < m - 1; i ++) {
 		for(int j = i+1; j < m; j ++) {
-			IntegerVector path1 = cpp_tpl_shortest_path(dag, mica_nodes(i, j), i+1);
-			IntegerVector path2 = cpp_tpl_shortest_path(dag, mica_nodes(i, j), j+1);
+			if(ic[ mica_nodes(i, j)-1 ] == 0) {
+				sim(i, j) = 0;
+				sim(j, i) = 0;
+			} else {
+				IntegerVector path1 = cpp_tpl_shortest_path(dag, mica_nodes(i, j), i+1);
+				IntegerVector path2 = cpp_tpl_shortest_path(dag, mica_nodes(i, j), j+1);
 
-			double v = 0;
-			for(int k = 0; k < path1.size(); k ++) {
-				v += 1/ic[ path1[k]-1 ];
-			}
-			if(path2.size() > 1) {
-				for(int k = 1; k < path2.size(); k ++) {
-					v += 1/ic[ path2[k]-1 ];
+				double v = 0;
+				for(int k = 0; k < path1.size(); k ++) {
+					v += 1/ic[ path1[k]-1 ];
 				}
-			}
+				if(path2.size() > 1) {
+					for(int k = 1; k < path2.size(); k ++) {
+						v += 1/ic[ path2[k]-1 ];
+					}
+				}
 
-			sim(i, j) = 1 - atan(v)/PI*2;
-			sim(j, i) = sim(i, j);
+				sim(i, j) = 1 - atan(v)/PI*2;
+				sim(j, i) = sim(i, j);
+			}
 		}
 	}
 
@@ -438,7 +443,7 @@ NumericMatrix cpp_common_ancestor_mean_IC_XGraSM(S4 dag, IntegerVector nodes, Nu
 	int m = nodes.size();
 
 	NumericMatrix score(m, m);
-	IntegerVector na(m, m);
+	IntegerMatrix na(m, m);
 
 	IntegerVector nodes_ind(n, -1);  // mapping between n and m indices
 	for(int i = 0; i < m; i ++) {
@@ -487,7 +492,11 @@ NumericMatrix cpp_common_ancestor_mean_IC_XGraSM(S4 dag, IntegerVector nodes, Nu
 
 	for(int i = 0; i < m; i ++) {
 		for(int j = i; j < m; j ++) {
-			score(i, j) = score(i, j)/na(i, j);
+			if(na(i, j) == 0) {
+				score(i, j) = 0;
+			} else {
+				score(i, j) = score(i, j)/na(i, j);
+			}
 			score(j, i) = score(i, j);
 		}
 	}

@@ -29,6 +29,12 @@ test_that("test cpp_max_ancestor_v", {
 		m[upper.tri(m, diag = TRUE)],
 		c(0, 0, 1, 0, 1, 2, 0, 1, 1, 2, 0, 1, 2, 1, 3, 0, 1, 1, 2, 1, 3)
 	)
+
+	m = cpp_max_ancestor_v(dag, c(2, 4, 5, 3), dag_depth(dag))
+	expect_equal(
+		m[upper.tri(m, diag = TRUE)],
+		c(1, 1, 2, 1, 1, 3, 1, 1, 2, 2)
+	)
 })
 
 test_that("test cpp_max_ancestor_id", {
@@ -38,11 +44,18 @@ test_that("test cpp_max_ancestor_id", {
 		c(1, 1, 2, 1, 2, 3, 1, 2, 2, 4, 1, 2, 3, 2, 5, 1, 2, 2, 4, 2, 6)
 	)
 
+	m = cpp_max_ancestor_id(dag, c(2, 4, 5, 3), dag_depth(dag))
+	expect_equal(
+		m[upper.tri(m, diag = TRUE)],
+		c(2, 2,4, 2, 2, 5, 2, 2, 3, 3)
+	)
+
 	m = cpp_max_ancestor_id(dag, 1:6, rep(0, 6))
 	expect_equal(
 		m[upper.tri(m, diag = TRUE)],
 		c(1, 1, 2, 1, 2, 3, 1, 2, 2, 4, 1, 2, 3, 2, 5, 1, 2, 2, 4, 2, 6)
 	)
+
 })
 
 test_that("test cpp_distances", {
@@ -52,11 +65,24 @@ test_that("test cpp_distances", {
 		c(0, 1, 0, 1, 1, 0, 2, 1, 2, 0, 2, 2, 1, 3, 0, 3, 2, 3, 1, 4, 0)
 	)
 
+	m2 = cpp_shortest_distances_via_CA(dag, c(2, 4, 5, 3))
+	m3 = m[c(2, 4, 5, 3), c(2, 4, 5, 3)]
+	expect_equal(m2, m3)
+
 	m = cpp_longest_distances_via_LCA(dag, 1:6)
 	expect_equal(
 		m[upper.tri(m, diag = TRUE)],
 		c(0, 1, 0, 2, 1, 0, 2, 1, 2, 0, 3, 2, 1, 3, 0, 3, 2, 3, 1, 4, 0)
 	)
+
+	m2 = cpp_longest_distances_via_LCA(dag, c(2, 4, 5, 3))
+	m3 = m[c(2, 4, 5, 3), c(2, 4, 5, 3)]
+	expect_equal(m2, m3)
+
+	lt = cpp_longest_distances_from_LCA(dag, 1:6)
+	m = cpp_longest_distances_via_LCA(dag, 1:6)
+
+	expect_equal(m, lt$left + lt$right)
 })
 
 test_that("test distance_directed", {
@@ -65,6 +91,11 @@ test_that("test distance_directed", {
 		m[upper.tri(m, diag = TRUE)],
 		c(0, 1, 0, 2, 1, 0, 2, 1, -1, 0, 3, 2, 1, -1, 0, 3, 2, -1, 1, -1, 0)
 	)
+
+	m2 = cpp_longest_distances_directed(dag, c(2, 4, 5, 3))
+	m3 = m[c(2, 4, 5, 3), c(2, 4, 5, 3)]
+	expect_equal(m2, m3)
+
 	expect_equal(
 		m[lower.tri(m, diag = FALSE)],
 		rep(-1, 15)
@@ -75,6 +106,11 @@ test_that("test distance_directed", {
 		m[upper.tri(m, diag = TRUE)],
 		c(0, 1, 0, 1, 1, 0, 2, 1, -1, 0, 2, 2, 1, -1, 0, 3, 2, -1, 1, -1, 0)
 	)
+
+	m2 = cpp_shortest_distances_directed(dag, c(2, 4, 5, 3))
+	m3 = m[c(2, 4, 5, 3), c(2, 4, 5, 3)]
+	expect_equal(m2, m3)
+
 	expect_equal(
 		m[lower.tri(m, diag = FALSE)],
 		rep(-1, 15)
@@ -88,6 +124,10 @@ test_that("test cpp_nearest_common_ancestor", {
 		m[upper.tri(m, diag = TRUE)],
 		c(1, 1, 2, 1, 2, 3, 1, 2, 2, 4, 1, 2, 3, 2, 5, 1, 2, 2, 4, 2, 6)
 	)
+
+	m2 = cpp_nearest_common_ancestor(dag, c(2, 4, 5, 3))
+	m3 = m[c(2, 4, 5, 3), c(2, 4, 5, 3)]
+	expect_equal(m2, m3)
 })
 
 

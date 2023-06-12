@@ -1,28 +1,4 @@
 
-# remove terms with zero annotation and the root term
-validate_annotated_terms = function(dag, id) {
-	n_anno = n_annotations(dag)[id]
-
-	l1 = n_anno == 0
-	if(any(l1)) {
-		message("removed", sum(l1), "terms with no annotation.")
-		
-		if(length(sum(!l1)) == 0) {
-			stop("No term is lef.")
-		}
-	}
-	l2 = id %in% dag@root
-	if(any(l2)) {
-		message("removed root term.")
-		
-		if(length(sum(!l1 & !l2)) == 0) {
-			stop("No term is lef.")
-		}
-	}
-
-	!l1 & !l2
-}
-
 Sim_Ling_1998 = function(dag, terms) {
 	IC_method = "IC_annotation"
 
@@ -34,20 +10,20 @@ Sim_Ling_1998 = function(dag, terms) {
 	ic = ic[l]
 
 	ic_mica = MICA_IC(dag, id, IC_method)
-	browser()
-	sim = 2*ic_mica/outer(ic[id], ic[id], "+")
+
+	sim = 2*ic_mica/outer(ic, ic, "+")
 	sim[is.na(sim)] = 1
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 	
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Ling_1998")
+ADD_TERM_SIM_METHOD("Sim_Ling_1998")
 
 
 Sim_Resnik_1999 = function(dag, terms, norm_method = "Nmax") {
 	IC_method = "IC_annotation"
 
-	if(norm_method %in% c("Nunif", "Nmax", "Nunivers", "none")) {
+	if(!norm_method %in% c("Nunif", "Nmax", "Nunivers", "none")) {
 		stop("`norm_method` can only be in 'Nunif', 'Nmax', 'Nunivers, 'none'.")
 	}
 
@@ -66,7 +42,7 @@ Sim_Resnik_1999 = function(dag, terms, norm_method = "Nmax") {
 	} else if(norm_method == "Nmax") {
 		sim = ic_mica/max(ic)
 	} else if(norm_method == "Nunivers") {
-		sim = ic_mica/(outer(ic, ic, max))
+		sim = ic_mica/(outer(ic, ic, pmax))
 	} else  if(norm_method == "none") {
 		sim = ic_mica
 	}
@@ -75,7 +51,7 @@ Sim_Resnik_1999 = function(dag, terms, norm_method = "Nmax") {
 	sim[is.na(sim)] = 1
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Resnik_1999")
+ADD_TERM_SIM_METHOD("Sim_Resnik_1999")
 
 
 Sim_FaITH_2010 = function(dag, terms) {
@@ -96,7 +72,7 @@ Sim_FaITH_2010 = function(dag, terms) {
 	sim[is.na(sim)] = 1
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_FaITH_2010")
+ADD_TERM_SIM_METHOD("Sim_FaITH_2010")
 
 
 Sim_PS_2008 = function(dag, terms) {
@@ -112,13 +88,14 @@ Sim_PS_2008 = function(dag, terms) {
 	ic_mica = MICA_IC(dag, id, IC_method)
 
 	sim = 3*ic_mica - outer(ic, ic, "+")
+	# scale into 0~1
+	max_ic = max(get(IC_method)(dag))
+	sim = (sim + 2*max_ic)/3/max_ic
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
-	sim[sim < 0] = 0
-	diag(sim) = 1
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_PS_2008")
+ADD_TERM_SIM_METHOD("Sim_PS_2008")
 
 
 Sim_Relevance_2006 = function(dag, terms) {
@@ -131,12 +108,12 @@ Sim_Relevance_2006 = function(dag, terms) {
 
 	ic_mica = MICA_IC(dag, id, IC_method)
 
-	sim = get_Sim_method("Sim_Ling_1998")(dag, id)
+	sim = get_term_sim_method("Sim_Ling_1998")(dag, id)
 
 	eps = 1 - exp(-ic_mica)
 	eps*sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Relevance_2006")
+ADD_TERM_SIM_METHOD("Sim_Relevance_2006")
 
 
 Sim_SimIC_2010 = function(dag, terms) {
@@ -149,12 +126,12 @@ Sim_SimIC_2010 = function(dag, terms) {
 
 	ic_mica = MICA_IC(dag, id, IC_method)
 
-	sim = get_Sim_method("Sim_Ling_1998")(dag, id)
+	sim = get_term_sim_method("Sim_Ling_1998")(dag, id)
 
 	eps = 1 - 1/(1 + ic_mica)
 	eps*sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_SimIC_2010")
+ADD_TERM_SIM_METHOD("Sim_SimIC_2010")
 
 
 Sim_EISI_2015 = function(dag, terms) {
@@ -168,13 +145,14 @@ Sim_EISI_2015 = function(dag, terms) {
 	ic_mica = MICA_IC(dag, id, IC_method)
 	ic = term_IC(dag, IC_method)
 
-	sim = get_Sim_method("Sim_Ling_1998")(dag, id)
+	sim = get_term_sim_method("Sim_Ling_1998")(dag, id)
 
 	eps = cpp_eps_EISI(dag, id, ic)
+	eps[is.na(eps)] = 1
 
 	eps*sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_EISI_2015")
+ADD_TERM_SIM_METHOD("Sim_EISI_2015")
 
 
 Sim_XGraSM_2013 = function(dag, terms) {
@@ -188,12 +166,13 @@ Sim_XGraSM_2013 = function(dag, terms) {
 	ic_mica = MICA_IC(dag, id, IC_method)
 	ic = term_IC(dag, IC_method)
 
-	sim = get_Sim_method("Sim_Ling_1998")(dag, id)
+	sim = get_term_sim_method("Sim_Ling_1998")(dag, id)
 	eps = cpp_common_ancestor_mean_IC_XGraSM(dag, id, ic)/ic_mica
+	eps[is.na(eps)] = 1
 
 	eps*sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_XGraSM_2013")
+ADD_TERM_SIM_METHOD("Sim_XGraSM_2013")
 
 
 Sim_AIC_2014 = function(dag, terms) {
@@ -210,7 +189,7 @@ Sim_AIC_2014 = function(dag, terms) {
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_AIC_2014")
+ADD_TERM_SIM_METHOD("Sim_AIC_2014")
 
 
 Sim_Zhang_2006 = function(dag, terms) {
@@ -226,7 +205,7 @@ Sim_Zhang_2006 = function(dag, terms) {
 	
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Zhang_2006")
+ADD_TERM_SIM_METHOD("Sim_Zhang_2006")
 
 
 Sim_universal = function(dag, terms) {
@@ -237,12 +216,12 @@ Sim_universal = function(dag, terms) {
 
 	ic_mica = MICA_IC(dag, id, IC_method)
 
-	sim = 2*ic_mica/outer(ic, ic, max)
+	sim = 2*ic_mica/outer(ic, ic, pmax)
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 	
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_universal")
+ADD_TERM_SIM_METHOD("Sim_universal")
 
 
 Sim_Wang_2007 = function(dag, terms, contribution_factor = c("isa" = 0.8, "part of" = 0.6)) {
@@ -264,7 +243,7 @@ Sim_Wang_2007 = function(dag, terms, contribution_factor = c("isa" = 0.8, "part 
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Wang_2007")
+ADD_TERM_SIM_METHOD("Sim_Wang_2007")
 
 ###########################################
 #### edge-based
@@ -287,7 +266,7 @@ Sim_Rada_1989 = function(dag, terms, distance = "longest_distances_via_LCA") {
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Rada_1989")
+ADD_TERM_SIM_METHOD("Sim_Rada_1989")
 
 
 Sim_Resnik_edge_2012 = function(dag, terms, distance = "longest_distances_via_LCA") {
@@ -308,7 +287,7 @@ Sim_Resnik_edge_2012 = function(dag, terms, distance = "longest_distances_via_LC
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Resnik_edge_2012")
+ADD_TERM_SIM_METHOD("Sim_Resnik_edge_2012")
 
 
 Sim_Leocock_1998 = function(dag, terms, distance = "longest_distances_via_LCA") {
@@ -329,10 +308,10 @@ Sim_Leocock_1998 = function(dag, terms, distance = "longest_distances_via_LCA") 
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Leocock_1998")
+ADD_TERM_SIM_METHOD("Sim_Leocock_1998")
 
 
-Sim_Wu_1994 = function(dag, terms) {
+Sim_WP_1994 = function(dag, terms) {
 
 	id = term_to_node_id(dag, terms, strict = FALSE)
 	
@@ -348,7 +327,7 @@ Sim_Wu_1994 = function(dag, terms) {
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Wu_1994")
+ADD_TERM_SIM_METHOD("Sim_WP_1994")
 
 
 Sim_Slimani_2006 = function(dag, terms, distance = "longest_distances_via_LCA") {
@@ -359,10 +338,13 @@ Sim_Slimani_2006 = function(dag, terms, distance = "longest_distances_via_LCA") 
 
 	sim_wp = 2*lca_depth/(cpp_longest_distances_via_LCA(dag, id) + 2*lca_depth)
 
-	lamda = cpp_is_reachable(dag, id)
+	lambda = cpp_is_reachable(dag, id)
+	ltd = cpp_longest_distances_from_LCA(dag, id)
+	dist_left = ltd$left
+	dist_right = ltd$right
 
-	cf = (1 - lambda)*(outer(depth[id], depth[id], min) - lca_depth) +
-	     lambda/(abs(outer(depth[id], depth[id], "-")) + 1)
+	cf = (1 - lambda)*(pmin(dist_left, dist_right) + 1) + 
+	     lambda/(dist_left + dist_right)  ## the two terms are ancestor/offspring, and one of `dist_left` and dist_right is zero
 	diag(cf) = 1
 
 	sim = cf * sim_wp
@@ -370,7 +352,7 @@ Sim_Slimani_2006 = function(dag, terms, distance = "longest_distances_via_LCA") 
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Slimani_2006")
+ADD_TERM_SIM_METHOD("Sim_Slimani_2006")
 
 
 Sim_Shenoy_2012 = function(dag, terms) {
@@ -381,7 +363,7 @@ Sim_Shenoy_2012 = function(dag, terms) {
 
 	sim_wp = 2*lca_depth/(cpp_longest_distances_via_LCA(dag, id) + 2*lca_depth)
 
-	lamda = cpp_is_reachable(dag, id)
+	lambda = cpp_is_reachable(dag, id)
 
 	max_depth = max(dag_depth(dag))
 	dist = cpp_longest_distances_via_LCA(dag, id)
@@ -394,7 +376,7 @@ Sim_Shenoy_2012 = function(dag, terms) {
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Shenoy_2012")
+ADD_TERM_SIM_METHOD("Sim_Shenoy_2012")
 
 
 Sim_Pekar_2002 = function(dag, terms) {
@@ -407,7 +389,7 @@ Sim_Pekar_2002 = function(dag, terms) {
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Pekar_2002")
+ADD_TERM_SIM_METHOD("Sim_Pekar_2002")
 
 
 Sim_Stojanovic_2001 = function(dag, terms) {
@@ -429,7 +411,7 @@ Sim_Stojanovic_2001 = function(dag, terms) {
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Stojanovic_2001")
+ADD_TERM_SIM_METHOD("Sim_Stojanovic_2001")
 
 
 Sim_Wang_edge_2012 = function(dag, terms) {
@@ -447,7 +429,7 @@ Sim_Wang_edge_2012 = function(dag, terms) {
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Wang_edge_2012")
+ADD_TERM_SIM_METHOD("Sim_Wang_edge_2012")
 
 
 Sim_Zhong_2002 = function(dag, terms, depth_via_LCA = TRUE) {
@@ -459,7 +441,7 @@ Sim_Zhong_2002 = function(dag, terms, depth_via_LCA = TRUE) {
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Zhong_2002")
+ADD_TERM_SIM_METHOD("Sim_Zhong_2002")
 
 
 Sim_AlMubaid_2006 = function(dag, terms, distance = "longest_distances_via_LCA") {
@@ -483,7 +465,7 @@ Sim_AlMubaid_2006 = function(dag, terms, distance = "longest_distances_via_LCA")
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_AlMubaid_2006")
+ADD_TERM_SIM_METHOD("Sim_AlMubaid_2006")
 
 
 Sim_Li_2003 = function(dag, terms, distance = "longest_distances_via_LCA") {
@@ -507,7 +489,7 @@ Sim_Li_2003 = function(dag, terms, distance = "longest_distances_via_LCA") {
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Li_2003")
+ADD_TERM_SIM_METHOD("Sim_Li_2003")
 
 
 ###########################################
@@ -529,35 +511,43 @@ Sim_RSS_2013 = function(dag, terms, distance = "longest_distances_via_LCA") {
 		stop("`distance` can only be in 'shortest_distances_via_CA' or 'longest_distances_via_LCA'.")
 	}
 
-	sim = max_depth/(max_depth + dist) * lca_depth/(lca_depth + 0.5*outer(height, height, "+"))
+	sim = max_depth/(max_depth + dsp) * lca_depth/(lca_depth + 0.5*outer(height, height, "+") + 1)
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_RSS_2013")
+ADD_TERM_SIM_METHOD("Sim_RSS_2013")
 
 
-Sim_HRSS_2013 = function(dag, terms, IC_method) {
+Sim_HRSS_2013 = function(dag, terms, IC_method = "IC_annotation") {
 	id = term_to_node_id(dag, terms, strict = FALSE)
-	ic = term_IC(dag, IC_method)[id]
+	if(IC_method == "IC_annotation") {
+		l = validate_annotated_terms(dag, id)
+		id = id[l]
+	}
+	ic = term_IC(dag, IC_method)
 	ic_mica = MICA_IC(dag, id, IC_method)
 
 	MIL_term = cpp_max_leaves_id(dag, id, ic)
 
 	alpha = abs(ic[dag@root] - ic_mica)
-	ic_dist_leaf = ic[id] - ic[MIL_term]
+	ic_dist_leaf = abs(ic[id] - ic[MIL_term])
 	beta = outer(ic_dist_leaf, ic_dist_leaf, "+")/2
 
-	sim = 1/(1 + abs(outer(ic[id], ic[id], "-")))*alpha/(alpha + beta)
+	sim = 1/(1 + abs(outer(ic[id], ic[id], "-")))*alpha/(alpha + beta + 1)
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_HRSS_2013")
+ADD_TERM_SIM_METHOD("Sim_HRSS_2013")
 
 
-Sim_Shen_2010 = function(dag, terms, IC_method) {
+Sim_Shen_2010 = function(dag, terms, IC_method = "IC_annotation") {
 	id = term_to_node_id(dag, terms, strict = FALSE)
+	if(IC_method == "IC_annotation") {
+		l = validate_annotated_terms(dag, id)
+		id = id[l]
+	}
 	ic = term_IC(dag, IC_method)
 
 	sim = cpp_sim_shen(dag, id, ic);
@@ -565,7 +555,7 @@ Sim_Shen_2010 = function(dag, terms, IC_method) {
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Shen_2010")
+ADD_TERM_SIM_METHOD("Sim_Shen_2010")
 
 
 Sim_SSDD_2013 = function(dag, terms) {
@@ -576,12 +566,18 @@ Sim_SSDD_2013 = function(dag, terms) {
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_SSDD_2013")
+ADD_TERM_SIM_METHOD("Sim_SSDD_2013")
 
 
-Sim_Jiang_1997 = function(dag, terms, IC_method, normalization = "max") {
+Sim_Jiang_1997 = function(dag, terms, normalization = "max") {
 
-	id = term_to_node_id(dag, terms)
+	IC_method = "IC_annotation"
+
+	id = term_to_node_id(dag, terms, strict = FALSE)
+
+	l = validate_annotated_terms(dag, id)
+	id = id[l]
+
 	ic_mica = MICA_IC(dag, id, IC_method)
 	ic = term_IC(dag, IC_method)[id]
 	max_ic = max(ic)
@@ -610,43 +606,60 @@ Sim_Jiang_1997 = function(dag, terms, IC_method, normalization = "max") {
 
 	sim
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Jiang_1997")
+ADD_TERM_SIM_METHOD("Sim_Jiang_1997")
 
 ######################
 ## count-based
 ######################
 
-Sim_Kappa = function(dag, terms, universe = NULL) {
-	.sim_overlap(dag, terms, universe, method = "kappa")
+Sim_Kappa = function(dag, terms, anno_universe = NULL) {
+	id = term_to_node_id(dag, terms, strict = FALSE)
+
+	l = validate_annotated_terms(dag, id)
+	id = id[l]
+	.sim_overlap(dag, id, anno_universe, method = "kappa")
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Kappa")
+ADD_TERM_SIM_METHOD("Sim_Kappa")
 
 
-Sim_Jaccard = function(dag, terms, universe = NULL) {
-	.sim_overlap(dag, terms, universe, method = "jaccard")
+Sim_Jaccard = function(dag, terms, anno_universe = NULL) {
+	id = term_to_node_id(dag, terms, strict = FALSE)
+
+	l = validate_annotated_terms(dag, id)
+	id = id[l]
+	.sim_overlap(dag, id, anno_universe, method = "jaccard")
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Jaccard")
+ADD_TERM_SIM_METHOD("Sim_Jaccard")
 
-Sim_Dice = function(dag, terms, universe = NULL) {
-	.sim_overlap(dag, terms, universe, method = "dice")
+
+Sim_Dice = function(dag, terms, anno_universe = NULL) {
+	id = term_to_node_id(dag, terms, strict = FALSE)
+
+	l = validate_annotated_terms(dag, id)
+	id = id[l]
+	.sim_overlap(dag, id, anno_universe, method = "dice")
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Dice")
+ADD_TERM_SIM_METHOD("Sim_Dice")
 
-Sim_Overlap = function(dag, terms, universe = NULL) {
-	.sim_overlap(dag, terms, universe, method = "overlap")
+
+Sim_Overlap = function(dag, terms, anno_universe = NULL) {
+	id = term_to_node_id(dag, terms, strict = FALSE)
+
+	l = validate_annotated_terms(dag, id)
+	id = id[l]
+	.sim_overlap(dag, id, anno_universe, method = "overlap")
 }
-ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Overlap")
+ADD_TERM_SIM_METHOD("Sim_Overlap")
 
-.sim_overlap = function(dag, terms, universe = NULL, method = c("kappa", "jaccard", "dice", "overlap")) {
+#' @importFrom methods as
+.sim_overlap = function(dag, id, anno_universe = NULL, method = c("kappa", "jaccard", "dice", "overlap")) {
 
 	check_pkg("proxyC", bioc = FALSE)
 
-	id = term_to_node_id(dag, terms, strict = FALSE)
-	if(!is.null(universe)) {
-		universe = term_to_node_id(dag, universe, strict = FALSE)
-		id = intersect(id, universe)
+	if(!is.null(anno_universe)) {
+		anno_universe = which(dag@annotation$names %in% anno_universe)
 	} else {
-		universe = seq_along(dag@annotation$names)
+		anno_universe = seq_along(dag@annotation$names)
 	}
 
 	if(length(dag@annotation$list) == 0) {
@@ -654,7 +667,7 @@ ALL_TERM_SIM_METHODS = c(ALL_TERM_SIM_METHODS, "Sim_Overlap")
 	}
 
 	mg = cpp_get_term_annotations(dag, id)
-	mg = mg[, universe, drop = FALSE]
+	mg = mg[, anno_universe, drop = FALSE]
 
 	mg = as(mg, "sparseMatrix")
 

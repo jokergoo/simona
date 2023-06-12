@@ -6,10 +6,11 @@
 #' @param term For `dag_parents()` and `dag_children()`, the value should be a single term name.
 #'             For `dag_ancestor()` and `dag_offspring()`, the value can be a vector of term names.
 #' @param in_labels Whether to return the numeric indices or in their term names.
+#' @param include_self For `dag_offspring()` and `dag_ancestor()`, this controls whether to also contain the term itself.
 #' 
 #' @return An integer vector or a character vector depending on the value of `in_labels`.
 #' @export
-#' @example
+#' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
 #' children = c("b", "c", "c", "d", "e", "f")
 #' dag = create_ontology_DAG(parents, children)
@@ -105,6 +106,7 @@ dag_offspring = function(dag, term, in_labels = TRUE, include_self = FALSE) {
 #' @param dag A `ontology_DAG` object.
 #' @param term A vector of term names. If the value is `NULL`, it returns for all terms.
 #' @param use_cache Internally used.
+#' @param include_self For `n_offspring()` and `n_ancestor()`, this controls whether to also contain the term itself.
 #' 
 #' @return An integer vector.
 #' @export
@@ -122,6 +124,7 @@ n_offspring = function(dag, term = NULL, use_cache = TRUE, include_self = FALSE)
 		dag@term_env$n_offspring = cpp_n_offspring(dag, include_self)
 	}
 	n = dag@term_env$n_offspring
+	names(n) = dag@terms
 
 	if(!is.null(term)) {
 		i = term_to_node_id(dag, term)
@@ -138,6 +141,7 @@ n_ancestor = function(dag, term = NULL, use_cache = TRUE, include_self = FALSE) 
 		dag@term_env$n_ancestor = cpp_n_ancestor(dag, include_self)
 	}
 	n = dag@term_env$n_ancestor
+	names(n) = dag@terms
 
 	if(!is.null(term)) {
 		i = term_to_node_id(dag, term)
@@ -155,6 +159,7 @@ n_leaves = function(dag, term = NULL, use_cache = TRUE) {
 		dag@term_env$n_leaves = cpp_n_leaves(dag)
 	}
 	n = dag@term_env$n_leaves
+	names(n) = dag@terms
 
 	if(!is.null(term)) {
 		i = term_to_node_id(dag, term)
@@ -168,6 +173,7 @@ n_leaves = function(dag, term = NULL, use_cache = TRUE) {
 #' @export
 n_parents = function(dag, term = NULL, use_cache = TRUE) {
 	n = dag@term_env$n_parents
+	names(n) = dag@terms
 
 	if(!is.null(term)) {
 		i = term_to_node_id(dag, term)
@@ -181,6 +187,7 @@ n_parents = function(dag, term = NULL, use_cache = TRUE) {
 #' @export
 n_children = function(dag, term = NULL, use_cache = TRUE) {
 	n = dag@term_env$n_children
+	names(n) = dag@terms
 
 	if(!is.null(term)) {
 		i = term_to_node_id(dag, term)
@@ -232,7 +239,7 @@ dag_depth = function(dag, use_cache = TRUE) {
 		d = cpp_dag_depth(dag)
 		dag@term_env$dag_depth = d
 	}
-	dag@term_env$dag_depth
+	structure(dag@term_env$dag_depth, names = dag@terms)
 }
 
 #' @rdname dag_depth
@@ -242,25 +249,25 @@ dag_height = function(dag, use_cache = TRUE) {
 		d = cpp_dag_height(dag)
 		dag@term_env$dag_height = d
 	}
-	dag@term_env$dag_height
+	structure(dag@term_env$dag_height, names = dag@terms)
 }
 
 #' @rdname dag_depth
 #' @export
-dag_dist_to_root = function(dag, use_cache = TRUE) {
+dag_dist_from_root = function(dag, use_cache = TRUE) {
 	if(is.null(dag@term_env$dag_dist_to_root) || !use_cache) {
-		d = cpp_dag_dist_to_root(dag)
+		d = cpp_dag_dist_from_root(dag)
 		dag@term_env$dag_dist_to_root = d
 	}
-	dag@term_env$dag_dist_to_root
+	structure(dag@term_env$dag_dist_to_root, names = dag@terms)
 }
 
 #' @rdname dag_depth
 #' @export
-dag_dist_to_leaves = function(dag, use_cache = TRUE) {
+dag_dist_from_leaves = function(dag, use_cache = TRUE) {
 	if(is.null(dag@term_env$dag_dist_to_leaves) || !use_cache) {
-		d = cpp_dag_dist_to_leaves(dag)
+		d = cpp_dag_dist_from_leaves(dag)
 		dag@term_env$dag_dist_to_leaves = d
 	}
-	dag@term_env$dag_dist_to_leaves
+	structure(dag@term_env$dag_dist_to_leaves, names = dag@terms)
 }

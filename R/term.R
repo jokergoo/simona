@@ -1,40 +1,6 @@
 
 
 
-#' Number of annotated items
-#' 
-#' @param dag A `ontology_DAG` object.
-#' @param use_cache Internally used.
-#' 
-#' @details
-#' `annotation` argument should be set in [create_ontology_DAG()].
-#' @returns An integer vector.
-#' @export
-#' @examples
-#' \dontrun{
-#' dag = create_ontology_DAG_from_GO_db(org_db = "org.Hs.eg.db")
-#' head(n_annotations(dag))
-#' }
-n_annotations = function(dag, use_cache = TRUE) {
-	if(is.null(dag@term_env$n_annotations)) {
-		use_cache = FALSE
-	} 
-	if(!use_cache) {
-		if(length(dag@annotation$list) == 0) {
-			stop("You should specify `annotation` in `create_ontology_DAG()`.")
-		}
-		n_all_anno = length(dag@annotation$names)
-	
-		n = cpp_n_annotations(dag)
-		
-		attr(n, "N") = n_all_anno
-
-		dag@term_env$n_annotations = n
-	}
-	
-	dag@term_env$n_annotations
-}
-
 IC_annotation = function(dag, use_cache = TRUE) {
 
 	if(is.null(dag@term_env$IC_annotation)) {
@@ -53,7 +19,7 @@ IC_annotation = function(dag, use_cache = TRUE) {
 	
 	dag@term_env$IC_annotation
 }
-ALL_IC_METHODS = c(ALL_IC_METHODS, "IC_annotation")
+ADD_IC_METHOD("IC_annotation")
 
 
 
@@ -93,7 +59,7 @@ IC_universal = function(dag, use_cache = TRUE) {
 
 	dag@term_env$IC_universal
 }
-ALL_IC_METHODS = c(ALL_IC_METHODS, "IC_universal")
+ADD_IC_METHOD("IC_universal")
 
 
 ##############################################
@@ -137,7 +103,7 @@ IC_Zhang_2006 = function(dag, use_cache = TRUE) {
 	}
 	dag@term_env$IC_Zhang_2006
 }
-ALL_IC_METHODS = c(ALL_IC_METHODS, "IC_Zhang_2006")
+ADD_IC_METHOD("IC_Zhang_2006")
 
 
 ########################################
@@ -149,7 +115,7 @@ IC_Seco_2004 = function(dag, use_cache = TRUE) {
 	}
 	dag@term_env$IC_Seco_2004
 }
-ALL_IC_METHODS = c(ALL_IC_METHODS, "IC_Seco_2004")
+ADD_IC_METHOD("IC_Seco_2004")
 
 
 ########################################
@@ -164,7 +130,7 @@ IC_Zhou_2008 = function(dag, use_cache = TRUE) {
 	}
 	dag@term_env$IC_Zhou_2008
 }
-ALL_IC_METHODS = c(ALL_IC_METHODS, "IC_Zhou_2008")
+ADD_IC_METHOD("IC_Zhou_2008")
 
 
 ########################################
@@ -182,7 +148,7 @@ IC_Seddiqui_2010 = function(dag, use_cache = TRUE) {
 	}
 	dag@term_env$IC_Seddiqui_2010
 }
-ALL_IC_METHODS = c(ALL_IC_METHODS, "IC_Seddiqui_2010")
+ADD_IC_METHOD("IC_Seddiqui_2010")
 
 
 
@@ -200,7 +166,7 @@ IC_Sanchez_2011 = function(dag, use_cache = TRUE) {
 	}
 	dag@term_env$IC_Sanchez_2011
 }
-ALL_IC_METHODS = c(ALL_IC_METHODS, "IC_Sanchez_2011")
+ADD_IC_METHOD("IC_Sanchez_2011")
 
 
 
@@ -212,7 +178,7 @@ IC_Meng_2012 = function(dag, correct = FALSE, use_cache = TRUE) {
 	}
 	dag@term_env$IC_Meng_2012
 }
-ALL_IC_METHODS = c(ALL_IC_METHODS, "IC_Meng_2012")
+ADD_IC_METHOD("IC_Meng_2012")
 
 
 
@@ -269,10 +235,6 @@ IC_Wang_2007 = function(dag, contribution_factor = c("isa" = 0.8, "part of" = 0.
 	}
 	dag@term_env$IC_Wang_2007
 }
-ALL_IC_METHODS = c(ALL_IC_METHODS, "IC_Wang_2007")
+ADD_IC_METHOD("IC_Wang_2007")
 
 
-
-
-#####
-ALL_IC_METHODS = sort(unique(ALL_IC_METHODS))

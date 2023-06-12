@@ -11,8 +11,10 @@ polar2Cartesian = function(d) {
 
 #' Visualize the DAG
 #' 
-#' @param x
+#' @param x An `ontology_Dag` object.
+#' @param ... Other parguments.
 #' 
+#' @import grid
 plot.ontology_DAG = function(x, ...) {
 
 	dag = x

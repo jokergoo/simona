@@ -10,6 +10,9 @@ An object of class \code{character} of length 9.
 \usage{
 ALL_IC_METHODS
 }
+\value{
+A vector all supported IC methods.
+}
 \description{
 All supported IC methods
 }
