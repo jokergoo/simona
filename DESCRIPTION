@@ -5,8 +5,8 @@ Version: 0.99.0
 Date: 2023-04-25
 Authors@R: person("Zuguang", "Gu", email = "z.gu@dkfz.de", role = c("aut", "cre"),
                   comment = c('ORCID'="0000-0002-7395-8709"))
-Depends: R (>= 3.5.0), grid
-Imports: methods, Rcpp, matrixStats, GetoptLong
+Depends: R (>= 3.5.0)
+Imports: methods, Rcpp, matrixStats, GetoptLong, grid
 Suggests: igraph, knitr, testthat, BiocManager, GO.db, org.Hs.eg.db, proxyC,
           Polychrome, AnnotationDbi
 LinkingTo: Rcpp

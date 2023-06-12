@@ -24,10 +24,14 @@ Semantic similarity
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")
 children = c("b", "c", "c", "d", "e", "f")
-dag = create_ontology_DAG(parents, children)
-for(method in ALL_TERM_SIM_METHODS) {
-    cat("===", method, "====\n")
-    print(term_sim(dag, dag_all_terms(dag), method))
-    cat("\n")
-}
+annotation = list(
+    "a" = 1:3,
+    "b" = 3:4,
+    "c" = 5,
+    "d" = 7,
+    "e" = 4:7,
+    "f" = 8
+)
+dag = create_ontology_DAG(parents, children, annotation = annotation)
+term_sim(dag, dag_all_terms(dag), "Sim_Ling_1998")
 }

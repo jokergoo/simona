@@ -13,7 +13,16 @@
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
 #' children = c("b", "c", "c", "d", "e", "f")
-#' dag = create_ontology_DAG(parents, children)
+#' annotation = list(
+#'     "a" = 1:3,
+#'     "b" = 3:4,
+#'     "c" = 5,
+#'     "d" = 7,
+#'     "e" = 4:7,
+#'     "f" = 8
+#' )
+#' dag = create_ontology_DAG(parents, children, annotation = annotation)
+#' term_IC(dag, "IC_annotation")
 term_IC = function(dag, method, control = list()) {
 	IC_fun = get_IC_method(method)
 	if(method == "IC_Wang_2007") {
@@ -46,7 +55,16 @@ get_IC_method = function(method) {
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
 #' children = c("b", "c", "c", "d", "e", "f")
-#' dag = create_ontology_DAG(parents, children)
+#' annotation = list(
+#'     "a" = 1:3,
+#'     "b" = 3:4,
+#'     "c" = 5,
+#'     "d" = 7,
+#'     "e" = 4:7,
+#'     "f" = 8
+#' )
+#' dag = create_ontology_DAG(parents, children, annotation = annotation)
+#' term_sim(dag, dag_all_terms(dag), "Sim_Ling_1998")
 term_sim = function(dag, terms, method, control = list()) {
 	sim_fun = get_term_sim_method(method)
 
@@ -66,15 +84,32 @@ get_term_sim_method = function(method) {
 #' @param dag An `ontology_DAG` object.
 #' @param group1 A vector of term names.
 #' @param group2 A vector of term names.
-#' @param method A group similarity method. All available methods are in [ALL_GROUP_SIM_METHODS].
+#' @param method Group similarity method. All available methods are in [ALL_GROUP_SIM_METHODS].
+#' @param sim_method Term similarity method. All available methods are in [ALL_TERM_SIM_METHODS].
 #' @param control A list of parameters passing to individual methods.
 #' 
 #' @return A numeric scalar.
 #' @export
-group_sim = function(dag, group1, group2, method, control = list()) {
+#' @examples
+#' parents  = c("a", "a", "b", "b", "c", "d")
+#' children = c("b", "c", "c", "d", "e", "f")
+#' annotation = list(
+#'     "a" = 1:3,
+#'     "b" = 3:4,
+#'     "c" = 5,
+#'     "d" = 7,
+#'     "e" = 4:7,
+#'     "f" = 8
+#' )
+#' dag = create_ontology_DAG(parents, children, annotation = annotation)
+#' group_sim(dag, c("c", "e"), c("d", "f"), 
+#'     method = "GroupSim_pairwise_avg", 
+#'     sim_method = "Sim_Ling_1998"
+#' )
+group_sim = function(dag, group1, group2, method, sim_method, control = list()) {
 	group_sim_fun = get_group_sim_method(method)
 
-	group_sim_fun(dag, group1, group2)
+	group_sim_fun(dag, group1, group2, sim_method)
 }
 
 get_group_sim_method = function(method) {

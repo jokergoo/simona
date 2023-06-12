@@ -4,7 +4,7 @@
 \alias{group_sim}
 \title{Semantic similarity between two groups of terms}
 \usage{
-group_sim(dag, group1, group2, method, control = list())
+group_sim(dag, group1, group2, method, sim_method, control = list())
 }
 \arguments{
 \item{dag}{An `ontology_DAG` object.}
@@ -13,7 +13,9 @@ group_sim(dag, group1, group2, method, control = list())
 
 \item{group2}{A vector of term names.}
 
-\item{method}{A group similarity method. All available methods are in [ALL_GROUP_SIM_METHODS].}
+\item{method}{Group similarity method. All available methods are in [ALL_GROUP_SIM_METHODS].}
+
+\item{sim_method}{Term similarity method. All available methods are in [ALL_TERM_SIM_METHODS].}
 
 \item{control}{A list of parameters passing to individual methods.}
 }
@@ -22,4 +24,21 @@ A numeric scalar.
 }
 \description{
 Semantic similarity between two groups of terms
+}
+\examples{
+parents  = c("a", "a", "b", "b", "c", "d")
+children = c("b", "c", "c", "d", "e", "f")
+annotation = list(
+    "a" = 1:3,
+    "b" = 3:4,
+    "c" = 5,
+    "d" = 7,
+    "e" = 4:7,
+    "f" = 8
+)
+dag = create_ontology_DAG(parents, children, annotation = annotation)
+group_sim(dag, c("c", "e"), c("d", "f"), 
+    method = "GroupSim_pairwise_avg", 
+    sim_method = "Sim_Ling_1998"
+)
 }
