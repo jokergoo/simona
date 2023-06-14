@@ -2,13 +2,27 @@
 % Please edit documentation in R/import.R
 \name{import_obo}
 \alias{import_obo}
-\title{Import .obo file to an ontology_DAG object}
+\title{Import .obo file as an ontology_DAG object}
 \usage{
 import_obo(file)
 }
 \arguments{
-\item{file}{Path of the file or an URL. Pass to [base::readLines()].}
+\item{file}{Path of the file or an URL. Pass to \code{\link[base:readLines]{base::readLines()}}.}
 }
 \description{
-Import .obo file to an ontology_DAG object
+Import .obo file as an ontology_DAG object
+}
+\details{
+Public bio-ontologies can be obtained from Ontology Foundry (http://obofoundry.org/) or BioPortal(https://bioportal.bioontology.org/) where
+.obo files for the corresponding ontologies can be easily found. If there is no such .obo format file, the .owl file
+can be converted to the .obo file using the \strong{ROBOT} tool (http://robot.obolibrary.org/). An example command is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{robot convert --input ontology.owl --output -o ontology.obo --check false
+}\if{html}{\out{</div>}}
+}
+\examples{
+\dontrun{
+# The plant ontology: http://obofoundry.org/ontology/po.html 
+dag = import_obo("https://raw.githubusercontent.com/Planteome/plant-ontology/master/po.obo")
+}
 }

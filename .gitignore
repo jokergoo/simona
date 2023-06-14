@@ -11,3 +11,8 @@
 .Rproj.user/
 
 .DS_Store
+
+
+.o$
+.so$
+man/temp__*

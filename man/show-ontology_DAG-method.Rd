@@ -7,7 +7,7 @@
 \S4method{show}{ontology_DAG}(object)
 }
 \arguments{
-\item{object}{An `ontology_DAG` object.}
+\item{object}{An \code{ontology_DAG} object.}
 }
 \description{
 Print the ontology_DAG object

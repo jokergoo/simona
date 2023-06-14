@@ -7,15 +7,15 @@
 group_sim(dag, group1, group2, method, sim_method, control = list())
 }
 \arguments{
-\item{dag}{An `ontology_DAG` object.}
+\item{dag}{An \code{ontology_DAG} object.}
 
 \item{group1}{A vector of term names.}
 
 \item{group2}{A vector of term names.}
 
-\item{method}{Group similarity method. All available methods are in [ALL_GROUP_SIM_METHODS].}
+\item{method}{Group similarity method. All available methods are in \link{ALL_GROUP_SIM_METHODS}.}
 
-\item{sim_method}{Term similarity method. All available methods are in [ALL_TERM_SIM_METHODS].}
+\item{sim_method}{Term similarity method. All available methods are in \link{ALL_TERM_SIM_METHODS}.}
 
 \item{control}{A list of parameters passing to individual methods.}
 }
@@ -25,6 +25,92 @@ A numeric scalar.
 \description{
 Semantic similarity between two groups of terms
 }
+\section{method}{
+
+what is GroupSim_pairwise_avg
+
+
+what is GroupSim_pairwise_max
+
+
+what is GroupSim_pairwise_BMM
+
+
+what is GroupSim_pairwise_ABM
+
+
+what is GroupSim_pairwise_HDF
+
+
+what is GroupSim_pairwise_VHDF
+
+
+what is GroupSim_pairwise_Froehlich_2007
+
+
+what is GroupSim_pairwise_Joeng_2014
+
+
+what is GroupSim_SimALN
+
+
+what is GroupSim_SimINT
+
+
+what is GroupSim_spgk
+
+
+what is GroupSim_SimGIC
+
+
+what is GroupSim_SimDIC
+
+
+what is GroupSim_SimUIC
+
+
+what is GroupSim_SimUI
+
+
+what is GroupSim_SimDB
+
+
+what is GroupSim_SimUB
+
+
+what is GroupSim_SimNTO
+
+
+what is GroupSim_SimCOU
+
+
+what is GroupSim_SimCOT
+
+
+what is GroupSim_SimLP
+
+
+what is GroupSim_Ye_2005
+
+
+what is GroupSim_Cho_2007
+
+
+what is GroupSim_SimALD
+
+
+what is GroupSim_Jaccard
+
+
+what is GroupSim_Dice
+
+
+what is GroupSim_Overlap
+
+
+what is GroupSim_Kappa
+}
+
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")
 children = c("b", "c", "c", "d", "e", "f")

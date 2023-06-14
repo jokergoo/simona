@@ -7,11 +7,11 @@
 term_sim(dag, terms, method, control = list())
 }
 \arguments{
-\item{dag}{An `ontology_DAG` object.}
+\item{dag}{An \code{ontology_DAG} object.}
 
 \item{terms}{A vector of term names.}
 
-\item{method}{A similarity method. All available methods are in [ALL_TERM_SIM_METHODS].}
+\item{method}{A similarity method. All available methods are in \link{ALL_TERM_SIM_METHODS}.}
 
 \item{control}{A list of parameters passing to individual methods.}
 }
@@ -21,6 +21,110 @@ A numeric matrix.
 \description{
 Semantic similarity
 }
+\section{method}{
+
+what is Sim_Ling_1998
+
+
+what is Sim_Resnik_1999
+
+
+what is Sim_FaITH_2010
+
+
+what is Sim_PS_2008
+
+
+what is Sim_Relevance_2006
+
+
+what is Sim_SimIC_2010
+
+
+what is Sim_EISI_2015
+
+
+what is Sim_XGraSM_2013
+
+
+what is Sim_GraSM_2005
+
+
+what is Sim_AIC_2014
+
+
+what is Sim_Zhang_2006
+
+
+what is Sim_universal
+
+
+what is Sim_Wang_2007
+
+
+what is Sim_Rada_1989
+
+
+what is Sim_Resnik_edge_2012
+
+
+what is Sim_Leocock_1998
+
+
+what is Sim_WP_1994
+
+
+what is Sim_Slimani_2006
+
+
+what is Sim_Shenoy_2012
+
+
+what is Sim_Pekar_2002
+
+
+what is Sim_Stojanovic_2001
+
+
+what is Sim_Wang_edge_2012
+
+
+what is Sim_Zhong_2002
+
+
+what is Sim_AlMubaid_2006
+
+
+what is Sim_Li_2003
+
+
+what is Sim_RSS_2013
+
+
+what is Sim_HRSS_2013
+
+
+what is Sim_Shen_2010
+
+
+what is Sim_SSDD_2013
+
+
+what is Sim_Jiang_1997
+
+
+what is Sim_Kappa
+
+
+what is Sim_Jaccard
+
+
+what is Sim_Dice
+
+
+what is Sim_Overlap
+}
+
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")
 children = c("b", "c", "c", "d", "e", "f")

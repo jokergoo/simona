@@ -7,9 +7,9 @@
 term_IC(dag, method, control = list())
 }
 \arguments{
-\item{dag}{An `ontology_DAG` object.}
+\item{dag}{An \code{ontology_DAG} object.}
 
-\item{method}{An IC method. All available methods are in [ALL_IC_METHODS].}
+\item{method}{An IC method. All available methods are in \link{ALL_IC_METHODS}.}
 
 \item{control}{A list of parameters passing to individual methods.}
 }
@@ -19,9 +19,35 @@ A numeric vector.
 \description{
 Information content
 }
-\details{
-When using `IC_annotation`, `annotation` should be already set in [create_ontology_DAG()].
+\section{method}{
+
+what is IC_annotation
+
+
+what is IC_universal
+
+
+what is IC_Zhang_2006
+
+
+what is IC_Seco_2004
+
+
+what is IC_Zhou_2008
+
+
+what is IC_Seddiqui_2010
+
+
+what is IC_Sanchez_2011
+
+
+what is IC_Meng_2012
+
+
+what is IC_Wang_2007
 }
+
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")
 children = c("b", "c", "c", "d", "e", "f")

@@ -1,4 +1,10 @@
 
+
+#' Sim_Ling_1998
+#' 
+#' @section method:
+#' what is Sim_Ling_1998
+#' @rdname temp__Sim_Ling_1998
 Sim_Ling_1998 = function(dag, terms) {
 	IC_method = "IC_annotation"
 
@@ -20,6 +26,11 @@ Sim_Ling_1998 = function(dag, terms) {
 ADD_TERM_SIM_METHOD("Sim_Ling_1998")
 
 
+#' Sim_Resnik_1999
+#' 
+#' @section method:
+#' what is Sim_Resnik_1999
+#' @rdname temp__Sim_Resnik_1999
 Sim_Resnik_1999 = function(dag, terms, norm_method = "Nmax") {
 	IC_method = "IC_annotation"
 
@@ -53,7 +64,11 @@ Sim_Resnik_1999 = function(dag, terms, norm_method = "Nmax") {
 }
 ADD_TERM_SIM_METHOD("Sim_Resnik_1999")
 
-
+#' Sim_FaITH_2010
+#' 
+#' @section method:
+#' what is Sim_FaITH_2010
+#' @rdname temp__Sim_FaITH_2010
 Sim_FaITH_2010 = function(dag, terms) {
 	IC_method = "IC_annotation"
 
@@ -74,7 +89,11 @@ Sim_FaITH_2010 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_FaITH_2010")
 
-
+#' Sim_PS_2008
+#' 
+#' @section method:
+#' what is Sim_PS_2008
+#' @rdname temp__Sim_PS_2008
 Sim_PS_2008 = function(dag, terms) {
 	IC_method = "IC_annotation"
 
@@ -97,7 +116,11 @@ Sim_PS_2008 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_PS_2008")
 
-
+#' Sim_Relevance_2006
+#' 
+#' @section method:
+#' what is Sim_Relevance_2006
+#' @rdname temp__Sim_Relevance_2006
 Sim_Relevance_2006 = function(dag, terms) {
 	IC_method = "IC_annotation"
 
@@ -115,7 +138,11 @@ Sim_Relevance_2006 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_Relevance_2006")
 
-
+#' Sim_SimIC_2010
+#' 
+#' @section method:
+#' what is Sim_SimIC_2010
+#' @rdname temp__Sim_SimIC_2010
 Sim_SimIC_2010 = function(dag, terms) {
 	IC_method = "IC_annotation"
 
@@ -133,7 +160,11 @@ Sim_SimIC_2010 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_SimIC_2010")
 
-
+#' Sim_EISI_2015
+#' 
+#' @section method:
+#' what is Sim_EISI_2015
+#' @rdname temp__Sim_EISI_2015
 Sim_EISI_2015 = function(dag, terms) {
 	IC_method = "IC_annotation"
 
@@ -142,19 +173,21 @@ Sim_EISI_2015 = function(dag, terms) {
 	l = validate_annotated_terms(dag, id)
 	id = id[l]
 
-	ic_mica = MICA_IC(dag, id, IC_method)
 	ic = term_IC(dag, IC_method)
 
-	sim = get_term_sim_method("Sim_Ling_1998")(dag, id)
+	mean_ic = cpp_common_ancestor_mean_IC_EISI(dag, id, ic)
+	sim = mean_ic/outer(ic[id], ic[id], "+")*2
+	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 
-	eps = cpp_eps_EISI(dag, id, ic)
-	eps[is.na(eps)] = 1
-
-	eps*sim
+	sim
 }
 ADD_TERM_SIM_METHOD("Sim_EISI_2015")
 
-
+#' Sim_XGraSM_2013
+#' 
+#' @section method:
+#' what is Sim_XGraSM_2013
+#' @rdname temp__Sim_XGraSM_2013
 Sim_XGraSM_2013 = function(dag, terms) {
 	IC_method = "IC_annotation"
 
@@ -163,18 +196,44 @@ Sim_XGraSM_2013 = function(dag, terms) {
 	l = validate_annotated_terms(dag, id)
 	id = id[l]
 
-	ic_mica = MICA_IC(dag, id, IC_method)
 	ic = term_IC(dag, IC_method)
 
-	sim = get_term_sim_method("Sim_Ling_1998")(dag, id)
-	eps = cpp_common_ancestor_mean_IC_XGraSM(dag, id, ic)/ic_mica
-	eps[is.na(eps)] = 1
+	mean_ic = cpp_common_ancestor_mean_IC_XGraSM(dag, id, ic)
+	sim = mean_ic/outer(ic[id], ic[id], "+")*2
+	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 
-	eps*sim
+	sim
 }
 ADD_TERM_SIM_METHOD("Sim_XGraSM_2013")
 
+#' Sim_GraSM_2005
+#' 
+#' @section method:
+#' what is Sim_GraSM_2005
+#' @rdname temp__Sim_GraSM_2005
+Sim_GraSM_2005 = function(dag, terms) {
+	IC_method = "IC_annotation"
 
+	id = term_to_node_id(dag, terms, strict = FALSE)
+	
+	l = validate_annotated_terms(dag, id)
+	id = id[l]
+
+	ic = term_IC(dag, IC_method)
+
+	mean_ic = cpp_common_ancestor_mean_IC_GraSM(dag, id, ic)
+	sim = mean_ic/outer(ic[id], ic[id], "+")*2
+	dimnames(sim) = list(dag@terms[id], dag@terms[id])
+
+	sim
+}
+ADD_TERM_SIM_METHOD("Sim_GraSM_2005")
+
+#' Sim_AIC_2014
+#' 
+#' @section method:
+#' what is Sim_AIC_2014
+#' @rdname temp__Sim_AIC_2014
 Sim_AIC_2014 = function(dag, terms) {
 	IC_method = "IC_annotation"
 
@@ -191,7 +250,11 @@ Sim_AIC_2014 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_AIC_2014")
 
-
+#' Sim_Zhang_2006
+#' 
+#' @section method:
+#' what is Sim_Zhang_2006
+#' @rdname temp__Sim_Zhang_2006
 Sim_Zhang_2006 = function(dag, terms) {
 	IC_method = "IC_Zhang_2006"
 
@@ -207,7 +270,11 @@ Sim_Zhang_2006 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_Zhang_2006")
 
-
+#' Sim_universal
+#' 
+#' @section method:
+#' what is Sim_universal
+#' @rdname temp__Sim_universal
 Sim_universal = function(dag, terms) {
 	IC_method = "IC_universal"
 
@@ -223,7 +290,11 @@ Sim_universal = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_universal")
 
-
+#' Sim_Wang_2007
+#' 
+#' @section method:
+#' what is Sim_Wang_2007
+#' @rdname temp__Sim_Wang_2007
 Sim_Wang_2007 = function(dag, terms, contribution_factor = c("isa" = 0.8, "part of" = 0.6)) {
 	if(length(dag@lt_children_relations) == 0) {
 		stop("`relations` is not set when creating the ontology_DAG object.")
@@ -249,6 +320,11 @@ ADD_TERM_SIM_METHOD("Sim_Wang_2007")
 #### edge-based
 ###########################################
 
+#' Sim_Rada_1989
+#' 
+#' @section method:
+#' what is Sim_Rada_1989
+#' @rdname temp__Sim_Rada_1989
 Sim_Rada_1989 = function(dag, terms, distance = "longest_distances_via_LCA") {
 
 	id = term_to_node_id(dag, terms, strict = FALSE)
@@ -268,7 +344,11 @@ Sim_Rada_1989 = function(dag, terms, distance = "longest_distances_via_LCA") {
 }
 ADD_TERM_SIM_METHOD("Sim_Rada_1989")
 
-
+#' Sim_Resnik_edge_2012
+#' 
+#' @section method:
+#' what is Sim_Resnik_edge_2012
+#' @rdname temp__Sim_Resnik_edge_2012
 Sim_Resnik_edge_2012 = function(dag, terms, distance = "longest_distances_via_LCA") {
 
 	id = term_to_node_id(dag, terms)
@@ -289,7 +369,11 @@ Sim_Resnik_edge_2012 = function(dag, terms, distance = "longest_distances_via_LC
 }
 ADD_TERM_SIM_METHOD("Sim_Resnik_edge_2012")
 
-
+#' Sim_Leocock_1998
+#' 
+#' @section method:
+#' what is Sim_Leocock_1998
+#' @rdname temp__Sim_Leocock_1998
 Sim_Leocock_1998 = function(dag, terms, distance = "longest_distances_via_LCA") {
 	
 	id = term_to_node_id(dag, terms, strict = FALSE)
@@ -310,7 +394,11 @@ Sim_Leocock_1998 = function(dag, terms, distance = "longest_distances_via_LCA") 
 }
 ADD_TERM_SIM_METHOD("Sim_Leocock_1998")
 
-
+#' Sim_WP_1994
+#' 
+#' @section method:
+#' what is Sim_WP_1994
+#' @rdname temp__Sim_WP_1994
 Sim_WP_1994 = function(dag, terms) {
 
 	id = term_to_node_id(dag, terms, strict = FALSE)
@@ -329,7 +417,11 @@ Sim_WP_1994 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_WP_1994")
 
-
+#' Sim_Slimani_2006
+#' 
+#' @section method:
+#' what is Sim_Slimani_2006
+#' @rdname temp__Sim_Slimani_2006
 Sim_Slimani_2006 = function(dag, terms, distance = "longest_distances_via_LCA") {
 	
 	id = term_to_node_id(dag, terms, strict = FALSE)
@@ -354,7 +446,11 @@ Sim_Slimani_2006 = function(dag, terms, distance = "longest_distances_via_LCA") 
 }
 ADD_TERM_SIM_METHOD("Sim_Slimani_2006")
 
-
+#' Sim_Shenoy_2012
+#' 
+#' @section method:
+#' what is Sim_Shenoy_2012
+#' @rdname temp__Sim_Shenoy_2012
 Sim_Shenoy_2012 = function(dag, terms) {
 	
 	id = term_to_node_id(dag, terms, strict = FALSE)
@@ -378,7 +474,11 @@ Sim_Shenoy_2012 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_Shenoy_2012")
 
-
+#' Sim_Pekar_2002
+#' 
+#' @section method:
+#' what is Sim_Pekar_2002
+#' @rdname temp__Sim_Pekar_2002
 Sim_Pekar_2002 = function(dag, terms) {
 
 	id = term_to_node_id(dag, terms, strict = FALSE)
@@ -391,7 +491,11 @@ Sim_Pekar_2002 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_Pekar_2002")
 
-
+#' Sim_Stojanovic_2001
+#' 
+#' @section method:
+#' what is Sim_Stojanovic_2001
+#' @rdname temp__Sim_Stojanovic_2001
 Sim_Stojanovic_2001 = function(dag, terms) {
 
 	id = term_to_node_id(dag, terms, strict = FALSE)
@@ -413,7 +517,11 @@ Sim_Stojanovic_2001 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_Stojanovic_2001")
 
-
+#' Sim_Wang_edge_2012
+#' 
+#' @section method:
+#' what is Sim_Wang_edge_2012
+#' @rdname temp__Sim_Wang_edge_2012
 Sim_Wang_edge_2012 = function(dag, terms) {
 	
 	id = term_to_node_id(dag, terms, strict = FALSE)
@@ -431,7 +539,11 @@ Sim_Wang_edge_2012 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_Wang_edge_2012")
 
-
+#' Sim_Zhong_2002
+#' 
+#' @section method:
+#' what is Sim_Zhong_2002
+#' @rdname temp__Sim_Zhong_2002
 Sim_Zhong_2002 = function(dag, terms, depth_via_LCA = TRUE) {
 	
 	id = term_to_node_id(dag, terms, strict = FALSE)
@@ -443,7 +555,11 @@ Sim_Zhong_2002 = function(dag, terms, depth_via_LCA = TRUE) {
 }
 ADD_TERM_SIM_METHOD("Sim_Zhong_2002")
 
-
+#' Sim_AlMubaid_2006
+#' 
+#' @section method:
+#' what is Sim_AlMubaid_2006
+#' @rdname temp__Sim_AlMubaid_2006
 Sim_AlMubaid_2006 = function(dag, terms, distance = "longest_distances_via_LCA") {
 		
 	id = term_to_node_id(dag, terms, strict = FALSE)
@@ -467,7 +583,11 @@ Sim_AlMubaid_2006 = function(dag, terms, distance = "longest_distances_via_LCA")
 }
 ADD_TERM_SIM_METHOD("Sim_AlMubaid_2006")
 
-
+#' Sim_Li_2003
+#' 
+#' @section method:
+#' what is Sim_Li_2003
+#' @rdname temp__Sim_Li_2003
 Sim_Li_2003 = function(dag, terms, distance = "longest_distances_via_LCA") {
 	
 	id = term_to_node_id(dag, terms, strict = FALSE)
@@ -496,6 +616,11 @@ ADD_TERM_SIM_METHOD("Sim_Li_2003")
 #### hybrid
 ###########################################
 
+#' Sim_RSS_2013
+#' 
+#' @section method:
+#' what is Sim_RSS_2013
+#' @rdname temp__Sim_RSS_2013
 Sim_RSS_2013 = function(dag, terms, distance = "longest_distances_via_LCA") {
 	id = term_to_node_id(dag, terms, strict = FALSE)
 
@@ -518,7 +643,11 @@ Sim_RSS_2013 = function(dag, terms, distance = "longest_distances_via_LCA") {
 }
 ADD_TERM_SIM_METHOD("Sim_RSS_2013")
 
-
+#' Sim_HRSS_2013
+#' 
+#' @section method:
+#' what is Sim_HRSS_2013
+#' @rdname temp__Sim_HRSS_2013
 Sim_HRSS_2013 = function(dag, terms, IC_method = "IC_annotation") {
 	id = term_to_node_id(dag, terms, strict = FALSE)
 	if(IC_method == "IC_annotation") {
@@ -541,7 +670,11 @@ Sim_HRSS_2013 = function(dag, terms, IC_method = "IC_annotation") {
 }
 ADD_TERM_SIM_METHOD("Sim_HRSS_2013")
 
-
+#' Sim_Shen_2010
+#' 
+#' @section method:
+#' what is Sim_Shen_2010
+#' @rdname temp__Sim_Shen_2010
 Sim_Shen_2010 = function(dag, terms, IC_method = "IC_annotation") {
 	id = term_to_node_id(dag, terms, strict = FALSE)
 	if(IC_method == "IC_annotation") {
@@ -557,7 +690,11 @@ Sim_Shen_2010 = function(dag, terms, IC_method = "IC_annotation") {
 }
 ADD_TERM_SIM_METHOD("Sim_Shen_2010")
 
-
+#' Sim_SSDD_2013
+#' 
+#' @section method:
+#' what is Sim_SSDD_2013
+#' @rdname temp__Sim_SSDD_2013
 Sim_SSDD_2013 = function(dag, terms) {
 	id = term_to_node_id(dag, terms, strict = FALSE)
 	t = totipotency(dag)
@@ -568,7 +705,11 @@ Sim_SSDD_2013 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_SSDD_2013")
 
-
+#' Sim_Jiang_1997
+#' 
+#' @section method:
+#' what is Sim_Jiang_1997
+#' @rdname temp__Sim_Jiang_1997
 Sim_Jiang_1997 = function(dag, terms, normalization = "max") {
 
 	IC_method = "IC_annotation"
@@ -612,6 +753,11 @@ ADD_TERM_SIM_METHOD("Sim_Jiang_1997")
 ## count-based
 ######################
 
+#' Sim_Kappa
+#' 
+#' @section method:
+#' what is Sim_Kappa
+#' @rdname temp__Sim_Kappa
 Sim_Kappa = function(dag, terms, anno_universe = NULL) {
 	id = term_to_node_id(dag, terms, strict = FALSE)
 
@@ -621,7 +767,11 @@ Sim_Kappa = function(dag, terms, anno_universe = NULL) {
 }
 ADD_TERM_SIM_METHOD("Sim_Kappa")
 
-
+#' Sim_Jaccard
+#' 
+#' @section method:
+#' what is Sim_Jaccard
+#' @rdname temp__Sim_Jaccard
 Sim_Jaccard = function(dag, terms, anno_universe = NULL) {
 	id = term_to_node_id(dag, terms, strict = FALSE)
 
@@ -631,7 +781,11 @@ Sim_Jaccard = function(dag, terms, anno_universe = NULL) {
 }
 ADD_TERM_SIM_METHOD("Sim_Jaccard")
 
-
+#' Sim_Dice
+#' 
+#' @section method:
+#' what is Sim_Dice
+#' @rdname temp__Sim_Dice
 Sim_Dice = function(dag, terms, anno_universe = NULL) {
 	id = term_to_node_id(dag, terms, strict = FALSE)
 
@@ -641,7 +795,11 @@ Sim_Dice = function(dag, terms, anno_universe = NULL) {
 }
 ADD_TERM_SIM_METHOD("Sim_Dice")
 
-
+#' Sim_Overlap
+#' 
+#' @section method:
+#' what is Sim_Overlap
+#' @rdname temp__Sim_Overlap
 Sim_Overlap = function(dag, terms, anno_universe = NULL) {
 	id = term_to_node_id(dag, terms, strict = FALSE)
 

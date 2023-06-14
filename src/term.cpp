@@ -83,16 +83,16 @@ NumericVector cpp_ic_wang(S4 dag, NumericVector contribution) {
 	NumericVector ic(n);
 
 	for(int i = 0; i < n; i ++) {
-		LogicalVector l_ancestor(n);
-		_find_ancestor(lt_parents, i, l_ancestor, true);
+		LogicalVector l_ancestors(n);
+		_find_ancestors(lt_parents, i, l_ancestors, true);
 
 		for(int j = 0; j < n; j ++) {
-			if(l_ancestor[j]) {
-				ic[i] += _calc_wang_s(lt_children, lt_children_relations, contribution, j, i, l_ancestor);
+			if(l_ancestors[j]) {
+				ic[i] += _calc_wang_s(lt_children, lt_children_relations, contribution, j, i, l_ancestors);
 			}
 		}
 		
-		reset_logical_vector_to_false(l_ancestor);
+		reset_logical_vector_to_false(l_ancestors);
 	}
 
 	return ic;

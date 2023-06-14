@@ -10,9 +10,12 @@ dag_root(dag, in_labels = TRUE)
 dag_leaves(dag, in_labels = TRUE)
 }
 \arguments{
-\item{dag}{An `ontology_DAG` object.}
+\item{dag}{An \code{ontology_DAG} object.}
 
-\item{in_labels}{Whether the terms are in their names or as the integer indices?}
+\item{in_labels}{Whether the terms are in their names or as integer indices?}
+}
+\value{
+A character or an integer vector.
 }
 \description{
 Root or leaves of the DAG

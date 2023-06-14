@@ -42,26 +42,45 @@ max_ancestor_id = function(dag, terms, value, in_labels = FALSE) {
 }
 
 
-#' Most informative common ancestor (MICA) and lowest common ancestor (LCA)
+#' Various types of common ancestors
 #' 
-#' @param dag A `ontology_DAG` object.
+#' @param dag An `ontology_DAG` object.
 #' @param terms A vector of term names.
 #' @param IC_method An IC method. Valid values are in [ALL_IC_METHODS].
 #' @param in_labels Whether the terms are in their names or as the integer indices?
+#' 
+#' @details
+#' There are the following three types of common ancestors:
+#' 
+#' - MICA: most informative common ancestor: The common ancestor with the highest IC value.
+#' - LCA: lowest common ancestor: The common ancestor with the largest height. If there are multiple ancestors having
+#'        the max height, the ancestor with the smallest distance to the two terms is taken.
+#' - NCA: nearest common ancestor: The common ancestor with the smallest distance to the two terms. If there are multiple
+#'        ancestors with the same smallest distance, the ancestor with the largest height is taken.
 #' 
 #' @return 
 #' - `MICA_term()` returns a character matrix of the MICA terms. 
 #' - `MICA_IC()` returns a numeric matrix of the IC of the MICA terms.
 #' - `LCA_term()` returns a character matrix of the LCA term.
 #' - `LCA_depth()` reutrns an integer matrix of the depth of the LCA terms.
-#' - `NCA_term()` returns a character matrix of the nearest common ancestors.
+#' - `NCA_term()` returns a character matrix of the nearest common ancestors. The shortest distance can be calculated by `shortest_distances_via_CA()`.
+#' @rdname common_ancestor
 #' @export
+#' @examples
+#' parents  = c("a", "a", "b", "b", "c", "d")
+#' children = c("b", "c", "c", "d", "e", "f")
+#' dag = create_ontology_DAG(parents, children)
+#' MICA_term(dag, letters[1:6], "IC_universal")
+#' MICA_IC(dag, letters[1:6], "IC_universal")
+#' LCA_term(dag, letters[1:6])
+#' LCA_depth(dag, letters[1:6])
+#' NCA_term(dag, letters[1:6])
 MICA_term = function(dag, terms, IC_method, in_labels = TRUE) {
 	ic = term_IC(dag, IC_method)
 	max_ancestor_id(dag, terms, ic, in_labels = in_labels)
 }
 
-#' @rdname MICA_term
+#' @rdname common_ancestor
 #' @export
 MICA_IC = function(dag, terms, IC_method) {
 	ic = term_IC(dag, IC_method)
@@ -69,7 +88,7 @@ MICA_IC = function(dag, terms, IC_method) {
 }
 
 
-#' @rdname MICA_term
+#' @rdname common_ancestor
 #' @export
 LCA_term = function(dag, terms, in_labels = TRUE) {
 	depth = dag_depth(dag)
@@ -77,7 +96,7 @@ LCA_term = function(dag, terms, in_labels = TRUE) {
 	max_ancestor_id(dag, terms, depth, in_labels = in_labels)
 }
 
-#' @rdname MICA_term
+#' @rdname common_ancestor
 #' @export
 LCA_depth = function(dag, terms) {
 	depth = dag_depth(dag)
@@ -85,7 +104,7 @@ LCA_depth = function(dag, terms) {
 	max_ancestor_v(dag, terms, depth)
 }
 
-#' @rdname MICA_term
+#' @rdname common_ancestor
 #' @export
 NCA_term = function(dag, terms, in_labels = TRUE) {
 	if(is.character(terms)) {
@@ -103,74 +122,6 @@ NCA_term = function(dag, terms, in_labels = TRUE) {
 		an
 	}
 
-}
-
-
-#' Distance on the DAG
-#' 
-#' @param dag A `ontology_DAG` object.
-#' @param terms A vector of term names.
-#' 
-#' @details
-#' - `shortest_distances_via_CA()`: it is a sum of two distances: d(c, a) + d(c, b)
-#' where c is a common ancestor of a and b and d(c, a) is the shortest distance from c to a.
-#' - `longest_distances_via_LCA()`: here c is the lowest common ancestor (with the largest depth) of a and b,
-#' and d(c, a) is the longest distance from c to a.
-#' - `shortest_distances_directed()`: it calculates d(a, b). The distance is only calculated when a is an ancestor of b.
-#' - `longest_distances_directed()`: it calculates d(a, b). The distance is only calculated when a is an ancestor of b.
-#' @export
-shortest_distances_via_CA = function(dag, terms) {
-	if(is.character(terms)) {
-		id = term_to_node_id(dag, terms, strict = FALSE)
-	} else {
-		id = terms
-	}
-	d = cpp_shortest_distances_via_CA(dag, id)
-
-	dimnames(d) = list(dag@terms[id], dag@terms[id])
-	d
-}
-
-#' @rdname shortest_distances_via_CA
-#' @export
-longest_distances_via_LCA = function(dag, terms) {
-	if(is.character(terms)) {
-		id = term_to_node_id(dag, terms, strict = FALSE)
-	} else {
-		id = terms
-	}
-	d = cpp_longest_distances_via_LCA(dag, id)
-
-	dimnames(d) = list(dag@terms[id], dag@terms[id])
-	d
-}
-
-#' @rdname shortest_distances_via_CA
-#' @export
-shortest_distances_directed = function(dag, terms) {
-	if(is.character(terms)) {
-		id = term_to_node_id(dag, terms, strict = FALSE)
-	} else {
-		id = terms
-	}
-	d = cpp_shortest_distances_directed(dag, id)
-
-	dimnames(d) = list(dag@terms[id], dag@terms[id])
-	d
-}
-
-#' @rdname shortest_distances_via_CA
-#' @export
-longest_distances_directed = function(dag, terms) {
-	if(is.character(terms)) {
-		id = term_to_node_id(dag, terms, strict = FALSE)
-	} else {
-		id = terms
-	}
-	d = cpp_longest_distances_directed(dag, id)
-
-	dimnames(d) = list(dag@terms[id], dag@terms[id])
-	d
 }
 
 

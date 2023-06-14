@@ -97,7 +97,7 @@ depth = dag_depth(dag)
 test_that("test two dist methods with GO BP", {
 	for(i in 1:10) {
 		go_id_1 = sample(dag@terms[depth > 5], 1)
-		go_id_2 = sample(dag_ancestor(dag, go_id_1), 1)
+		go_id_2 = sample(dag_ancestors(dag, go_id_1), 1)
 		j = which(dag@terms == go_id_1)
 		i = which(dag@terms == go_id_2)
 

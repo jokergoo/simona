@@ -7,7 +7,7 @@
 dag_all_terms(dag)
 }
 \arguments{
-\item{dag}{An `ontology_DAG` object.}
+\item{dag}{An \code{ontology_DAG} object.}
 }
 \value{
 A vector of term names.

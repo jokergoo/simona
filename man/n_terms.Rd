@@ -2,7 +2,7 @@
 % Please edit documentation in R/transverse.R
 \name{n_offspring}
 \alias{n_offspring}
-\alias{n_ancestor}
+\alias{n_ancestors}
 \alias{n_leaves}
 \alias{n_parents}
 \alias{n_children}
@@ -10,7 +10,7 @@
 \usage{
 n_offspring(dag, term = NULL, use_cache = TRUE, include_self = FALSE)
 
-n_ancestor(dag, term = NULL, use_cache = TRUE, include_self = FALSE)
+n_ancestors(dag, term = NULL, use_cache = TRUE, include_self = FALSE)
 
 n_leaves(dag, term = NULL, use_cache = TRUE)
 
@@ -19,13 +19,13 @@ n_parents(dag, term = NULL, use_cache = TRUE)
 n_children(dag, term = NULL, use_cache = TRUE)
 }
 \arguments{
-\item{dag}{A `ontology_DAG` object.}
+\item{dag}{An \code{ontology_DAG} object.}
 
-\item{term}{A vector of term names. If the value is `NULL`, it returns for all terms.}
+\item{term}{A vector of term names. If the value is \code{NULL}, it returns for all terms in the DAG.}
 
 \item{use_cache}{Internally used.}
 
-\item{include_self}{For `n_offspring()` and `n_ancestor()`, this controls whether to also contain the term itself.}
+\item{include_self}{For \code{n_offspring()} and \code{n_ancestors()}, this controls whether to also contain the query term itself.}
 }
 \value{
 An integer vector.
@@ -34,7 +34,7 @@ An integer vector.
 Number of parent/child/ancestor/offspring/leaf terms
 }
 \details{
-Leaf nodes have zero `n_leaves` value.
+Leaf nodes have zero \code{n_leaves} value.
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")
@@ -43,6 +43,6 @@ dag = create_ontology_DAG(parents, children)
 n_parents(dag)
 n_children(dag)
 n_offspring(dag)
-n_ancestor(dag)
+n_ancestors(dag)
 n_leaves(dag)
 }

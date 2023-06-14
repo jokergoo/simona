@@ -7,7 +7,7 @@
 n_annotations(dag, use_cache = TRUE)
 }
 \arguments{
-\item{dag}{A `ontology_DAG` object.}
+\item{dag}{An \code{ontology_DAG} object.}
 
 \item{use_cache}{Internally used.}
 }
@@ -18,11 +18,20 @@ An integer vector.
 Number of annotated items
 }
 \details{
-`annotation` argument should be set in [create_ontology_DAG()].
+Due to the nature of DAG, a parent term includes all annotated items of its child terms. This upstream-merging
+is automatically applied in the function.
 }
 \examples{
-\dontrun{
-dag = create_ontology_DAG_from_GO_db(org_db = "org.Hs.eg.db")
-head(n_annotations(dag))
-}
+parents  = c("a", "a", "b", "b", "c", "d")
+children = c("b", "c", "c", "d", "e", "f")
+annotation = list(
+    "a" = 1:3,
+    "b" = 3:4,
+    "c" = 5,
+    "d" = 7,
+    "e" = 4:7,
+    "f" = 8
+)
+dag = create_ontology_DAG(parents, children, annotation = annotation)
+n_annotations(dag)
 }

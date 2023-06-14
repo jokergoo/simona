@@ -93,8 +93,12 @@ cpp_common_ancestor_mean_IC_XGraSM <- function(dag, nodes, ic) {
     .Call(`_ontsim_cpp_common_ancestor_mean_IC_XGraSM`, dag, nodes, ic)
 }
 
-cpp_eps_EISI <- function(dag, nodes, ic) {
-    .Call(`_ontsim_cpp_eps_EISI`, dag, nodes, ic)
+cpp_common_ancestor_mean_IC_EISI <- function(dag, nodes, ic) {
+    .Call(`_ontsim_cpp_common_ancestor_mean_IC_EISI`, dag, nodes, ic)
+}
+
+cpp_common_ancestor_mean_IC_GraSM <- function(dag, nodes, ic) {
+    .Call(`_ontsim_cpp_common_ancestor_mean_IC_GraSM`, dag, nodes, ic)
 }
 
 cpp_ic_meng <- function(dag, correct) {
@@ -109,12 +113,12 @@ cpp_max_leaves_id <- function(dag, nodes, v) {
     .Call(`_ontsim_cpp_max_leaves_id`, dag, nodes, v)
 }
 
-cpp_ancestor <- function(dag, node, include_self = FALSE) {
-    .Call(`_ontsim_cpp_ancestor`, dag, node, include_self)
+cpp_ancestors <- function(dag, node, include_self = FALSE) {
+    .Call(`_ontsim_cpp_ancestors`, dag, node, include_self)
 }
 
-cpp_ancestor_within_background <- function(dag, node, background, include_self = FALSE) {
-    .Call(`_ontsim_cpp_ancestor_within_background`, dag, node, background, include_self)
+cpp_ancestors_within_background <- function(dag, node, background, include_self = FALSE) {
+    .Call(`_ontsim_cpp_ancestors_within_background`, dag, node, background, include_self)
 }
 
 cpp_offspring <- function(dag, node, include_self = FALSE) {
@@ -129,8 +133,8 @@ cpp_connected_leaves <- function(dag, node) {
     .Call(`_ontsim_cpp_connected_leaves`, dag, node)
 }
 
-cpp_n_ancestor <- function(dag, include_self = FALSE) {
-    .Call(`_ontsim_cpp_n_ancestor`, dag, include_self)
+cpp_n_ancestors <- function(dag, include_self = FALSE) {
+    .Call(`_ontsim_cpp_n_ancestors`, dag, include_self)
 }
 
 cpp_n_offspring <- function(dag, include_self = FALSE) {
@@ -141,12 +145,12 @@ cpp_n_leaves <- function(dag) {
     .Call(`_ontsim_cpp_n_leaves`, dag)
 }
 
-cpp_ancestor_of_a_group <- function(dag, nodes, type = 1L, include_self = FALSE) {
-    .Call(`_ontsim_cpp_ancestor_of_a_group`, dag, nodes, type, include_self)
+cpp_ancestors_of_a_group <- function(dag, nodes, type = 1L, include_self = FALSE) {
+    .Call(`_ontsim_cpp_ancestors_of_a_group`, dag, nodes, type, include_self)
 }
 
-cpp_ancestor_of_two_groups <- function(dag, nodes1, nodes2, type, include_self = FALSE) {
-    .Call(`_ontsim_cpp_ancestor_of_two_groups`, dag, nodes1, nodes2, type, include_self)
+cpp_ancestors_of_two_groups <- function(dag, nodes1, nodes2, type, include_self = FALSE) {
+    .Call(`_ontsim_cpp_ancestors_of_two_groups`, dag, nodes1, nodes2, type, include_self)
 }
 
 cpp_offspring_of_a_group <- function(dag, nodes, include_self = FALSE) {

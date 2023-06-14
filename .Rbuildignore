@@ -9,3 +9,6 @@ build_pkg_site.R
 ^.*\.Rproj$
 ^\.Rproj\.user$
 .DS_Store
+.o$
+.so$
+man/temp__*

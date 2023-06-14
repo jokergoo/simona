@@ -16,7 +16,7 @@ dag = create_ontology_DAG(parents, children)
 
 test_that("test transverse", {
 	for(letter in c("a", "b", "c", "d", "e", "f")) {
-		expect_true(all(dag_parents(dag, letter) %in% dag_ancestor(dag, letter)))
+		expect_true(all(dag_parents(dag, letter) %in% dag_ancestors(dag, letter)))
 		expect_true(all(dag_children(dag, letter) %in% dag_offspring(dag, letter)))
 	}
 })
@@ -27,7 +27,7 @@ dag = create_ontology_DAG_from_GO_db()
 all_go_id = dag@terms
 test_that("test transverse on GO DAG", {
 	for(term in sample(all_go_id, 10)) {
-		expect_true(all(dag_parents(dag, term) %in% dag_ancestor(dag, term)))
+		expect_true(all(dag_parents(dag, term) %in% dag_ancestors(dag, term)))
 		expect_true(all(dag_children(dag, term) %in% dag_offspring(dag, term)))
 	}
 })
@@ -45,26 +45,26 @@ test_that("test ancestor/offspring within background", {
 	)
 
 	expect_equal(
-		cpp_ancestor_within_background(dag, 5, 2:5),
-		intersect(cpp_ancestor(dag, 5), 2:5)
+		cpp_ancestors_within_background(dag, 5, 2:5),
+		intersect(cpp_ancestors(dag, 5), 2:5)
 	)
 })
 
 test_that("test ancestor/offspring of groups", {
 	expect_equal(
-		cpp_ancestor_of_two_groups(dag, 1, 2, 2),
+		cpp_ancestors_of_two_groups(dag, 1, 2, 2),
 		integer(0)
 	)
 	expect_equal(
-		cpp_ancestor_of_two_groups(dag, 1, 2, 1),
+		cpp_ancestors_of_two_groups(dag, 1, 2, 1),
 		1
 	)
 	expect_equal(
-		cpp_ancestor_of_a_group(dag, 1),
+		cpp_ancestors_of_a_group(dag, 1),
 		integer(0)
 	)
 	expect_equal(
-		cpp_ancestor_of_a_group(dag, 3),
+		cpp_ancestors_of_a_group(dag, 3),
 		c(1, 2)
 	)
 	expect_equal(
@@ -115,7 +115,7 @@ test_that("test n_children/n_parents/n_leaves", {
 		c(5, 4, 1, 1, 0, 0)
 	)
 	expect_equal(
-		unname(n_ancestor(dag)),
+		unname(n_ancestors(dag)),
 		c(0, 1, 2, 2, 3, 3)
 	)
 	expect_equal(

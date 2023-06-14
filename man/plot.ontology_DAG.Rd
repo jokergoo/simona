@@ -7,7 +7,7 @@
 \method{plot}{ontology_DAG}(x, ...)
 }
 \arguments{
-\item{x}{An `ontology_Dag` object.}
+\item{x}{An \code{ontology_Dag} object.}
 
 \item{...}{Other parguments.}
 }

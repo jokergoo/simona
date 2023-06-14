@@ -136,7 +136,7 @@ n = n_annotations(dag)
 test_that("test n_annotations", {
 	for(i in 1:10) {
 		x = sample(dag@terms, 1)
-		an = dag_ancestor(dag, x)
+		an = dag_ancestors(dag, x)
 		expect_true(
 			all(n[an] >= n[x])
 		)

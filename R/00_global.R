@@ -1,18 +1,27 @@
 
-#' All supported IC methods
+#' Supported methods
+#' 
+#' @details
+#' - `ALL_IC_METHODS`: A vector all supported IC methods.
+#' - `ALL_TERM_SIM_METHODS`: A vector all supported term similarity methods.
+#' - `ALL_GROUP_SIM_METHODS`: A vector all supported group similarity methods.
+#' 
+#' @rdname all_methods
 #' @export
-#' @return A vector all supported IC methods.
+#' @return A vector all supported methods.
+#' @examples
+#' ALL_IC_METHODS
+#' ALL_TERM_SIM_METHODS
+#' ALL_GROUP_SIM_METHODS
 ALL_IC_METHODS = NULL
 
 
-#' All supported similarity methods
 #' @export
-#' @return A vector all supported similarity methods.
+#' @rdname all_methods
 ALL_TERM_SIM_METHODS = NULL
 
-#' All supported group similarity methods
 #' @export
-#' @return A vector all supported grouped similarity methods.
+#' @rdname all_methods
 ALL_GROUP_SIM_METHODS = NULL
 
 DEFAULT_RELATIONS = c("isa" = "is_a", 

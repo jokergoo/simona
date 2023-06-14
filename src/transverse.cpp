@@ -3,81 +3,81 @@ using namespace Rcpp;
 
 #include "utils.h"
 
-void _add_parents(List lt_parents, int i_node, LogicalVector& l_ancestor) {
+void _add_parents(List lt_parents, int i_node, LogicalVector& l_ancestors) {
 	IntegerVector parents = lt_parents[i_node];
 	if(parents.size() > 0) {
 		for(int i = 0; i < parents.size(); i ++) {
 			int i_parent = parents[i] - 1;
-			l_ancestor[i_parent] = true;
-			_add_parents(lt_parents, i_parent, l_ancestor);
+			l_ancestors[i_parent] = true;
+			_add_parents(lt_parents, i_parent, l_ancestors);
 		}
 	}
 }
 
 // find all ancestor node for a given node
-void _find_ancestor(List lt_parents, int i_node, LogicalVector& l_ancestor, bool include_self = false) {
-	_add_parents(lt_parents, i_node, l_ancestor);
+void _find_ancestors(List lt_parents, int i_node, LogicalVector& l_ancestors, bool include_self = false) {
+	_add_parents(lt_parents, i_node, l_ancestors);
 	if(include_self) {
-		l_ancestor[i_node] = true;
+		l_ancestors[i_node] = true;
 	}
 }
 
 
-void _add_parents_within_background(List lt_parents, int i_node, LogicalVector& l_ancestor, LogicalVector l_background) {
+void _add_parents_within_background(List lt_parents, int i_node, LogicalVector& l_ancestors, LogicalVector l_background) {
 	if(l_background[i_node]) {
 		IntegerVector parents = lt_parents[i_node];
 		if(parents.size() > 0) {
 			for(int i = 0; i < parents.size(); i ++) {
 				int i_parent = parents[i] - 1;
 				if(l_background[i_parent]) {
-					l_ancestor[i_parent] = true;
-					_add_parents_within_background(lt_parents, i_parent, l_ancestor, l_background);
+					l_ancestors[i_parent] = true;
+					_add_parents_within_background(lt_parents, i_parent, l_ancestors, l_background);
 				}
 			}
 		}
 	}
 }
 
-void _find_ancestor_with_background(List lt_parents, int i_node, LogicalVector& l_ancestor, LogicalVector l_background, bool include_self = false) {
-	_add_parents_within_background(lt_parents, i_node, l_ancestor, l_background);
+void _find_ancestors_with_background(List lt_parents, int i_node, LogicalVector& l_ancestors, LogicalVector l_background, bool include_self = false) {
+	_add_parents_within_background(lt_parents, i_node, l_ancestors, l_background);
 	if(include_self) {
-		l_ancestor[i_node] = true;
+		l_ancestors[i_node] = true;
 	}
 }
 
 
 // [[Rcpp::export]]
-IntegerVector cpp_ancestor(S4 dag, int node, bool include_self = false) {
+IntegerVector cpp_ancestors(S4 dag, int node, bool include_self = false) {
 	List lt_parents = dag.slot("lt_parents");
 	int n = lt_parents.size();
 
-	LogicalVector l_ancestor(n);
-	_find_ancestor(lt_parents, node - 1, l_ancestor, include_self);
+	LogicalVector l_ancestors(n);
+	_find_ancestors(lt_parents, node - 1, l_ancestors, include_self);
 
-	IntegerVector ancestor = _which(l_ancestor);
-	if(ancestor.size() > 0) {
-		ancestor = ancestor + 1;
+	IntegerVector ancestors = _which(l_ancestors);
+	if(ancestors.size() > 0) {
+		ancestors = ancestors + 1;
 	}
-	return ancestor;
+	return ancestors;
 }
 
 // [[Rcpp::export]]
-IntegerVector cpp_ancestor_within_background(S4 dag, int node, IntegerVector background, bool include_self = false) {
+IntegerVector cpp_ancestors_within_background(S4 dag, int node, IntegerVector background, bool include_self = false) {
 	List lt_parents = dag.slot("lt_parents");
 	int n = lt_parents.size();
 
-	LogicalVector l_ancestor(n);
+	LogicalVector l_ancestors(n);
 	LogicalVector l_background(n);
 	for(int i = 0; i < background.size(); i ++) {
 		l_background[background[i] - 1] = true;
 	}
-	_find_ancestor_with_background(lt_parents, node - 1, l_ancestor, l_background, include_self);
+	_find_ancestors_with_background(lt_parents, node - 1, l_ancestors, l_background, include_self);
 
-	IntegerVector ancestor = _which(l_ancestor);
-	if(ancestor.size() > 0) {
-		ancestor = ancestor + 1;
+	IntegerVector ancestors = _which(l_ancestors);
+	if(ancestors.size() > 0) {
+		ancestors = ancestors + 1;
 	}
-	return ancestor;
+	return ancestors;
 }
 
 void _add_children(List lt_children, int i_node, LogicalVector& l_offspring) {
@@ -198,21 +198,21 @@ IntegerVector cpp_connected_leaves(S4 dag, int node) {
 
 
 // [[Rcpp::export]]
-IntegerVector cpp_n_ancestor(S4 dag, bool include_self = false) {
+IntegerVector cpp_n_ancestors(S4 dag, bool include_self = false) {
 	List lt_parents = dag.slot("lt_parents");
 
 	int n = lt_parents.size();
 	IntegerVector num(n, 0);
 
-	LogicalVector l_ancestor(n, false);
+	LogicalVector l_ancestors(n, false);
 	for(int i = 0; i < n; i ++) {
 		IntegerVector parents = lt_parents[i];
 		if(parents.size() > 0) {
 			
-			_find_ancestor(lt_parents, i, l_ancestor, include_self);
-			num[i] = sum(l_ancestor);
+			_find_ancestors(lt_parents, i, l_ancestors, include_self);
+			num[i] = sum(l_ancestors);
 
-			reset_logical_vector_to_false(l_ancestor);
+			reset_logical_vector_to_false(l_ancestors);
 		}
 	}
 	return num;
@@ -268,60 +268,60 @@ const int SET_UNIQU_IN_2 = 4;
 
 
 // [[Rcpp::export]]
-IntegerVector cpp_ancestor_of_a_group(S4 dag, IntegerVector nodes, int type = 1, bool include_self = false) {  // type 1: union; 2: intersect
+IntegerVector cpp_ancestors_of_a_group(S4 dag, IntegerVector nodes, int type = 1, bool include_self = false) {  // type 1: union; 2: intersect
 	int m = nodes.size();
 
 	List lt_parents = dag.slot("lt_parents");
 	int n = lt_parents.size();
 
-	LogicalVector l_ancestor(n);
+	LogicalVector l_ancestors(n);
 	if(type == SET_UNION) {
 		for(int i = 0; i < m; i ++) {
-			_find_ancestor(lt_parents, nodes[i] - 1, l_ancestor, include_self);
+			_find_ancestors(lt_parents, nodes[i] - 1, l_ancestors, include_self);
 		}
 	} else {
 		LogicalVector l(n, true);
 		LogicalVector l_an(n, false);
 		for(int i = 0; i < m; i ++) {
-			_find_ancestor(lt_parents, nodes[i] - 1, l_an, include_self);
+			_find_ancestors(lt_parents, nodes[i] - 1, l_an, include_self);
 			l = l & l_an;
 			reset_logical_vector_to_false(l_an);
 		}
-		l_ancestor = l;
+		l_ancestors = l;
 	}
-	IntegerVector aid = _which(l_ancestor);
+	IntegerVector aid = _which(l_ancestors);
 	if(aid.size() > 0) {
 		aid = aid + 1;
 	}
 	return aid;
 }
 
-IntegerVector cpp_ancestor_of_a_group_within_background(S4 dag, IntegerVector nodes, IntegerVector background, int type = SET_UNION, bool include_self = false) {  // type 1: union; 2: intersect
+IntegerVector cpp_ancestors_of_a_group_within_background(S4 dag, IntegerVector nodes, IntegerVector background, int type = SET_UNION, bool include_self = false) {  // type 1: union; 2: intersect
 	int m = nodes.size();
 
 	List lt_parents = dag.slot("lt_parents");
 	int n = lt_parents.size();
 
-	LogicalVector l_ancestor(n);
+	LogicalVector l_ancestors(n);
 	LogicalVector l_background(n);
 	for(int i = 0; i < background.size(); i ++) {
 		l_background[background[i] - 1] = true;
 	}
 	if(type == SET_UNION) {
 		for(int i = 0; i < m; i ++) {
-			_find_ancestor_with_background(lt_parents, nodes[i] - 1, l_ancestor, l_background, include_self);
+			_find_ancestors_with_background(lt_parents, nodes[i] - 1, l_ancestors, l_background, include_self);
 		}
 	} else {
 		LogicalVector l(n, true);
 		LogicalVector l_an(n, false);
 		for(int i = 0; i < m; i ++) {
-			_find_ancestor_with_background(lt_parents, nodes[i] - 1, l_an, l_background, include_self);
+			_find_ancestors_with_background(lt_parents, nodes[i] - 1, l_an, l_background, include_self);
 			l = l & l_an;
 			reset_logical_vector_to_false(l_an);
 		}
-		l_ancestor = l;
+		l_ancestors = l;
 	}
-	IntegerVector aid = _which(l_ancestor);
+	IntegerVector aid = _which(l_ancestors);
 	if(aid.size() > 0) {
 		aid = aid + 1;
 	}
@@ -329,34 +329,34 @@ IntegerVector cpp_ancestor_of_a_group_within_background(S4 dag, IntegerVector no
 }
 
 // [[Rcpp::export]]
-IntegerVector cpp_ancestor_of_two_groups(S4 dag, IntegerVector nodes1, IntegerVector nodes2, int type, bool include_self = false) { // type 1: union, 2: intersect, 3: only in node1, 4: only in node2
+IntegerVector cpp_ancestors_of_two_groups(S4 dag, IntegerVector nodes1, IntegerVector nodes2, int type, bool include_self = false) { // type 1: union, 2: intersect, 3: only in node1, 4: only in node2
 	int m1 = nodes1.size();
 	int m2 = nodes2.size();
 
 	List lt_parents = dag.slot("lt_parents");
 	int n = lt_parents.size();
 
-	LogicalVector l_ancestor1(n);
-	LogicalVector l_ancestor2(n);
+	LogicalVector l_ancestors1(n);
+	LogicalVector l_ancestors2(n);
 	for(int i = 0; i < m1; i ++) {
-		_find_ancestor(lt_parents, nodes1[i] - 1, l_ancestor1, include_self);
+		_find_ancestors(lt_parents, nodes1[i] - 1, l_ancestors1, include_self);
 	}
 	for(int i = 0; i < m2; i ++) {
-		_find_ancestor(lt_parents, nodes2[i] - 1, l_ancestor2, include_self);
+		_find_ancestors(lt_parents, nodes2[i] - 1, l_ancestors2, include_self);
 	}
 
-	LogicalVector l_ancestor(n);
+	LogicalVector l_ancestors(n);
 	if(type == SET_UNION) {
-		l_ancestor = l_ancestor1 | l_ancestor2;
+		l_ancestors = l_ancestors1 | l_ancestors2;
 	} else if(type == SET_INTERSECT) {
-		l_ancestor = l_ancestor1 & l_ancestor2;
+		l_ancestors = l_ancestors1 & l_ancestors2;
 	} else if(type == SET_UNIQU_IN_1) {
-		l_ancestor = l_ancestor1 & !l_ancestor2;
+		l_ancestors = l_ancestors1 & !l_ancestors2;
 	} else if(type == SET_UNIQU_IN_2) {
-		l_ancestor = !l_ancestor1 & l_ancestor2;
+		l_ancestors = !l_ancestors1 & l_ancestors2;
 	}
 
-	IntegerVector aid = _which(l_ancestor);
+	IntegerVector aid = _which(l_ancestors);
 	if(aid.size() > 0) {
 		aid = aid + 1;
 	}
@@ -403,7 +403,7 @@ LogicalMatrix cpp_is_reachable(S4 dag, IntegerVector nodes, bool directed = fals
 		return m;
 	}
 
-	LogicalVector l_ancestor(n_all);
+	LogicalVector l_ancestors(n_all);
 	LogicalVector l_offspring(n_all);
 	bool flag = false;
 
@@ -423,10 +423,10 @@ LogicalMatrix cpp_is_reachable(S4 dag, IntegerVector nodes, bool directed = fals
 			// if i_node is closer to the root, first scan its ancestor nodes
 			if(depth[i] < max_depth*0.5) {
 				if(!directed) {
-					_find_ancestor(lt_parents, nodes[i] - 1, l_ancestor);
+					_find_ancestors(lt_parents, nodes[i] - 1, l_ancestors);
 					// whether j_node is an ancestor of i_node
 					for(int j = i+1; j < n; j ++) {
-						if(l_ancestor[ nodes[j] - 1 ]) {
+						if(l_ancestors[ nodes[j] - 1 ]) {
 							m(i, j) = true;
 							if(!directed) {
 								m(j, i) = true;
@@ -462,10 +462,10 @@ LogicalMatrix cpp_is_reachable(S4 dag, IntegerVector nodes, bool directed = fals
 
 				// whether j_node is an offspring of i_node
 				if(!flag & directed) {
-					_find_ancestor(lt_parents, nodes[i] - 1, l_ancestor);
+					_find_ancestors(lt_parents, nodes[i] - 1, l_ancestors);
 					// whether j_node is an ancestor of i_node
 					for(int j = i+1; j < n; j ++) {
-						if(l_ancestor[ nodes[j] - 1 ]) {
+						if(l_ancestors[ nodes[j] - 1 ]) {
 							m(i, j) = true;
 							if(!directed) {
 								m(j, i) = true;
@@ -473,13 +473,13 @@ LogicalMatrix cpp_is_reachable(S4 dag, IntegerVector nodes, bool directed = fals
 							flag = true;
 						}
 					}
-					reset_logical_vector_to_false(l_ancestor);
+					reset_logical_vector_to_false(l_ancestors);
 				}
 			}
 		}
 
 		flag = false;
-		reset_logical_vector_to_false(l_ancestor);
+		reset_logical_vector_to_false(l_ancestors);
 		reset_logical_vector_to_false(l_offspring);
 	}
 

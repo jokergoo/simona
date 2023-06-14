@@ -3,18 +3,27 @@
 
 #' Number of annotated items
 #' 
-#' @param dag A `ontology_DAG` object.
+#' @param dag An `ontology_DAG` object.
 #' @param use_cache Internally used.
 #' 
 #' @details
-#' `annotation` argument should be set in [create_ontology_DAG()].
+#' Due to the nature of DAG, a parent term includes all annotated items of its child terms. This upstream-merging
+#' is automatically applied in the function.
 #' @returns An integer vector.
 #' @export
 #' @examples
-#' \dontrun{
-#' dag = create_ontology_DAG_from_GO_db(org_db = "org.Hs.eg.db")
-#' head(n_annotations(dag))
-#' }
+#' parents  = c("a", "a", "b", "b", "c", "d")
+#' children = c("b", "c", "c", "d", "e", "f")
+#' annotation = list(
+#'     "a" = 1:3,
+#'     "b" = 3:4,
+#'     "c" = 5,
+#'     "d" = 7,
+#'     "e" = 4:7,
+#'     "f" = 8
+#' )
+#' dag = create_ontology_DAG(parents, children, annotation = annotation)
+#' n_annotations(dag)
 n_annotations = function(dag, use_cache = TRUE) {
 	if(is.null(dag@term_env$n_annotations)) {
 		use_cache = FALSE
@@ -67,12 +76,28 @@ validate_annotated_terms = function(dag, id) {
 
 #' Get term-item associations
 #' 
-#' @param dag A `ontology_DAG` object.
+#' @param dag An `ontology_DAG` object.
 #' @param terms A vector of term names.
-#' @param return Whether to return as a list or a matrix?
+#' @param return Whether to return a list or a matrix?
 #' 
-#' @return A list of annotated items or a list of terms or a binary matrix showing whether the term is annotated with the item.
+#' @rdname annotation
+#' @return
+#' A list or a binary matrix showing annotation relations between terms and items.
 #' @export
+#' @examples
+#' parents  = c("a", "a", "b", "b", "c", "d")
+#' children = c("b", "c", "c", "d", "e", "f")
+#' annotation = list(
+#'     "a" = 1:3,
+#'     "b" = 3:4,
+#'     "c" = 5,
+#'     "d" = 7,
+#'     "e" = 4:7,
+#'     "f" = 8
+#' )
+#' dag = create_ontology_DAG(parents, children, annotation = annotation)
+#' term_annotations(dag, letters[1:6])
+#' annotated_terms(dag, c("1", "2", "3"))
 term_annotations = function(dag, terms, return = "list") {
 	validate_dag_has_annotation(dag)
 
@@ -94,7 +119,7 @@ term_annotations = function(dag, terms, return = "list") {
 
 #' @param anno A vector of annotated item names.
 #' 
-#' @rdname term_annotations
+#' @rdname annotation
 #' @export
 annotated_terms = function(dag, anno, return = "list") {
 	validate_dag_has_annotation(dag)

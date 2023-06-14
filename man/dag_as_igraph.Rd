@@ -7,13 +7,16 @@
 dag_as_igraph(dag)
 }
 \arguments{
-\item{dag}{An `ontology_DAG` object.}
+\item{dag}{An \code{ontology_DAG} object.}
 }
 \value{
-An `igraph` object.
+An \code{igraph} object.
 }
 \description{
 Convert to an igraph object
+}
+\details{
+if \code{relations} is set in \code{create_ontology_DAG()}, relations are also set as an edge attribute of the \code{igraph} object.
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")

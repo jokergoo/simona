@@ -13,21 +13,41 @@ create_ontology_DAG(
 )
 }
 \arguments{
-\item{parents}{A vector of parent terms.}
+\item{parents}{A character vector of parent terms.}
 
-\item{children}{A vector of child terms.}
+\item{children}{A character vector of child terms.}
 
-\item{relations}{A vector of parent-child relations.}
+\item{relations}{A character vector of parent-child relations, e.g. "isa" or "part of".}
 
-\item{source}{Source of the ontology. Simply used as a mark of the object.}
+\item{source}{Source of the ontology. It is simply used as a mark of the object.}
 
-\item{annotation}{A list of items that are annotated to the terms. Names in the list should be the term names. In the DAG, items
+\item{annotation}{A list of character items that are annotated to the terms. Names of the list should be the term names. In the DAG, items
 annotated to a term will also be annotated to its parents. Such upstreaming merging
 is applied automatically in the package.}
 }
 \value{
-An `ontology_DAG` object.
+An \code{ontology_DAG} object.
 }
 \description{
 Create the ontology_DAG object
+}
+\examples{
+parents  = c("a", "a", "b", "b", "c", "d")
+children = c("b", "c", "c", "d", "e", "f")
+dag = create_ontology_DAG(parents, children)
+
+# with annotations
+annotation = list(
+    "a" = 1:3,
+    "b" = 3:4,
+    "c" = 5,
+    "d" = 7,
+    "e" = 4:7,
+    "f" = 8
+)
+dag = create_ontology_DAG(parents, children, annotation = annotation)
+
+# with relations
+dag = create_ontology_DAG(parents, children, 
+    relations = c("isa", "part of", "isa", "part of", "isa", "part of"))
 }

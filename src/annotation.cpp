@@ -82,15 +82,15 @@ IntegerVector cpp_get_annotated_terms(S4 dag, int anno_id) {
 	int n = lt_parents.size();
 
 	IntegerVector x(n);
-	LogicalVector l_ancestor(n, false);
+	LogicalVector l_ancestors(n, false);
 	for(int i = 0; i < n; i ++) {
 		IntegerVector anno = lt_annotation[i];
 		if(anno.size() || x[i] == 0) {
 			for(int ia = 0; ia < anno.size(); ia ++) {
 				if(anno[ia] == anno_id) {
-					_find_ancestor(lt_parents, i, l_ancestor, true);	
+					_find_ancestors(lt_parents, i, l_ancestors, true);	
 					for(int j = 0; j < n; j ++) {
-						if(l_ancestor[j]) {
+						if(l_ancestors[j]) {
 							x[j] = 1;
 						}
 					}
@@ -99,7 +99,7 @@ IntegerVector cpp_get_annotated_terms(S4 dag, int anno_id) {
 			}
 		}
 
-		reset_logical_vector_to_false(l_ancestor);
+		reset_logical_vector_to_false(l_ancestors);
 	}
 
 	return x;

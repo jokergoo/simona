@@ -1,6 +1,6 @@
 Package: ontsim
 Type: Package
-Title: Semantic Similarity of Ontologies
+Title: Semantic Similarity in Ontologies
 Version: 0.99.0
 Date: 2023-04-25
 Authors@R: person("Zuguang", "Gu", email = "z.gu@dkfz.de", role = c("aut", "cre"),
@@ -11,9 +11,12 @@ Suggests: igraph, knitr, testthat, BiocManager, GO.db, org.Hs.eg.db, proxyC,
           Polychrome, AnnotationDbi
 LinkingTo: Rcpp
 VignetteBuilder: knitr
-Description: ...
-biocViews: Software, Visualization, Sequencing
+Description: It provides a rich set of implementations for similarity analysis on bio-ontologies, 
+    including calculating information content, similarity between two terms as well as between
+    two groups of terms on the ontology.
+biocViews: Software
 URL: https://github.com/jokergoo/ontsim
 License: MIT + file LICENSE
 RoxygenNote: 7.2.3
 Encoding: UTF-8
+Roxygen: list(markdown = TRUE)

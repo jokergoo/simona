@@ -15,12 +15,12 @@ create_ontology_DAG_from_GO_db(
 
 \item{relations}{Type of the GO term relations.}
 
-\item{org_db}{The name of the organism package or the corresponding database object, e.g. `"org.Hs.eg.db"` or 
-directly the [org.Hs.eg.db::org.Hs.eg.db] object for human. The gene annotation to GO terms will be added
+\item{org_db}{The name of the organism package or the corresponding database object, e.g. \code{"org.Hs.eg.db"} or
+directly the \link[org.Hs.eg.db:org.Hs.egBASE]{org.Hs.eg.db::org.Hs.eg.db} object for human. Then the gene annotation to GO terms will be added
 to the object.}
 }
 \value{
-An `ontology_DAG` object.
+An \code{ontology_DAG} object.
 }
 \description{
 Create the ontology_DAG object from the GO.db package
@@ -28,7 +28,7 @@ Create the ontology_DAG object from the GO.db package
 \examples{
 \dontrun{
 dag = create_ontology_DAG_from_GO_db()
-dag = create_ontology_DAG_from_GO_db("CC", 
+dag = create_ontology_DAG_from_GO_db("BP", 
     relations = "isa", org_db = "org.Hs.eg.db")
 }
 }

@@ -296,16 +296,29 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cpp_eps_EISI
-NumericMatrix cpp_eps_EISI(S4 dag, IntegerVector nodes, NumericVector ic);
-RcppExport SEXP _ontsim_cpp_eps_EISI(SEXP dagSEXP, SEXP nodesSEXP, SEXP icSEXP) {
+// cpp_common_ancestor_mean_IC_EISI
+NumericMatrix cpp_common_ancestor_mean_IC_EISI(S4 dag, IntegerVector nodes, NumericVector ic);
+RcppExport SEXP _ontsim_cpp_common_ancestor_mean_IC_EISI(SEXP dagSEXP, SEXP nodesSEXP, SEXP icSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type nodes(nodesSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type ic(icSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_eps_EISI(dag, nodes, ic));
+    rcpp_result_gen = Rcpp::wrap(cpp_common_ancestor_mean_IC_EISI(dag, nodes, ic));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_common_ancestor_mean_IC_GraSM
+NumericMatrix cpp_common_ancestor_mean_IC_GraSM(S4 dag, IntegerVector nodes, NumericVector ic);
+RcppExport SEXP _ontsim_cpp_common_ancestor_mean_IC_GraSM(SEXP dagSEXP, SEXP nodesSEXP, SEXP icSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type nodes(nodesSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type ic(icSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_common_ancestor_mean_IC_GraSM(dag, nodes, ic));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -346,22 +359,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cpp_ancestor
-IntegerVector cpp_ancestor(S4 dag, int node, bool include_self);
-RcppExport SEXP _ontsim_cpp_ancestor(SEXP dagSEXP, SEXP nodeSEXP, SEXP include_selfSEXP) {
+// cpp_ancestors
+IntegerVector cpp_ancestors(S4 dag, int node, bool include_self);
+RcppExport SEXP _ontsim_cpp_ancestors(SEXP dagSEXP, SEXP nodeSEXP, SEXP include_selfSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
     Rcpp::traits::input_parameter< int >::type node(nodeSEXP);
     Rcpp::traits::input_parameter< bool >::type include_self(include_selfSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_ancestor(dag, node, include_self));
+    rcpp_result_gen = Rcpp::wrap(cpp_ancestors(dag, node, include_self));
     return rcpp_result_gen;
 END_RCPP
 }
-// cpp_ancestor_within_background
-IntegerVector cpp_ancestor_within_background(S4 dag, int node, IntegerVector background, bool include_self);
-RcppExport SEXP _ontsim_cpp_ancestor_within_background(SEXP dagSEXP, SEXP nodeSEXP, SEXP backgroundSEXP, SEXP include_selfSEXP) {
+// cpp_ancestors_within_background
+IntegerVector cpp_ancestors_within_background(S4 dag, int node, IntegerVector background, bool include_self);
+RcppExport SEXP _ontsim_cpp_ancestors_within_background(SEXP dagSEXP, SEXP nodeSEXP, SEXP backgroundSEXP, SEXP include_selfSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -369,7 +382,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type node(nodeSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type background(backgroundSEXP);
     Rcpp::traits::input_parameter< bool >::type include_self(include_selfSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_ancestor_within_background(dag, node, background, include_self));
+    rcpp_result_gen = Rcpp::wrap(cpp_ancestors_within_background(dag, node, background, include_self));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -412,15 +425,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cpp_n_ancestor
-IntegerVector cpp_n_ancestor(S4 dag, bool include_self);
-RcppExport SEXP _ontsim_cpp_n_ancestor(SEXP dagSEXP, SEXP include_selfSEXP) {
+// cpp_n_ancestors
+IntegerVector cpp_n_ancestors(S4 dag, bool include_self);
+RcppExport SEXP _ontsim_cpp_n_ancestors(SEXP dagSEXP, SEXP include_selfSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
     Rcpp::traits::input_parameter< bool >::type include_self(include_selfSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_n_ancestor(dag, include_self));
+    rcpp_result_gen = Rcpp::wrap(cpp_n_ancestors(dag, include_self));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -447,9 +460,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cpp_ancestor_of_a_group
-IntegerVector cpp_ancestor_of_a_group(S4 dag, IntegerVector nodes, int type, bool include_self);
-RcppExport SEXP _ontsim_cpp_ancestor_of_a_group(SEXP dagSEXP, SEXP nodesSEXP, SEXP typeSEXP, SEXP include_selfSEXP) {
+// cpp_ancestors_of_a_group
+IntegerVector cpp_ancestors_of_a_group(S4 dag, IntegerVector nodes, int type, bool include_self);
+RcppExport SEXP _ontsim_cpp_ancestors_of_a_group(SEXP dagSEXP, SEXP nodesSEXP, SEXP typeSEXP, SEXP include_selfSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -457,13 +470,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerVector >::type nodes(nodesSEXP);
     Rcpp::traits::input_parameter< int >::type type(typeSEXP);
     Rcpp::traits::input_parameter< bool >::type include_self(include_selfSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_ancestor_of_a_group(dag, nodes, type, include_self));
+    rcpp_result_gen = Rcpp::wrap(cpp_ancestors_of_a_group(dag, nodes, type, include_self));
     return rcpp_result_gen;
 END_RCPP
 }
-// cpp_ancestor_of_two_groups
-IntegerVector cpp_ancestor_of_two_groups(S4 dag, IntegerVector nodes1, IntegerVector nodes2, int type, bool include_self);
-RcppExport SEXP _ontsim_cpp_ancestor_of_two_groups(SEXP dagSEXP, SEXP nodes1SEXP, SEXP nodes2SEXP, SEXP typeSEXP, SEXP include_selfSEXP) {
+// cpp_ancestors_of_two_groups
+IntegerVector cpp_ancestors_of_two_groups(S4 dag, IntegerVector nodes1, IntegerVector nodes2, int type, bool include_self);
+RcppExport SEXP _ontsim_cpp_ancestors_of_two_groups(SEXP dagSEXP, SEXP nodes1SEXP, SEXP nodes2SEXP, SEXP typeSEXP, SEXP include_selfSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -472,7 +485,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerVector >::type nodes2(nodes2SEXP);
     Rcpp::traits::input_parameter< int >::type type(typeSEXP);
     Rcpp::traits::input_parameter< bool >::type include_self(include_selfSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_ancestor_of_two_groups(dag, nodes1, nodes2, type, include_self));
+    rcpp_result_gen = Rcpp::wrap(cpp_ancestors_of_two_groups(dag, nodes1, nodes2, type, include_self));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -645,20 +658,21 @@ static const R_CallMethodDef CallEntries[] = {
     {"_ontsim_cpp_sim_shen", (DL_FUNC) &_ontsim_cpp_sim_shen, 3},
     {"_ontsim_cpp_sim_SSDD", (DL_FUNC) &_ontsim_cpp_sim_SSDD, 3},
     {"_ontsim_cpp_common_ancestor_mean_IC_XGraSM", (DL_FUNC) &_ontsim_cpp_common_ancestor_mean_IC_XGraSM, 3},
-    {"_ontsim_cpp_eps_EISI", (DL_FUNC) &_ontsim_cpp_eps_EISI, 3},
+    {"_ontsim_cpp_common_ancestor_mean_IC_EISI", (DL_FUNC) &_ontsim_cpp_common_ancestor_mean_IC_EISI, 3},
+    {"_ontsim_cpp_common_ancestor_mean_IC_GraSM", (DL_FUNC) &_ontsim_cpp_common_ancestor_mean_IC_GraSM, 3},
     {"_ontsim_cpp_ic_meng", (DL_FUNC) &_ontsim_cpp_ic_meng, 2},
     {"_ontsim_cpp_ic_wang", (DL_FUNC) &_ontsim_cpp_ic_wang, 2},
     {"_ontsim_cpp_max_leaves_id", (DL_FUNC) &_ontsim_cpp_max_leaves_id, 3},
-    {"_ontsim_cpp_ancestor", (DL_FUNC) &_ontsim_cpp_ancestor, 3},
-    {"_ontsim_cpp_ancestor_within_background", (DL_FUNC) &_ontsim_cpp_ancestor_within_background, 4},
+    {"_ontsim_cpp_ancestors", (DL_FUNC) &_ontsim_cpp_ancestors, 3},
+    {"_ontsim_cpp_ancestors_within_background", (DL_FUNC) &_ontsim_cpp_ancestors_within_background, 4},
     {"_ontsim_cpp_offspring", (DL_FUNC) &_ontsim_cpp_offspring, 3},
     {"_ontsim_cpp_offspring_within_background", (DL_FUNC) &_ontsim_cpp_offspring_within_background, 4},
     {"_ontsim_cpp_connected_leaves", (DL_FUNC) &_ontsim_cpp_connected_leaves, 2},
-    {"_ontsim_cpp_n_ancestor", (DL_FUNC) &_ontsim_cpp_n_ancestor, 2},
+    {"_ontsim_cpp_n_ancestors", (DL_FUNC) &_ontsim_cpp_n_ancestors, 2},
     {"_ontsim_cpp_n_offspring", (DL_FUNC) &_ontsim_cpp_n_offspring, 2},
     {"_ontsim_cpp_n_leaves", (DL_FUNC) &_ontsim_cpp_n_leaves, 1},
-    {"_ontsim_cpp_ancestor_of_a_group", (DL_FUNC) &_ontsim_cpp_ancestor_of_a_group, 4},
-    {"_ontsim_cpp_ancestor_of_two_groups", (DL_FUNC) &_ontsim_cpp_ancestor_of_two_groups, 5},
+    {"_ontsim_cpp_ancestors_of_a_group", (DL_FUNC) &_ontsim_cpp_ancestors_of_a_group, 4},
+    {"_ontsim_cpp_ancestors_of_two_groups", (DL_FUNC) &_ontsim_cpp_ancestors_of_two_groups, 5},
     {"_ontsim_cpp_offspring_of_a_group", (DL_FUNC) &_ontsim_cpp_offspring_of_a_group, 3},
     {"_ontsim_cpp_is_reachable", (DL_FUNC) &_ontsim_cpp_is_reachable, 3},
     {"_ontsim_cpp_dag_depth", (DL_FUNC) &_ontsim_cpp_dag_depth, 1},

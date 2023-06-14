@@ -16,7 +16,7 @@ dag_dist_from_root(dag, use_cache = TRUE)
 dag_dist_from_leaves(dag, use_cache = TRUE)
 }
 \arguments{
-\item{dag}{A `ontology_DAG` object.}
+\item{dag}{An \code{ontology_DAG} object.}
 
 \item{use_cache}{Internally used.}
 }
@@ -27,8 +27,10 @@ An integer vector.
 Depth and height of the DAG
 }
 \details{
-The depth of a term in the DAG is defined as the maximal distance to the root. The height
+The depth of a term in the DAG is defined as the maximal distance from the root. The height
 of a term in the DAG is the maximal finite distance to the leaf nodes.
+
+\code{dag_dist_from_root()} and \code{dag_dist_from_leaves()} calculate the minimal distance to the root or to the leaves.
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")
@@ -36,4 +38,6 @@ children = c("b", "c", "c", "d", "e", "f")
 dag = create_ontology_DAG(parents, children)
 dag_depth(dag)
 dag_height(dag)
+dag_dist_from_root(dag)
+dag_dist_from_leaves(dag)
 }

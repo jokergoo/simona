@@ -3,33 +3,33 @@
 \name{dag_parents}
 \alias{dag_parents}
 \alias{dag_children}
-\alias{dag_ancestor}
+\alias{dag_ancestors}
 \alias{dag_offspring}
-\title{Terms' parents/children/ancestor/offspring terms}
+\title{Parent/child/ancestor/offspring terms}
 \usage{
 dag_parents(dag, term, in_labels = TRUE)
 
 dag_children(dag, term, in_labels = TRUE)
 
-dag_ancestor(dag, term, in_labels = TRUE, include_self = FALSE)
+dag_ancestors(dag, term, in_labels = TRUE, include_self = FALSE)
 
 dag_offspring(dag, term, in_labels = TRUE, include_self = FALSE)
 }
 \arguments{
-\item{dag}{A `ontology_DAG` object.}
+\item{dag}{An \code{ontology_DAG} object.}
 
-\item{term}{For `dag_parents()` and `dag_children()`, the value should be a single term name.
-For `dag_ancestor()` and `dag_offspring()`, the value can be a vector of term names.}
+\item{term}{For \code{dag_parents()} and \code{dag_children()}, the value should be a single term name.
+For \code{dag_ancestors()} and \code{dag_offspring()}, the value can be a vector of term names.}
 
 \item{in_labels}{Whether to return the numeric indices or in their term names.}
 
-\item{include_self}{For `dag_offspring()` and `dag_ancestor()`, this controls whether to also contain the term itself.}
+\item{include_self}{For \code{dag_offspring()} and \code{dag_ancestors()}, this controls whether to also contain the query term itself.}
 }
 \value{
-An integer vector or a character vector depending on the value of `in_labels`.
+An integer vector or a character vector depending on the value of \code{in_labels}.
 }
 \description{
-Terms' parents/children/ancestor/offspring terms
+Parent/child/ancestor/offspring terms
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")
@@ -38,6 +38,6 @@ dag = create_ontology_DAG(parents, children)
 dag_parents(dag, "b")
 dag_parents(dag, "c", in_labels = FALSE)
 dag_children(dag, "b")
-dag_ancestor(dag, "e")
-dag_ancestor(dag, "b")
+dag_ancestors(dag, "e")
+dag_ancestors(dag, "b")
 }

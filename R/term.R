@@ -1,6 +1,11 @@
 
 
 
+#' IC_annotation
+#' 
+#' @section method:
+#' what is IC_annotation
+#' @rdname temp__IC_annotation
 IC_annotation = function(dag, use_cache = TRUE) {
 
 	if(is.null(dag@term_env$IC_annotation)) {
@@ -25,6 +30,12 @@ ADD_IC_METHOD("IC_annotation")
 
 ##########################
 ### IC universe
+
+#' IC_universal
+#' 
+#' @section method:
+#' what is IC_universal
+#' @rdname temp__IC_universal
 IC_universal = function(dag, use_cache = TRUE) {
 	if(is.null(dag@term_env$IC_universal) || !use_cache) {
 		lt_parents = dag@lt_parents
@@ -96,6 +107,12 @@ reachability = function(dag, use_cache = TRUE) {
 
 ########################################
 ### Zhang et al
+
+#' IC_Zhang_2006
+#' 
+#' @section method:
+#' what is IC_Zhang_2006
+#' @rdname temp__IC_Zhang_2006
 IC_Zhang_2006 = function(dag, use_cache = TRUE) {
 	if(is.null(dag@term_env$IC_Zhang_2006) || !use_cache) {
 		re = reachability(dag, use_cache)
@@ -108,6 +125,12 @@ ADD_IC_METHOD("IC_Zhang_2006")
 
 ########################################
 ### Seco et al
+
+#' IC_Seco_2004
+#' 
+#' @section method:
+#' what is IC_Seco_2004
+#' @rdname temp__IC_Seco_2004
 IC_Seco_2004 = function(dag, use_cache = TRUE) {
 	if(is.null(dag@term_env$IC_Seco_2004) || !use_cache) {
 		re = reachability(dag, use_cache)
@@ -120,6 +143,12 @@ ADD_IC_METHOD("IC_Seco_2004")
 
 ########################################
 ### Zhou et al
+
+#' IC_Zhou_2008
+#' 
+#' @section method:
+#' what is IC_Zhou_2008
+#' @rdname temp__IC_Zhou_2008
 IC_Zhou_2008 = function(dag, use_cache = TRUE) {
 	if(is.null(dag@term_env$IC_Zhou_2008) || !use_cache) {
 		depth = dag_depth(dag, use_cache)
@@ -135,6 +164,12 @@ ADD_IC_METHOD("IC_Zhou_2008")
 
 ########################################
 ### Seddiqui et al
+
+#' IC_Seddiqui_2010
+#' 
+#' @section method:
+#' what is IC_Seddiqui_2010
+#' @rdname temp__IC_Seddiqui_2010
 IC_Seddiqui_2010 = function(dag, use_cache = TRUE) {
 	if(is.null(dag@term_env$IC_Seddiqui_2010) || !use_cache) {
 		n_relations = dag@term_env$n_parents + dag@term_env$n_children
@@ -154,12 +189,18 @@ ADD_IC_METHOD("IC_Seddiqui_2010")
 
 #########################################
 ### Sanchez et al: information pass to leaves
+
+#' IC_Sanchez_2011
+#' 
+#' @section method:
+#' what is IC_Sanchez_2011
+#' @rdname temp__IC_Sanchez_2011
 IC_Sanchez_2011 = function(dag, use_cache = TRUE) {
 	if(is.null(dag@term_env$IC_Sanchez_2011) || !use_cache) {
 		nl = length(dag@leaves)
 		n_connected_leaves = n_leaves(dag)
 
-		na = n_ancestor(dag)
+		na = n_ancestors(dag)
 		na[na == 0] = 1
 
 		dag@term_env$IC_Sanchez_2011 = -log( (n_connected_leaves/na + 1)/(nl + 1) )
@@ -172,6 +213,12 @@ ADD_IC_METHOD("IC_Sanchez_2011")
 
 #########################################
 ### Meng et al
+
+#' IC_Meng_2012
+#' 
+#' @section method:
+#' what is IC_Meng_2012
+#' @rdname temp__IC_Meng_2012
 IC_Meng_2012 = function(dag, correct = FALSE, use_cache = TRUE) {
 	if(is.null(dag@term_env$IC_Meng_2012) || !use_cache) {
 		dag@term_env$IC_Meng_2012 = cpp_ic_meng(dag, correct)
@@ -219,6 +266,11 @@ totipotency = function(dag, use_cache = TRUE) {
 }
 
 
+#' IC_Wang_2007
+#' 
+#' @section method:
+#' what is IC_Wang_2007
+#' @rdname temp__IC_Wang_2007
 IC_Wang_2007 = function(dag, contribution_factor = c("isa" = 0.8, "part of" = 0.6), use_cache = TRUE) {
 	if(is.null(dag@term_env$IC_Wang_2007) || !use_cache) {
 		if(length(dag@lt_children_relations) == 0) {

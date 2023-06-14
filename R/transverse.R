@@ -1,14 +1,15 @@
 
 
-#' Terms' parents/children/ancestor/offspring terms
+#' Parent/child/ancestor/offspring terms
 #' 
-#' @param dag A `ontology_DAG` object.
+#' @param dag An `ontology_DAG` object.
 #' @param term For `dag_parents()` and `dag_children()`, the value should be a single term name.
-#'             For `dag_ancestor()` and `dag_offspring()`, the value can be a vector of term names.
+#'             For `dag_ancestors()` and `dag_offspring()`, the value can be a vector of term names.
 #' @param in_labels Whether to return the numeric indices or in their term names.
-#' @param include_self For `dag_offspring()` and `dag_ancestor()`, this controls whether to also contain the term itself.
+#' @param include_self For `dag_offspring()` and `dag_ancestors()`, this controls whether to also contain the query term itself.
 #' 
 #' @return An integer vector or a character vector depending on the value of `in_labels`.
+#' @rdname dag_terms
 #' @export
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
@@ -17,8 +18,8 @@
 #' dag_parents(dag, "b")
 #' dag_parents(dag, "c", in_labels = FALSE)
 #' dag_children(dag, "b")
-#' dag_ancestor(dag, "e")
-#' dag_ancestor(dag, "b")
+#' dag_ancestors(dag, "e")
+#' dag_ancestors(dag, "b")
 dag_parents = function(dag, term, in_labels = TRUE) {
 	if(length(term) != 1) {
 		stop("`term` should be a scalar.")
@@ -35,7 +36,7 @@ dag_parents = function(dag, term, in_labels = TRUE) {
 }
 
 
-#' @rdname dag_parents
+#' @rdname dag_terms
 #' @export
 dag_children = function(dag, term, in_labels = TRUE) {
 	if(length(term) != 1) {
@@ -52,31 +53,31 @@ dag_children = function(dag, term, in_labels = TRUE) {
 	}
 }
 
-#' @rdname dag_parents
+#' @rdname dag_terms
 #' @export
-dag_ancestor = function(dag, term, in_labels = TRUE, include_self = FALSE) {
+dag_ancestors = function(dag, term, in_labels = TRUE, include_self = FALSE) {
 	if(length(term) == 1) {
 		i = term_to_node_id(dag, term)
 
-		ancestor = cpp_ancestor(dag, i, include_self)
+		ancestors = cpp_ancestors(dag, i, include_self)
 		if(in_labels) {
-			dag@terms[ancestor]
+			dag@terms[ancestors]
 		} else {
-			ancestor
+			ancestors
 		}
 	} else {
 		i = term_to_node_id(dag, term)
 
-		ancestor = cpp_ancestor_of_a_group(dag, i, include_self)
+		ancestors = cpp_ancestors_of_a_group(dag, i, include_self)
 		if(in_labels) {
-			dag@terms[ancestor]
+			dag@terms[ancestors]
 		} else {
-			ancestor
+			ancestors
 		}
 	}
 }
 
-#' @rdname dag_parents
+#' @rdname dag_terms
 #' @export
 dag_offspring = function(dag, term, in_labels = TRUE, include_self = FALSE) {
 	if(length(term) == 1) {
@@ -103,12 +104,13 @@ dag_offspring = function(dag, term, in_labels = TRUE, include_self = FALSE) {
 
 #' Number of parent/child/ancestor/offspring/leaf terms
 #' 
-#' @param dag A `ontology_DAG` object.
-#' @param term A vector of term names. If the value is `NULL`, it returns for all terms.
+#' @param dag An `ontology_DAG` object.
+#' @param term A vector of term names. If the value is `NULL`, it returns for all terms in the DAG.
 #' @param use_cache Internally used.
-#' @param include_self For `n_offspring()` and `n_ancestor()`, this controls whether to also contain the term itself.
+#' @param include_self For `n_offspring()` and `n_ancestors()`, this controls whether to also contain the query term itself.
 #' 
 #' @return An integer vector.
+#' @rdname n_terms
 #' @export
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
@@ -117,7 +119,7 @@ dag_offspring = function(dag, term, in_labels = TRUE, include_self = FALSE) {
 #' n_parents(dag)
 #' n_children(dag)
 #' n_offspring(dag)
-#' n_ancestor(dag)
+#' n_ancestors(dag)
 #' n_leaves(dag)
 n_offspring = function(dag, term = NULL, use_cache = TRUE, include_self = FALSE) {
 	if(is.null(dag@term_env$n_offspring) || !use_cache) {
@@ -134,13 +136,13 @@ n_offspring = function(dag, term = NULL, use_cache = TRUE, include_self = FALSE)
 	}
 }
 
-#' @rdname n_offspring
+#' @rdname n_terms
 #' @export
-n_ancestor = function(dag, term = NULL, use_cache = TRUE, include_self = FALSE) {
-	if(is.null(dag@term_env$n_ancestor) || !use_cache) {
-		dag@term_env$n_ancestor = cpp_n_ancestor(dag, include_self)
+n_ancestors = function(dag, term = NULL, use_cache = TRUE, include_self = FALSE) {
+	if(is.null(dag@term_env$n_ancestors) || !use_cache) {
+		dag@term_env$n_ancestors = cpp_n_ancestors(dag, include_self)
 	}
-	n = dag@term_env$n_ancestor
+	n = dag@term_env$n_ancestors
 	names(n) = dag@terms
 
 	if(!is.null(term)) {
@@ -151,7 +153,7 @@ n_ancestor = function(dag, term = NULL, use_cache = TRUE, include_self = FALSE) 
 	}
 }
 
-#' @rdname n_offspring
+#' @rdname n_terms
 #' @details Leaf nodes have zero `n_leaves` value.
 #' @export
 n_leaves = function(dag, term = NULL, use_cache = TRUE) {
@@ -169,7 +171,7 @@ n_leaves = function(dag, term = NULL, use_cache = TRUE) {
 	}
 }
 
-#' @rdname n_offspring
+#' @rdname n_terms
 #' @export
 n_parents = function(dag, term = NULL, use_cache = TRUE) {
 	n = dag@term_env$n_parents
@@ -183,7 +185,7 @@ n_parents = function(dag, term = NULL, use_cache = TRUE) {
 	}
 }
 
-#' @rdname n_offspring
+#' @rdname n_terms
 #' @export
 n_children = function(dag, term = NULL, use_cache = TRUE) {
 	n = dag@term_env$n_children
@@ -197,8 +199,7 @@ n_children = function(dag, term = NULL, use_cache = TRUE) {
 	}
 }
 
-
-dag_ancestor_of_two_groups = function(dag, group1, group2, type = "union", in_labels = FALSE, include_self = FALSE) {
+dag_ancestors_of_two_groups = function(dag, group1, group2, type = "union", in_labels = FALSE, include_self = FALSE) {
 
 	group1 = term_to_node_id(dag, group1)
 	group2 = term_to_node_id(dag, group2)
@@ -208,11 +209,11 @@ dag_ancestor_of_two_groups = function(dag, group1, group2, type = "union", in_la
 	if(is.na(type)) {
 		stop("Values of `type` can only be one of 'union', 'intersect', 'group 1' and 'group 2'.")
 	}
-	ancestor = cpp_ancestor_of_two_groups(dag, group1, group2, type, include_self)
+	ancestors = cpp_ancestors_of_two_groups(dag, group1, group2, type, include_self)
 	if(in_labels) {
-		dag@terms[ancestor]
+		dag@terms[ancestors]
 	} else {
-		ancestor
+		ancestors
 	}
 }
 
@@ -220,11 +221,13 @@ dag_ancestor_of_two_groups = function(dag, group1, group2, type = "union", in_la
 
 #' Depth and height of the DAG
 #' 
-#' @param dag A `ontology_DAG` object.
+#' @param dag An `ontology_DAG` object.
 #' @param use_cache Internally used.
 #' @details
-#' The depth of a term in the DAG is defined as the maximal distance to the root. The height
+#' The depth of a term in the DAG is defined as the maximal distance from the root. The height
 #' of a term in the DAG is the maximal finite distance to the leaf nodes.
+#' 
+#' `dag_dist_from_root()` and `dag_dist_from_leaves()` calculate the minimal distance to the root or to the leaves.
 #' 
 #' @return An integer vector.
 #' @export
@@ -234,6 +237,8 @@ dag_ancestor_of_two_groups = function(dag, group1, group2, type = "union", in_la
 #' dag = create_ontology_DAG(parents, children)
 #' dag_depth(dag)
 #' dag_height(dag)
+#' dag_dist_from_root(dag)
+#' dag_dist_from_leaves(dag)
 dag_depth = function(dag, use_cache = TRUE) {
 	if(is.null(dag@term_env$dag_depth) || !use_cache) {
 		d = cpp_dag_depth(dag)

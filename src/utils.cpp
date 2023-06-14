@@ -8,6 +8,13 @@ void reset_logical_vector_to_false(LogicalVector& x) {
 	}
 }
 
+void reset_logical_vector_to_true(LogicalVector& x) {
+	int n = x.size();
+	for(int i = 0; i < n; i ++) {
+		x[i] = true;
+	}
+}
+
 void reset_numeric_vector_to_zero(NumericVector& x) {
 	for(int i = 0; i < x.size(); i ++) {
 		x[i] = 0;

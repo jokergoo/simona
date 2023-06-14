@@ -1,13 +1,23 @@
 
 
+# cat(paste("#' @inheritSection",ALL_IC_METHODS, "method") , sep = "\n")
+
 #' Information content
 #' 
 #' @param dag An `ontology_DAG` object.
 #' @param method An IC method. All available methods are in [ALL_IC_METHODS].
 #' @param control A list of parameters passing to individual methods.
 #' 
-#' @details
-#' When using `IC_annotation`, `annotation` should be already set in [create_ontology_DAG()].
+#' @inheritSection IC_annotation method
+#' @inheritSection IC_universal method
+#' @inheritSection IC_Zhang_2006 method
+#' @inheritSection IC_Seco_2004 method
+#' @inheritSection IC_Zhou_2008 method
+#' @inheritSection IC_Seddiqui_2010 method
+#' @inheritSection IC_Sanchez_2011 method
+#' @inheritSection IC_Meng_2012 method
+#' @inheritSection IC_Wang_2007 method
+#' 
 #' @return A numeric vector.
 #' @export
 #' @examples
@@ -43,12 +53,50 @@ get_IC_method = function(method) {
 	get(method, envir = topenv(), inherits = FALSE)
 }
 
+
+# cat(paste("#' @inheritSection",ALL_TERM_SIM_METHODS, "method") , sep = "\n")
+
 #' Semantic similarity
 #' 
 #' @param dag An `ontology_DAG` object.
 #' @param terms A vector of term names.
 #' @param method A similarity method. All available methods are in [ALL_TERM_SIM_METHODS].
 #' @param control A list of parameters passing to individual methods.
+#' 
+#' @inheritSection Sim_Ling_1998 method
+#' @inheritSection Sim_Resnik_1999 method
+#' @inheritSection Sim_FaITH_2010 method
+#' @inheritSection Sim_PS_2008 method
+#' @inheritSection Sim_Relevance_2006 method
+#' @inheritSection Sim_SimIC_2010 method
+#' @inheritSection Sim_EISI_2015 method
+#' @inheritSection Sim_XGraSM_2013 method
+#' @inheritSection Sim_GraSM_2005 method
+#' @inheritSection Sim_AIC_2014 method
+#' @inheritSection Sim_Zhang_2006 method
+#' @inheritSection Sim_universal method
+#' @inheritSection Sim_Wang_2007 method
+#' @inheritSection Sim_Rada_1989 method
+#' @inheritSection Sim_Resnik_edge_2012 method
+#' @inheritSection Sim_Leocock_1998 method
+#' @inheritSection Sim_WP_1994 method
+#' @inheritSection Sim_Slimani_2006 method
+#' @inheritSection Sim_Shenoy_2012 method
+#' @inheritSection Sim_Pekar_2002 method
+#' @inheritSection Sim_Stojanovic_2001 method
+#' @inheritSection Sim_Wang_edge_2012 method
+#' @inheritSection Sim_Zhong_2002 method
+#' @inheritSection Sim_AlMubaid_2006 method
+#' @inheritSection Sim_Li_2003 method
+#' @inheritSection Sim_RSS_2013 method
+#' @inheritSection Sim_HRSS_2013 method
+#' @inheritSection Sim_Shen_2010 method
+#' @inheritSection Sim_SSDD_2013 method
+#' @inheritSection Sim_Jiang_1997 method
+#' @inheritSection Sim_Kappa method
+#' @inheritSection Sim_Jaccard method
+#' @inheritSection Sim_Dice method
+#' @inheritSection Sim_Overlap method
 #' 
 #' @return A numeric matrix.
 #' @export
@@ -78,6 +126,7 @@ get_term_sim_method = function(method) {
 	get(method, envir = topenv(), inherits = FALSE)
 }
 
+# cat(paste("#' @inheritSection",ALL_GROUP_SIM_METHODS, "method") , sep = "\n")
 
 #' Semantic similarity between two groups of terms
 #' 
@@ -87,6 +136,35 @@ get_term_sim_method = function(method) {
 #' @param method Group similarity method. All available methods are in [ALL_GROUP_SIM_METHODS].
 #' @param sim_method Term similarity method. All available methods are in [ALL_TERM_SIM_METHODS].
 #' @param control A list of parameters passing to individual methods.
+#'
+#' @inheritSection GroupSim_pairwise_avg method
+#' @inheritSection GroupSim_pairwise_max method
+#' @inheritSection GroupSim_pairwise_BMM method
+#' @inheritSection GroupSim_pairwise_ABM method
+#' @inheritSection GroupSim_pairwise_HDF method
+#' @inheritSection GroupSim_pairwise_VHDF method
+#' @inheritSection GroupSim_pairwise_Froehlich_2007 method
+#' @inheritSection GroupSim_pairwise_Joeng_2014 method
+#' @inheritSection GroupSim_SimALN method
+#' @inheritSection GroupSim_SimINT method
+#' @inheritSection GroupSim_spgk method
+#' @inheritSection GroupSim_SimGIC method
+#' @inheritSection GroupSim_SimDIC method
+#' @inheritSection GroupSim_SimUIC method
+#' @inheritSection GroupSim_SimUI method
+#' @inheritSection GroupSim_SimDB method
+#' @inheritSection GroupSim_SimUB method
+#' @inheritSection GroupSim_SimNTO method
+#' @inheritSection GroupSim_SimCOU method
+#' @inheritSection GroupSim_SimCOT method
+#' @inheritSection GroupSim_SimLP method
+#' @inheritSection GroupSim_Ye_2005 method
+#' @inheritSection GroupSim_Cho_2007 method
+#' @inheritSection GroupSim_SimALD method
+#' @inheritSection GroupSim_Jaccard method
+#' @inheritSection GroupSim_Dice method
+#' @inheritSection GroupSim_Overlap method
+#' @inheritSection GroupSim_Kappa method
 #' 
 #' @return A numeric scalar.
 #' @export

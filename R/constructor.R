@@ -2,6 +2,22 @@
 
 #' The ontology_DAG class
 #' 
+#' This class defines the DAG structure of an ontology.
+#' 
+#' @slot lt_parents A list of length `n`. Each element is an integer index vector of parent terms.
+#' @slot lt_children foo
+#' @slot lt_children_relations foo
+#' @slot source The source of the ontology. A character scalar only used as a mark of the returned object.
+#' @slot terms A character vector of length `n`, which contains the term names.
+#' @slot n_terms An integer scalar of the total number of terms in the DAG.
+#' @slot root An integer index of the root term.
+#' @slot leaves An integer vector of the indicies of leaf terms.
+#' @slot tpl_sorted An integer vector of reordered term indices which has been topologically sorted in the DAG.
+#' @slot tpl_pos The position of the original term in the topologically sorted path (similar as the rank), e.g. the position of term 1 in the sorted path.
+#' @slot annotation A list of two elements: `list` and `names`. The `list` element contains a list of length `n` and each element
+#'         there is a vector of integer indices of annotated items. The full list of annotated items is in the `names` element.
+#' @slot term_env An environment which contains various term-level statistics, mainly for cache purpose.
+#' 
 #' @export ontology_DAG
 #' @exportClass ontology_DAG
 ontology_DAG = setClass("ontology_DAG",
@@ -22,11 +38,11 @@ ontology_DAG = setClass("ontology_DAG",
 
 #' Create the ontology_DAG object
 #' 
-#' @param parents A vector of parent terms.
-#' @param children A vector of child terms.
-#' @param relations A vector of parent-child relations.
-#' @param source Source of the ontology. Simply used as a mark of the object.
-#' @param annotation A list of items that are annotated to the terms. Names in the list should be the term names. In the DAG, items
+#' @param parents A character vector of parent terms. 
+#' @param children A character vector of child terms. 
+#' @param relations A character vector of parent-child relations, e.g. "isa" or "part of".
+#' @param source Source of the ontology. It is simply used as a mark of the object.
+#' @param annotation A list of character items that are annotated to the terms. Names of the list should be the term names. In the DAG, items
 #'                   annotated to a term will also be annotated to its parents. Such upstreaming merging
 #'                   is applied automatically in the package.
 #' 
@@ -35,6 +51,25 @@ ontology_DAG = setClass("ontology_DAG",
 #' @importFrom methods new
 #' @import Rcpp
 #' @useDynLib ontsim, .registration = TRUE
+#' @examples
+#' parents  = c("a", "a", "b", "b", "c", "d")
+#' children = c("b", "c", "c", "d", "e", "f")
+#' dag = create_ontology_DAG(parents, children)
+#' 
+#' # with annotations
+#' annotation = list(
+#'     "a" = 1:3,
+#'     "b" = 3:4,
+#'     "c" = 5,
+#'     "d" = 7,
+#'     "e" = 4:7,
+#'     "f" = 8
+#' )
+#' dag = create_ontology_DAG(parents, children, annotation = annotation)
+#' 
+#' # with relations
+#' dag = create_ontology_DAG(parents, children, 
+#'     relations = c("isa", "part of", "isa", "part of", "isa", "part of"))
 create_ontology_DAG = function(parents, children, relations = NULL, 
 	source = "Ontology", annotation = NULL) {
 
@@ -200,7 +235,7 @@ setMethod("show",
 #' @param namespace One of "BP", "CC" and "MF".
 #' @param relations Type of the GO term relations.
 #' @param org_db The name of the organism package or the corresponding database object, e.g. `"org.Hs.eg.db"` or 
-#'            directly the [org.Hs.eg.db::org.Hs.eg.db] object for human. The gene annotation to GO terms will be added
+#'            directly the [org.Hs.eg.db::org.Hs.eg.db] object for human. Then the gene annotation to GO terms will be added
 #'            to the object.
 #' 
 #' @return An `ontology_DAG` object.
@@ -208,7 +243,7 @@ setMethod("show",
 #' @examples
 #' \dontrun{
 #' dag = create_ontology_DAG_from_GO_db()
-#' dag = create_ontology_DAG_from_GO_db("CC", 
+#' dag = create_ontology_DAG_from_GO_db("BP", 
 #'     relations = "isa", org_db = "org.Hs.eg.db")
 #' }
 create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = c("isa", "part of"), org_db = NULL) {
@@ -247,20 +282,6 @@ create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = c("isa",
 		annotation = annotation, source = paste0("GO ", namespace))
 }
 
-#' Create a sub-DAG
-#' 
-#' @param x An `ontology_DAG` object.
-#' @param i A single term name.
-#' @param j Ignored.
-#' @param ... Ignored.
-#' 
-#' @exportMethod [[
-setMethod("[[", 
-	signature = c("ontology_DAG", "character", "missing"),
-	definition = function(x, i, j, ...) {
-
-	dag_filter(x, root = i)
-})
 
 #' Create a sub-DAG
 #' 
@@ -270,10 +291,23 @@ setMethod("[[",
 #' @param ... Ignored.
 #' @param drop Ignored.
 #' 
+#' @details It returns a sub-DAG taking node `i` as the root.
+#' @return An `ontology_DAG` object.
+#' 
+#' @rdname subset
 #' @exportMethod [
 setMethod("[", 
 	signature = c("ontology_DAG", "character", "missing", "ANY"),
 	definition = function(x, i, j, ..., drop = FALSE) {
+
+	dag_filter(x, root = i)
+})
+
+#' @rdname subset
+#' @exportMethod [[
+setMethod("[[", 
+	signature = c("ontology_DAG", "character", "missing"),
+	definition = function(x, i, j, ...) {
 
 	dag_filter(x, root = i)
 })
@@ -296,8 +330,9 @@ dag_all_terms = function(dag) {
 #' Root or leaves of the DAG
 #' 
 #' @param dag An `ontology_DAG` object.
-#' @param in_labels Whether the terms are in their names or as the integer indices?
+#' @param in_labels Whether the terms are in their names or as integer indices?
 #' 
+#' @return A character or an integer vector.
 #' @export
 dag_root = function(dag, in_labels = TRUE) {
 	if(in_labels) {
@@ -320,6 +355,8 @@ dag_leaves = function(dag, in_labels = TRUE) {
 #' Convert to an igraph object
 #' 
 #' @param dag An `ontology_DAG` object.
+#' 
+#' @details if `relations` is set in `create_ontology_DAG()`, relations are also set as an edge attribute of the `igraph` object.
 #' 
 #' @return An `igraph` object.
 #' @export
@@ -357,10 +394,13 @@ dag_as_igraph = function(dag) {
 #' Filter the DAG
 #' 
 #' @param dag A `ontology_DAG` object.
-#' @param terms A vectof of term names. The sub DAG only contains these terms.
-#' @param relations A vector of relations. The sub DAG only contains these relations.
-#' @param root A vector of root terms. Only their offspring terms are kept.
-#' @param leaves A vector of leaf terms. Only their ancestor terms are kept.
+#' @param terms A vectof of term names. The sub DAG will only contain these terms.
+#' @param relations A vector of relations. The sub DAG will only contain these relations.
+#' @param root A vector of root terms. Only they with their offspring terms will be kept.
+#' @param leaves A vector of leaf terms. Only they with their ancestor terms will are kept.
+#' 
+#' @details If the DAG is reduced into several disconnected parts after the term filtering, a
+#'          super root is automatically added.
 #' 
 #' @return An `ontology_DAG` object.
 #' @export
@@ -423,9 +463,9 @@ dag_filter = function(dag, terms = NULL, relations = NULL, root = NULL, leaves =
 	}
 
 	if(!is.null(leaves)) {
-		ancestor = dag_ancestor(dag, leaves, FALSE)
-		ancestor = c(ancestor, which(dag@terms %in% leaves))
-		l = l & (parents %in% ancestor & children %in% ancestor)
+		ancestors = dag_ancestors(dag, leaves, FALSE)
+		ancestors = c(ancestors, which(dag@terms %in% leaves))
+		l = l & (parents %in% ancestors & children %in% ancestors)
 	}
 
 	parents = parents[l]
