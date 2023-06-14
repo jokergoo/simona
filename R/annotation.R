@@ -80,6 +80,9 @@ validate_annotated_terms = function(dag, id) {
 #' @param terms A vector of term names.
 #' @param return Whether to return a list or a matrix?
 #' 
+#' @details
+#' If an item is annotated to a term, all this term's ancestor terms are also annotated.
+#' 
 #' @rdname annotation
 #' @return
 #' A list or a binary matrix showing annotation relations between terms and items.

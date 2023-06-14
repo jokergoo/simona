@@ -13,13 +13,13 @@ This class defines the DAG structure of an ontology.
 \describe{
 \item{\code{lt_parents}}{A list of length \code{n}. Each element is an integer index vector of parent terms.}
 
-\item{\code{lt_children}}{foo}
+\item{\code{lt_children}}{A list of length \code{n}. Each element is an integer index vector of child terms.}
 
-\item{\code{lt_children_relations}}{foo}
+\item{\code{lt_children_relations}}{A list of length \code{n}. Each element is a vector of the semantic relations between the term and its child terms.}
 
 \item{\code{source}}{The source of the ontology. A character scalar only used as a mark of the returned object.}
 
-\item{\code{terms}}{A character vector of length \code{n}, which contains the term names.}
+\item{\code{terms}}{A character vector of length \code{n} which contains the term names.}
 
 \item{\code{n_terms}}{An integer scalar of the total number of terms in the DAG.}
 
@@ -31,8 +31,8 @@ This class defines the DAG structure of an ontology.
 
 \item{\code{tpl_pos}}{The position of the original term in the topologically sorted path (similar as the rank), e.g. the position of term 1 in the sorted path.}
 
-\item{\code{annotation}}{A list of two elements: \code{list} and \code{names}. The \code{list} element contains a list of length \code{n} and each element
-there is a vector of integer indices of annotated items. The full list of annotated items is in the \code{names} element.}
+\item{\code{annotation}}{A list of two elements: \code{list} and \code{names}. The \code{dag@annotation$list} element contains a list of length \code{n} and each element
+is a vector of integer indices of annotated items. The full list of annotated items is in \code{dag@annotation$names}.}
 
 \item{\code{term_env}}{An environment which contains various term-level statistics, mainly for cache purpose.}
 }}

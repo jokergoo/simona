@@ -5,15 +5,15 @@
 #' @param terms A vector of term names.
 #' 
 #' @details
-#' Denote two terms as $a$ and $b$, the common ancestor as $c$, the distance function $d()$ calculates the longest
+#' Denote two terms as `a` and `b`, the common ancestor as `c`, the distance function `d()` calculates the longest
 #' distance or the shortest distance depending on the function.
 #' 
-#' - `shortest_distances_via_CA()`: It calculates the smallest $d(c, a) + d(c, b)$ where $d()$ is the shortest distance between two terms. In this case,
-#'     $c$ is the NCA (nearest common ancestor) of $a$ and $b$.
-#' - `longest_distances_via_LCA()`: It calculates the largest $d(c, a) + d(c, b)$ where $d()$ is the longest distance between two terms. In this case,
-#'     $c$ is the LCA of $a$ and $b$.
-#' - `shortest_distances_directed()`: It calculates $d(a, b)$. The distance is only calculated when $a$ is an ancestor of $b$.
-#' - `longest_distances_directed()`: It calculates $d(a, b)$. The distance is only calculated when $a$ is an ancestor of $b$.
+#' - `shortest_distances_via_CA()`: It calculates the smallest `d(c, a) + d(c, b)` where `d()` is the shortest distance between two terms. In this case,
+#'     `c` is the NCA (nearest common ancestor) of `a` and `b`.
+#' - `longest_distances_via_LCA()`: It calculates the largest `d(c, a) + d(c, b)` where `d()` is the longest distance between two terms. In this case,
+#'     `c` is the LCA of `a` and `b`.
+#' - `shortest_distances_directed()`: It calculates `d(a, b)`. The distance is only calculated when `a` is an ancestor of `b`.
+#' - `longest_distances_directed()`: It calculates `d(a, b)`. The distance is only calculated when `a` is an ancestor of `b`.
 #' @rdname distance
 #' @export
 #' @examples

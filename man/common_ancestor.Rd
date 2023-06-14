@@ -33,7 +33,7 @@ NCA_term(dag, terms, in_labels = TRUE)
 \item \code{MICA_IC()} returns a numeric matrix of the IC of the MICA terms.
 \item \code{LCA_term()} returns a character matrix of the LCA term.
 \item \code{LCA_depth()} reutrns an integer matrix of the depth of the LCA terms.
-\item \code{NCA_term()} returns a character matrix of the nearest common ancestors. The shortest distance can be calculated by \code{shortest_distances_via_CA()}.
+\item \code{NCA_term()} returns a character matrix of the NCA term. The shortest distance can be calculated by \code{\link[=shortest_distances_via_CA]{shortest_distances_via_CA()}}.
 }
 }
 \description{
@@ -42,10 +42,10 @@ Various types of common ancestors
 \details{
 There are the following three types of common ancestors:
 \itemize{
-\item MICA: most informative common ancestor: The common ancestor with the highest IC value.
-\item LCA: lowest common ancestor: The common ancestor with the largest height. If there are multiple ancestors having
+\item MICA (most informative common ancestor): The common ancestor with the highest IC value.
+\item LCA (lowest common ancestor): The common ancestor with the largest height. If there are multiple ancestors having
 the max height, the ancestor with the smallest distance to the two terms is taken.
-\item NCA: nearest common ancestor: The common ancestor with the smallest distance to the two terms. If there are multiple
+\item NCA (nearest common ancestor): The common ancestor with the smallest distance to the two terms. If there are multiple
 ancestors with the same smallest distance, the ancestor with the largest height is taken.
 }
 }

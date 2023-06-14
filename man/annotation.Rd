@@ -24,6 +24,9 @@ A list or a binary matrix showing annotation relations between terms and items.
 \description{
 Get term-item associations
 }
+\details{
+If an item is annotated to a term, all this term's ancestor terms are also annotated.
+}
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")
 children = c("b", "c", "c", "d", "e", "f")

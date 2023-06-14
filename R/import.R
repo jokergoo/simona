@@ -3,9 +3,9 @@
 #' 
 #' @param file Path of the file or an URL. Pass to [base::readLines()].
 #' 
-#' @details Public bio-ontologies can be obtained from Ontology Foundry (http://obofoundry.org/) or BioPortal(https://bioportal.bioontology.org/) where
+#' @details Public bio-ontologies can be obtained from [Ontology Foundry](http://obofoundry.org/) or [BioPortal](https://bioportal.bioontology.org/) where
 #'    .obo files for the corresponding ontologies can be easily found. If there is no such .obo format file, the .owl file
-#'    can be converted to the .obo file using the **ROBOT** tool (http://robot.obolibrary.org/). An example command is:
+#'    can be converted to the .obo file using [the **ROBOT** tool](http://robot.obolibrary.org/). An example command is:
 #' 
 #' ```   
 #' robot convert --input ontology.owl --output -o ontology.obo --check false

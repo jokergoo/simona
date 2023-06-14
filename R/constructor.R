@@ -5,17 +5,17 @@
 #' This class defines the DAG structure of an ontology.
 #' 
 #' @slot lt_parents A list of length `n`. Each element is an integer index vector of parent terms.
-#' @slot lt_children foo
-#' @slot lt_children_relations foo
+#' @slot lt_children A list of length `n`. Each element is an integer index vector of child terms.
+#' @slot lt_children_relations A list of length `n`. Each element is a vector of the semantic relations between the term and its child terms.
 #' @slot source The source of the ontology. A character scalar only used as a mark of the returned object.
-#' @slot terms A character vector of length `n`, which contains the term names.
+#' @slot terms A character vector of length `n` which contains the term names.
 #' @slot n_terms An integer scalar of the total number of terms in the DAG.
 #' @slot root An integer index of the root term.
 #' @slot leaves An integer vector of the indicies of leaf terms.
 #' @slot tpl_sorted An integer vector of reordered term indices which has been topologically sorted in the DAG.
 #' @slot tpl_pos The position of the original term in the topologically sorted path (similar as the rank), e.g. the position of term 1 in the sorted path.
-#' @slot annotation A list of two elements: `list` and `names`. The `list` element contains a list of length `n` and each element
-#'         there is a vector of integer indices of annotated items. The full list of annotated items is in the `names` element.
+#' @slot annotation A list of two elements: `list` and `names`. The `dag@annotation$list` element contains a list of length `n` and each element
+#'         is a vector of integer indices of annotated items. The full list of annotated items is in `dag@annotation$names`.
 #' @slot term_env An environment which contains various term-level statistics, mainly for cache purpose.
 #' 
 #' @export ontology_DAG
@@ -334,6 +334,12 @@ dag_all_terms = function(dag) {
 #' 
 #' @return A character or an integer vector.
 #' @export
+#' @examples
+#' parents  = c("a", "a", "b", "b", "c", "d")
+#' children = c("b", "c", "c", "d", "e", "f")
+#' dag = create_ontology_DAG(parents, children)
+#' dag_root(dag)
+#' dag_leaves(dag)
 dag_root = function(dag, in_labels = TRUE) {
 	if(in_labels) {
 		dag@terms[dag@root]
@@ -356,9 +362,9 @@ dag_leaves = function(dag, in_labels = TRUE) {
 #' 
 #' @param dag An `ontology_DAG` object.
 #' 
-#' @details if `relations` is set in `create_ontology_DAG()`, relations are also set as an edge attribute of the `igraph` object.
+#' @details if `relations` is set in `create_ontology_DAG()`, relations are also set as an edge attribute of the [igraph::igraph] object.
 #' 
-#' @return An `igraph` object.
+#' @return An [igraph::igraph] object.
 #' @export
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")

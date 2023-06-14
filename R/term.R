@@ -4,7 +4,8 @@
 #' IC_annotation
 #' 
 #' @section method:
-#' what is IC_annotation
+#' ## what is IC_annotation
+#' blablabla
 #' @rdname temp__IC_annotation
 IC_annotation = function(dag, use_cache = TRUE) {
 
@@ -34,7 +35,8 @@ ADD_IC_METHOD("IC_annotation")
 #' IC_universal
 #' 
 #' @section method:
-#' what is IC_universal
+#' ## what is IC_universal
+#' blablabla
 #' @rdname temp__IC_universal
 IC_universal = function(dag, use_cache = TRUE) {
 	if(is.null(dag@term_env$IC_universal) || !use_cache) {

@@ -20,3 +20,10 @@ A character or an integer vector.
 \description{
 Root or leaves of the DAG
 }
+\examples{
+parents  = c("a", "a", "b", "b", "c", "d")
+children = c("b", "c", "c", "d", "e", "f")
+dag = create_ontology_DAG(parents, children)
+dag_root(dag)
+dag_leaves(dag)
+}

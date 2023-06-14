@@ -52,10 +52,10 @@ max_ancestor_id = function(dag, terms, value, in_labels = FALSE) {
 #' @details
 #' There are the following three types of common ancestors:
 #' 
-#' - MICA: most informative common ancestor: The common ancestor with the highest IC value.
-#' - LCA: lowest common ancestor: The common ancestor with the largest height. If there are multiple ancestors having
+#' - MICA (most informative common ancestor): The common ancestor with the highest IC value.
+#' - LCA (lowest common ancestor): The common ancestor with the largest height. If there are multiple ancestors having
 #'        the max height, the ancestor with the smallest distance to the two terms is taken.
-#' - NCA: nearest common ancestor: The common ancestor with the smallest distance to the two terms. If there are multiple
+#' - NCA (nearest common ancestor): The common ancestor with the smallest distance to the two terms. If there are multiple
 #'        ancestors with the same smallest distance, the ancestor with the largest height is taken.
 #' 
 #' @return 
@@ -63,7 +63,7 @@ max_ancestor_id = function(dag, terms, value, in_labels = FALSE) {
 #' - `MICA_IC()` returns a numeric matrix of the IC of the MICA terms.
 #' - `LCA_term()` returns a character matrix of the LCA term.
 #' - `LCA_depth()` reutrns an integer matrix of the depth of the LCA terms.
-#' - `NCA_term()` returns a character matrix of the nearest common ancestors. The shortest distance can be calculated by `shortest_distances_via_CA()`.
+#' - `NCA_term()` returns a character matrix of the NCA term. The shortest distance can be calculated by [shortest_distances_via_CA()].
 #' @rdname common_ancestor
 #' @export
 #' @examples

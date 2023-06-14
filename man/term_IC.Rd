@@ -21,10 +21,16 @@ Information content
 }
 \section{method}{
 
-what is IC_annotation
+\subsection{what is IC_annotation}{
+
+blablabla
+}
 
 
-what is IC_universal
+\subsection{what is IC_universal}{
+
+blablabla
+}
 
 
 what is IC_Zhang_2006

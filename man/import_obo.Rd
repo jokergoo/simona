@@ -13,9 +13,9 @@ import_obo(file)
 Import .obo file as an ontology_DAG object
 }
 \details{
-Public bio-ontologies can be obtained from Ontology Foundry (http://obofoundry.org/) or BioPortal(https://bioportal.bioontology.org/) where
+Public bio-ontologies can be obtained from \href{http://obofoundry.org/}{Ontology Foundry} or \href{https://bioportal.bioontology.org/}{BioPortal} where
 .obo files for the corresponding ontologies can be easily found. If there is no such .obo format file, the .owl file
-can be converted to the .obo file using the \strong{ROBOT} tool (http://robot.obolibrary.org/). An example command is:
+can be converted to the .obo file using \href{http://robot.obolibrary.org/}{the \strong{ROBOT} tool}. An example command is:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{robot convert --input ontology.owl --output -o ontology.obo --check false
 }\if{html}{\out{</div>}}
