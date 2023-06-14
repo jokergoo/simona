@@ -34,7 +34,7 @@ An integer vector.
 Number of parent/child/ancestor/offspring/leaf terms
 }
 \details{
-Leaf nodes have zero \code{n_leaves} value.
+Leaf nodes have zero \code{n_leaves} value, so you can identify leaf terms based on the value.
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")

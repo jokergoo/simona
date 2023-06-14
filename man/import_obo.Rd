@@ -2,15 +2,18 @@
 % Please edit documentation in R/import.R
 \name{import_obo}
 \alias{import_obo}
-\title{Import .obo file as an ontology_DAG object}
+\title{Import .obo file to an ontology_DAG object}
 \usage{
 import_obo(file)
 }
 \arguments{
-\item{file}{Path of the file or an URL. Pass to \code{\link[base:readLines]{base::readLines()}}.}
+\item{file}{Path of the .obo file or an URL. Pass to \code{\link[base:readLines]{base::readLines()}}.}
+}
+\value{
+An \code{ontology_DAG} object.
 }
 \description{
-Import .obo file as an ontology_DAG object
+Import .obo file to an ontology_DAG object
 }
 \details{
 Public bio-ontologies can be obtained from \href{http://obofoundry.org/}{Ontology Foundry} or \href{https://bioportal.bioontology.org/}{BioPortal} where

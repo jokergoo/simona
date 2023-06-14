@@ -24,12 +24,12 @@ longest_distances_directed(dag, terms)
 Distance on the DAG
 }
 \details{
-Denote two terms as \code{a} and \code{b}, the common ancestor as \code{c}, the distance function \code{d()} calculates the longest
+Denote two terms as \code{a} and \code{b}, a common ancestor as \code{c}, and the distance function \code{d()} calculates the longest
 distance or the shortest distance depending on the function.
 \itemize{
-\item \code{shortest_distances_via_CA()}: It calculates the smallest \code{d(c, a) + d(c, b)} where \code{d()} is the shortest distance between two terms. In this case,
+\item \code{shortest_distances_via_CA()}: It calculates the smallest \code{d(c, a) + d(c, b)} where \code{d()} calculates the shortest distance between two terms. In this case,
 \code{c} is the NCA (nearest common ancestor) of \code{a} and \code{b}.
-\item \code{longest_distances_via_LCA()}: It calculates the largest \code{d(c, a) + d(c, b)} where \code{d()} is the longest distance between two terms. In this case,
+\item \code{longest_distances_via_LCA()}: It calculates the largest \code{d(c, a) + d(c, b)} where \code{d()} calculates the longest distance between two terms via the LCA term. In this case,
 \code{c} is the LCA of \code{a} and \code{b}.
 \item \code{shortest_distances_directed()}: It calculates \code{d(a, b)}. The distance is only calculated when \code{a} is an ancestor of \code{b}.
 \item \code{longest_distances_directed()}: It calculates \code{d(a, b)}. The distance is only calculated when \code{a} is an ancestor of \code{b}.

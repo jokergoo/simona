@@ -46,24 +46,24 @@ max_ancestor_id = function(dag, terms, value, in_labels = FALSE) {
 #' 
 #' @param dag An `ontology_DAG` object.
 #' @param terms A vector of term names.
-#' @param IC_method An IC method. Valid values are in [ALL_IC_METHODS].
-#' @param in_labels Whether the terms are in their names or as the integer indices?
+#' @param IC_method An IC method. Valid values are in [`ALL_IC_METHODS`].
+#' @param in_labels Whether the terms are represented in their names or as the integer indices?
 #' 
 #' @details
 #' There are the following three types of common ancestors:
 #' 
 #' - MICA (most informative common ancestor): The common ancestor with the highest IC value.
-#' - LCA (lowest common ancestor): The common ancestor with the largest height. If there are multiple ancestors having
-#'        the max height, the ancestor with the smallest distance to the two terms is taken.
+#' - LCA (lowest common ancestor): The common ancestor with the largest depth (The depth of a term is the maximal distance from the root term). If there are multiple ancestors having
+#'        the max depth, the ancestor with the smallest distance to the two terms is taken.
 #' - NCA (nearest common ancestor): The common ancestor with the smallest distance to the two terms. If there are multiple
-#'        ancestors with the same smallest distance, the ancestor with the largest height is taken.
+#'        ancestors with the same smallest distance, the ancestor with the largest depth is taken.
 #' 
 #' @return 
-#' - `MICA_term()` returns a character matrix of the MICA terms. 
+#' - `MICA_term()` returns an integer or a character matrix of the MICA terms depending on the value of `in_labels`. 
 #' - `MICA_IC()` returns a numeric matrix of the IC of the MICA terms.
-#' - `LCA_term()` returns a character matrix of the LCA term.
-#' - `LCA_depth()` reutrns an integer matrix of the depth of the LCA terms.
-#' - `NCA_term()` returns a character matrix of the NCA term. The shortest distance can be calculated by [shortest_distances_via_CA()].
+#' - `LCA_term()` returns an integer or a character matrix of the LCA term depending on the value of `in_labels`.
+#' - `LCA_depth()` returns an integer matrix of the depth of the LCA terms.
+#' - `NCA_term()` returns an integer or a character matrix of the NCA term depending on the value of `in_labels`. The shortest distance from NCA terms can be calculated by [`shortest_distances_via_CA()`].
 #' @rdname common_ancestor
 #' @export
 #' @examples

@@ -17,12 +17,12 @@ create_ontology_DAG(
 
 \item{children}{A character vector of child terms.}
 
-\item{relations}{A character vector of parent-child relations, e.g. "isa" or "part of".}
+\item{relations}{A character vector of parent-child relations, e.g. "isa", "part of", or self-defined semantic relations.}
 
-\item{source}{Source of the ontology. It is simply used as a mark of the object.}
+\item{source}{Source of the ontology. It is only used as a mark of the object.}
 
-\item{annotation}{A list of character items that are annotated to the terms. Names of the list should be the term names. In the DAG, items
-annotated to a term will also be annotated to its parents. Such upstreaming merging
+\item{annotation}{A list of character vectors which contain items annotated to the terms. Names of the list should be the term names. In the DAG, items
+annotated to a term will also be annotated to its parents. Such merging
 is applied automatically in the package.}
 }
 \value{
@@ -37,6 +37,8 @@ children = c("b", "c", "c", "d", "e", "f")
 dag = create_ontology_DAG(parents, children)
 
 # with annotations
+# the items in `annotation` are better in character, but they will be 
+# internally converted to character.
 annotation = list(
     "a" = 1:3,
     "b" = 3:4,

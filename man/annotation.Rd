@@ -3,7 +3,7 @@
 \name{term_annotations}
 \alias{term_annotations}
 \alias{annotated_terms}
-\title{Get term-item associations}
+\title{Term-item associations}
 \usage{
 term_annotations(dag, terms, return = "list")
 
@@ -22,7 +22,7 @@ annotated_terms(dag, anno, return = "list")
 A list or a binary matrix showing annotation relations between terms and items.
 }
 \description{
-Get term-item associations
+Term-item associations
 }
 \details{
 If an item is annotated to a term, all this term's ancestor terms are also annotated.
@@ -40,5 +40,8 @@ annotation = list(
 )
 dag = create_ontology_DAG(parents, children, annotation = annotation)
 term_annotations(dag, letters[1:6])
+
+# The integers in `annotation` is internally converted to characters,
+# so here we use the character form of the items.
 annotated_terms(dag, c("1", "2", "3"))
 }

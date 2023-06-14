@@ -18,12 +18,15 @@ An integer vector.
 Number of annotated items
 }
 \details{
-Due to the nature of DAG, a parent term includes all annotated items of its child terms. This upstream-merging
-is automatically applied in the function.
+Due to the nature of DAG, a parent term includes all annotated items of its child terms. This offspring-merging
+is automatically applied in this function. In other words, the value corresponds to the union of items annotated to the term
+and all its offspring terms.
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")
 children = c("b", "c", "c", "d", "e", "f")
+# the items in `annotation` are better in character, but they will be 
+# internally converted to character.
 annotation = list(
     "a" = 1:3,
     "b" = 3:4,

@@ -23,17 +23,17 @@ NCA_term(dag, terms, in_labels = TRUE)
 
 \item{terms}{A vector of term names.}
 
-\item{IC_method}{An IC method. Valid values are in \link{ALL_IC_METHODS}.}
+\item{IC_method}{An IC method. Valid values are in \code{\link{ALL_IC_METHODS}}.}
 
-\item{in_labels}{Whether the terms are in their names or as the integer indices?}
+\item{in_labels}{Whether the terms are represented in their names or as the integer indices?}
 }
 \value{
 \itemize{
-\item \code{MICA_term()} returns a character matrix of the MICA terms.
+\item \code{MICA_term()} returns an integer or a character matrix of the MICA terms depending on the value of \code{in_labels}.
 \item \code{MICA_IC()} returns a numeric matrix of the IC of the MICA terms.
-\item \code{LCA_term()} returns a character matrix of the LCA term.
-\item \code{LCA_depth()} reutrns an integer matrix of the depth of the LCA terms.
-\item \code{NCA_term()} returns a character matrix of the NCA term. The shortest distance can be calculated by \code{\link[=shortest_distances_via_CA]{shortest_distances_via_CA()}}.
+\item \code{LCA_term()} returns an integer or a character matrix of the LCA term depending on the value of \code{in_labels}.
+\item \code{LCA_depth()} returns an integer matrix of the depth of the LCA terms.
+\item \code{NCA_term()} returns an integer or a character matrix of the NCA term depending on the value of \code{in_labels}. The shortest distance from NCA terms can be calculated by \code{\link[=shortest_distances_via_CA]{shortest_distances_via_CA()}}.
 }
 }
 \description{
@@ -43,10 +43,10 @@ Various types of common ancestors
 There are the following three types of common ancestors:
 \itemize{
 \item MICA (most informative common ancestor): The common ancestor with the highest IC value.
-\item LCA (lowest common ancestor): The common ancestor with the largest height. If there are multiple ancestors having
-the max height, the ancestor with the smallest distance to the two terms is taken.
+\item LCA (lowest common ancestor): The common ancestor with the largest depth (The depth of a term is the maximal distance from the root term). If there are multiple ancestors having
+the max depth, the ancestor with the smallest distance to the two terms is taken.
 \item NCA (nearest common ancestor): The common ancestor with the smallest distance to the two terms. If there are multiple
-ancestors with the same smallest distance, the ancestor with the largest height is taken.
+ancestors with the same smallest distance, the ancestor with the largest depth is taken.
 }
 }
 \examples{

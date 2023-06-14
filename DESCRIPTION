@@ -1,4 +1,4 @@
-Package: ontsim
+Package: simone
 Type: Package
 Title: Semantic Similarity in Ontologies
 Version: 0.99.0
@@ -15,7 +15,7 @@ Description: It provides a rich set of implementations for similarity analysis o
     including calculating information content, similarity between two terms as well as between
     two groups of terms on the ontology.
 biocViews: Software
-URL: https://github.com/jokergoo/ontsim
+URL: https://github.com/jokergoo/simone
 License: MIT + file LICENSE
 RoxygenNote: 7.2.3
 Encoding: UTF-8

@@ -1,4 +1,4 @@
 library(testthat)
-suppressWarnings(suppressPackageStartupMessages(library(ontsim)))
+suppressWarnings(suppressPackageStartupMessages(library(simone)))
 
-test_check("ontsim")
+test_check("simone")

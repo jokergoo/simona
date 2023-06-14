@@ -8,7 +8,7 @@
 #' 
 #' @rdname all_methods
 #' @export
-#' @return A vector all supported methods.
+#' @return A vector of all supported methods.
 #' @examples
 #' ALL_IC_METHODS
 #' ALL_TERM_SIM_METHODS

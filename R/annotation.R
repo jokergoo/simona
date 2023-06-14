@@ -7,13 +7,17 @@
 #' @param use_cache Internally used.
 #' 
 #' @details
-#' Due to the nature of DAG, a parent term includes all annotated items of its child terms. This upstream-merging
-#' is automatically applied in the function.
+#' Due to the nature of DAG, a parent term includes all annotated items of its child terms. This offspring-merging
+#' is automatically applied in this function. In other words, the value corresponds to the union of items annotated to the term
+#' and all its offspring terms.
+#' 
 #' @returns An integer vector.
 #' @export
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
 #' children = c("b", "c", "c", "d", "e", "f")
+#' # the items in `annotation` are better in character, but they will be 
+#' # internally converted to character.
 #' annotation = list(
 #'     "a" = 1:3,
 #'     "b" = 3:4,
@@ -74,7 +78,7 @@ validate_annotated_terms = function(dag, id) {
 }
 
 
-#' Get term-item associations
+#' Term-item associations
 #' 
 #' @param dag An `ontology_DAG` object.
 #' @param terms A vector of term names.
@@ -100,6 +104,9 @@ validate_annotated_terms = function(dag, id) {
 #' )
 #' dag = create_ontology_DAG(parents, children, annotation = annotation)
 #' term_annotations(dag, letters[1:6])
+#' 
+#' # The integers in `annotation` is internally converted to characters,
+#' # so here we use the character form of the items.
 #' annotated_terms(dag, c("1", "2", "3"))
 term_annotations = function(dag, terms, return = "list") {
 	validate_dag_has_annotation(dag)

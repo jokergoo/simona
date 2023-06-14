@@ -1,7 +1,7 @@
 
-#' Import .obo file as an ontology_DAG object
+#' Import .obo file to an ontology_DAG object
 #' 
-#' @param file Path of the file or an URL. Pass to [base::readLines()].
+#' @param file Path of the .obo file or an URL. Pass to [`base::readLines()`].
 #' 
 #' @details Public bio-ontologies can be obtained from [Ontology Foundry](http://obofoundry.org/) or [BioPortal](https://bioportal.bioontology.org/) where
 #'    .obo files for the corresponding ontologies can be easily found. If there is no such .obo format file, the .owl file
@@ -11,6 +11,7 @@
 #' robot convert --input ontology.owl --output -o ontology.obo --check false
 #' ```
 #' 
+#' @return An `ontology_DAG` object.
 #' @export
 #' @examples
 #' \dontrun{

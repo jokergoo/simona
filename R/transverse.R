@@ -4,9 +4,10 @@
 #' 
 #' @param dag An `ontology_DAG` object.
 #' @param term For `dag_parents()` and `dag_children()`, the value should be a single term name.
-#'             For `dag_ancestors()` and `dag_offspring()`, the value can be a vector of term names.
-#' @param in_labels Whether to return the numeric indices or in their term names.
-#' @param include_self For `dag_offspring()` and `dag_ancestors()`, this controls whether to also contain the query term itself.
+#'             For `dag_ancestors()` and `dag_offspring()`, the value can be a vector of multiple term names. If it is a vector, it returns
+#'             union of the ancestor or offspring terms of the selected set of terms.
+#' @param in_labels Whether the terms are represented in their names or as the integer indices?
+#' @param include_self For `dag_offspring()` and `dag_ancestors()`, this controls whether to also contain the query term itself/themselves.
 #' 
 #' @return An integer vector or a character vector depending on the value of `in_labels`.
 #' @rdname dag_terms
@@ -154,7 +155,7 @@ n_ancestors = function(dag, term = NULL, use_cache = TRUE, include_self = FALSE)
 }
 
 #' @rdname n_terms
-#' @details Leaf nodes have zero `n_leaves` value.
+#' @details Leaf nodes have zero `n_leaves` value, so you can identify leaf terms based on the value.
 #' @export
 n_leaves = function(dag, term = NULL, use_cache = TRUE) {
 	if(is.null(dag@term_env$n_leaves) || !use_cache) {
@@ -219,15 +220,15 @@ dag_ancestors_of_two_groups = function(dag, group1, group2, type = "union", in_l
 
 
 
-#' Depth and height of the DAG
+#' Depth and height in the DAG
 #' 
 #' @param dag An `ontology_DAG` object.
 #' @param use_cache Internally used.
 #' @details
 #' The depth of a term in the DAG is defined as the maximal distance from the root. The height
-#' of a term in the DAG is the maximal finite distance to the leaf nodes.
+#' of a term in the DAG is the maximal finite distance to the leaf terms
 #' 
-#' `dag_dist_from_root()` and `dag_dist_from_leaves()` calculate the minimal distance to the root or to the leaves.
+#' `dag_dist_from_root()` and `dag_dist_from_leaves()` calculate the minimal distance from the root or to the leaves.
 #' 
 #' @return An integer vector.
 #' @export

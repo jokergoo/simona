@@ -21,7 +21,7 @@ ALL_TERM_SIM_METHODS
 ALL_GROUP_SIM_METHODS
 }
 \value{
-A vector all supported methods.
+A vector of all supported methods.
 }
 \description{
 Supported methods

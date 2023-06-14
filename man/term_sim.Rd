@@ -11,118 +11,204 @@ term_sim(dag, terms, method, control = list())
 
 \item{terms}{A vector of term names.}
 
-\item{method}{A similarity method. All available methods are in \link{ALL_TERM_SIM_METHODS}.}
+\item{method}{A term similarity method. All available methods are in \code{\link{ALL_TERM_SIM_METHODS}}.}
 
-\item{control}{A list of parameters passing to individual methods.}
+\item{control}{A list of parameters passing to individual methods. See the subsections.}
 }
 \value{
-A numeric matrix.
+A numeric symmetric matrix.
 }
 \description{
 Semantic similarity
 }
 \section{method}{
 
-what is Sim_Ling_1998
+\subsection{Sim_Ling_1998}{
+
+Paper link: \url{https://dl.acm.org/doi/10.5555/645527.657297}.
+}
 
 
-what is Sim_Resnik_1999
+\subsection{Sim_Resnik_1999}{
+
+Paper link: \url{https://doi.org/10.1613/jair.514}, \url{https://doi.org/10.1186/1471-2105-9-S5-S4}, \url{https://doi.org/10.1186/1471-2105-11-562}, \url{https://doi.org/10.1155/2013/292063}.
+}
 
 
-what is Sim_FaITH_2010
+\subsection{Sim_FaITH_2010}{
+
+\url{https://doi.org/10.1007/978-3-642-17746-0_39}.
+}
 
 
-what is Sim_PS_2008
+\subsection{Sim_PS_2008}{
+
+\url{https://doi.org/10.1016/j.datak.2009.06.008}.
+}
 
 
-what is Sim_Relevance_2006
+\subsection{Sim_Relevance_2006}{
+
+\url{https://doi.org/10.1186/1471-2105-7-302}
+}
 
 
-what is Sim_SimIC_2010
+\subsection{Sim_SimIC_2010}{
+
+\url{https://doi.org/10.48550/arXiv.1001.0958}.
+}
 
 
-what is Sim_EISI_2015
+\subsection{Sim_EISI_2015}{
+
+\url{https://doi.org/10.1016/j.gene.2014.12.062}
+}
 
 
-what is Sim_XGraSM_2013
+\subsection{Sim_XGraSM_2013}{
+
+\url{https://doi.org/10.1186/1471-2105-14-284}
+}
 
 
-what is Sim_GraSM_2005
+\subsection{Sim_GraSM_2005}{
+
+\url{https://doi.org/10.1145/1099554.1099658}.
+}
 
 
-what is Sim_AIC_2014
+\subsection{Sim_AIC_2014}{
+
+\url{https://doi.org/10.1109/tcbb.2013.176}.
+}
 
 
-what is Sim_Zhang_2006
+\subsection{Sim_Zhang_2006}{
+}
 
 
 what is Sim_universal
 
 
-what is Sim_Wang_2007
+\subsection{Sim_Wang_2007}{
+
+Paper link: \url{https://doi.org/10.1093/bioinformatics/btm087}.
+}
 
 
-what is Sim_Rada_1989
+\subsection{Sim_Rada_1989}{
+
+\url{https://doi.org/10.1109/21.24528}
+}
 
 
-what is Sim_Resnik_edge_2012
+\subsection{Sim_Resnik_edge_2005}{
+
+\url{https://doi.org/10.1145/1097047.1097051}
+}
 
 
-what is Sim_Leocock_1998
+\subsection{Sim_Leocock_1998}{
+
+\url{https://ieeexplore.ieee.org/document/6287675}
+}
 
 
 what is Sim_WP_1994
 
 
-what is Sim_Slimani_2006
+\subsection{Sim_Slimani_2006}{
+
+\url{https://zenodo.org/record/1075130}
+}
 
 
-what is Sim_Shenoy_2012
+\subsection{Sim_Shenoy_2012}{
+
+\url{https://doi.org/10.48550/arXiv.1211.4709}.
+}
 
 
-what is Sim_Pekar_2002
+\subsection{Sim_Pekar_2002}{
+
+\url{https://aclanthology.org/C02-1090/}.
+}
 
 
-what is Sim_Stojanovic_2001
+\subsection{Sim_Stojanovic_2001}{
+
+\url{https://doi.org/10.1145/500737.500762}
+}
 
 
-what is Sim_Wang_edge_2012
+\subsection{Sim_Wang_edge_2012}{
+
+\url{https://doi.org/10.1186/1477-5956-10-s1-s18}.
+}
 
 
-what is Sim_Zhong_2002
+\subsection{Sim_Zhong_2002}{
+
+\url{https://doi.org/10.1007/3-540-45483-7_8}
+}
 
 
-what is Sim_AlMubaid_2006
+\subsection{Sim_AlMubaid_2006}{
+
+\url{https://doi.org/10.1109/IEMBS.2006.259235}
+}
 
 
-what is Sim_Li_2003
+\subsection{Sim_Li_2003}{
+
+\url{https://doi.org/10.1109/TKDE.2003.1209005}
+}
 
 
-what is Sim_RSS_2013
+\subsection{Sim_RSS_2013}{
+
+\url{https://doi.org/10.1371/journal.pone.0066745}
+}
 
 
-what is Sim_HRSS_2013
+\subsection{Sim_HRSS_2013}{
+
+\url{https://doi.org/10.1371/journal.pone.0066745}
+}
 
 
-what is Sim_Shen_2010
+\subsection{Sim_Shen_2010}{
+
+\url{https://doi.org/10.1109/BIBM.2010.5706623}
+}
 
 
-what is Sim_SSDD_2013
+\subsection{Sim_SSDD_2013}{
+
+\url{https://doi.org/10.1016/j.ygeno.2013.04.010}
+}
 
 
-what is Sim_Jiang_1997
+\subsection{Sim_Jiang_1997}{
+
+\url{https://aclanthology.org/O97-1002/}
+}
 
 
-what is Sim_Kappa
+\subsection{Sim_Kappa}{
+}
 
 
-what is Sim_Jaccard
+\subsection{Sim_Jaccard}{
+}
 
 
-what is Sim_Dice
+\subsection{Sim_Dice}{
+}
 
 
-what is Sim_Overlap
+\subsection{Sim_Overlap}{
+}
 }
 
 \examples{

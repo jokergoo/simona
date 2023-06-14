@@ -2,202 +2,202 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 cpp_n_annotations <- function(dag) {
-    .Call(`_ontsim_cpp_n_annotations`, dag)
+    .Call(`_simone_cpp_n_annotations`, dag)
 }
 
 cpp_get_term_annotations <- function(dag, nodes) {
-    .Call(`_ontsim_cpp_get_term_annotations`, dag, nodes)
+    .Call(`_simone_cpp_get_term_annotations`, dag, nodes)
 }
 
 cpp_get_annotated_terms <- function(dag, anno_id) {
-    .Call(`_ontsim_cpp_get_annotated_terms`, dag, anno_id)
+    .Call(`_simone_cpp_get_annotated_terms`, dag, anno_id)
 }
 
 cpp_max_ancestor_v <- function(dag, nodes, v) {
-    .Call(`_ontsim_cpp_max_ancestor_v`, dag, nodes, v)
+    .Call(`_simone_cpp_max_ancestor_v`, dag, nodes, v)
 }
 
 cpp_max_ancestor_id <- function(dag, nodes, v) {
-    .Call(`_ontsim_cpp_max_ancestor_id`, dag, nodes, v)
+    .Call(`_simone_cpp_max_ancestor_id`, dag, nodes, v)
 }
 
 cpp_shortest_distances_via_CA <- function(dag, nodes) {
-    .Call(`_ontsim_cpp_shortest_distances_via_CA`, dag, nodes)
+    .Call(`_simone_cpp_shortest_distances_via_CA`, dag, nodes)
 }
 
 cpp_longest_distances_via_LCA <- function(dag, nodes) {
-    .Call(`_ontsim_cpp_longest_distances_via_LCA`, dag, nodes)
+    .Call(`_simone_cpp_longest_distances_via_LCA`, dag, nodes)
 }
 
 cpp_longest_distances_from_LCA <- function(dag, nodes) {
-    .Call(`_ontsim_cpp_longest_distances_from_LCA`, dag, nodes)
+    .Call(`_simone_cpp_longest_distances_from_LCA`, dag, nodes)
 }
 
 cpp_longest_distances_directed <- function(dag, nodes) {
-    .Call(`_ontsim_cpp_longest_distances_directed`, dag, nodes)
+    .Call(`_simone_cpp_longest_distances_directed`, dag, nodes)
 }
 
 cpp_shortest_distances_directed <- function(dag, nodes) {
-    .Call(`_ontsim_cpp_shortest_distances_directed`, dag, nodes)
+    .Call(`_simone_cpp_shortest_distances_directed`, dag, nodes)
 }
 
 cpp_nearest_common_ancestor <- function(dag, nodes) {
-    .Call(`_ontsim_cpp_nearest_common_ancestor`, dag, nodes)
+    .Call(`_simone_cpp_nearest_common_ancestor`, dag, nodes)
 }
 
 cpp_tpl_shortest_path_length <- function(dag, from, to) {
-    .Call(`_ontsim_cpp_tpl_shortest_path_length`, dag, from, to)
+    .Call(`_simone_cpp_tpl_shortest_path_length`, dag, from, to)
 }
 
 cpp_tpl_longest_path_length <- function(dag, from, to) {
-    .Call(`_ontsim_cpp_tpl_longest_path_length`, dag, from, to)
+    .Call(`_simone_cpp_tpl_longest_path_length`, dag, from, to)
 }
 
 cpp_tpl_shortest_path <- function(dag, from, to) {
-    .Call(`_ontsim_cpp_tpl_shortest_path`, dag, from, to)
+    .Call(`_simone_cpp_tpl_shortest_path`, dag, from, to)
 }
 
 cpp_tpl_longest_path <- function(dag, from, to) {
-    .Call(`_ontsim_cpp_tpl_longest_path`, dag, from, to)
+    .Call(`_simone_cpp_tpl_longest_path`, dag, from, to)
 }
 
 cpp_term_pos_on_circle <- function(dag) {
-    .Call(`_ontsim_cpp_term_pos_on_circle`, dag)
+    .Call(`_simone_cpp_term_pos_on_circle`, dag)
 }
 
 cpp_sim_aic <- function(dag, nodes, ic) {
-    .Call(`_ontsim_cpp_sim_aic`, dag, nodes, ic)
+    .Call(`_simone_cpp_sim_aic`, dag, nodes, ic)
 }
 
 cpp_sim_wang <- function(dag, nodes, contribution) {
-    .Call(`_ontsim_cpp_sim_wang`, dag, nodes, contribution)
+    .Call(`_simone_cpp_sim_wang`, dag, nodes, contribution)
 }
 
 cpp_sim_wang_edge <- function(dag, nodes) {
-    .Call(`_ontsim_cpp_sim_wang_edge`, dag, nodes)
+    .Call(`_simone_cpp_sim_wang_edge`, dag, nodes)
 }
 
 cpp_sim_zhong <- function(dag, nodes, depth_via_LCA) {
-    .Call(`_ontsim_cpp_sim_zhong`, dag, nodes, depth_via_LCA)
+    .Call(`_simone_cpp_sim_zhong`, dag, nodes, depth_via_LCA)
 }
 
 cpp_sim_shen <- function(dag, nodes, ic) {
-    .Call(`_ontsim_cpp_sim_shen`, dag, nodes, ic)
+    .Call(`_simone_cpp_sim_shen`, dag, nodes, ic)
 }
 
 cpp_sim_SSDD <- function(dag, nodes, t) {
-    .Call(`_ontsim_cpp_sim_SSDD`, dag, nodes, t)
+    .Call(`_simone_cpp_sim_SSDD`, dag, nodes, t)
 }
 
 cpp_common_ancestor_mean_IC_XGraSM <- function(dag, nodes, ic) {
-    .Call(`_ontsim_cpp_common_ancestor_mean_IC_XGraSM`, dag, nodes, ic)
+    .Call(`_simone_cpp_common_ancestor_mean_IC_XGraSM`, dag, nodes, ic)
 }
 
 cpp_common_ancestor_mean_IC_EISI <- function(dag, nodes, ic) {
-    .Call(`_ontsim_cpp_common_ancestor_mean_IC_EISI`, dag, nodes, ic)
+    .Call(`_simone_cpp_common_ancestor_mean_IC_EISI`, dag, nodes, ic)
 }
 
 cpp_common_ancestor_mean_IC_GraSM <- function(dag, nodes, ic) {
-    .Call(`_ontsim_cpp_common_ancestor_mean_IC_GraSM`, dag, nodes, ic)
+    .Call(`_simone_cpp_common_ancestor_mean_IC_GraSM`, dag, nodes, ic)
 }
 
 cpp_ic_meng <- function(dag, correct) {
-    .Call(`_ontsim_cpp_ic_meng`, dag, correct)
+    .Call(`_simone_cpp_ic_meng`, dag, correct)
 }
 
 cpp_ic_wang <- function(dag, contribution) {
-    .Call(`_ontsim_cpp_ic_wang`, dag, contribution)
+    .Call(`_simone_cpp_ic_wang`, dag, contribution)
 }
 
 cpp_max_leaves_id <- function(dag, nodes, v) {
-    .Call(`_ontsim_cpp_max_leaves_id`, dag, nodes, v)
+    .Call(`_simone_cpp_max_leaves_id`, dag, nodes, v)
 }
 
 cpp_ancestors <- function(dag, node, include_self = FALSE) {
-    .Call(`_ontsim_cpp_ancestors`, dag, node, include_self)
+    .Call(`_simone_cpp_ancestors`, dag, node, include_self)
 }
 
 cpp_ancestors_within_background <- function(dag, node, background, include_self = FALSE) {
-    .Call(`_ontsim_cpp_ancestors_within_background`, dag, node, background, include_self)
+    .Call(`_simone_cpp_ancestors_within_background`, dag, node, background, include_self)
 }
 
 cpp_offspring <- function(dag, node, include_self = FALSE) {
-    .Call(`_ontsim_cpp_offspring`, dag, node, include_self)
+    .Call(`_simone_cpp_offspring`, dag, node, include_self)
 }
 
 cpp_offspring_within_background <- function(dag, node, background, include_self = FALSE) {
-    .Call(`_ontsim_cpp_offspring_within_background`, dag, node, background, include_self)
+    .Call(`_simone_cpp_offspring_within_background`, dag, node, background, include_self)
 }
 
 cpp_connected_leaves <- function(dag, node) {
-    .Call(`_ontsim_cpp_connected_leaves`, dag, node)
+    .Call(`_simone_cpp_connected_leaves`, dag, node)
 }
 
 cpp_n_ancestors <- function(dag, include_self = FALSE) {
-    .Call(`_ontsim_cpp_n_ancestors`, dag, include_self)
+    .Call(`_simone_cpp_n_ancestors`, dag, include_self)
 }
 
 cpp_n_offspring <- function(dag, include_self = FALSE) {
-    .Call(`_ontsim_cpp_n_offspring`, dag, include_self)
+    .Call(`_simone_cpp_n_offspring`, dag, include_self)
 }
 
 cpp_n_leaves <- function(dag) {
-    .Call(`_ontsim_cpp_n_leaves`, dag)
+    .Call(`_simone_cpp_n_leaves`, dag)
 }
 
 cpp_ancestors_of_a_group <- function(dag, nodes, type = 1L, include_self = FALSE) {
-    .Call(`_ontsim_cpp_ancestors_of_a_group`, dag, nodes, type, include_self)
+    .Call(`_simone_cpp_ancestors_of_a_group`, dag, nodes, type, include_self)
 }
 
 cpp_ancestors_of_two_groups <- function(dag, nodes1, nodes2, type, include_self = FALSE) {
-    .Call(`_ontsim_cpp_ancestors_of_two_groups`, dag, nodes1, nodes2, type, include_self)
+    .Call(`_simone_cpp_ancestors_of_two_groups`, dag, nodes1, nodes2, type, include_self)
 }
 
 cpp_offspring_of_a_group <- function(dag, nodes, include_self = FALSE) {
-    .Call(`_ontsim_cpp_offspring_of_a_group`, dag, nodes, include_self)
+    .Call(`_simone_cpp_offspring_of_a_group`, dag, nodes, include_self)
 }
 
 cpp_is_reachable <- function(dag, nodes, directed = FALSE) {
-    .Call(`_ontsim_cpp_is_reachable`, dag, nodes, directed)
+    .Call(`_simone_cpp_is_reachable`, dag, nodes, directed)
 }
 
 cpp_dag_depth <- function(dag) {
-    .Call(`_ontsim_cpp_dag_depth`, dag)
+    .Call(`_simone_cpp_dag_depth`, dag)
 }
 
 cpp_dag_dist_from_root <- function(dag) {
-    .Call(`_ontsim_cpp_dag_dist_from_root`, dag)
+    .Call(`_simone_cpp_dag_dist_from_root`, dag)
 }
 
 cpp_dag_longest_dist_to_offspring <- function(dag, from_node, l_background = logical(0)) {
-    .Call(`_ontsim_cpp_dag_longest_dist_to_offspring`, dag, from_node, l_background)
+    .Call(`_simone_cpp_dag_longest_dist_to_offspring`, dag, from_node, l_background)
 }
 
 cpp_dag_shortest_dist_to_offspring <- function(dag, from_node, l_background = logical(0)) {
-    .Call(`_ontsim_cpp_dag_shortest_dist_to_offspring`, dag, from_node, l_background)
+    .Call(`_simone_cpp_dag_shortest_dist_to_offspring`, dag, from_node, l_background)
 }
 
 cpp_dag_height <- function(dag) {
-    .Call(`_ontsim_cpp_dag_height`, dag)
+    .Call(`_simone_cpp_dag_height`, dag)
 }
 
 cpp_dag_dist_from_leaves <- function(dag) {
-    .Call(`_ontsim_cpp_dag_dist_from_leaves`, dag)
+    .Call(`_simone_cpp_dag_dist_from_leaves`, dag)
 }
 
 cpp_dag_longest_dist_to_ancestor <- function(dag, from_node, l_background = logical(0)) {
-    .Call(`_ontsim_cpp_dag_longest_dist_to_ancestor`, dag, from_node, l_background)
+    .Call(`_simone_cpp_dag_longest_dist_to_ancestor`, dag, from_node, l_background)
 }
 
 cpp_dag_shortest_dist_to_ancestor <- function(dag, from_node, l_background = logical(0)) {
-    .Call(`_ontsim_cpp_dag_shortest_dist_to_ancestor`, dag, from_node, l_background)
+    .Call(`_simone_cpp_dag_shortest_dist_to_ancestor`, dag, from_node, l_background)
 }
 
 cpp_check_cyclic_node <- function(dag) {
-    invisible(.Call(`_ontsim_cpp_check_cyclic_node`, dag))
+    invisible(.Call(`_simone_cpp_check_cyclic_node`, dag))
 }
 
 cpp_match_index <- function(ind1, ind2) {
-    .Call(`_ontsim_cpp_match_index`, ind1, ind2)
+    .Call(`_simone_cpp_match_index`, ind1, ind2)
 }
 

@@ -5,7 +5,7 @@
 \alias{dag_height}
 \alias{dag_dist_from_root}
 \alias{dag_dist_from_leaves}
-\title{Depth and height of the DAG}
+\title{Depth and height in the DAG}
 \usage{
 dag_depth(dag, use_cache = TRUE)
 
@@ -24,13 +24,13 @@ dag_dist_from_leaves(dag, use_cache = TRUE)
 An integer vector.
 }
 \description{
-Depth and height of the DAG
+Depth and height in the DAG
 }
 \details{
 The depth of a term in the DAG is defined as the maximal distance from the root. The height
-of a term in the DAG is the maximal finite distance to the leaf nodes.
+of a term in the DAG is the maximal finite distance to the leaf terms
 
-\code{dag_dist_from_root()} and \code{dag_dist_from_leaves()} calculate the minimal distance to the root or to the leaves.
+\code{dag_dist_from_root()} and \code{dag_dist_from_leaves()} calculate the minimal distance from the root or to the leaves.
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")

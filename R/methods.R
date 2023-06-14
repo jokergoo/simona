@@ -5,8 +5,8 @@
 #' Information content
 #' 
 #' @param dag An `ontology_DAG` object.
-#' @param method An IC method. All available methods are in [ALL_IC_METHODS].
-#' @param control A list of parameters passing to individual methods.
+#' @param method An IC method. All available methods are in [`ALL_IC_METHODS`].
+#' @param control A list of parameters passing to individual methods. See the subsections.
 #' 
 #' @inheritSection IC_annotation method
 #' @inheritSection IC_universal method
@@ -60,8 +60,8 @@ get_IC_method = function(method) {
 #' 
 #' @param dag An `ontology_DAG` object.
 #' @param terms A vector of term names.
-#' @param method A similarity method. All available methods are in [ALL_TERM_SIM_METHODS].
-#' @param control A list of parameters passing to individual methods.
+#' @param method A term similarity method. All available methods are in [`ALL_TERM_SIM_METHODS`].
+#' @param control A list of parameters passing to individual methods. See the subsections.
 #' 
 #' @inheritSection Sim_Ling_1998 method
 #' @inheritSection Sim_Resnik_1999 method
@@ -77,7 +77,7 @@ get_IC_method = function(method) {
 #' @inheritSection Sim_universal method
 #' @inheritSection Sim_Wang_2007 method
 #' @inheritSection Sim_Rada_1989 method
-#' @inheritSection Sim_Resnik_edge_2012 method
+#' @inheritSection Sim_Resnik_edge_2005 method
 #' @inheritSection Sim_Leocock_1998 method
 #' @inheritSection Sim_WP_1994 method
 #' @inheritSection Sim_Slimani_2006 method
@@ -98,7 +98,7 @@ get_IC_method = function(method) {
 #' @inheritSection Sim_Dice method
 #' @inheritSection Sim_Overlap method
 #' 
-#' @return A numeric matrix.
+#' @return A numeric symmetric matrix.
 #' @export
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
@@ -133,9 +133,9 @@ get_term_sim_method = function(method) {
 #' @param dag An `ontology_DAG` object.
 #' @param group1 A vector of term names.
 #' @param group2 A vector of term names.
-#' @param method Group similarity method. All available methods are in [ALL_GROUP_SIM_METHODS].
-#' @param sim_method Term similarity method. All available methods are in [ALL_TERM_SIM_METHODS].
-#' @param control A list of parameters passing to individual methods.
+#' @param method A group similarity method. All available methods are in [`ALL_GROUP_SIM_METHODS`].
+#' @param sim_method A Term similarity method. All available methods are in [`ALL_TERM_SIM_METHODS`].
+#' @param control A list of parameters passing to individual methods. See the subsections.
 #'
 #' @inheritSection GroupSim_pairwise_avg method
 #' @inheritSection GroupSim_pairwise_max method
@@ -165,6 +165,16 @@ get_term_sim_method = function(method) {
 #' @inheritSection GroupSim_Dice method
 #' @inheritSection GroupSim_Overlap method
 #' @inheritSection GroupSim_Kappa method
+#' 
+#' @details
+#' If `annotation` is set in `create_ontology_DAG()` and you want to directly calculate semantic similarity between two
+#' annotated items, you can first get the associated terms of the two items by [`annotated_terms()`]:
+#' 
+#' ```
+#' group1 = annotated_terms(dag, item1)
+#' group2 = annotated_terms(dag, item2)
+#' group_sim(dag, group1, group2, ...)
+#' ```
 #' 
 #' @return A numeric scalar.
 #' @export

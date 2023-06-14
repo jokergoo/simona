@@ -13,17 +13,26 @@ group_sim(dag, group1, group2, method, sim_method, control = list())
 
 \item{group2}{A vector of term names.}
 
-\item{method}{Group similarity method. All available methods are in \link{ALL_GROUP_SIM_METHODS}.}
+\item{method}{A group similarity method. All available methods are in \code{\link{ALL_GROUP_SIM_METHODS}}.}
 
-\item{sim_method}{Term similarity method. All available methods are in \link{ALL_TERM_SIM_METHODS}.}
+\item{sim_method}{A Term similarity method. All available methods are in \code{\link{ALL_TERM_SIM_METHODS}}.}
 
-\item{control}{A list of parameters passing to individual methods.}
+\item{control}{A list of parameters passing to individual methods. See the subsections.}
 }
 \value{
 A numeric scalar.
 }
 \description{
 Semantic similarity between two groups of terms
+}
+\details{
+If \code{annotation} is set in \code{create_ontology_DAG()} and you want to directly calculate semantic similarity between two
+annotated items, you can first get the associated terms of the two items by \code{\link[=annotated_terms]{annotated_terms()}}:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group1 = annotated_terms(dag, item1)
+group2 = annotated_terms(dag, item2)
+group_sim(dag, group1, group2, ...)
+}\if{html}{\out{</div>}}
 }
 \section{method}{
 

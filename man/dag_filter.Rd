@@ -7,13 +7,17 @@
 dag_filter(dag, terms = NULL, relations = NULL, root = NULL, leaves = NULL)
 }
 \arguments{
-\item{dag}{A \code{ontology_DAG} object.}
+\item{dag}{An \code{ontology_DAG} object.}
 
-\item{terms}{A vectof of term names. The sub DAG will only contain these terms.}
+\item{terms}{A vector of term names. The sub-DAG will only contain these terms.}
 
-\item{relations}{A vector of relations. The sub DAG will only contain these relations.}
+\item{relations}{A vector of relations. The sub-DAG will only contain these relations.
+Valid values of "relations" should correspond to the values set in the
+\code{relations} argument in the \code{\link[=create_ontology_DAG]{create_ontology_DAG()}}.}
 
-\item{root}{A vector of root terms. Only they with their offspring terms will be kept.}
+\item{root}{A vector of term names which will be used as the root of the sub-DAG. Only
+they with their offspring terms will be kept. If there are multiple root terms set,
+a super root will be automatically added.}
 
 \item{leaves}{A vector of leaf terms. Only they with their ancestor terms will are kept.}
 }
@@ -24,7 +28,7 @@ An \code{ontology_DAG} object.
 Filter the DAG
 }
 \details{
-If the DAG is reduced into several disconnected parts after the term filtering, a
+If the DAG is reduced into several disconnected parts after the filtering, a
 super root is automatically added.
 }
 \examples{

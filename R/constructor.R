@@ -4,35 +4,42 @@
 #' 
 #' This class defines the DAG structure of an ontology.
 #' 
-#' @slot lt_parents A list of length `n`. Each element is an integer index vector of parent terms.
-#' @slot lt_children A list of length `n`. Each element is an integer index vector of child terms.
-#' @slot lt_children_relations A list of length `n`. Each element is a vector of the semantic relations between the term and its child terms.
-#' @slot source The source of the ontology. A character scalar only used as a mark of the returned object.
-#' @slot terms A character vector of length `n` which contains the term names.
+#' @slot terms A character vector of length `n` of all term names. Other slots that store term-level information use the integer indices of terms.
 #' @slot n_terms An integer scalar of the total number of terms in the DAG.
-#' @slot root An integer index of the root term.
+#' @slot lt_parents A list of length `n`. Each element in the list is an integer index vector of the parent terms of the i^th term.
+#' @slot lt_children A list of length `n`. Each element in the list is an integer index vector of the child terms of the i^th term.
+#' @slot lt_children_relations A list of length `n`. Each element is a vector of the semantic relations between the i^th term and its child terms.
+#'       The relations are represented as integers. The character name of the relations is in `attr(dag@lt_children_relations, "levels")`.
+#' @slot source The source of the ontology. A character scalar only used as a mark of the returned object.
+#' @slot root An integer scalar of the root term.
 #' @slot leaves An integer vector of the indicies of leaf terms.
-#' @slot tpl_sorted An integer vector of reordered term indices which has been topologically sorted in the DAG.
-#' @slot tpl_pos The position of the original term in the topologically sorted path (similar as the rank), e.g. the position of term 1 in the sorted path.
+#' @slot tpl_sorted An integer vector of reordered term indices which has been topologically sorted in the DAG. Terms are sorted first by the depth (maximal
+#'       distance from root), then the number of child terms, then the number of parent terms, and last the term names.
+#' @slot tpl_pos The position of the original term in the topologically sorted path (similar as the rank), e.g. the value of the first element in the vector
+#'       is the position of term 1 in the topologically sorted path.
 #' @slot annotation A list of two elements: `list` and `names`. The `dag@annotation$list` element contains a list of length `n` and each element
-#'         is a vector of integer indices of annotated items. The full list of annotated items is in `dag@annotation$names`.
-#' @slot term_env An environment which contains various term-level statistics, mainly for cache purpose.
+#'       is a vector of integer indices of annotated items. The full list of annotated items is in `dag@annotation$names`.
+#' @slot term_env An environment which contains various term-level statistics. It is mainly for cache purpose.
+#' @slot aspect_ratio A numeric vector of length two. The aspect ratio is calculated as `w/h`. For each term, there is a distance to root, 
+#'       `h` is the maximal distance of all terms, `w` is the maximal number of items with the same distance. The two values in the `aspect_ratio` slot
+#'       use maximal distance to root (the height) and the shortest distance to root as the distance measure.
 #' 
 #' @export ontology_DAG
 #' @exportClass ontology_DAG
 ontology_DAG = setClass("ontology_DAG",
-	slots = c("lt_parents" = "list",
+	slots = c("terms" = "character",
+		      "n_terms" = "integer",
+		      "lt_parents" = "list",
 		      "lt_children" = "list",
 		      "lt_children_relations" = "list",
 		      "source" = "character",
-		      "terms" = "character",
-		      "n_terms" = "integer",
 		      "root" = "integer",
 		      "leaves" = "integer",
 		      "tpl_sorted" = "integer",
 		      "tpl_pos" = "integer",
 		      "annotation" = "list",
-		      "term_env" = "environment"
+		      "term_env" = "environment",
+		      "aspect_ratio" = "numeric"
 		      )
 )
 
@@ -40,23 +47,26 @@ ontology_DAG = setClass("ontology_DAG",
 #' 
 #' @param parents A character vector of parent terms. 
 #' @param children A character vector of child terms. 
-#' @param relations A character vector of parent-child relations, e.g. "isa" or "part of".
-#' @param source Source of the ontology. It is simply used as a mark of the object.
-#' @param annotation A list of character items that are annotated to the terms. Names of the list should be the term names. In the DAG, items
-#'                   annotated to a term will also be annotated to its parents. Such upstreaming merging
+#' @param relations A character vector of parent-child relations, e.g. "isa", "part of", or self-defined semantic relations.
+#' @param source Source of the ontology. It is only used as a mark of the object.
+#' @param annotation A list of character vectors which contain items annotated to the terms. Names of the list should be the term names. In the DAG, items
+#'                   annotated to a term will also be annotated to its parents. Such merging
 #'                   is applied automatically in the package.
 #' 
 #' @return An `ontology_DAG` object.
 #' @export
 #' @importFrom methods new
+#' @importFrom stats quantile
 #' @import Rcpp
-#' @useDynLib ontsim, .registration = TRUE
+#' @useDynLib simone, .registration = TRUE
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
 #' children = c("b", "c", "c", "d", "e", "f")
 #' dag = create_ontology_DAG(parents, children)
 #' 
 #' # with annotations
+#' # the items in `annotation` are better in character, but they will be 
+#' # internally converted to character.
 #' annotation = list(
 #'     "a" = 1:3,
 #'     "b" = 3:4,
@@ -136,12 +146,12 @@ create_ontology_DAG = function(parents, children, relations = NULL,
 	}
 		
 	dag = ontology_DAG(
+		terms = terms,
+		n_terms = length(terms),
 		lt_parents = lt_parents,
 		lt_children = lt_children,
 		lt_children_relations = lt_relations, 
 		source = source,
-		terms = terms,
-		n_terms = length(terms),
 		root = root,
 		leaves = leaves,
 		term_env = new.env(parent = emptyenv())
@@ -182,6 +192,18 @@ create_ontology_DAG = function(parents, children, relations = NULL,
 		dag@annotation = list(list = vector("list", 0), names = character(0))
 	}
 
+	depth = dag_depth(dag)
+	tb1 = table(depth)
+	aspect_ratio1 = max(tb1)/quantile(depth, 0.99)
+	aspect_ratio1 = round(aspect_ratio1, 2)
+
+	dist = cpp_dag_dist_from_root(dag)
+	tb2 = table(dist)
+	aspect_ratio2 = max(tb2)/quantile(dist, 0.99)
+	aspect_ratio2 = round(aspect_ratio2, 2)
+
+	dag@aspect_ratio = c(aspect_ratio1, aspect_ratio2)
+
 	return(dag)
 }
 
@@ -189,7 +211,6 @@ create_ontology_DAG = function(parents, children, relations = NULL,
 #' 
 #' @param object An `ontology_DAG` object.
 #' @exportMethod show
-#' @importFrom stats quantile
 setMethod("show",
 	signature = "ontology_DAG",
 	definition = function(object) {
@@ -207,18 +228,8 @@ setMethod("show",
 			cat("  Max depth:", max(depth), "\n")
 		}
 
-		depth = dag_depth(object)
-		tb1 = table(depth)
-		aspect_ratio1 = max(tb1)/quantile(depth, 0.99)
-		aspect_ratio1 = round(aspect_ratio1, 2)
-
-		dist = cpp_dag_dist_from_root(object)
-		tb2 = table(dist)
-		aspect_ratio2 = max(tb2)/quantile(dist, 0.99)
-		aspect_ratio2 = round(aspect_ratio2, 2)
-
-		cat("  Aspect ratio: ", aspect_ratio1, ":1 (based on the longest_dist to root)\n", sep = "")
-		cat("                ", aspect_ratio2, ":1 (based on the shortest_dist to root)\n", sep = "")
+		cat("  Aspect ratio: ", object@aspect_ratio[1], ":1 (based on the longest_dist to root)\n", sep = "")
+		cat("                ", object@aspect_ratio[2], ":1 (based on the shortest_dist to root)\n", sep = "")
 
 		if(length(object@lt_children_relations)) {
 			cat("  Relations:", paste(attr(object@lt_children_relations, "levels"), collapse = ", "), "\n")
@@ -233,9 +244,12 @@ setMethod("show",
 #' Create the ontology_DAG object from the GO.db package
 #' 
 #' @param namespace One of "BP", "CC" and "MF".
-#' @param relations Type of the GO term relations.
+#' @param relations Types of the GO term relations. In the **GO.db** package, the GO term relations can be "isa", "part of",
+#'               "regulates", "negatively regulates", "positively regulates". Note since "regulates" is a parent relation
+#'               of "negatively regulates", "positively regulates", if "regulates" is selected, "negatively regulates" and "positively regulates"
+#'               will also be selected.
 #' @param org_db The name of the organism package or the corresponding database object, e.g. `"org.Hs.eg.db"` or 
-#'            directly the [org.Hs.eg.db::org.Hs.eg.db] object for human. Then the gene annotation to GO terms will be added
+#'            directly the [`org.Hs.eg.db::org.Hs.eg.db`] object for human, then the gene annotation to GO terms will be added
 #'            to the object.
 #' 
 #' @return An `ontology_DAG` object.
@@ -260,6 +274,9 @@ create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = c("isa",
 		stop("Value of `namespace` can only be one of 'BP', 'MF' and 'CC'.")
 	}
 
+	if("regulates" %in% relations) {
+		relations = c(relations, "negatively regulates", "positively regulates")
+	}
 	df = df[df[, 3] %in% relations, , drop = FALSE]
 
 	if(!is.null(org_db)) {
@@ -300,6 +317,9 @@ setMethod("[",
 	signature = c("ontology_DAG", "character", "missing", "ANY"),
 	definition = function(x, i, j, ..., drop = FALSE) {
 
+	if(!is.character(i)) {
+		stop("Only the character term name should be used as index.")
+	}
 	dag_filter(x, root = i)
 })
 
@@ -309,6 +329,9 @@ setMethod("[[",
 	signature = c("ontology_DAG", "character", "missing"),
 	definition = function(x, i, j, ...) {
 
+	if(!is.character(i)) {
+		stop("Only the character term name should be used as index.")
+	}
 	dag_filter(x, root = i)
 })
 
@@ -330,7 +353,7 @@ dag_all_terms = function(dag) {
 #' Root or leaves of the DAG
 #' 
 #' @param dag An `ontology_DAG` object.
-#' @param in_labels Whether the terms are in their names or as integer indices?
+#' @param in_labels Whether the terms are represented in their names or as the integer indices?
 #' 
 #' @return A character or an integer vector.
 #' @export
@@ -362,9 +385,9 @@ dag_leaves = function(dag, in_labels = TRUE) {
 #' 
 #' @param dag An `ontology_DAG` object.
 #' 
-#' @details if `relations` is set in `create_ontology_DAG()`, relations are also set as an edge attribute of the [igraph::igraph] object.
+#' @details If `relations` is set in [`create_ontology_DAG()`], relations are also set as an edge attribute in the [`igraph::igraph`] object.
 #' 
-#' @return An [igraph::igraph] object.
+#' @return An [`igraph::igraph`] object.
 #' @export
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
@@ -399,13 +422,17 @@ dag_as_igraph = function(dag) {
 
 #' Filter the DAG
 #' 
-#' @param dag A `ontology_DAG` object.
-#' @param terms A vectof of term names. The sub DAG will only contain these terms.
-#' @param relations A vector of relations. The sub DAG will only contain these relations.
-#' @param root A vector of root terms. Only they with their offspring terms will be kept.
+#' @param dag An `ontology_DAG` object.
+#' @param terms A vector of term names. The sub-DAG will only contain these terms.
+#' @param relations A vector of relations. The sub-DAG will only contain these relations. 
+#'                  Valid values of "relations" should correspond to the values set in the 
+#'                  `relations` argument in the [`create_ontology_DAG()`].
+#' @param root A vector of term names which will be used as the root of the sub-DAG. Only 
+#'             they with their offspring terms will be kept. If there are multiple root terms set, 
+#'             a super root will be automatically added.
 #' @param leaves A vector of leaf terms. Only they with their ancestor terms will are kept.
 #' 
-#' @details If the DAG is reduced into several disconnected parts after the term filtering, a
+#' @details If the DAG is reduced into several disconnected parts after the filtering, a
 #'          super root is automatically added.
 #' 
 #' @return An `ontology_DAG` object.

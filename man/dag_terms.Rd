@@ -19,11 +19,12 @@ dag_offspring(dag, term, in_labels = TRUE, include_self = FALSE)
 \item{dag}{An \code{ontology_DAG} object.}
 
 \item{term}{For \code{dag_parents()} and \code{dag_children()}, the value should be a single term name.
-For \code{dag_ancestors()} and \code{dag_offspring()}, the value can be a vector of term names.}
+For \code{dag_ancestors()} and \code{dag_offspring()}, the value can be a vector of multiple term names. If it is a vector, it returns
+union of the ancestor or offspring terms of the selected set of terms.}
 
-\item{in_labels}{Whether to return the numeric indices or in their term names.}
+\item{in_labels}{Whether the terms are represented in their names or as the integer indices?}
 
-\item{include_self}{For \code{dag_offspring()} and \code{dag_ancestors()}, this controls whether to also contain the query term itself.}
+\item{include_self}{For \code{dag_offspring()} and \code{dag_ancestors()}, this controls whether to also contain the query term itself/themselves.}
 }
 \value{
 An integer vector or a character vector depending on the value of \code{in_labels}.

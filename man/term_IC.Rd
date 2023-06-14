@@ -9,9 +9,9 @@ term_IC(dag, method, control = list())
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
 
-\item{method}{An IC method. All available methods are in \link{ALL_IC_METHODS}.}
+\item{method}{An IC method. All available methods are in \code{\link{ALL_IC_METHODS}}.}
 
-\item{control}{A list of parameters passing to individual methods.}
+\item{control}{A list of parameters passing to individual methods. See the subsections.}
 }
 \value{
 A numeric vector.
@@ -21,37 +21,94 @@ Information content
 }
 \section{method}{
 
-\subsection{what is IC_annotation}{
+\subsection{IC_annotation}{
 
-blablabla
+Say \code{k} is the number of items annotated to a term and \code{N} is the number of items annotated to the root (there is only one
+global root of the DAG), the IC for the term is calculated as \code{-log(k/N)}. Due to the DAG structure, if an item is annoated
+to a term, it is also annotated to all this term's ancestor terms, so \code{k} is the number of unique terms after merging all
+its offspring terms. Similarly, all items will be finally annotated to the root term, so \code{N} is the size of the full set
+of items that will be annoated to the terms in DAG.
 }
 
 
-\subsection{what is IC_universal}{
+\subsection{IC_universal}{
 
-blablabla
+It measures the probability of a term getting full transmission from the root. The probability is calculated
+recursively. For example, an intermediate term \code{t} has two parents \code{parent1} and \code{parent2}, also assume \code{parent1} has \code{k1} children
+and \code{parent2} has \code{k2} children. Assume a parent transmits information equally to its childre, then \code{parent1} only transmits \code{1/k1} and
+\code{parent2} only transmits \code{1/k2} to term \code{t}. Let's say \code{p1} is the accmulated content from the root and \code{p2} is the accmulated content
+from the root, then the content \code{parent1} transmits to \code{t} is \code{p1/k1} and the content \code{parent2} transmitting to \code{t} is \code{p2/k2}. If saying
+\code{t} recieves content from both parents, the value is \code{p1/k1 * p2/k2}. This is the content \code{t} recieves from all its ancestors.
+
+Let's say \code{p} is the accumulated content of \code{t}, the information content is \code{-log(p)}.
+
+Paper link: \url{https://doi.org/10.1155/2012/975783}.
 }
 
 
-what is IC_Zhang_2006
+\subsection{IC_Zhang_2006}{
+
+It measures the number of ways from the term to reach a leaf. The information content
+is calculated as \code{-log(k/N)} where \code{k} is the number of ways for term \code{t} and \code{N} is the number
+of ways for the root term, which is the largest number of ways.
+
+Paper link: \url{https://doi.org/10.1186/1471-2105-7-135}.
+}
 
 
-what is IC_Seco_2004
+\subsection{IC_Seco_2004}{
+
+Similar as \emph{IC_Zhang_2006}, the information content is \code{1 - log(k+1)/log(N+1)}.
+
+Paper link: \url{https://dl.acm.org/doi/10.5555/3000001.3000272}.
+}
 
 
-what is IC_Zhou_2008
+\subsection{IC_Zhou_2008}{
+
+It is calculated as \code{0.5*IC_Seco + 0.5*log(depth)/log(max_depth)}, where \code{depth} is the depth of term \code{t}
+in the DAG, defined as the maximal distance to root, \code{max_depth} is the largest depth in the DAG.
+
+Paper link: \url{https://doi.org/10.1109/FGCNS.2008.16}.
+}
 
 
-what is IC_Seddiqui_2010
+\subsection{IC_Seddiqui_2010}{
+
+It is similar as \emph{IC_Zhou_2008}, defined as \verb{(1-sigma)*IC_Seco + sigma*log((n_parents + n_children + 1)/log((total_edges + 1))}.
+Here \code{sigma} is defined as \code{log(total_edges+1)/(log(total_edges) + log(total_terms))}, where \code{total_edges} is the number of all relations
+and \code{total_terms} is the number of all terms in the DAG. \code{n_parents} and \code{n_children} are the number of parents and children of term \code{t}.
+
+Paper link: \url{https://dl.acm.org/doi/10.5555/1862330.1862343}.
+}
 
 
-what is IC_Sanchez_2011
+\subsection{IC_Sanchez_2011}{
+
+It measures average contribution to leaf terms, calculated as \code{-log(zeta/n_ancestors/total_leaves)}.
+In the formula, \code{zeta} is the number of leaves that can be connected from term \code{t}, since \code{t}'s ancestors can also
+reach \code{t}'s leaves. \code{zeta} is scaled by \code{n_ancestors} which is the number of \code{t}'s ancestor terms. Then it is normalized
+to the maximal number of leaves in the DAG.
+
+Paper link: \url{https://doi.org/10.1016/j.knosys.2010.10.001}.
+}
 
 
-what is IC_Meng_2012
+\subsection{IC_Meng_2012}{
+
+It has a complex form which takes depth,
+
+Paper link: \url{http://article.nadiapub.com/IJGDC/vol5_no3/6.pdf}.
+}
 
 
-what is IC_Wang_2007
+\subsection{IC_Wang_2007}{
+
+It first calculates a "S" value between from \code{t}'s ancestor term to \code{t}, defined as the maximal distance by taking semantic weight.
+Then the information content of \code{t} is the sum of \code{S} values of all its ancestor terms.
+
+Paper link: \url{https://doi.org/10.1093/bioinformatics/btm087}.
+}
 }
 
 \examples{

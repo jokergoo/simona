@@ -11,29 +11,36 @@ This class defines the DAG structure of an ontology.
 \section{Slots}{
 
 \describe{
-\item{\code{lt_parents}}{A list of length \code{n}. Each element is an integer index vector of parent terms.}
-
-\item{\code{lt_children}}{A list of length \code{n}. Each element is an integer index vector of child terms.}
-
-\item{\code{lt_children_relations}}{A list of length \code{n}. Each element is a vector of the semantic relations between the term and its child terms.}
-
-\item{\code{source}}{The source of the ontology. A character scalar only used as a mark of the returned object.}
-
-\item{\code{terms}}{A character vector of length \code{n} which contains the term names.}
+\item{\code{terms}}{A character vector of length \code{n} of all term names. Other slots that store term-level information use the integer indices of terms.}
 
 \item{\code{n_terms}}{An integer scalar of the total number of terms in the DAG.}
 
-\item{\code{root}}{An integer index of the root term.}
+\item{\code{lt_parents}}{A list of length \code{n}. Each element in the list is an integer index vector of the parent terms of the i^th term.}
+
+\item{\code{lt_children}}{A list of length \code{n}. Each element in the list is an integer index vector of the child terms of the i^th term.}
+
+\item{\code{lt_children_relations}}{A list of length \code{n}. Each element is a vector of the semantic relations between the i^th term and its child terms.
+The relations are represented as integers. The character name of the relations is in \code{attr(dag@lt_children_relations, "levels")}.}
+
+\item{\code{source}}{The source of the ontology. A character scalar only used as a mark of the returned object.}
+
+\item{\code{root}}{An integer scalar of the root term.}
 
 \item{\code{leaves}}{An integer vector of the indicies of leaf terms.}
 
-\item{\code{tpl_sorted}}{An integer vector of reordered term indices which has been topologically sorted in the DAG.}
+\item{\code{tpl_sorted}}{An integer vector of reordered term indices which has been topologically sorted in the DAG. Terms are sorted first by the depth (maximal
+distance from root), then the number of child terms, then the number of parent terms, and last the term names.}
 
-\item{\code{tpl_pos}}{The position of the original term in the topologically sorted path (similar as the rank), e.g. the position of term 1 in the sorted path.}
+\item{\code{tpl_pos}}{The position of the original term in the topologically sorted path (similar as the rank), e.g. the value of the first element in the vector
+is the position of term 1 in the topologically sorted path.}
 
 \item{\code{annotation}}{A list of two elements: \code{list} and \code{names}. The \code{dag@annotation$list} element contains a list of length \code{n} and each element
 is a vector of integer indices of annotated items. The full list of annotated items is in \code{dag@annotation$names}.}
 
-\item{\code{term_env}}{An environment which contains various term-level statistics, mainly for cache purpose.}
+\item{\code{term_env}}{An environment which contains various term-level statistics. It is mainly for cache purpose.}
+
+\item{\code{aspect_ratio}}{A numeric vector of length two. The aspect ratio is calculated as \code{w/h}. For each term, there is a distance to root,
+\code{h} is the maximal distance of all terms, \code{w} is the maximal number of items with the same distance. The two values in the \code{aspect_ratio} slot
+use maximal distance to root (the height) and the shortest distance to root as the distance measure.}
 }}
 
