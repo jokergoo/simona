@@ -13,6 +13,6 @@
 .DS_Store
 
 
-.o$
-.so$
+src/*.o
+src/*.so
 man/temp__*
