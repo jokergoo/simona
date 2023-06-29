@@ -6,6 +6,8 @@
 \alias{LCA_term}
 \alias{LCA_depth}
 \alias{NCA_term}
+\alias{max_ancestor_v}
+\alias{max_ancestor_id}
 \title{Various types of common ancestors}
 \usage{
 MICA_term(dag, terms, IC_method, in_labels = TRUE)
@@ -17,15 +19,21 @@ LCA_term(dag, terms, in_labels = TRUE)
 LCA_depth(dag, terms)
 
 NCA_term(dag, terms, in_labels = TRUE)
+
+max_ancestor_v(dag, terms, value)
+
+max_ancestor_id(dag, terms, value, in_labels = FALSE)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
 
 \item{terms}{A vector of term names.}
 
-\item{IC_method}{An IC method. Valid values are in \code{\link{ALL_IC_METHODS}}.}
+\item{IC_method}{An IC method. Valid values are in \code{\link[=all_ic_methods]{all_ic_methods()}}.}
 
 \item{in_labels}{Whether the terms are represented in their names or as the integer indices?}
+
+\item{value}{A numeric vector. The elements shoudl corrrespond to terms in \code{dag_all_terms()}.}
 }
 \value{
 \itemize{
@@ -33,7 +41,9 @@ NCA_term(dag, terms, in_labels = TRUE)
 \item \code{MICA_IC()} returns a numeric matrix of the IC of the MICA terms.
 \item \code{LCA_term()} returns an integer or a character matrix of the LCA term depending on the value of \code{in_labels}.
 \item \code{LCA_depth()} returns an integer matrix of the depth of the LCA terms.
-\item \code{NCA_term()} returns an integer or a character matrix of the NCA term depending on the value of \code{in_labels}. The shortest distance from NCA terms can be calculated by \code{\link[=shortest_distances_via_CA]{shortest_distances_via_CA()}}.
+\item \code{NCA_term()} returns an integer or a character matrix of the NCA term depending on the value of \code{in_labels}. The shortest distance from NCA terms can be calculated by \code{\link[=shortest_distances_via_NCA]{shortest_distances_via_NCA()}}.
+\item \code{max_ancestor_v()} returns a numeric matrix.
+\item \code{max_ancestor_id()} returns an integer or a character matrix.
 }
 }
 \description{
@@ -48,6 +58,9 @@ the max depth, the ancestor with the smallest distance to the two terms is taken
 \item NCA (nearest common ancestor): The common ancestor with the smallest distance to the two terms. If there are multiple
 ancestors with the same smallest distance, the ancestor with the largest depth is taken.
 }
+
+\code{max_ancestor_v()} and \code{max_ancestor_id()} are more general functions which return common ancestors with
+the highest value in \code{value}.
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")

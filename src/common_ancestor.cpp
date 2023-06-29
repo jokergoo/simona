@@ -81,11 +81,18 @@ NumericMatrix cpp_max_ancestor_v(S4 dag, IntegerVector nodes, NumericVector v) {
 		return score;
 	}
 
+	Rcout << "colecting all ancestors of input terms ...\n";
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
 	
 	for(int k = 0; k < all_ancestors.size(); k ++) {
+
+		if(k % 1000 == 0) {
+			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+			Rcout << "going through " << k << " / " << all_ancestors.size() << " ancestors ...";
+		}
+
 		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
 
 		IntegerVector offspring = _which(l_offspring);
@@ -114,6 +121,10 @@ NumericMatrix cpp_max_ancestor_v(S4 dag, IntegerVector nodes, NumericVector v) {
 		}
 	}
 
+	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ...\ndone.\n";
+
+
 	return score;
 }
 
@@ -138,11 +149,18 @@ IntegerMatrix cpp_max_ancestor_id(S4 dag, IntegerVector nodes, NumericVector v) 
 		return id;
 	}
 
+	Rcout << "colecting all ancestors of input terms ...\n";
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
 	
 	for(int k = 0; k < all_ancestors.size(); k ++) {
+
+		if(k % 1000 == 0) {
+			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+			Rcout << "going through " << k << " / " << all_ancestors.size() << " ancestors ...";
+		}
+
 		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
 
 		IntegerVector offspring = _which(l_offspring);
@@ -174,6 +192,10 @@ IntegerMatrix cpp_max_ancestor_id(S4 dag, IntegerVector nodes, NumericVector v) 
 		}
 	}
 
+	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ...\ndone.\n";
+
+
 	return id;
 }
 
@@ -199,11 +221,18 @@ IntegerMatrix cpp_distances(S4 dag, IntegerVector nodes, int type = 1) { // 1: l
 		return dd;
 	}
 
+	Rcout << "colecting all ancestors of input terms ...\n";
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
 	
 	for(int k = 0; k < all_ancestors.size(); k ++) {
+
+		if(k % 100 == 0) {
+			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+			Rcout << "going through " << k << " / " << all_ancestors.size() << " ancestors ...";
+		}
+
 		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
 
 		IntegerVector offspring = _which(l_offspring);
@@ -244,6 +273,10 @@ IntegerMatrix cpp_distances(S4 dag, IntegerVector nodes, int type = 1) { // 1: l
 		}
 	}
 
+	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ...\ndone.\n";
+
+
 	return dd;
 }
 
@@ -279,14 +312,21 @@ IntegerMatrix cpp_longest_distances_via_LCA(S4 dag, IntegerVector nodes) {
 		return dd;
 	}
 
+	Rcout << "colecting all ancestors of input terms ...\n";
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
 
 	IntegerVector global_depth = cpp_dag_depth(dag);
-	
+
 	double dist = 0;
 	for(int k = 0; k < all_ancestors.size(); k ++) {
+
+		if(k % 1000 == 0) {
+			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+			Rcout << "going through " << k << " / " << all_ancestors.size() << " ancestors ...";
+		}
+
 		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
 
 		IntegerVector offspring = _which(l_offspring);
@@ -330,6 +370,9 @@ IntegerMatrix cpp_longest_distances_via_LCA(S4 dag, IntegerVector nodes) {
 		}
 	}
 
+	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ...\ndone.\n";
+
 	return dd;
 }
 
@@ -359,6 +402,7 @@ List cpp_longest_distances_from_LCA(S4 dag, IntegerVector nodes) {
 		return lt;
 	}
 
+	Rcout << "colecting all ancestors of input terms ...\n";
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
@@ -367,6 +411,12 @@ List cpp_longest_distances_from_LCA(S4 dag, IntegerVector nodes) {
 	
 	double dist = 0;
 	for(int k = 0; k < all_ancestors.size(); k ++) {
+
+		if(k % 1000 == 0) {
+			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+			Rcout << "going through " << k << " / " << all_ancestors.size() << " ancestors ...";
+		}
+
 		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
 
 		IntegerVector offspring = _which(l_offspring);
@@ -414,6 +464,10 @@ List cpp_longest_distances_from_LCA(S4 dag, IntegerVector nodes) {
 		}
 	}
 
+	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ...\ndone.\n";
+
+
 	List lt = List::create(Named("left") = dd1 , Named("right") = dd2);
 
 	return lt;
@@ -437,11 +491,18 @@ IntegerMatrix cpp_distances_directed(S4 dag, IntegerVector nodes, int type = 1) 
 		nodes_ind[ nodes[i]-1 ] = i;
 	}
 
+	Rcout << "colecting all ancestors of input terms ...\n";
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
 	
 	for(int k = 0; k < m; k ++) {
+
+		if(k % 1000 == 0) {
+			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+			Rcout << "going through " << k << " / " << m << " nodes ...";
+		}
+
 		_find_offspring_within_background(lt_children, nodes[k]-1, l_offspring, l_all_ancestors, true);
 
 		IntegerVector offspring = _which(l_offspring);
@@ -470,6 +531,10 @@ IntegerMatrix cpp_distances_directed(S4 dag, IntegerVector nodes, int type = 1) 
 			}
 		}
 	}
+
+	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+	Rcout << "going through " << m << " / " << m << " nodes ...\ndone.\n";
+
 
 	return dd;
 }
@@ -507,6 +572,7 @@ IntegerMatrix cpp_nearest_common_ancestor(S4 dag, IntegerVector nodes) {
 		return id;
 	}
 
+	Rcout << "colecting all ancestors of input terms ...\n";
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
@@ -514,6 +580,12 @@ IntegerMatrix cpp_nearest_common_ancestor(S4 dag, IntegerVector nodes) {
 	IntegerVector global_depth = _dag_depth(dag);
 	
 	for(int k = 0; k < all_ancestors.size(); k ++) {
+
+		if(k % 1000 == 0) {
+			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+			Rcout << "going through " << k << " / " << all_ancestors.size() << " ancestors ...";
+		}
+
 		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
 
 		IntegerVector offspring = _which(l_offspring);
@@ -554,5 +626,85 @@ IntegerMatrix cpp_nearest_common_ancestor(S4 dag, IntegerVector nodes) {
 		}
 	}
 
+	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ...\ndone.\n";
+
+
 	return id;
+}
+
+
+// [[Rcpp::export]]
+IntegerMatrix cpp_shortest_distances_via_NCA(S4 dag, IntegerVector nodes) {
+	List lt_children = dag.slot("lt_children");
+	
+	int n = lt_children.size();
+	int m = nodes.size();
+
+	IntegerMatrix dd(m, m); 
+	dd.fill(INT_MAX - 1);
+
+	IntegerVector nodes_ind(n, -1);  // mapping between n and m indices
+	for(int i = 0; i < m; i ++) {
+		nodes_ind[ nodes[i]-1 ] = i;
+		dd(i, i) = 0;
+	}
+
+	if(m <= 1) {
+		return dd;
+	}
+
+	Rcout << "colecting all ancestors of input terms ...\n";
+	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
+	LogicalVector l_offspring(n);
+	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
+
+	IntegerVector global_depth = _dag_depth(dag);
+	
+	for(int k = 0; k < all_ancestors.size(); k ++) {
+
+		if(k % 1000 == 0) {
+			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+			Rcout << "going through " << k << " / " << all_ancestors.size() << " ancestors ...";
+		}
+
+		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
+
+		IntegerVector offspring = _which(l_offspring);
+		reset_logical_vector_to_false(l_offspring);
+
+		int noff = offspring.size();
+
+		if(noff == 0) {
+			continue;
+		}
+		offspring = offspring + 1;
+
+		if(noff > 1) {
+			IntegerVector shortest_dist_to_offspring = cpp_dag_shortest_dist_to_offspring(dag, all_ancestors[k], l_all_ancestors);
+
+			for(int i = 0; i < noff - 1; i ++) {
+				int id1 = nodes_ind[ offspring[i]-1 ];
+				if(id1 >= 0) {
+					for(int j = i+1; j < noff; j ++) {
+						int id2 = nodes_ind[ offspring[j]-1 ];
+							
+						if(id2 >= 0) {
+							int dist = shortest_dist_to_offspring[offspring[i] - 1] + shortest_dist_to_offspring[offspring[j] - 1];
+							if(dd(id1, id2) > dist) {
+								dd(id1, id2) = dist;
+								dd(id2, id1) = dd(id1, id2);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ...\ndone.\n";
+
+
+	return dd;
 }

@@ -138,6 +138,51 @@ IntegerVector cpp_offspring(S4 dag, int node, bool include_self = false) {
 }
 
 // [[Rcpp::export]]
+LogicalMatrix cpp_all_offspring(S4 dag, bool include_self = false) {
+	List lt_parents = dag.slot("lt_parents");
+	int n = lt_parents.size();
+
+	// offspring on columns
+	LogicalMatrix m_offspring(n, n);
+	if(include_self) {
+		m_offspring.fill_diag(true);
+	}
+
+	IntegerVector leaves = dag.slot("leaves");
+	LogicalVector l_current_nodes(n);
+	for(int i = 0; i < leaves.size(); i ++) {
+		l_current_nodes[leaves[i]-1] = true;
+	}
+	LogicalVector l_current_nodes2(n);
+
+	while(sum(l_current_nodes)) {
+		for(int i = 0; i < n; i ++) {
+			if(l_current_nodes[i]) {
+				IntegerVector parents = lt_parents[i];
+
+				for(int j = 0; j < parents.size(); j ++) {
+					l_current_nodes2[parents[j]-1] = true;
+					m_offspring(parents[j]-1, i) = true;
+
+					for(int k = 0; k < n; k ++) {
+						if(m_offspring(i, k)) {
+							m_offspring(parents[j]-1, k) = true;
+						}
+					}
+				}
+			}
+		}
+
+		for(int i = 0 ; i < n; i ++) {
+			l_current_nodes[i] = l_current_nodes2[i];
+		}
+		reset_logical_vector_to_false(l_current_nodes2);
+	}
+
+	return m_offspring;
+}
+
+// [[Rcpp::export]]
 IntegerVector cpp_offspring_within_background(S4 dag, int node, IntegerVector background, bool include_self = false) {
 	List lt_children = dag.slot("lt_children");
 	int n = lt_children.size();
@@ -207,13 +252,12 @@ IntegerVector cpp_n_ancestors(S4 dag, bool include_self = false) {
 	LogicalVector l_ancestors(n, false);
 	for(int i = 0; i < n; i ++) {
 		IntegerVector parents = lt_parents[i];
-		if(parents.size() > 0) {
 			
-			_find_ancestors(lt_parents, i, l_ancestors, include_self);
-			num[i] = sum(l_ancestors);
+		_find_ancestors(lt_parents, i, l_ancestors, include_self);
+		num[i] = sum(l_ancestors);
 
-			reset_logical_vector_to_false(l_ancestors);
-		}
+		reset_logical_vector_to_false(l_ancestors);
+
 	}
 	return num;
 }
@@ -228,13 +272,43 @@ IntegerVector cpp_n_offspring(S4 dag, bool include_self = false) {
 	LogicalVector l_offspring(n, false);
 	for(int i = 0; i < n; i ++) {
 		IntegerVector children = lt_children[i];
-		if(children.size() > 0) {
 			
-			_find_offspring(lt_children, i, l_offspring, include_self);
-			num[i] = sum(l_offspring);
+		_find_offspring(lt_children, i, l_offspring, include_self);
+		num[i] = sum(l_offspring);
 
-			reset_logical_vector_to_false(l_offspring);
+		reset_logical_vector_to_false(l_offspring);
+
+	}
+	return num;
+}
+
+// [[Rcpp::export]]
+IntegerVector cpp_n_offspring_with_intersect(S4 dag, IntegerVector nodes, bool include_self = false) {
+	List lt_children = dag.slot("lt_children");
+
+	int n = lt_children.size();
+	IntegerVector num(n, 0);
+
+	int m = nodes.size();
+
+	if(m == 0) {
+		return num;
+	}
+
+	LogicalVector l_offspring(n, false);
+	for(int i = 0; i < n; i ++) {
+		IntegerVector children = lt_children[i];
+			
+		_find_offspring(lt_children, i, l_offspring, include_self);
+
+		for(int j = 0; j < m; j ++) {
+			if(l_offspring[nodes[j]-1]) {
+				num[i] ++;
+			}
 		}
+
+		reset_logical_vector_to_false(l_offspring);
+		
 	}
 	return num;
 }
@@ -606,36 +680,36 @@ IntegerVector cpp_dag_shortest_dist_to_offspring(S4 dag, int from_node, LogicalV
 
 // [[Rcpp::export]]
 IntegerVector cpp_dag_height(S4 dag) {
-	IntegerVector from_node = dag.slot("leaves");
-	return cpp_dag_transverse_bfs(dag, from_node, true, LogicalVector(0), TRANSVERSE_UPSTREAM);
+	IntegerVector to_node = dag.slot("leaves");
+	return cpp_dag_transverse_bfs(dag, to_node, true, LogicalVector(0), TRANSVERSE_UPSTREAM);
 }
 
 // [[Rcpp::export]]
-IntegerVector cpp_dag_dist_from_leaves(S4 dag) {
-	IntegerVector from_node = dag.slot("leaves");
-	return cpp_dag_transverse_bfs(dag, from_node, false, LogicalVector(0), TRANSVERSE_DOWNSTREAM);
+IntegerVector cpp_dag_dist_to_leaves(S4 dag) {
+	IntegerVector to_node = dag.slot("leaves");
+	return cpp_dag_transverse_bfs(dag, to_node, false, LogicalVector(0), TRANSVERSE_UPSTREAM);
 }
 
 // [[Rcpp::export]]
-IntegerVector cpp_dag_longest_dist_to_ancestor(S4 dag, IntegerVector from_node, LogicalVector l_background = LogicalVector(0)) {
-	return cpp_dag_transverse_bfs(dag, from_node, true, l_background, TRANSVERSE_UPSTREAM);
+IntegerVector cpp_dag_longest_dist_from_ancestors(S4 dag, IntegerVector to_node, LogicalVector l_background = LogicalVector(0)) {
+	return cpp_dag_transverse_bfs(dag, to_node, true, l_background, TRANSVERSE_UPSTREAM);
 }
 
-IntegerVector cpp_dag_longest_dist_to_ancestor(S4 dag, int from_node, LogicalVector l_background = LogicalVector(0)) {
-	IntegerVector from_node2(1);
-	from_node2[0] = from_node;
-	return cpp_dag_transverse_bfs(dag, from_node2, true, l_background, TRANSVERSE_UPSTREAM);
+IntegerVector cpp_dag_longest_dist_from_ancestors(S4 dag, int to_node, LogicalVector l_background = LogicalVector(0)) {
+	IntegerVector to_node2(1);
+	to_node2[0] = to_node;
+	return cpp_dag_transverse_bfs(dag, to_node2, true, l_background, TRANSVERSE_UPSTREAM);
 }
 
 // [[Rcpp::export]]
-IntegerVector cpp_dag_shortest_dist_to_ancestor(S4 dag, IntegerVector from_node, LogicalVector l_background = LogicalVector(0)) {
-	return cpp_dag_transverse_bfs(dag, from_node, false, l_background, TRANSVERSE_UPSTREAM);
+IntegerVector cpp_dag_shortest_dist_from_ancestors(S4 dag, IntegerVector to_node, LogicalVector l_background = LogicalVector(0)) {
+	return cpp_dag_transverse_bfs(dag, to_node, false, l_background, TRANSVERSE_UPSTREAM);
 }
 
-IntegerVector cpp_dag_shortest_dist_to_ancestor(S4 dag, int from_node, LogicalVector l_background = LogicalVector(0)) {
-	IntegerVector from_node2(1);
-	from_node2[0] = from_node;
-	return cpp_dag_transverse_bfs(dag, from_node2, false, l_background, TRANSVERSE_UPSTREAM);
+IntegerVector cpp_dag_shortest_dist_from_ancestors(S4 dag, int to_node, LogicalVector l_background = LogicalVector(0)) {
+	IntegerVector to_node2(1);
+	to_node2[0] = to_node;
+	return cpp_dag_transverse_bfs(dag, to_node2, false, l_background, TRANSVERSE_UPSTREAM);
 }
 
 // -----------------------------

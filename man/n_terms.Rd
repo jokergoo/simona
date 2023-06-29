@@ -8,20 +8,20 @@
 \alias{n_children}
 \title{Number of parent/child/ancestor/offspring/leaf terms}
 \usage{
-n_offspring(dag, term = NULL, use_cache = TRUE, include_self = FALSE)
+n_offspring(dag, terms = NULL, use_cache = TRUE, include_self = FALSE)
 
-n_ancestors(dag, term = NULL, use_cache = TRUE, include_self = FALSE)
+n_ancestors(dag, terms = NULL, use_cache = TRUE, include_self = FALSE)
 
-n_leaves(dag, term = NULL, use_cache = TRUE)
+n_leaves(dag, terms = NULL, use_cache = TRUE)
 
-n_parents(dag, term = NULL, use_cache = TRUE)
+n_parents(dag, terms = NULL, use_cache = TRUE)
 
-n_children(dag, term = NULL, use_cache = TRUE)
+n_children(dag, terms = NULL, use_cache = TRUE)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
 
-\item{term}{A vector of term names. If the value is \code{NULL}, it returns for all terms in the DAG.}
+\item{terms}{A vector of term names. If the value is \code{NULL}, it returns for all terms in the DAG.}
 
 \item{use_cache}{Internally used.}
 
@@ -34,7 +34,7 @@ An integer vector.
 Number of parent/child/ancestor/offspring/leaf terms
 }
 \details{
-Leaf nodes have zero \code{n_leaves} value, so you can identify leaf terms based on the value.
+Leaf nodes have value of zero, so you can identify leaf terms based on the value.
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")

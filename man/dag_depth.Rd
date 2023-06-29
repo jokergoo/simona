@@ -3,20 +3,22 @@
 \name{dag_depth}
 \alias{dag_depth}
 \alias{dag_height}
-\alias{dag_dist_from_root}
-\alias{dag_dist_from_leaves}
+\alias{dag_shortest_dist_from_root}
+\alias{dag_shortest_dist_to_leaves}
 \title{Depth and height in the DAG}
 \usage{
-dag_depth(dag, use_cache = TRUE)
+dag_depth(dag, terms = NULL, use_cache = TRUE)
 
-dag_height(dag, use_cache = TRUE)
+dag_height(dag, terms = NULL, use_cache = TRUE)
 
-dag_dist_from_root(dag, use_cache = TRUE)
+dag_shortest_dist_from_root(dag, terms = NULL, use_cache = TRUE)
 
-dag_dist_from_leaves(dag, use_cache = TRUE)
+dag_shortest_dist_to_leaves(dag, terms = NULL, use_cache = TRUE)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
+
+\item{terms}{A vector of term names. If it is set, the returned vector will be subsetted to the terms that have been set here.}
 
 \item{use_cache}{Internally used.}
 }
@@ -30,7 +32,7 @@ Depth and height in the DAG
 The depth of a term in the DAG is defined as the maximal distance from the root. The height
 of a term in the DAG is the maximal finite distance to the leaf terms
 
-\code{dag_dist_from_root()} and \code{dag_dist_from_leaves()} calculate the minimal distance from the root or to the leaves.
+\code{dag_shortest_dist_from_root()} and \code{dag_shortest_dist_to_leaves()} calculate the minimal distance from the root or to the leaves.
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")
@@ -38,6 +40,6 @@ children = c("b", "c", "c", "d", "e", "f")
 dag = create_ontology_DAG(parents, children)
 dag_depth(dag)
 dag_height(dag)
-dag_dist_from_root(dag)
-dag_dist_from_leaves(dag)
+dag_shortest_dist_from_root(dag)
+dag_shortest_dist_to_leaves(dag)
 }

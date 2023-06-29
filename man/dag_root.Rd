@@ -3,16 +3,21 @@
 \name{dag_root}
 \alias{dag_root}
 \alias{dag_leaves}
+\alias{dag_is_leaf}
 \title{Root or leaves of the DAG}
 \usage{
 dag_root(dag, in_labels = TRUE)
 
 dag_leaves(dag, in_labels = TRUE)
+
+dag_is_leaf(dag, terms)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
 
 \item{in_labels}{Whether the terms are represented in their names or as the integer indices?}
+
+\item{terms}{A vector of term names.}
 }
 \value{
 A character or an integer vector.

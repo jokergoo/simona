@@ -109,6 +109,37 @@ test_that("test dag_height", {
 	)
 })
 
+test_that("test other distances", {
+	expect_equal(
+		unname(dag_shortest_dist_from_root(dag, use_cache = FALSE)),
+		c(0, 1, 1, 2, 2, 3)
+	)
+	expect_equal(
+		unname(dag_shortest_dist_to_leaves(dag, use_cache = FALSE)),
+		c(2, 2, 1, 1, 0, 0)
+	)
+
+	expect_equal(
+		unname(dag_longest_dist_to_offspring(dag, "b")),
+		c(-1, 0, 1, 1, 2, 2)
+	)
+
+	expect_equal(
+		dag_shortest_dist_to_offspring(dag, "a"),
+		dag_shortest_dist_from_root(dag, use_cache = FALSE)
+	)
+
+	expect_equal(
+		unname(dag_longest_dist_from_ancestors(dag, "e")),
+		c(3, 2, 1, -1, 0, -1)
+	)
+
+	expect_equal(
+		unname(dag_shortest_dist_from_ancestors(dag, "e")),
+		c(2, 2, 1, -1, 0, -1)
+	)
+})
+
 test_that("test n_children/n_parents/n_leaves", {
 	expect_equal(
 		unname(n_offspring(dag)),
@@ -117,6 +148,14 @@ test_that("test n_children/n_parents/n_leaves", {
 	expect_equal(
 		unname(n_ancestors(dag)),
 		c(0, 1, 2, 2, 3, 3)
+	)
+	expect_equal(
+		unname(n_offspring(dag, include_self = TRUE)),
+		c(5, 4, 1, 1, 0, 0) + 1
+	)
+	expect_equal(
+		unname(n_ancestors(dag, include_self = TRUE)),
+		c(0, 1, 2, 2, 3, 3) + 1
 	)
 	expect_equal(
 		unname(n_leaves(dag)),

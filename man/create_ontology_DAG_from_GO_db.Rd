@@ -16,7 +16,7 @@ create_ontology_DAG_from_GO_db(
 \item{relations}{Types of the GO term relations. In the \strong{GO.db} package, the GO term relations can be "isa", "part of",
 "regulates", "negatively regulates", "positively regulates". Note since "regulates" is a parent relation
 of "negatively regulates", "positively regulates", if "regulates" is selected, "negatively regulates" and "positively regulates"
-will also be selected.}
+are be selected.}
 
 \item{org_db}{The name of the organism package or the corresponding database object, e.g. \code{"org.Hs.eg.db"} or
 directly the \code{\link[org.Hs.eg.db:org.Hs.egBASE]{org.Hs.eg.db::org.Hs.eg.db}} object for human, then the gene annotation to GO terms will be added

@@ -4,12 +4,14 @@
 \alias{term_IC}
 \title{Information content}
 \usage{
-term_IC(dag, method, control = list())
+term_IC(dag, method, terms = NULL, control = list())
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
 
-\item{method}{An IC method. All available methods are in \code{\link{ALL_IC_METHODS}}.}
+\item{method}{An IC method. All available methods are in \code{\link[=all_ic_methods]{all_ic_methods()}}.}
+
+\item{terms}{A vector of term names. If it is set, the returned vector will be subsetted to the terms that have been set here.}
 
 \item{control}{A list of parameters passing to individual methods. See the subsections.}
 }
@@ -19,28 +21,161 @@ A numeric vector.
 \description{
 Information content
 }
-\section{method}{
+\section{Methods}{
+
+\subsection{IC_offspring}{
+
+Denote \code{k} as the number of offspring terms plus the term itself and \code{N} is such value for root, the information
+content is calculated as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{-log(k/N)
+}\if{html}{\out{</div>}}
+}
+
+
+\subsection{IC_depth}{
+
+For a term \code{t} in the DAG, denote \code{d} as the maximal distance to root (i.e. the depth) and \code{h} as the maximal distance to leaves (i.e. the height),
+calculate the relative position on the longest path from root to leaves via term \code{t} as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{p = (h + 1)/(h + d + 1)
+}\if{html}{\out{</div>}}
+
+In the formula where 1 is added gets rid of the scenario of p = 0. Then the information content is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{-log(p) = -log((h+1)/(h+d+1))
+}\if{html}{\out{</div>}}
+}
+
 
 \subsection{IC_annotation}{
 
-Say \code{k} is the number of items annotated to a term and \code{N} is the number of items annotated to the root (there is only one
-global root of the DAG), the IC for the term is calculated as \code{-log(k/N)}. Due to the DAG structure, if an item is annoated
-to a term, it is also annotated to all this term's ancestor terms, so \code{k} is the number of unique terms after merging all
-its offspring terms. Similarly, all items will be finally annotated to the root term, so \code{N} is the size of the full set
-of items that will be annoated to the terms in DAG.
+Denote \code{k} as the number of items annotated to a term \code{t}, and \code{N} is the number of items annotated to the root (there is only one
+global root of the DAG), IC for term \code{t} is calculated as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{-log(k/N)
+}\if{html}{\out{</div>}}
+
+In current implementations in other tools, there is inconsistency of defining \code{k} and \code{N}.
+Due to the DAG structure, if an item is annotated to a term, it is also annotated to all its ancestor terms.
+In this case, \code{k} is the number of unique items annotated to term \code{t} and all its offspring terms:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{k = length(unique(unlist(anno_list[c(t, offspring_of_t)])))
+}\if{html}{\out{</div>}}
+
+Following this definition, root term is annotated to all items (or the full set of items annotated to the DAG) and \code{N} is the maximal value of \code{k}.
+}
+
+
+\subsection{IC_offspring}{
+
+Denote \code{k} as the number of offspring terms plus the term itself and \code{N} is such value for root, the information
+content is calculated as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{-log(k/N)
+}\if{html}{\out{</div>}}
+}
+
+
+\subsection{IC_depth}{
+
+For a term \code{t} in the DAG, denote \code{d} as the maximal distance to root (i.e. the depth) and \code{h} as the maximal distance to leaves (i.e. the height),
+calculate the relative position on the longest path from root to leaves via term \code{t} as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{p = (h + 1)/(h + d + 1)
+}\if{html}{\out{</div>}}
+
+In the formula where 1 is added gets rid of the scenario of p = 0. Then the information content is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{-log(p) = -log((h+1)/(h+d+1))
+}\if{html}{\out{</div>}}
+}
+
+
+\subsection{IC_annotation}{
+
+Denote \code{k} as the number of items annotated to a term \code{t}, and \code{N} is the number of items annotated to the root (there is only one
+global root of the DAG), IC for term \code{t} is calculated as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{-log(k/N)
+}\if{html}{\out{</div>}}
+
+In current implementations in other tools, there is inconsistency of defining \code{k} and \code{N}.
+Due to the DAG structure, if an item is annotated to a term, it is also annotated to all its ancestor terms.
+In this case, \code{k} is the number of unique items annotated to term \code{t} and all its offspring terms:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{k = length(unique(unlist(anno_list[c(t, offspring_of_t)])))
+}\if{html}{\out{</div>}}
+
+Following this definition, root term is annotated to all items (or the full set of items annotated to the DAG) and \code{N} is the maximal value of \code{k}.
+}
+
+
+\subsection{IC_offspring}{
+
+Denote \code{k} as the number of offspring terms plus the term itself and \code{N} is such value for root, the information
+content is calculated as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{-log(k/N)
+}\if{html}{\out{</div>}}
+}
+
+
+\subsection{IC_depth}{
+
+For a term \code{t} in the DAG, denote \code{d} as the maximal distance to root (i.e. the depth) and \code{h} as the maximal distance to leaves (i.e. the height),
+calculate the relative position on the longest path from root to leaves via term \code{t} as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{p = (h + 1)/(h + d + 1)
+}\if{html}{\out{</div>}}
+
+In the formula where 1 is added gets rid of the scenario of p = 0. Then the information content is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{-log(p) = -log((h+1)/(h+d+1))
+}\if{html}{\out{</div>}}
+}
+
+
+\subsection{IC_annotation}{
+
+Denote \code{k} as the number of items annotated to a term \code{t}, and \code{N} is the number of items annotated to the root (there is only one
+global root of the DAG), IC for term \code{t} is calculated as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{-log(k/N)
+}\if{html}{\out{</div>}}
+
+In current implementations in other tools, there is inconsistency of defining \code{k} and \code{N}.
+Due to the DAG structure, if an item is annotated to a term, it is also annotated to all its ancestor terms.
+In this case, \code{k} is the number of unique items annotated to term \code{t} and all its offspring terms:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{k = length(unique(unlist(anno_list[c(t, offspring_of_t)])))
+}\if{html}{\out{</div>}}
+
+Following this definition, root term is annotated to all items (or the full set of items annotated to the DAG) and \code{N} is the maximal value of \code{k}.
 }
 
 
 \subsection{IC_universal}{
 
-It measures the probability of a term getting full transmission from the root. The probability is calculated
-recursively. For example, an intermediate term \code{t} has two parents \code{parent1} and \code{parent2}, also assume \code{parent1} has \code{k1} children
-and \code{parent2} has \code{k2} children. Assume a parent transmits information equally to its childre, then \code{parent1} only transmits \code{1/k1} and
-\code{parent2} only transmits \code{1/k2} to term \code{t}. Let's say \code{p1} is the accmulated content from the root and \code{p2} is the accmulated content
-from the root, then the content \code{parent1} transmits to \code{t} is \code{p1/k1} and the content \code{parent2} transmitting to \code{t} is \code{p2/k2}. If saying
-\code{t} recieves content from both parents, the value is \code{p1/k1 * p2/k2}. This is the content \code{t} recieves from all its ancestors.
+It measures the probability of a term getting full transmission from the root. Each term is associated with a p-value and the root has
+the p-value of 1.
 
-Let's say \code{p} is the accumulated content of \code{t}, the information content is \code{-log(p)}.
+For example, an intermediate term \code{t} has two parents \code{parent1} and \code{parent2}, also assume \code{parent1} has \code{k1} children
+and \code{parent2} has \code{k2} children, assume a parent transmits information equally to all its children, then \code{parent1} only transmits \code{1/k1} and
+\code{parent2} only transmits \code{1/k2} of its content to term \code{t}, or the probability of a parent to reach \code{t} is \code{1/k1} or \code{1/k2}.
+Let's say \code{p1} and \code{p2} are the accmulated contents from the root for \code{parnet1} and \code{parent2} respectively (or the probability
+of the two parent terms getting full transmission from root), then the probability of reaching \code{t} via a full transmission graph from \code{parent1}
+is multiplication of \code{p1} and \code{1/k1}, which is \code{p1/k1}, and similar for \code{p2/k2}. For term \code{t}, if getting transmitted from \code{parent1} and
+\code{parent2} are independent, the probability of \code{t} to get transmitted from both parents is
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{p_t = (p1/k1) * (p2/k2)
+}\if{html}{\out{</div>}}
+
+Since the two parents are the full set of \code{t}'s parents, \code{p_t} is the probability of \code{t} getting full transmission from root. And the final
+information content is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{-log(p_t)
+}\if{html}{\out{</div>}}
 
 Paper link: \url{https://doi.org/10.1155/2012/975783}.
 }
@@ -48,9 +183,24 @@ Paper link: \url{https://doi.org/10.1155/2012/975783}.
 
 \subsection{IC_Zhang_2006}{
 
-It measures the number of ways from the term to reach a leaf. The information content
-is calculated as \code{-log(k/N)} where \code{k} is the number of ways for term \code{t} and \code{N} is the number
-of ways for the root term, which is the largest number of ways.
+It measures the number of ways from a term to reach leaf terms. E.g. in the following DAG:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{     a
+    /|\\
+   b | c
+     |/
+     d
+}\if{html}{\out{</div>}}
+
+term \code{a} has three ways to reach leaf, which are \code{a->b}, \code{a->d} and \code{a->c->d}.
+
+The information content is calculated as
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{-log(k/N) = log(N) - log(k)
+}\if{html}{\out{</div>}}
+
+where \code{k} is the number of ways for term \code{t} to reach leaves and \code{N} is the maximal value of \code{k} which
+should be associated with the root term.
 
 Paper link: \url{https://doi.org/10.1186/1471-2105-7-135}.
 }
@@ -58,7 +208,13 @@ Paper link: \url{https://doi.org/10.1186/1471-2105-7-135}.
 
 \subsection{IC_Seco_2004}{
 
-Similar as \emph{IC_Zhang_2006}, the information content is \code{1 - log(k+1)/log(N+1)}.
+It is based on the number of offspring terms of term \code{t}.
+The information content is calculated as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{1 - log(k+1)/log(N)
+}\if{html}{\out{</div>}}
+
+where \code{k} is the number of offspring terms of \code{t}
 
 Paper link: \url{https://dl.acm.org/doi/10.5555/3000001.3000272}.
 }
@@ -66,29 +222,28 @@ Paper link: \url{https://dl.acm.org/doi/10.5555/3000001.3000272}.
 
 \subsection{IC_Zhou_2008}{
 
-It is calculated as \code{0.5*IC_Seco + 0.5*log(depth)/log(max_depth)}, where \code{depth} is the depth of term \code{t}
-in the DAG, defined as the maximal distance to root, \code{max_depth} is the largest depth in the DAG.
+It is a correction of \emph{IC_Seco_2004} which considers the depth of a term in the DAG.
+The information content is calculated as
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{0.5*IC_Seco + 0.5*log(depth)/log(max_depth)
+}\if{html}{\out{</div>}}
+
+where \code{depth} is the depth of term \code{t} in the DAG, defined as the maximal distance to root. \code{max_depth} is the largest depth in the DAG.
 
 Paper link: \url{https://doi.org/10.1109/FGCNS.2008.16}.
 }
 
 
-\subsection{IC_Seddiqui_2010}{
-
-It is similar as \emph{IC_Zhou_2008}, defined as \verb{(1-sigma)*IC_Seco + sigma*log((n_parents + n_children + 1)/log((total_edges + 1))}.
-Here \code{sigma} is defined as \code{log(total_edges+1)/(log(total_edges) + log(total_terms))}, where \code{total_edges} is the number of all relations
-and \code{total_terms} is the number of all terms in the DAG. \code{n_parents} and \code{n_children} are the number of parents and children of term \code{t}.
-
-Paper link: \url{https://dl.acm.org/doi/10.5555/1862330.1862343}.
-}
-
-
 \subsection{IC_Sanchez_2011}{
 
-It measures average contribution to leaf terms, calculated as \code{-log(zeta/n_ancestors/total_leaves)}.
-In the formula, \code{zeta} is the number of leaves that can be connected from term \code{t}, since \code{t}'s ancestors can also
-reach \code{t}'s leaves. \code{zeta} is scaled by \code{n_ancestors} which is the number of \code{t}'s ancestor terms. Then it is normalized
-to the maximal number of leaves in the DAG.
+It measures average contribution of term \code{t} to leaf terms. First denote \code{zeta} as the number of leaf terms that
+can be reached from term \code{t}. Since all \code{t}'s ancestors can also
+reach \code{t}'s leaves, the contribution of \code{t} on leaf terms is scaled by \code{n_ancestors} which is the number of \code{t}'s ancestor terms.
+The final information content is normalized by the total number of leaves in the DAG, which is the possible maximal value of \code{zeta}.
+The complete definition of information content is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{-log(zeta/n_ancestor/n_all_leaves)
+}\if{html}{\out{</div>}}
 
 Paper link: \url{https://doi.org/10.1016/j.knosys.2010.10.001}.
 }
@@ -96,7 +251,23 @@ Paper link: \url{https://doi.org/10.1016/j.knosys.2010.10.001}.
 
 \subsection{IC_Meng_2012}{
 
-It has a complex form which takes depth,
+It has a complex form which takes account of the term depth and the downstream of the term.
+The first factor is calculated as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{f1 = log(depth)/long(max_depth)
+}\if{html}{\out{</div>}}
+
+The second factor is calculated as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{f1 = 1 - log(1 + sum_\{x => t's downstream\}(1/depth_x))/log(total_terms)
+}\if{html}{\out{</div>}}
+
+In the equation, the sum goes over \code{t}'s downstream terms.
+
+The final information content is the multiplication of \code{f1} and \code{f2}:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{f1 * f2
+}\if{html}{\out{</div>}}
 
 Paper link: \url{http://article.nadiapub.com/IJGDC/vol5_no3/6.pdf}.
 }
@@ -104,10 +275,39 @@ Paper link: \url{http://article.nadiapub.com/IJGDC/vol5_no3/6.pdf}.
 
 \subsection{IC_Wang_2007}{
 
-It first calculates a "S" value between from \code{t}'s ancestor term to \code{t}, defined as the maximal distance by taking semantic weight.
-Then the information content of \code{t} is the sum of \code{S} values of all its ancestor terms.
+Each relation is weighted by a value less than 1 based on the semantic relation, i.e. 0.8 for "isa" and 0.6 for "part of".
+For a term \code{t} and one of its ancestor term \code{a}, it first calculates a "S-value" which correspond to a path from \code{a} to \code{t} where
+the accumulated multiplication of weights along the path reaches maximal:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{S(a->t) = max(prod(w))
+}\if{html}{\out{</div>}}
+
+Here \code{max} goes over all possible paths from \code{a} to \code{t}, and \code{prod()} multiplies edge weights in a certain path.
+
+The formula can be transformed as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{1/S = min(prod(1/w))
+log(1/S) = min(sum(log(1/w)))
+}\if{html}{\out{</div>}}
+
+Since \code{w < 1}, \code{log(1/w)} is positive. According to the equation, the path is actually the shortest path from \code{a} to \code{t} by taking
+\code{log(1/w)} as the weight, and \code{log(1/S)} is the weighted shortest distance.
+
+If \code{S(a->t)} can be thought as the maximal semantic contribution from \code{a} to \code{t}, the information content is calculated
+as the sum from all \code{t}'s ancestors (including \code{t} itself):
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sum_\{a => t's ancestors\}(S(a->t))
+}\if{html}{\out{</div>}}
 
 Paper link: \url{https://doi.org/10.1093/bioinformatics/btm087}.
+
+The contribution of different semantic relations can be set with the \code{contribution_factor} parameter. The value should be a named numeric
+vector where names should cover the relations defined in \code{relations} set in \code{\link[=create_ontology_DAG]{create_ontology_DAG()}}. For example, if there are two relations
+"relation_a" and "relation_b" set in the DAG, the value for \code{contribution_factor} can be set as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{term_IC(dag, method = "IC_Wang", 
+    control = list(contribution_factor = c("relation_a" = 0.8, "relation_b" = 0.6)))
+}\if{html}{\out{</div>}}
 }
 }
 
@@ -115,12 +315,12 @@ Paper link: \url{https://doi.org/10.1093/bioinformatics/btm087}.
 parents  = c("a", "a", "b", "b", "c", "d")
 children = c("b", "c", "c", "d", "e", "f")
 annotation = list(
-    "a" = 1:3,
-    "b" = 3:4,
-    "c" = 5,
-    "d" = 7,
-    "e" = 4:7,
-    "f" = 8
+    "a" = c("t1", "t2", "t3"),
+    "b" = c("t3", "t4"),
+    "c" = "t5",
+    "d" = "t7",
+    "e" = c("t4", "t5", "t6", "t7"),
+    "f" = "t8"
 )
 dag = create_ontology_DAG(parents, children, annotation = annotation)
 term_IC(dag, "IC_annotation")

@@ -146,3 +146,18 @@ test_that("compare cpp_nearest_common_ancestor and cpp_max_ancestor_v", {
 	expect_equal(m1[4, 6], 3)
 	expect_equal(m2[4, 6], 3)
 })
+
+
+
+if(FALSE) {
+
+dag = create_ontology_DAG_from_GO_db()
+
+system.time(d <- LCA_term(dag, dag@terms)); rm(d); gc();
+system.time(d <- LCA_depth(dag, dag@terms)); rm(d); gc();
+system.time(d <- NCA_term(dag, dag@terms)); rm(d); gc();
+system.time(d <- MICA_term(dag, dag@terms, "IC_universal")); rm(d); gc();
+system.time(d <- MICA_IC(dag, dag@terms, "IC_universal")); rm(d); gc();
+
+}
+

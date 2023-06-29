@@ -4,46 +4,84 @@
 #' Number of annotated items
 #' 
 #' @param dag An `ontology_DAG` object.
+#' @param terms A vector of term names. If it is set, the returned vector will be subsetted to the terms that have been set here.
+#' @param uniquify Whether to take the unique annotated items? See **Details**.
 #' @param use_cache Internally used.
 #' 
 #' @details
-#' Due to the nature of DAG, a parent term includes all annotated items of its child terms. This offspring-merging
-#' is automatically applied in this function. In other words, the value corresponds to the union of items annotated to the term
-#' and all its offspring terms.
+#' Due to the nature of the DAG, a parent term includes all annotated items of its child terms, and an ancestor term includes
+#' all annotated items from its offspring recursively. In current tools, there are two different implementations to deal with
+#' such recursive merging.
+#' 
+#' For a term `t`, denote `S_1`, `S_2`, ... as the sets of annotated items for its child 1, 2, ..., also denote `S_t` as the set
+#' of items that are **directly** annotated to `t`. The first method takes the union of annotated items on `t` and all its child terms:
+#' 
+#' ```
+#' n = length(union(S_t, S_1, S_2, ...))
+#' ```
+#' 
+#' And the second method takes the sum of numbers of items on `t` and on all its child terms:
+#' 
+#' ```
+#' n = sum(length(s_t) + length(S_1) + length(S_2) + ...)
+#' ```
+#' 
+#' In `n_annotations()`, when `uniquify = TRUE`, the first method is used; and when `uniquify = FALSE`, the second method is used.
+#' 
+#' For some annotation sources, it is possible that an item is annotated to multiple terms, thus, the second method which simply
+#' adds numbers of all its child terms may not be proper because an item maybe counted duplicatedly, thus over-estimating `n`. The two methods
+#' are identical only if an item is annotated to a unique term.
+#' 
+#' We suggest to always set `uniquify = TRUE` (the default), and the scenario of `uniquify = FALSE` is only for the testing or benchmarking purposes. 
 #' 
 #' @returns An integer vector.
 #' @export
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
 #' children = c("b", "c", "c", "d", "e", "f")
-#' # the items in `annotation` are better in character, but they will be 
-#' # internally converted to character.
 #' annotation = list(
-#'     "a" = 1:3,
-#'     "b" = 3:4,
-#'     "c" = 5,
-#'     "d" = 7,
-#'     "e" = 4:7,
-#'     "f" = 8
+#'     "a" = c("t1", "t2", "t3"),
+#'     "b" = c("t3", "t4"),
+#'     "c" = "t5",
+#'     "d" = "t7",
+#'     "e" = c("t4", "t5", "t6", "t7"),
+#'     "f" = "t8"
 #' )
 #' dag = create_ontology_DAG(parents, children, annotation = annotation)
 #' n_annotations(dag)
-n_annotations = function(dag, use_cache = TRUE) {
-	if(is.null(dag@term_env$n_annotations)) {
+n_annotations = function(dag, terms = NULL, uniquify = simone_opt$anno_uniquify, use_cache = simone_opt$use_cache) {
+	if(!uniquify && is.null(dag@term_env$n_annotations)) {
 		use_cache = FALSE
-	} 
+	} else if(uniquify && is.null(dag@term_env$n_annotations_unique)) {
+		use_cache = FALSE
+	}
 	if(!use_cache) {
 		validate_dag_has_annotation(dag)
-		n_all_anno = length(dag@annotation$names)
 	
-		n = cpp_n_annotations(dag)
+		n = cpp_n_annotations(dag, uniquify)
 		
-		attr(n, "N") = n_all_anno
+		attr(n, "N") = max(n)
 
-		dag@term_env$n_annotations = n
+		if(uniquify) {
+			dag@term_env$n_annotations_unique = n
+		} else {
+			dag@term_env$n_annotations = n
+		}
 	}
 	
-	structure(dag@term_env$n_annotations, names = dag@terms)
+	if(uniquify) {
+		n = structure(dag@term_env$n_annotations_unique, names = dag@terms)
+	} else {
+		n = structure(dag@term_env$n_annotations, names = dag@terms)
+	}	
+	
+	if(!is.null(terms)) {
+		i = term_to_node_id(dag, terms)
+		n[i]
+	} else {
+		n
+	}
+
 }
 
 validate_dag_has_annotation = function(dag) {
@@ -59,7 +97,7 @@ validate_annotated_terms = function(dag, id) {
 
 	l1 = n_anno == 0
 	if(any(l1)) {
-		message("removed ", sum(l1), " terms with no annotation.")
+		message("remove ", sum(l1), " terms with no annotation.")
 		
 		if(length(sum(!l1)) == 0) {
 			stop("No term is lef.")
@@ -67,7 +105,7 @@ validate_annotated_terms = function(dag, id) {
 	}
 	l2 = id %in% dag@root
 	if(any(l2)) {
-		message("removed root term.")
+		message("remove root term.")
 		
 		if(length(sum(!l1 & !l2)) == 0) {
 			stop("No term is lef.")
@@ -82,7 +120,7 @@ validate_annotated_terms = function(dag, id) {
 #' 
 #' @param dag An `ontology_DAG` object.
 #' @param terms A vector of term names.
-#' @param return Whether to return a list or a matrix?
+#' @param return Whether the returned object is a list or a matrix?
 #' 
 #' @details
 #' If an item is annotated to a term, all this term's ancestor terms are also annotated.
@@ -95,19 +133,16 @@ validate_annotated_terms = function(dag, id) {
 #' parents  = c("a", "a", "b", "b", "c", "d")
 #' children = c("b", "c", "c", "d", "e", "f")
 #' annotation = list(
-#'     "a" = 1:3,
-#'     "b" = 3:4,
-#'     "c" = 5,
-#'     "d" = 7,
-#'     "e" = 4:7,
-#'     "f" = 8
+#'     "a" = c("t1", "t2", "t3"),
+#'     "b" = c("t3", "t4"),
+#'     "c" = "t5",
+#'     "d" = "t7",
+#'     "e" = c("t4", "t5", "t6", "t7"),
+#'     "f" = "t8"
 #' )
 #' dag = create_ontology_DAG(parents, children, annotation = annotation)
 #' term_annotations(dag, letters[1:6])
-#' 
-#' # The integers in `annotation` is internally converted to characters,
-#' # so here we use the character form of the items.
-#' annotated_terms(dag, c("1", "2", "3"))
+#' annotated_terms(dag, c("t1", "t2", "t3"))
 term_annotations = function(dag, terms, return = "list") {
 	validate_dag_has_annotation(dag)
 

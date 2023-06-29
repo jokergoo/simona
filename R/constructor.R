@@ -65,15 +65,13 @@ ontology_DAG = setClass("ontology_DAG",
 #' dag = create_ontology_DAG(parents, children)
 #' 
 #' # with annotations
-#' # the items in `annotation` are better in character, but they will be 
-#' # internally converted to character.
 #' annotation = list(
-#'     "a" = 1:3,
-#'     "b" = 3:4,
-#'     "c" = 5,
-#'     "d" = 7,
-#'     "e" = 4:7,
-#'     "f" = 8
+#'     "a" = c("t1", "t2", "t3"),
+#'     "b" = c("t3", "t4"),
+#'     "c" = "t5",
+#'     "d" = "t7",
+#'     "e" = c("t4", "t5", "t6", "t7"),
+#'     "f" = "t8"
 #' )
 #' dag = create_ontology_DAG(parents, children, annotation = annotation)
 #' 
@@ -220,7 +218,11 @@ setMethod("show",
 
 		cat("An ontology_DAG object:\n")
 		cat("  Source:", object@source, "\n")
-		cat("  ", n_terms, " terms / ", n_relations, " relations\n", sep = "")
+		if(n_terms == n_relations + 1) {
+			cat("  ", n_terms, " terms / ", n_relations, " relations / a tree\n", sep = "")
+		} else {
+			cat("  ", n_terms, " terms / ", n_relations, " relations\n", sep = "")
+		}
 		cat("  Root:", paste(object@terms[object@root], collapse = ", "), "\n")
 
 		if(!is.null(object@term_env$dag_depth)) {
@@ -228,8 +230,12 @@ setMethod("show",
 			cat("  Max depth:", max(depth), "\n")
 		}
 
-		cat("  Aspect ratio: ", object@aspect_ratio[1], ":1 (based on the longest_dist to root)\n", sep = "")
-		cat("                ", object@aspect_ratio[2], ":1 (based on the shortest_dist to root)\n", sep = "")
+		if(n_terms == n_relations + 1) {
+			cat("  Aspect ratio: ", object@aspect_ratio[1], ":1\n", sep = "")
+		} else {
+			cat("  Aspect ratio: ", object@aspect_ratio[1], ":1 (based on the longest distance to root)\n", sep = "")
+			cat("                ", object@aspect_ratio[2], ":1 (based on the shortest distance to root)\n", sep = "")
+		}
 
 		if(length(object@lt_children_relations)) {
 			cat("  Relations:", paste(attr(object@lt_children_relations, "levels"), collapse = ", "), "\n")
@@ -247,7 +253,7 @@ setMethod("show",
 #' @param relations Types of the GO term relations. In the **GO.db** package, the GO term relations can be "isa", "part of",
 #'               "regulates", "negatively regulates", "positively regulates". Note since "regulates" is a parent relation
 #'               of "negatively regulates", "positively regulates", if "regulates" is selected, "negatively regulates" and "positively regulates"
-#'               will also be selected.
+#'               are be selected.
 #' @param org_db The name of the organism package or the corresponding database object, e.g. `"org.Hs.eg.db"` or 
 #'            directly the [`org.Hs.eg.db::org.Hs.eg.db`] object for human, then the gene annotation to GO terms will be added
 #'            to the object.
@@ -346,8 +352,15 @@ setMethod("[[",
 #' children = c("b", "c", "c", "d", "e", "f")
 #' dag = create_ontology_DAG(parents, children)
 #' dag_all_terms(dag)
+#' dag_n_terms(dag)
 dag_all_terms = function(dag) {
 	dag@terms
+}
+
+#' @rdname dag_all_terms
+#' @export
+dag_n_terms = function(dag) {
+	dag@n_terms
 }
 
 #' Root or leaves of the DAG
@@ -381,6 +394,16 @@ dag_leaves = function(dag, in_labels = TRUE) {
 	}
 }
 
+#' @param terms A vector of term names.
+#' 
+#' @rdname dag_root
+#' @export
+dag_is_leaf = function(dag, terms) {
+	id = term_to_node_id(dag, terms)
+	l = id %in% dag@leaves
+	structure(l, names = dag@terms[id])
+}
+
 #' Convert to an igraph object
 #' 
 #' @param dag An `ontology_DAG` object.
@@ -389,6 +412,7 @@ dag_leaves = function(dag, in_labels = TRUE) {
 #' 
 #' @return An [`igraph::igraph`] object.
 #' @export
+#' @import igraph
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
 #' children = c("b", "c", "c", "d", "e", "f")
@@ -409,12 +433,11 @@ dag_as_igraph = function(dag) {
 		relations = NULL
 	}
 
-	children = dag@terms[children]
-	parents = dag@terms[parents]
+	g = graph_from_edgelist(cbind(parents, children))
+	V(g)$name = dag@terms
 
-	g = igraph::graph_from_edgelist(cbind(parents, children))
 	if(!is.null(relations)) {
-		igraph::set_edge_attr(g, "relation", value = relations)
+		g = set_edge_attr(g, "relation", value = relations)
 	}
 
 	g

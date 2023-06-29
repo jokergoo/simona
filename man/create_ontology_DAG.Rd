@@ -37,15 +37,13 @@ children = c("b", "c", "c", "d", "e", "f")
 dag = create_ontology_DAG(parents, children)
 
 # with annotations
-# the items in `annotation` are better in character, but they will be 
-# internally converted to character.
 annotation = list(
-    "a" = 1:3,
-    "b" = 3:4,
-    "c" = 5,
-    "d" = 7,
-    "e" = 4:7,
-    "f" = 8
+    "a" = c("t1", "t2", "t3"),
+    "b" = c("t3", "t4"),
+    "c" = "t5",
+    "d" = "t7",
+    "e" = c("t4", "t5", "t6", "t7"),
+    "f" = "t8"
 )
 dag = create_ontology_DAG(parents, children, annotation = annotation)
 

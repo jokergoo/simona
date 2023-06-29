@@ -24,7 +24,7 @@ term_to_node_id = function(dag, term, strict = TRUE) {
 			}
 		}
 
-		i
+		unname(structure(i, names = dag@terms[i])[term])
 	}
 }
 
@@ -117,3 +117,38 @@ message_wrap = function (...) {
 add_transparency = function (col, transparency = 0) {
     rgb(t(col2rgb(col)/255), alpha = 1 - transparency)
 }
+
+
+lt_children_to_lt_parents = function(lt_children) {
+	n = length(lt_children)
+	parents = rep(seq_len(n), times = sapply(lt_children, length))
+	children = unlist(lt_children)
+
+	lt = split(parents, children)
+
+	lt_parents = rep(list(integer(0)))
+	lt_parents[ as.integer(names(lt)) ] = lt
+
+	lt_parents
+}
+
+lt_parents_to_lt_children = function(lt_parents) {
+	n = length(lt_parents)
+	children = rep(seq_len(n), times = sapply(lt_parents, length))
+	parents = unlist(lt_parents)
+
+	lt = split(children, parents)
+
+	lt_children = rep(list(integer(0)))
+	lt_children[ as.integer(names(lt)) ] = lt
+
+	lt_children
+}
+
+dag_is_tree = function(dag) {
+	n_terms = dag@n_terms
+	n_relations = sum(sapply(dag@lt_children, length))
+
+	n_terms == n_relations + 1
+}
+

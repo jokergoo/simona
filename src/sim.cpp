@@ -120,6 +120,12 @@ NumericVector cpp_sim_wang(S4 dag, IntegerVector nodes, NumericVector contributi
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
 
 	for(int k = 0; k < all_ancestors.size(); k ++) {
+
+		if(k % 100 == 0) {
+			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+			Rcout << "going through " << k << " / " << all_ancestors.size() << " ancestors ...";
+		}
+
 		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
 
 		IntegerVector offspring = _which(l_offspring);
@@ -160,6 +166,9 @@ NumericVector cpp_sim_wang(S4 dag, IntegerVector nodes, NumericVector contributi
 		}
 	}
 
+	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ...\ndone.\n";
+
 	for(int i = 0; i < m - 1; i ++) {
 		for(int j = i+1; j < m; j ++) {
 			sim(i, j) = sim(i, j)/(ic[i] + ic[j]);
@@ -168,6 +177,42 @@ NumericVector cpp_sim_wang(S4 dag, IntegerVector nodes, NumericVector contributi
 	}
 	return sim;
 }
+
+// [[Rcpp::export]]
+NumericMatrix cpp_wang_sv_to_sim(NumericMatrix sv) {
+	int na = sv.nrow();
+	int n = sv.ncol();
+
+	NumericVector ic(n);
+
+	for(int i = 0; i < n; i ++) {
+		for(int j = 0; j < na; j ++) {
+			ic[i] += sv(j, i);
+		}
+	}
+
+	NumericMatrix sim(n, n);
+	sim.fill_diag(1);
+
+	if(n <= 1) {
+		return sim;
+	}
+
+	for(int i = 0; i < n - 1; i ++) {
+		for(int j = i + 1; j < n; j ++) {
+			for(int k = 0; k < na; k ++) {
+				if(std::abs(sv(k, i)) > 1e-10 && std::abs(sv(k, j)) > 1e-10) {
+					sim(i, j) += sv(k, i) + sv(k, j);
+				}
+			}
+			sim(i, j) = sim(i, j)/(ic[i] + ic[j]);
+			sim(j, i) = sim(i, j);
+		}
+	}
+
+	return sim;
+}
+
 
 
 void _assign_ancestor_max_wang_edge(S4 dag, NumericVector v, NumericMatrix& score, int i_ancestor, int id1, int id2) {
@@ -352,7 +397,11 @@ NumericMatrix cpp_sim_shen(S4 dag, IntegerVector nodes, NumericVector ic) {
 	NumericMatrix sim(m, m);
 
 	for(int i = 0; i < m; i ++) {
-		sim(i, i) = 1 - atan(1/ic[ nodes[i]-1 ])/PI*2;
+		if(std::abs(ic[ nodes[i]-1 ]) < 1e-10) {
+			sim(i, i) = 0;
+		} else {
+			sim(i, i) = 1 - atan(1/ic[ nodes[i]-1 ])/PI*2;
+		}
 	}
 
 	if(m <= 1) {
@@ -363,14 +412,23 @@ NumericMatrix cpp_sim_shen(S4 dag, IntegerVector nodes, NumericVector ic) {
 
 	IntegerMatrix mica_nodes = cpp_max_ancestor_id(dag, nodes, ic);
 
+	int i_pair = 0;
+	int n_pairs = m*(m-1)/2;
 	for(int i = 0; i < m - 1; i ++) {
 		for(int j = i+1; j < m; j ++) {
-			if(ic[ mica_nodes(i, j)-1 ] == 0) {
+
+			i_pair ++;
+			if(i_pair % 1000 == 0) {
+				Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+				Rcout << "going through " << i_pair << " / " << n_pairs << " pairs ...";
+			}
+
+			if(std::abs(ic[ mica_nodes(i, j)-1 ]) < 1e-10) {
 				sim(i, j) = 0;
 				sim(j, i) = 0;
 			} else {
-				IntegerVector path1 = cpp_tpl_shortest_path(dag, mica_nodes(i, j), i+1);
-				IntegerVector path2 = cpp_tpl_shortest_path(dag, mica_nodes(i, j), j+1);
+				IntegerVector path1 = cpp_tpl_shortest_path(dag, mica_nodes(i, j), nodes[i]);
+				IntegerVector path2 = cpp_tpl_shortest_path(dag, mica_nodes(i, j), nodes[j]);
 
 				double v = 0;
 				for(int k = 0; k < path1.size(); k ++) {
@@ -387,6 +445,9 @@ NumericMatrix cpp_sim_shen(S4 dag, IntegerVector nodes, NumericVector ic) {
 			}
 		}
 	}
+
+	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+	Rcout << "going through " << n_pairs << " / " << n_pairs << " pairs ...\ndone.\n";
 
 	return sim;
 }
@@ -411,10 +472,19 @@ NumericMatrix cpp_sim_SSDD(S4 dag, IntegerVector nodes, NumericVector t) {
 
 	IntegerMatrix lca_nodes = cpp_max_ancestor_id(dag, nodes, depth2);
 
+	int i_pair = 0;
+	int n_pairs = m*(m-1)/2;
 	for(int i = 0; i < m - 1; i ++) {
 		for(int j = i+1; j < m; j ++) {
-			IntegerVector path1 = cpp_tpl_shortest_path(dag, lca_nodes(i, j), i+1);	
-			IntegerVector path2 = cpp_tpl_shortest_path(dag, lca_nodes(i, j), j+1);
+
+			i_pair ++;
+			if(i_pair % 1000 == 0) {
+				Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+				Rcout << "going through " << i_pair << " / " << n_pairs << " pairs ...";
+			}
+
+			IntegerVector path1 = cpp_tpl_shortest_path(dag, lca_nodes(i, j), nodes[i]);	
+			IntegerVector path2 = cpp_tpl_shortest_path(dag, lca_nodes(i, j), nodes[j]);
 
 			double v = 0;
 			for(int k = 0; k < path1.size(); k ++) {
@@ -430,6 +500,10 @@ NumericMatrix cpp_sim_SSDD(S4 dag, IntegerVector nodes, NumericVector t) {
 			sim(j, i) = sim(i, j);
 		}
 	}
+
+	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+	Rcout << "going through " << n_pairs << " / " << n_pairs << " pairs ...\ndone.\n";
+
 
 	return sim;
 }
@@ -522,7 +596,7 @@ NumericMatrix cpp_common_ancestor_mean_IC_EISI(S4 dag, IntegerVector nodes, Nume
 
 	LogicalMatrix m_ancestors(m, n);
 	LogicalVector la(n);
-	for(int i = 0 ; i < m - 1; i ++) {
+	for(int i = 0 ; i < m; i ++) {
 		_find_ancestors(lt_parents, nodes[i], la, true);
 		m_ancestors(i, _) = la;
 		reset_logical_vector_to_false(la);
@@ -632,14 +706,38 @@ NumericMatrix cpp_common_ancestor_mean_IC_GraSM(S4 dag, IntegerVector nodes, Num
 	NumericMatrix mean_ic(m, m);
 	IntegerVector l_DCA(n);
 
+	int i_pair = 0;
+	int n_pairs = m*(m-1)/2 + m-1;
 	for(int i = 0; i < m; i ++) {
 		for(int j = i; j < m; j ++) {
+
+			i_pair ++;
+			if(i_pair % 1000 == 0) {
+				Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+				Rcout << "going through " << i_pair << " / " << n_pairs << " pairs ...";
+			}
+
 			l_DCA = _disjunctive_common_ancestors_single(lt_parents, nodes[i] - 1, nodes[j] - 1, ic);
-			NumericVector ic2 = ic[l_DCA];
-			mean_ic(i, j) = sum(ic2)/ic2.size();
-			mean_ic(j, i) = mean_ic(i, j);
+			int n_DCA = sum(l_DCA);
+			if(n_DCA) {
+				double ss = 0;
+				for(int k = 0; k < l_DCA.size(); k ++) {
+					if(l_DCA[k]) {
+						ss += ic[k];
+					}
+				}
+
+				mean_ic(i, j) = ss/n_DCA;
+				mean_ic(j, i) = mean_ic(i, j);
+			} else {
+				mean_ic(i, j) = 0;
+				mean_ic(j, i) = 0;
+			}
 		}
 	}
+
+	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+	Rcout << "going through " << n_pairs << " / " << n_pairs << " pairs ...\ndone.\n";
 
 	return mean_ic;
 }

@@ -83,6 +83,12 @@ NumericVector cpp_ic_wang(S4 dag, NumericVector contribution) {
 	NumericVector ic(n);
 
 	for(int i = 0; i < n; i ++) {
+
+		if(i % 1000 == 0) {
+			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+			Rcout << "going through " << i << " / " << n << " nodes ...";
+		}
+
 		LogicalVector l_ancestors(n);
 		_find_ancestors(lt_parents, i, l_ancestors, true);
 
@@ -94,6 +100,9 @@ NumericVector cpp_ic_wang(S4 dag, NumericVector contribution) {
 		
 		reset_logical_vector_to_false(l_ancestors);
 	}
+
+	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+	Rcout << "going through " << n << " / " << n << " nodes ...\ndone.\n";
 
 	return ic;
 }

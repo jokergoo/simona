@@ -63,4 +63,8 @@ test_that("test sim_wang", {
 		m[5, 6],
 		(0.36+0.49+0.252+0.42)/(2.61+2.212)
 	)
+
+	m2 = Sim_Wang_2007(dag, letters[1:6], contribution_factor = c("isa" = 0.7, "part of" = 0.6))
+
+	expect_equal(as.vector(m), as.vector(m2))
 })

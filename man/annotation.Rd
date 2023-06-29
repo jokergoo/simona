@@ -14,7 +14,7 @@ annotated_terms(dag, anno, return = "list")
 
 \item{terms}{A vector of term names.}
 
-\item{return}{Whether to return a list or a matrix?}
+\item{return}{Whether the returned object is a list or a matrix?}
 
 \item{anno}{A vector of annotated item names.}
 }
@@ -31,17 +31,14 @@ If an item is annotated to a term, all this term's ancestor terms are also annot
 parents  = c("a", "a", "b", "b", "c", "d")
 children = c("b", "c", "c", "d", "e", "f")
 annotation = list(
-    "a" = 1:3,
-    "b" = 3:4,
-    "c" = 5,
-    "d" = 7,
-    "e" = 4:7,
-    "f" = 8
+    "a" = c("t1", "t2", "t3"),
+    "b" = c("t3", "t4"),
+    "c" = "t5",
+    "d" = "t7",
+    "e" = c("t4", "t5", "t6", "t7"),
+    "f" = "t8"
 )
 dag = create_ontology_DAG(parents, children, annotation = annotation)
 term_annotations(dag, letters[1:6])
-
-# The integers in `annotation` is internally converted to characters,
-# so here we use the character form of the items.
-annotated_terms(dag, c("1", "2", "3"))
+annotated_terms(dag, c("t1", "t2", "t3"))
 }

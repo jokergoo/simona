@@ -4,7 +4,7 @@
 \alias{group_sim}
 \title{Semantic similarity between two groups of terms}
 \usage{
-group_sim(dag, group1, group2, method, sim_method, control = list())
+group_sim(dag, group1, group2, method, control = list())
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
@@ -13,11 +13,11 @@ group_sim(dag, group1, group2, method, sim_method, control = list())
 
 \item{group2}{A vector of term names.}
 
-\item{method}{A group similarity method. All available methods are in \code{\link{ALL_GROUP_SIM_METHODS}}.}
-
-\item{sim_method}{A Term similarity method. All available methods are in \code{\link{ALL_TERM_SIM_METHODS}}.}
+\item{method}{A group similarity method. All available methods are in \code{\link[=all_group_sim_methods]{all_group_sim_methods()}}.}
 
 \item{control}{A list of parameters passing to individual methods. See the subsections.}
+
+\item{sim_method}{A Term similarity method. All available methods are in \code{\link[=all_term_sim_methods]{all_term_sim_methods()}}.}
 }
 \value{
 A numeric scalar.
@@ -34,106 +34,288 @@ group2 = annotated_terms(dag, item2)
 group_sim(dag, group1, group2, ...)
 }\if{html}{\out{</div>}}
 }
-\section{method}{
-
-what is GroupSim_pairwise_avg
+\section{Methods}{
 
 
-what is GroupSim_pairwise_max
+blablabla
 
 
-what is GroupSim_pairwise_BMM
+\subsection{GroupSim_pairwise_avg}{
+
+Denote \code{S(a, b)} as the similarity between terms \code{a} and \code{b} where \code{a} is from \code{group1} and \code{b} is from \code{group2},
+The similarity between group1 and group2 is the average similarity of every pair of individual terms in the two groups:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{mean_\{any pair a/b from group1/group2\}(S(a, b))
+}\if{html}{\out{</div>}}
+}
 
 
-what is GroupSim_pairwise_ABM
+\subsection{GroupSim_pairwise_max}{
+
+This is the maximal \code{S(a, b)} among all pairs of terms in group1 and group2:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{max_\{any pair a/b from group1/group2\}(S(a, b))
+}\if{html}{\out{</div>}}
+}
 
 
-what is GroupSim_pairwise_HDF
+\subsection{GroupSim_pairwise_BMM}{
+
+BMM stands for "best-match max". It is defined as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{max(mean_\{a in group1\}(a, group2), mean_\{b in group2\}(b, group1)
+}\if{html}{\out{</div>}}
+}
 
 
-what is GroupSim_pairwise_VHDF
+\subsection{GroupSim_pairwise_BMA}{
+
+BMA stands for "best-match average". First define similarity of a term to a group of terms as
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{S(x, group) = max_\{y in group\}(x, y)
+}\if{html}{\out{</div>}}
+
+which is the most similar terms in \code{group}.
+
+Then the BMA similarity is calculated as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{0.5*(mean_\{a in group1\}(a, group2) + mean_\{b in group2\}(b, group1)
+}\if{html}{\out{</div>}}
+
+So it is the average of every term in group1 to the whole group2 and every term in group2 to the whole group1.
+}
 
 
-what is GroupSim_pairwise_Froehlich_2007
+\subsection{GroupSim_pairwise_ABM}{
+
+ABM stands for "averagebest-match". It is defined as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{(sum_\{a in group1\}(a, group2) + sum_\{b in group2\}(b, group1)/(n1 + n2)
+}\if{html}{\out{</div>}}
+
+where \code{n1} and \code{n2} are the number of terms in group1 and group2.
+}
 
 
-what is GroupSim_pairwise_Joeng_2014
+\subsection{GroupSim_pairwise_HDF}{
+
+First define the distance of a term to a group of terms:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{D(x, group) = 1 - S(x, group)
+}\if{html}{\out{</div>}}
+
+Then the Hausdorff distance between two groups are:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{HDF = max(max_\{a in group1\}(D(a, group2)), max_\{b in group2\}(D(b, group1)))
+}\if{html}{\out{</div>}}
+
+This final similarity is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{1 - HDF
+}\if{html}{\out{</div>}}
+}
 
 
-what is GroupSim_SimALN
+\subsection{GroupSim_pairwise_VHDF}{
+
+It is defined as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{0.5*(sqrt(mean_\{a in group1\}(D(a, group2)^2)) + sqrt(mean_\{b in group2\}(D(b, group1)^2)))
+}\if{html}{\out{</div>}}
+}
 
 
-what is GroupSim_SimINT
+\subsection{GroupSim_pairwise_MHDF}{
+
+Instead of using the maximal distance from a group to the other group, MHDF uses mean distance:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{MHDF = max(mean_\{a in group1\}(D(a, group2)), mean_\{b in group2\}(D(b, group1)))
+}\if{html}{\out{</div>}}
+
+This final similarity is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{1 - MHDF
+}\if{html}{\out{</div>}}
+}
 
 
-what is GroupSim_spgk
+\subsection{GroupSim_pairwise_Froehlich_2007}{
+
+The similarity is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{exp(-HDF(group1, group2))
+}\if{html}{\out{</div>}}
+}
 
 
-what is GroupSim_SimGIC
+\subsection{GroupSim_pairwise_Joeng_2014}{
+
+Similar to \emph{VHDF}, it directly use the similarity:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{0.5*(sqrt(mean_\{a in group1\}(S(a, group2)^2)) + sqrt(mean_\{b in group2\}(S(b, group1)^2)))
+}\if{html}{\out{</div>}}
+}
 
 
-what is GroupSim_SimDIC
+\subsection{GroupSim_SimALN}{
+
+It is based on the average distances between every pair of terms in the two groups:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{exp(-mean(d(a, b)))
+}\if{html}{\out{</div>}}
+}
 
 
-what is GroupSim_SimUIC
+\subsection{GroupSim_SimINT}{
+}
 
 
-what is GroupSim_SimUI
+\subsection{GroupSim_spgk}{
+}
 
 
-what is GroupSim_SimDB
+\subsection{GroupSim_SimGIC}{
+
+Denote \code{A} and \code{B} as the two sets of ancestors terms of terms in group1 and group2 respectively,
+the SimGIC is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sum_\{x in intersect(A, B)\}(IC(x))/sum_\{x in union(A, B)\}(IC(x))
+}\if{html}{\out{</div>}}
+}
 
 
-what is GroupSim_SimUB
+\subsection{GroupSim_SimDIC}{
+
+It is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{2*sum_\{x in intersect(A, B)\}(IC(x))/(sum_\{x in A\}(IC(x)) + sum_\{x in B\}(IC(x)))
+}\if{html}{\out{</div>}}
+}
 
 
-what is GroupSim_SimNTO
+\subsection{GroupSim_SimUIC}{
+
+It is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sum_\{x in intersect(A, B)\}(IC(x))/max(sum_\{x in A\}(IC(x)), sum_\{x in B\}(IC(x)))
+}\if{html}{\out{</div>}}
+}
 
 
-what is GroupSim_SimCOU
+\subsection{GroupSim_SimUI}{
+
+It is only based on the number of terms:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{length(intersect(A, B))/length(union(A, B))
+}\if{html}{\out{</div>}}
+}
 
 
-what is GroupSim_SimCOT
+\subsection{GroupSim_SimDB}{
+
+It is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{2*length(intersect(A, B))/(length(A) + length(B))
+}\if{html}{\out{</div>}}
+}
 
 
-what is GroupSim_SimLP
+\subsection{GroupSim_SimUB}{
+
+It is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{length(intersect(A, B))/max(length(A), length(B))
+}\if{html}{\out{</div>}}
+}
 
 
-what is GroupSim_Ye_2005
+\subsection{GroupSim_SimNTO}{
+
+It is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{length(intersect(A, B))/min(length(A), length(B))
+}\if{html}{\out{</div>}}
+}
 
 
-what is GroupSim_Cho_2007
+\subsection{GroupSim_SimCOU}{
+
+It is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sum_\{x in intersect(A, B)\}(IC(x)^2)/sum_\{x in A\}(IC(x)^2)/sum_\{x in B\}(IC(x)^2)
+}\if{html}{\out{</div>}}
+}
+
+
+\subsection{GroupSim_SimCOT}{
+
+It is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sum_\{x in intersect(A, B)\}(IC(x)^2) /
+    (sum_\{x in A\}(IC(x)^2) + sum_\{x in B\}(IC(x)^2) - sum_\{x in intersect(A, B)\}(IC(x)^2))
+}\if{html}{\out{</div>}}
+}
+
+
+\subsection{GroupSim_SimLP}{
+
+It is the longest path length in \code{intersect(A, B)}.
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{max(depth(intersect(A, B)))
+}\if{html}{\out{</div>}}
+}
+
+
+\subsection{GroupSim_Ye_2005}{
+
+It is a scaled version of \emph{GroupSim_SimLP}:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{max(depth(intersect(A, B)))/max_depth
+}\if{html}{\out{</div>}}
+
+Since the minimal depth is zero for root.
+}
+
+
+\subsection{GroupSim_SimCHO}{
+
+It is based on the annotated items. Denote \code{sigma(x)} as the number of items of \code{x} after downstream merging, for
+}
 
 
 what is GroupSim_SimALD
 
 
-what is GroupSim_Jaccard
+\subsection{GroupSim_Jaccard}{
+}
 
 
-what is GroupSim_Dice
+\subsection{GroupSim_Dice}{
+}
 
 
-what is GroupSim_Overlap
+\subsection{GroupSim_Overlap}{
+}
 
 
-what is GroupSim_Kappa
+\subsection{GroupSim_Kappa}{
+}
 }
 
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")
 children = c("b", "c", "c", "d", "e", "f")
 annotation = list(
-    "a" = 1:3,
-    "b" = 3:4,
-    "c" = 5,
-    "d" = 7,
-    "e" = 4:7,
-    "f" = 8
+    "a" = c("t1", "t2", "t3"),
+    "b" = c("t3", "t4"),
+    "c" = "t5",
+    "d" = "t7",
+    "e" = c("t4", "t5", "t6", "t7"),
+    "f" = "t8"
 )
 dag = create_ontology_DAG(parents, children, annotation = annotation)
 group_sim(dag, c("c", "e"), c("d", "f"), 
     method = "GroupSim_pairwise_avg", 
-    sim_method = "Sim_Ling_1998"
+    control = list(sim_method = "Sim_Lin_1998")
 )
 }

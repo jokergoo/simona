@@ -36,9 +36,9 @@ IntegerVector cpp_dag_longest_dist_to_offspring(S4 dag, int from_node, LogicalVe
 IntegerVector cpp_dag_shortest_dist_to_offspring(S4 dag, IntegerVector from_node, LogicalVector l_background = LogicalVector(0));
 IntegerVector cpp_dag_shortest_dist_to_offspring(S4 dag, int from_node, LogicalVector l_background = LogicalVector(0));
 IntegerVector cpp_dag_height(S4 dag);
-IntegerVector cpp_dag_longest_dist_to_ancestors(S4 dag, IntegerVector from_node, LogicalVector l_background = LogicalVector(0));
-IntegerVector cpp_dag_longest_dist_to_ancestors(S4 dag, int from_node, LogicalVector l_background = LogicalVector(0));
-IntegerVector cpp_dag_shortest_dist_to_ancestors(S4 dag, IntegerVector from_node, LogicalVector l_background = LogicalVector(0));
-IntegerVector cpp_dag_shortest_dist_to_ancestors(S4 dag, int from_node, LogicalVector l_background = LogicalVector(0));
+IntegerVector cpp_dag_longest_dist_from_ancestors(S4 dag, IntegerVector to_node, LogicalVector l_background = LogicalVector(0));
+IntegerVector cpp_dag_longest_dist_from_ancestors(S4 dag, int to_node, LogicalVector l_background = LogicalVector(0));
+IntegerVector cpp_dag_shortest_dist_from_ancestors(S4 dag, IntegerVector to_node, LogicalVector l_background = LogicalVector(0));
+IntegerVector cpp_dag_shortest_dist_from_ancestors(S4 dag, int to_node, LogicalVector l_background = LogicalVector(0));
 
 #endif

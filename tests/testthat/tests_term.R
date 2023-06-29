@@ -26,21 +26,21 @@ dag = create_ontology_DAG(parents, children)
 
 test_that("test IC_universal", {
 	expect_equal(
-		IC_universal(dag, F),
+		IC_universal(dag, use_cache = FALSE),
 		-log(c(1, 1/2, 1/8, 1/4, 1/8, 1/4))
 	)
 })
 
 test_that("test reachability", {
 	expect_equal(
-		reachability(dag, F),
+		reachability(dag, use_cache = FALSE),
 		c(3, 2, 1, 1, 1, 1)
 	)
 })
 
 test_that("test totipotency", {
 	expect_equal(
-		totipotency(dag, F),
+		totipotency(dag, use_cache = FALSE),
 		c(1, 5/6, 1/3, 1/3, 1/6, 1/6)
 	)
 })
@@ -55,15 +55,15 @@ test_that("test IC_Meng_2012", {
 		c(0, log(1+1)/log(3+1)*(1-log(8/3)/log(6)), log(2+1)/log(3+1)*(1-log(4/3)/log(6)), log(2+1)/log(3+1)*(1-log(4/3)/log(6)), 1, 1)
 	)
 })
-IC_Zhou_2008(dag, FALSE)
-IC_Seco_2004(dag, FALSE)
-IC_Zhang_2006(dag, FALSE)
-IC_Seddiqui_2010(dag, FALSE)
-IC_Sanchez_2011(dag, FALSE)
+IC_Zhou_2008(dag, use_cache = FALSE)
+IC_Seco_2004(dag, use_cache = FALSE)
+IC_Zhang_2006(dag, use_cache = FALSE)
+# IC_Seddiqui_2010(dag, use_cache = FALSE)
+IC_Sanchez_2011(dag, use_cache = FALSE)
 
 test_that("test IC_Wang_2007", {
 	expect_error(
-		IC_Wang_2007(dag),
+		IC_Wang_2007(dag, use_cache = FALSE),
 		"not set"
 	)
 })
@@ -101,11 +101,11 @@ remove_attr = function(x) {
 
 test_that("test IC_annotation", {
 	expect_equal(
-		n_annotations(dag1),
-		n_annotations(dag2)
+		n_annotations(dag1, use_cache = FALSE),
+		n_annotations(dag2, use_cache = FALSE)
 	)
 	expect_equal(
-		remove_attr(IC_annotation(dag1)),
+		remove_attr(IC_annotation(dag1, use_cache = FALSE)),
 		-c(log(8/8), log(6/8), log(4/8), log(2/8), log(4/8), log(1/8))
 	)
 })
@@ -124,11 +124,22 @@ dag = create_ontology_DAG(parents, children, relations = c("isa", "part of", "is
 	annotation = annotation)
 test_that("test IC_Wang_2007", {
 	expect_equal(
-		IC_Wang_2007(dag, c("isa" = 0.7, "part of" = 0.6)),
+		IC_Wang_2007(dag, c("isa" = 0.7, "part of" = 0.6), use_cache = FALSE),
 		c(1, 1.7, 2.3, 2.02, 2.61, 2.212)
 	)
 })
 
+library(igraph)
+g = dag_as_igraph(dag)
+E(g)$weight = c("isa" = 0.7, "part of" = 0.6)[E(g)$relation]
+d = distances(g, mode = "out", weights = -log(E(g)$weight))
+s = exp(-d)
+test_that("test IC_Wang_2007 and shortest path weighted by 1/w", {
+	expect_equal(
+		IC_Wang_2007(dag, c("isa" = 0.7, "part of" = 0.6), use_cache = FALSE),
+		unname(colSums(s))
+	)
+})
 
 ### test annotation
 dag = create_ontology_DAG_from_GO_db("BP", org_db = "org.Hs.eg.db")
@@ -146,9 +157,13 @@ test_that("test n_annotations", {
 if(FALSE) {
 
 dag = create_ontology_DAG_from_GO_db("BP", org_db = "org.Hs.eg.db")
-lt = lapply(ALL_IC_METHODS, function(method) {
-	calc_IC(dag, method)
+lt = lapply(all_ic_methods(), function(method) {
+	cat("=====", method, "=====\n")
+	term_IC(dag, method)
 })
-names(lt) = ALL_IC_METHODS
+names(lt) = all_ic_methods()
+
+df = as.data.frame(lt)
+pairs(df, pch = ".", col = dag_depth(dag))
 
 }

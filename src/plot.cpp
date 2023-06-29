@@ -30,7 +30,7 @@ NumericVector _get_breaks(double left, double right, int n, NumericVector weight
 }
 
 // [[Rcpp::export]]
-DataFrame cpp_term_pos_on_circle(S4 dag) {
+DataFrame cpp_term_pos_on_circle(S4 dag, double start = 0, double end = 360) {
 
 	int root = dag.slot("root");
 	List lt_children = dag.slot("lt_children");
@@ -41,6 +41,7 @@ DataFrame cpp_term_pos_on_circle(S4 dag) {
 
 	NumericVector theta(n);  // in degree
 	NumericVector rho(n);    // radius
+	NumericVector width(n);   // width of each term
 
 	// root
 	int i_root = root - 1;
@@ -57,11 +58,12 @@ DataFrame cpp_term_pos_on_circle(S4 dag) {
 	int current_depth = 0;
 
 	// polar coordinates of root
-	theta[i_root] = 0;
+	theta[i_root] = (end + start)*0.5;
 	rho[i_root] = 0;
+	width[i_root] = end - start;
 
 	if(max_depth == 1) {
-		DataFrame df = DataFrame::create(Named("theta") = theta, Named("rho") = rho, Named("level1_group") = -1);
+		DataFrame df = DataFrame::create(Named("theta") = theta, Named("rho") = rho, Named("level1_group") = -1, Named("width") = width);
 
 		return df;
 	}
@@ -102,6 +104,7 @@ DataFrame cpp_term_pos_on_circle(S4 dag) {
 				for(int j = 0; j < n_children2; j ++) {
 					theta[ children2[j]-1 ] = (breaks[j] + breaks[j+1])/2;
 					rho[ children2[j]-1 ] = current_depth;
+					width[ children2[j]-1 ] = breaks[j+1] - breaks[j];
 
 					parent_range_left[ children2[j]-1 ] = breaks[j];
 					parent_range_right[ children2[j]-1 ] = breaks[j+1];
@@ -126,7 +129,10 @@ DataFrame cpp_term_pos_on_circle(S4 dag) {
 		}
 	}
 
-	DataFrame df = DataFrame::create(Named("theta") = theta, Named("rho") = rho, Named("level1_group") = level1_group);
+	DataFrame df = DataFrame::create(Named("theta") = theta, Named("rho") = rho, Named("level1_group") = level1_group, Named("width") = width);
 
 	return df;
 }
+
+
+

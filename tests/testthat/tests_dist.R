@@ -114,3 +114,22 @@ test_that("test two dist methods with GO BP", {
 })
 
 
+
+if(FALSE) {
+
+dag = create_ontology_DAG_from_GO_db()
+system.time(d1 <- shortest_distances_via_NCA(dag, dag@terms)); rm(d1); gc();
+system.time(d2 <- longest_distances_via_LCA(dag, dag@terms)); rm(d2); gc();
+system.time(d3 <- shortest_distances_directed(dag, dag@terms)); rm(d3); gc();
+system.time(d4 <- longest_distances_directed(dag, dag@terms)); rm(d4); gc();
+
+}
+
+
+test_that("test two shortest_distances_via_NCA implementations", {
+	d1 = cpp_shortest_distances_via_NCA(dag, 1:100)
+	d2 = cpp_shortest_distances_via_CA(dag, 1:100)
+	expect_equal(d1, d2)
+})
+
+

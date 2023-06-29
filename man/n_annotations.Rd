@@ -4,10 +4,19 @@
 \alias{n_annotations}
 \title{Number of annotated items}
 \usage{
-n_annotations(dag, use_cache = TRUE)
+n_annotations(
+  dag,
+  terms = NULL,
+  uniquify = simone_opt$anno_uniquify,
+  use_cache = simone_opt$use_cache
+)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
+
+\item{terms}{A vector of term names. If it is set, the returned vector will be subsetted to the terms that have been set here.}
+
+\item{uniquify}{Whether to take the unique annotated items? See \strong{Details}.}
 
 \item{use_cache}{Internally used.}
 }
@@ -18,22 +27,39 @@ An integer vector.
 Number of annotated items
 }
 \details{
-Due to the nature of DAG, a parent term includes all annotated items of its child terms. This offspring-merging
-is automatically applied in this function. In other words, the value corresponds to the union of items annotated to the term
-and all its offspring terms.
+Due to the nature of the DAG, a parent term includes all annotated items of its child terms, and an ancestor term includes
+all annotated items from its offspring recursively. In current tools, there are two different implementations to deal with
+such recursive merging.
+
+For a term \code{t}, denote \code{S_1}, \code{S_2}, ... as the sets of annotated items for its child 1, 2, ..., also denote \code{S_t} as the set
+of items that are \strong{directly} annotated to \code{t}. The first method takes the union of annotated items on \code{t} and all its child terms:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{n = length(union(S_t, S_1, S_2, ...))
+}\if{html}{\out{</div>}}
+
+And the second method takes the sum of numbers of items on \code{t} and on all its child terms:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{n = sum(length(s_t) + length(S_1) + length(S_2) + ...)
+}\if{html}{\out{</div>}}
+
+In \code{n_annotations()}, when \code{uniquify = TRUE}, the first method is used; and when \code{uniquify = FALSE}, the second method is used.
+
+For some annotation sources, it is possible that an item is annotated to multiple terms, thus, the second method which simply
+adds numbers of all its child terms may not be proper because an item maybe counted duplicatedly, thus over-estimating \code{n}. The two methods
+are identical only if an item is annotated to a unique term.
+
+We suggest to always set \code{uniquify = TRUE} (the default), and the scenario of \code{uniquify = FALSE} is only for the testing or benchmarking purposes.
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")
 children = c("b", "c", "c", "d", "e", "f")
-# the items in `annotation` are better in character, but they will be 
-# internally converted to character.
 annotation = list(
-    "a" = 1:3,
-    "b" = 3:4,
-    "c" = 5,
-    "d" = 7,
-    "e" = 4:7,
-    "f" = 8
+    "a" = c("t1", "t2", "t3"),
+    "b" = c("t3", "t4"),
+    "c" = "t5",
+    "d" = "t7",
+    "e" = c("t4", "t5", "t6", "t7"),
+    "f" = "t8"
 )
 dag = create_ontology_DAG(parents, children, annotation = annotation)
 n_annotations(dag)

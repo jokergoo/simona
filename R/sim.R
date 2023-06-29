@@ -1,23 +1,29 @@
 
 
-#' Sim_Ling_1998
+#' Sim_Lin_1998
 #' 
-#' @section method:
-#' ## Sim_Ling_1998
+#' @section Methods:
+#' ## Sim_Lin_1998
 #' 
+#' The similarity between two terms `a` and `b` is calculated as the IC of their MICA term `c` normalized by the average of the IC of the two terms:
+#' 
+#' ```
+#' IC(c)/((IC(a) + IC(b))/2) = 2*IC(c)/(IC(a) + IC(b))
+#' ```
 #' 
 #' Paper link: <https://dl.acm.org/doi/10.5555/645527.657297>.
 #' 
-#' @rdname temp__Sim_Ling_1998
-Sim_Ling_1998 = function(dag, terms) {
-	IC_method = "IC_annotation"
-
+#' @rdname temp__Sim_Lin_1998
+Sim_Lin_1998 = function(dag, terms, IC_method = "IC_annotation") {
+	
 	id = term_to_node_id(dag, terms, strict = FALSE)
 	ic = get(IC_method)(dag)[id]
 
-	l = validate_annotated_terms(dag, id)
-	id = id[l]
-	ic = ic[l]
+	if(IC_method == "IC_annotation") {
+		l = validate_annotated_terms(dag, id)
+		id = id[l]
+		ic = ic[l]
+	}
 
 	ic_mica = MICA_IC(dag, id, IC_method)
 
@@ -27,19 +33,53 @@ Sim_Ling_1998 = function(dag, terms) {
 	
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_Ling_1998")
+ADD_TERM_SIM_METHOD("Sim_Lin_1998", "IC_method")
 
 
 #' Sim_Resnik_1999
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Resnik_1999
 #' 
+#' The original Resnik similarity is the IC of the MICA term. There are three ways to normalize the Resnik similarity into the scale of `[0, 1]`:
+#' 
+#' 1. *Nunif*
+#' 
+#' ```
+#' IC(c)/log(N)
+#' ```
+#' 
+#' where `N` is the total number of items annotated to the whole DAG, i.g. number of items annotated to the root. then the information content
+#' of root is `-log(1/N)` = log(N)`. So the *Nunif* method normalizes IC to the possible maximal IC in the DAG.
+#' 
+#' 2. *Nmax*
+#' 
+#' ```
+#' IC(c)/IC_max
+#' ``` 
+#' 
+#' The IC is normalized by the maximal IC in the DAG.
+#' 
+#' 3. *Nunivers*
+#' 
+#' ```
+#' IC(c)/max(IC(a), IC(b))
+#' ```
+#' 
+#' The IC is normalized by the larger IC of term `a` and `b`.
 #' 
 #' Paper link: <https://doi.org/10.1613/jair.514>, <https://doi.org/10.1186/1471-2105-9-S5-S4>, <https://doi.org/10.1186/1471-2105-11-562>, <https://doi.org/10.1155/2013/292063>.
 #' 
+#' The normalization method can be set with the `norm_method` parameter:
+#' 
+#' ```
+#' term_sim(dag, terms, control = list(norm_method = "Nmax"))
+#' ```
+#' 
+#' Possible values for the `norm_method` parameter are "Nunif", "Nmax", "Nunivers" and "none".
+#' 
 #' @rdname temp__Sim_Resnik_1999
-Sim_Resnik_1999 = function(dag, terms, norm_method = "Nmax") {
+Sim_Resnik_1999 = function(dag, terms,  norm_method = "Nmax") {
 	IC_method = "IC_annotation"
 
 	if(!norm_method %in% c("Nunif", "Nmax", "Nunivers", "none")) {
@@ -70,17 +110,29 @@ Sim_Resnik_1999 = function(dag, terms, norm_method = "Nmax") {
 	sim[is.na(sim)] = 1
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_Resnik_1999")
+ADD_TERM_SIM_METHOD("Sim_Resnik_1999", c("norm_method"))
+
 
 #' Sim_FaITH_2010
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_FaITH_2010
+#' 
+#' It is calculated as:
+#' 
+#' ```
+#' IC(c)/(IC(a) + IC(b) - IC(c))
+#' ```
+#' 
+#' The relation of *FaITH_2010* similarity and  *Lin_1998* similarity is:
+#' 
+#' ```
+#' sim_FaITH = sim_Lin/(2 - sim_Lin)
+#' ```
 #' 
 #' <https://doi.org/10.1007/978-3-642-17746-0_39>.
 #' @rdname temp__Sim_FaITH_2010
-Sim_FaITH_2010 = function(dag, terms) {
-	IC_method = "IC_annotation"
+Sim_FaITH_2010 = function(dag, terms, IC_method = "IC_annotation") {
 
 	id = term_to_node_id(dag, terms, strict = FALSE)
 	ic = get(IC_method)(dag)[id]
@@ -97,42 +149,22 @@ Sim_FaITH_2010 = function(dag, terms) {
 	sim[is.na(sim)] = 1
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_FaITH_2010")
+ADD_TERM_SIM_METHOD("Sim_FaITH_2010", "IC_method")
 
-#' Sim_PS_2008
-#' 
-#' @section method:
-#' ## Sim_PS_2008
-#' 
-#' <https://doi.org/10.1016/j.datak.2009.06.008>.
-#' 
-#' @rdname temp__Sim_PS_2008
-Sim_PS_2008 = function(dag, terms) {
-	IC_method = "IC_annotation"
-
-	id = term_to_node_id(dag, terms, strict = FALSE)
-	ic = get(IC_method)(dag)[id]
-	
-	l = validate_annotated_terms(dag, id)
-	id = id[l]
-	ic = ic[l]
-
-	ic_mica = MICA_IC(dag, id, IC_method)
-
-	sim = 3*ic_mica - outer(ic, ic, "+")
-	# scale into 0~1
-	max_ic = max(get(IC_method)(dag))
-	sim = (sim + 2*max_ic)/3/max_ic
-	dimnames(sim) = list(dag@terms[id], dag@terms[id])
-
-	sim
-}
-ADD_TERM_SIM_METHOD("Sim_PS_2008")
 
 #' Sim_Relevance_2006
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Relevance_2006
+#' 
+#' If thinking *Lin_1998* is a measure of how close term `a` and `b` to their MICA `c`, teh relevance method corrects it by multiplying
+#' a factor which considers the specificity of how `c` brings the information. The factor is calculated as `1-p(c)` where `p(c)` is the annotation-based
+#' probability `p(c) = k/N` where `k` is the number of items annotated to `c` and `N` is the total number of items annotated to the DAG. Then
+#' the Relevance semantic similarity is calculated as:
+#' 
+#' ```
+#' IC_Lin*(1-p(c)) = (1 - p(c))*2*IC(c)/(IC(a) + IC(b))
+#' ```
 #' 
 #' <https://doi.org/10.1186/1471-2105-7-302>
 #' 
@@ -147,17 +179,31 @@ Sim_Relevance_2006 = function(dag, terms) {
 
 	ic_mica = MICA_IC(dag, id, IC_method)
 
-	sim = get_term_sim_method("Sim_Ling_1998")(dag, id)
+	sim = get_term_sim_method("Sim_Lin_1998")(dag, id)
 
 	eps = 1 - exp(-ic_mica)
 	eps*sim
 }
 ADD_TERM_SIM_METHOD("Sim_Relevance_2006")
 
+
 #' Sim_SimIC_2010
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_SimIC_2010
+#' 
+#' The SimIC method is an improved correction method of Relevance method where latter works bad when `p(c)` is very small. The SimIC
+#' correction factor for MICA term `c` is:
+#' 
+#' ```
+#' 1 - 1/(1 + IC(c))
+#' ```
+#' 
+#' Then the similarity is:
+#' 
+#' ```
+#' 2*IC(c)/(IC(a) + IC(b)) * (1 - 1/(1 + IC(c)))
+#' ```
 #' 
 #' <https://doi.org/10.48550/arXiv.1001.0958>.
 #' 
@@ -172,43 +218,31 @@ Sim_SimIC_2010 = function(dag, terms) {
 
 	ic_mica = MICA_IC(dag, id, IC_method)
 
-	sim = get_term_sim_method("Sim_Ling_1998")(dag, id)
+	sim = get_term_sim_method("Sim_Lin_1998")(dag, id)
 
 	eps = 1 - 1/(1 + ic_mica)
 	eps*sim
 }
 ADD_TERM_SIM_METHOD("Sim_SimIC_2010")
 
-#' Sim_EISI_2015
-#' 
-#' @section method:
-#' ## Sim_EISI_2015
-#' 
-#' <https://doi.org/10.1016/j.gene.2014.12.062>
-#' 
-#' @rdname temp__Sim_EISI_2015
-Sim_EISI_2015 = function(dag, terms) {
-	IC_method = "IC_annotation"
-
-	id = term_to_node_id(dag, terms, strict = FALSE)
-
-	l = validate_annotated_terms(dag, id)
-	id = id[l]
-
-	ic = term_IC(dag, IC_method)
-
-	mean_ic = cpp_common_ancestor_mean_IC_EISI(dag, id, ic)
-	sim = mean_ic/outer(ic[id], ic[id], "+")*2
-	dimnames(sim) = list(dag@terms[id], dag@terms[id])
-
-	sim
-}
-ADD_TERM_SIM_METHOD("Sim_EISI_2015")
 
 #' Sim_XGraSM_2013
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_XGraSM_2013
+#' 
+#' Being different from previous methods that only use the IC of the MICA term, the *XGraSM_2013* uses IC of all common ancestor terms of `a` and `b`.
+#' First it calculates the mean IC of all common ancestor terms with positive IC values:
+#' 
+#' ```
+#' IC_mean = mean_t(IC(t)) where t is an ancestor of both and  b, and IC(t) > 0
+#' ```
+#' 
+#' then similar to the *Lin_1998* method, normalize to the average IC of `a` and `b`:
+#' 
+#' ```
+#' IC_mean*2/(IC(a) + IC(b))
+#' ```
 #' 
 #' <https://doi.org/10.1186/1471-2105-14-284>
 #' 
@@ -231,10 +265,23 @@ Sim_XGraSM_2013 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_XGraSM_2013")
 
+
 #' Sim_GraSM_2005
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_GraSM_2005
+#' 
+#' It has a complicate way to selet a subset of common ancestors of terms `a` and `b`. The main idea is that conent transmission fron ancestors to a term
+#' may overlap and it aims to find paths that give exclusive transmissions.
+#' 
+#' First, for a terms `x` define its disjunctive ancestors (DA) pairs `a` and `b` that there exists a path from `a` to `x` which does not pass `b` and at the same
+#' time there exists a path frmo `b` to `x` which does not pass `a`. In other words, the directed distance between `a` and `b` is zero. In this way, the two
+#' DA(x) terms can transmit exclusive contents to `x`.
+#' 
+#' Next, for every common ancestor term `c` of term `s` and `t`, it is only selected if all other common ancestors with higher IC values than `IC(c)`, transmit
+#' exclusive contents against `c` to `s` or `t`.
+#' 
+#' Then the mean IC of the subset common ancestors is calculated and normalized by the *Lin_1998* method.
 #' 
 #' <https://doi.org/10.1145/1099554.1099658>.
 #' 
@@ -257,16 +304,71 @@ Sim_GraSM_2005 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_GraSM_2005")
 
+
+#' Sim_EISI_2015
+#' 
+#' @section Methods:
+#' ## Sim_EISI_2015
+#' 
+#' It also selects a subset of common ancestors of terms `a` and `b`. It only selects common ancestors which can reach `a` or `b` via one of its child terms
+#' that does not belong to the common ancestors (mutual exclusively in `a`'s ancestors or in `b`'s ancestors). 
+#' 
+#' Then the mean IC of the subset common ancestors is calculated and normalized by the *Lin_1998* method.
+#' 
+#' <https://doi.org/10.1016/j.gene.2014.12.062>
+#' 
+#' @rdname temp__Sim_EISI_2015
+Sim_EISI_2015 = function(dag, terms) {
+	IC_method = "IC_annotation"
+
+	id = term_to_node_id(dag, terms, strict = FALSE)
+
+	l = validate_annotated_terms(dag, id)
+	id = id[l]
+
+	ic = term_IC(dag, IC_method)
+
+	mean_ic = cpp_common_ancestor_mean_IC_EISI(dag, id, ic)
+	sim = mean_ic/outer(ic[id], ic[id], "+")*2
+	dimnames(sim) = list(dag@terms[id], dag@terms[id])
+
+	sim
+}
+ADD_TERM_SIM_METHOD("Sim_EISI_2015")
+
+
 #' Sim_AIC_2014
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_AIC_2014
+#' 
+#' It uses the aggregate information content from ancestors. First define the semantic weight of a term `t` in the DAG:
+#' 
+#' ```
+#' Sw = 1/(1 + exp(-1/IC(t)))
+#' ```
+#' 
+#' Then calculate the aggregation only in the common ancestors and the aggregationn
+#' in the ancestors of the two terms `a` and `b` separatedly:
+#' 
+#' ```
+#' SV_{common ancestors} = sum_{t in common ancestors}(Sw(t))
+#' SV_a = sum{a' in a's ancestors}(Sw(a'))
+#' SV_b = sum{b' in b's ancestors}(Sw(b'))
+#' ```
+#' 
+#' The similarity is calculated as the ration of the aggregation on the common ancestor and the average of that on a's ancestors and b's ancestors separatedly.
+#' 
+#' ```
+#' SV_{common_ancestors}*2/(SV_a + SV_b)
+#' ```
+#' 
 #' 
 #' <https://doi.org/10.1109/tcbb.2013.176>.
 #' 
 #' @rdname temp__Sim_AIC_2014
-Sim_AIC_2014 = function(dag, terms) {
-	IC_method = "IC_annotation"
+Sim_AIC_2014 = function(dag, terms, IC_method = "IC_annotation") {
+	
 
 	id = term_to_node_id(dag, terms, strict = FALSE)
 	
@@ -279,13 +381,19 @@ Sim_AIC_2014 = function(dag, terms) {
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_AIC_2014")
+ADD_TERM_SIM_METHOD("Sim_AIC_2014", "IC_method")
+
 
 #' Sim_Zhang_2006
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Zhang_2006
 #' 
+#' It uses *IC_Zhang_2006* for IC values and uses *Lin_1998* method to calculate similarities:
+#' 
+#' ```
+#' 2*IC_zhang(c)/(IC_zhang(a) + IC_zhang(b))
+#' ```
 #' 
 #' @rdname temp__Sim_Zhang_2006
 Sim_Zhang_2006 = function(dag, terms) {
@@ -297,16 +405,25 @@ Sim_Zhang_2006 = function(dag, terms) {
 	ic_mica = MICA_IC(dag, id, IC_method)
 	
 	sim = 2*ic_mica/outer(ic, ic, "+")
+	
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 	
 	sim
 }
 ADD_TERM_SIM_METHOD("Sim_Zhang_2006")
 
+
 #' Sim_universal
 #' 
-#' @section method:
-#' what is Sim_universal
+#' @section Methods:
+#' ## Sim_universal
+#' 
+#' It uses *IC_universal* for IC values and uses *Nunivers* method to calculate similarities:
+#' 
+#' ```
+#' IC_universal(c)/max(IC_universal(a), IC_universal(b))
+#' ```
+#' 
 #' @rdname temp__Sim_universal
 Sim_universal = function(dag, terms) {
 	IC_method = "IC_universal"
@@ -323,14 +440,40 @@ Sim_universal = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_universal")
 
+
 #' Sim_Wang_2007
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Wang_2007
+#' 
+#' First the S-value of an ancestor term `t` on a term `a` (`S_a(t)`) is calculated (the definition of the S-value can be found in the help page of [`term_IC()`]).
+#' Similar to the *Sim_AIC_2014*, aggregation only to common ancestors, to `a`'s ancestors and to `b`'s ancestors are calculated.
+#' 
+#' ```
+#' SV_{common ancestors} = sum_{t in common ancestors}(S_a(t) + S_b(t))
+#' SV_a = sum{a' in a's ancestors}(S_a(a'))
+#' SV_b = sum{b' in b's ancestors}(S_b(b'))
+#' ```
+#' 
+#' Then the similarity is calculated as:
+#' 
+#' ```
+#' SV_{common_ancestors}*2/(SV_a + SV_b)
+#' ```
 #' 
 #' Paper link: <https://doi.org/10.1093/bioinformatics/btm087>.
 #' 
+#' The contribution of different semantic relations can be set with the `contribution_factor` parameter. The value should be a named numeric
+#' vector where names should cover the relations defined in `relations` set in [`create_ontology_DAG()`]. For example, if there are two relations
+#' "relation_a" and "relation_b" set in the DAG, the value for `contribution_factor` can be set as:
+#' 
+#' ```
+#' term_IC(dag, method = "IC_Wang", 
+#'     control = list(contribution_factor = c("relation_a" = 0.8, "relation_b" = 0.6)))
+#' ```
+#' 
 #' @rdname temp__Sim_Wang_2007
+#' @import igraph
 Sim_Wang_2007 = function(dag, terms, contribution_factor = c("isa" = 0.8, "part of" = 0.6)) {
 	if(length(dag@lt_children_relations) == 0) {
 		stop("`relations` is not set when creating the ontology_DAG object.")
@@ -344,13 +487,26 @@ Sim_Wang_2007 = function(dag, terms, contribution_factor = c("isa" = 0.8, "part 
 	}
 
 	id = term_to_node_id(dag, terms, strict = FALSE)
-
-	sim = cpp_sim_wang(dag, id, unname(contribution_factor[relation_levels]))
+	sim = matrix(0, nrow = length(id), ncol = length(id))
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
+	diag(sim) = 1
 
+	if(length(id) <= 1) {
+		return(sim)
+	}
+
+	g = dag_as_igraph(dag)
+	E(g)$weight = contribution_factor[E(g)$relation]
+	all_ancestors = cpp_ancestors_of_a_group(dag, id, include_self = TRUE)
+	d = distances(g, v = all_ancestors, to = id, mode = "out", weights = -log(E(g)$weight))
+	s = exp(-d)  # rows are ancestors
+
+	sim = cpp_wang_sv_to_sim(s)
+	dimnames(sim) = list(dag@terms[id], dag@terms[id])
+	
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_Wang_2007")
+ADD_TERM_SIM_METHOD("Sim_Wang_2007", "contribution_factor")
 
 ###########################################
 #### edge-based
@@ -358,11 +514,25 @@ ADD_TERM_SIM_METHOD("Sim_Wang_2007")
 
 #' Sim_Rada_1989
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Rada_1989
 #' 
+#' It is based on the distance between term `a` and `b`. It is defined as:
 #' 
-#' <https://doi.org/10.1109/21.24528>
+#' ```
+#' 1/(1 + d(a, b))
+#' ```
+#' 
+#' The distance can be the shortest distance between `a` and `b` or the longest distance via the LCA term.
+#' 
+#' Paper link: <https://doi.org/10.1109/21.24528>
+#' 
+#' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
+#' 
+#' ```
+#' term_sim(dag, terms, method = "Sim_Rada_1989",
+#'     control = list(distance = "shortest_distances_via_CA"))
+#' ```
 #' 
 #' @rdname temp__Sim_Rada_1989
 Sim_Rada_1989 = function(dag, terms, distance = "longest_distances_via_LCA") {
@@ -382,14 +552,31 @@ Sim_Rada_1989 = function(dag, terms, distance = "longest_distances_via_LCA") {
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_Rada_1989")
+ADD_TERM_SIM_METHOD("Sim_Rada_1989", "distance")
+
 
 #' Sim_Resnik_edge_2005
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Resnik_edge_2005
 #' 
-#' <https://doi.org/10.1145/1097047.1097051>
+#' It is also based on the distance between term `a` and `b`:
+#' 
+#' ```
+#' 1 - d(a, b)/2/max_depth
+#' ```
+#' 
+#' where `max_depth` is the maximal depth (maximal distance from root) in the DAG. Similarly, `d(a, b)` can be the shortest
+#' distance or the longest distance.
+#' 
+#' Paper link: <https://doi.org/10.1145/1097047.1097051>
+#' 
+#' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
+#' 
+#' ```
+#' term_sim(dag, terms, method = "Sim_Resnik_edge_2005",
+#'     control = list(distance = "shortest_distances_via_CA"))
+#' ```
 #' 
 #' @rdname temp__Sim_Resnik_edge_2005
 Sim_Resnik_edge_2005 = function(dag, terms, distance = "longest_distances_via_LCA") {
@@ -410,14 +597,28 @@ Sim_Resnik_edge_2005 = function(dag, terms, distance = "longest_distances_via_LC
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_Resnik_edge_2005")
+ADD_TERM_SIM_METHOD("Sim_Resnik_edge_2005", "distance")
+
 
 #' Sim_Leocock_1998
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Leocock_1998
 #' 
-#' <https://ieeexplore.ieee.org/document/6287675>
+#' It is similar as the *Sim_Resnik_edge_2005* method, but it applies log-transformation on the distance and the depth:
+#' 
+#' ```
+#' 1 - log(d(a, b) + 1)/log(2*max_depth + 1)
+#' ```
+#' 
+#' Paper link: <https://ieeexplore.ieee.org/document/6287675>
+#' 
+#' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
+#' 
+#' ```
+#' term_sim(dag, terms, method = "Sim_Leocock_1998",
+#'     control = list(distance = "shortest_distances_via_CA"))
+#' ```
 #' 
 #' @rdname temp__Sim_Leocock_1998
 Sim_Leocock_1998 = function(dag, terms, distance = "longest_distances_via_LCA") {
@@ -438,12 +639,31 @@ Sim_Leocock_1998 = function(dag, terms, distance = "longest_distances_via_LCA") 
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_Leocock_1998")
+ADD_TERM_SIM_METHOD("Sim_Leocock_1998", "distance")
+
 
 #' Sim_WP_1994
 #' 
-#' @section method:
-#' what is Sim_WP_1994
+#' @section Methods:
+#' ## Sim_WP_1994
+#' 
+#' It is based on the depth of the LCA term `c` and the longest distance between term `a` and `b`:
+#' 
+#' ```
+#' 2*depth(c)/(len_c(a, b) + 2*depth(c))
+#' ```
+#' 
+#' where `len_c(a, b)` is the distance between `a` and `b` via LCA `c`. The denominator in the equation can also be written as:
+#' 
+#' ```
+#' len_c(a, b) + 2*depth(c) = depth(c) + len(c, a) + depth(c) + len(c, b)
+#'                          = depth_c(a) + depth_c(b)
+#' ```
+#' 
+#' where `depth_c(a)` is the distance from root to `a` via `c`.
+#' 
+#' Paper link: <https://doi.org/10.3115/981732.981751>.
+#' 
 #' @rdname temp__Sim_WP_1994
 Sim_WP_1994 = function(dag, terms) {
 
@@ -463,15 +683,16 @@ Sim_WP_1994 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_WP_1994")
 
+
 #' Sim_Slimani_2006
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Slimani_2006
 #' 
-#' <https://zenodo.org/record/1075130>
+#' Paper link: <https://zenodo.org/record/1075130>.
 #' 
 #' @rdname temp__Sim_Slimani_2006
-Sim_Slimani_2006 = function(dag, terms, distance = "longest_distances_via_LCA") {
+Sim_Slimani_2006 = function(dag, terms) {
 	
 	id = term_to_node_id(dag, terms, strict = FALSE)
 	lca_depth = LCA_depth(dag, id)
@@ -493,14 +714,15 @@ Sim_Slimani_2006 = function(dag, terms, distance = "longest_distances_via_LCA") 
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_Slimani_2006")
+ADD_TERM_SIM_METHOD("Sim_Slimani_2006", "distance")
+
 
 #' Sim_Shenoy_2012
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Shenoy_2012
 #' 
-#' <https://doi.org/10.48550/arXiv.1211.4709>.
+#' Paper link: <https://doi.org/10.48550/arXiv.1211.4709>.
 #' 
 #' @rdname temp__Sim_Shenoy_2012
 Sim_Shenoy_2012 = function(dag, terms) {
@@ -526,12 +748,19 @@ Sim_Shenoy_2012 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_Shenoy_2012")
 
+
 #' Sim_Pekar_2002
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Pekar_2002
 #' 
-#' <https://aclanthology.org/C02-1090/>.
+#' It is very similar to the *Sim_WP_1994* method:
+#' 
+#' ```
+#' depth(c)/(len_c(a, b) + depth(c))
+#' ```
+#' 
+#' Paper link: <https://aclanthology.org/C02-1090/>.
 #' 
 #' @rdname temp__Sim_Pekar_2002
 Sim_Pekar_2002 = function(dag, terms) {
@@ -546,12 +775,21 @@ Sim_Pekar_2002 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_Pekar_2002")
 
+
 #' Sim_Stojanovic_2001
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Stojanovic_2001
 #' 
-#' <https://doi.org/10.1145/500737.500762>
+#' It is purely based on the depth of term `a`, `b` and their LCA `c`.
+#' 
+#' ```
+#' depth(c)/(depth(a) + depth(b) - depth(c))
+#' ```
+#' 
+#' Since the similarity value might be negative because there is no restrction that the path from root to `a` or `b` must pass `c`.
+#' 
+#' Paper link: <https://doi.org/10.1145/500737.500762>.
 #' 
 #' @rdname temp__Sim_Stojanovic_2001
 Sim_Stojanovic_2001 = function(dag, terms) {
@@ -575,12 +813,20 @@ Sim_Stojanovic_2001 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_Stojanovic_2001")
 
+
 #' Sim_Wang_edge_2012
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Wang_edge_2012
+#' It is calculated as:
 #' 
-#' <https://doi.org/10.1186/1477-5956-10-s1-s18>.
+#' ```
+#' depth(c)^2/depth_c(a)/depth_c(b)
+#' ```
+#' 
+#' where `depth_c(a)` is the longest distance between root to `a` via `c`.
+#' 
+#' Paper link: <https://doi.org/10.1186/1477-5956-10-s1-s18>.
 #' 
 #' @rdname temp__Sim_Wang_edge_2012
 Sim_Wang_edge_2012 = function(dag, terms) {
@@ -600,12 +846,50 @@ Sim_Wang_edge_2012 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_Wang_edge_2012")
 
+
 #' Sim_Zhong_2002
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Zhong_2002
+#' For a term `x`, it first calculates a "mile-stone" value as 
 #' 
-#' <https://doi.org/10.1007/3-540-45483-7_8>
+#' ```
+#' m(x) = 0.5/2^depth(x)
+#' ```
+#' 
+#' The the distance bewteen term `a` and `b` via LCA term `c` is:
+#' 
+#' ```
+#' D(c, a) + D(c, b) = m(c) - m(a) + m(c) - m(b)
+#'                   = 2*m(c) - m(a) - m(b)
+#'                   = 1/2^depth(c) - 0.5/2^depth(a) - 0.5/2^depth(b)
+#' ```
+#' 
+#' We change the original `depth(a)` to let it go through `c` when calculating the depth:
+#' 
+#' ```
+#' 1/2^depth(c) - 0.5/2^depth(a) - 0.5/2^depth(b) 
+#'   = 1/2^depth(c)- 0.5/2^(depth(c) + len(c, a)) - 0.5/2^(depth(c) + len(c, b))
+#'   = 1/2^depth(c) * (1 - 1/2^(len(c, a) + 1) - 1/2^(len(c, b) + 1))
+#'   = 2^-depth(c) * (1 - 2^-(len(c, a) + 1) - 2^-(len(c, b) + 1))
+#' ```
+#' 
+#' And the final similarity is 1 - distance:
+#' 
+#' ```
+#' 1 - 2^-depth(c) * (1 - 2^-(len(c, a) + 1) - 2^-(len(c, b) + 1))
+#' ```
+#' 
+#' Paper link: <https://doi.org/10.1007/3-540-45483-7_8>.
+#' 
+#' There is a parameter `depth_via_LCA` that can be set to `TRUE` or `FALSE`. IF it is set to `TRUE`, `depth(a)` is redefined
+#' as should pass the LCA term `c`. If it is `FALSE`, it goes to the original similarity definition in the paper and note the 
+#' distance might be negative.
+#' 
+#' ```
+#' term_sim(dag, terms, method = "Sim_Zhong_2002",
+#'     control = list(depth_via_LCA = FALSE))
+#' ```
 #' 
 #' @rdname temp__Sim_Zhong_2002
 Sim_Zhong_2002 = function(dag, terms, depth_via_LCA = TRUE) {
@@ -617,14 +901,41 @@ Sim_Zhong_2002 = function(dag, terms, depth_via_LCA = TRUE) {
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_Zhong_2002")
+ADD_TERM_SIM_METHOD("Sim_Zhong_2002", "depth_via_LCA")
+
 
 #' Sim_AlMubaid_2006
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_AlMubaid_2006
+#' It also takes accoutn of the distance between term `a` and `b`, and the depth of the LCA term `c`.
+#' The distance is calculated as:
 #' 
-#' <https://doi.org/10.1109/IEMBS.2006.259235>
+#' ```
+#' D(a, b) = log(1 + d(a, b)*(max_depth - depth(c)))
+#' ```
+#' Here `d(a, b)` can be the shortest distance between `a` and `b` or the longst distance via LCA `c`.
+#' 
+#' Then the distance is transformed into the similarity value by the possible maximal and minimal values of `D(a, b)` from the DAG:
+#' 
+#' ```
+#' D_max = log(1 + 2*max_depth * max_depth)
+#' ```
+#' 
+#' And the minimal value of `D(a, b)` is zero when `a` is identical to `b`. Then the similarity value is scaled as:
+#' 
+#' ```
+#' 1 - D(a, b)/D_max
+#' ```
+#' 
+#' Paper link: <https://doi.org/10.1109/IEMBS.2006.259235>.
+#'
+#' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
+#' 
+#' ```
+#' term_sim(dag, terms, method = "Sim_AlMubaid_2006",
+#'     control = list(distance = "shortest_distances_via_CA"))
+#' ```
 #' 
 #' @rdname temp__Sim_AlMubaid_2006
 Sim_AlMubaid_2006 = function(dag, terms, distance = "longest_distances_via_LCA") {
@@ -643,19 +954,35 @@ Sim_AlMubaid_2006 = function(dag, terms, distance = "longest_distances_via_LCA")
 
 	dist = log(1 + dsp*(max_depth - lca_depth))
 	max_dist = log(1 + 2*max_depth*max_depth)
-	sim = (max_dist - dist)/max_dist
+	sim = 1 - dist/max_dist
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_AlMubaid_2006")
+ADD_TERM_SIM_METHOD("Sim_AlMubaid_2006", "distance")
+
 
 #' Sim_Li_2003
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Li_2003
 #' 
-#' <https://doi.org/10.1109/TKDE.2003.1209005>
+#' It is similar to the *Sim_AlMubaid_2006* method, but uses a non-linear form:
+#' 
+#' ```
+#' exp(0.2*d(a, b)) * atan(0.6*depth(c))
+#' ```
+#' 
+#' where `d(a, b)` can be the shortest distance or the longest distance via LCA.
+#' 
+#' Paper link: <https://doi.org/10.1109/TKDE.2003.1209005>.
+#' 
+#' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
+#' 
+#' ```
+#' term_sim(dag, terms, method = "Sim_Li_2003",
+#'     control = list(distance = "shortest_distances_via_CA"))
+#' ```
 #' 
 #' @rdname temp__Sim_Li_2003
 Sim_Li_2003 = function(dag, terms, distance = "longest_distances_via_LCA") {
@@ -679,7 +1006,7 @@ Sim_Li_2003 = function(dag, terms, distance = "longest_distances_via_LCA") {
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_Li_2003")
+ADD_TERM_SIM_METHOD("Sim_Li_2003", "distance")
 
 
 ###########################################
@@ -688,10 +1015,32 @@ ADD_TERM_SIM_METHOD("Sim_Li_2003")
 
 #' Sim_RSS_2013
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_RSS_2013
 #' 
-#' <https://doi.org/10.1371/journal.pone.0066745>
+#' The similarity is adjusted by the positions of term `a`, `b` and the LCA term `c` in the DAG. The similarity
+#' 
+#' ```
+#' max_depth/(max_depth + d(a, b)) * alpha/(alpha + beta)
+#' ```
+#' 
+#' where `d(a, b)` is the distance between `a` and `b` which can be the shortest distance or the longest distance via LCA.
+#' 
+#' In the tuning factor, `alpha` is the distance of LCA to root, which is `depth(c)`. `beta` is the distance to leaves, which
+#' is the minimal distance (or the height) of term `a` and `b`:
+#' 
+#' ```
+#' alpha/(alpha + beta) = depth(c)/(depth(c) + min(height(a), height(b)))
+#' ```
+#' 
+#' Paper link: <https://doi.org/10.1371/journal.pone.0066745>.
+#' 
+#' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
+#' 
+#' ```
+#' term_sim(dag, terms, method = "Sim_RSS_2013",
+#'     control = list(distance = "shortest_distances_via_CA"))
+#' ```
 #' 
 #' @rdname temp__Sim_RSS_2013
 Sim_RSS_2013 = function(dag, terms, distance = "longest_distances_via_LCA") {
@@ -709,23 +1058,61 @@ Sim_RSS_2013 = function(dag, terms, distance = "longest_distances_via_LCA") {
 		stop("`distance` can only be in 'shortest_distances_via_CA' or 'longest_distances_via_LCA'.")
 	}
 
-	sim = max_depth/(max_depth + dsp) * lca_depth/(lca_depth + 0.5*outer(height, height, "+") + 1)
+	sim = max_depth/(max_depth + dsp) * lca_depth/(lca_depth + outer(height, height, pmin) + 1)
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_RSS_2013")
+ADD_TERM_SIM_METHOD("Sim_RSS_2013", "distance")
+
 
 #' Sim_HRSS_2013
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_HRSS_2013
 #' 
-#' <https://doi.org/10.1371/journal.pone.0066745>
+#' It is similar as the *Sim_RSS_2013* method, but it uses information content instead of the distance to adjust the similarity.
+#' 
+#' It first defines the semantic distance between term `a` and `b` as the sum of the distance to their MICA:
+#' 
+#' ```
+#' D(a, b) = D(c, a) + D(c, b)
+#' ```
+#' 
+#' And the distance between an ancestor to a term is:
+#' 
+#' ```
+#' D(c, a) = IC(a) - IC(c)
+#' D(a, b) = D(c, a) + D(c, b) = IC(a) + IC(b) - 2*IC(c)
+#' ```
+#' 
+#' Similarly, the similarity is also corrected by the position of MICA term and `a` and `b` in the DAG:
+#' 
+#' ```
+#' 1/(1 + D(a, b)) * alpha/(alph + beta)
+#' ```
+#' 
+#' Now `alpha` is the IC of the MICA term:
+#' 
+#' ```
+#' alpha = IC(c)
+#' ```
+#' 
+#' And `beta` is the average of the maximal semantic distance of `a` and `b` to leaves.
+#' 
+#' ```
+#' beta = 0.5*(IC(l_a) - IC(a) + IC(l_b) - IC(b))
+#' ```
+#' 
+#' where `l_a` is the leaf that `a` can reach with the highest IC, and so is `l_b`.
+#' 
+#' Paper link: <https://doi.org/10.1371/journal.pone.0066745>.
 #' 
 #' @rdname temp__Sim_HRSS_2013
-Sim_HRSS_2013 = function(dag, terms, IC_method = "IC_annotation") {
+Sim_HRSS_2013 = function(dag, terms) {
 	id = term_to_node_id(dag, terms, strict = FALSE)
+
+	IC_method = "IC_annotation"
 	if(IC_method == "IC_annotation") {
 		l = validate_annotated_terms(dag, id)
 		id = id[l]
@@ -746,17 +1133,37 @@ Sim_HRSS_2013 = function(dag, terms, IC_method = "IC_annotation") {
 }
 ADD_TERM_SIM_METHOD("Sim_HRSS_2013")
 
+
 #' Sim_Shen_2010
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Shen_2010
+#' It is based on the information content of terms on the path connecting term `a` and `b` via their MICA term `c`.
+#' Denote a list of terms `a, ..., c, ..., b` which are composed by the shortest path from `a` to `c` and from `b` to `c`, the difference
+#' between `a` and `b` is the sum of 1/IC of the terms on the path:
 #' 
+#' ```
+#' sum_{x in the path}(1/IC(x))
+#' ```
 #' 
-#' <https://doi.org/10.1109/BIBM.2010.5706623>
+#' Then the distance is scaled into `[0, 1]` by:
+#' 
+#' ```
+#' atan(sum_{x in the path}(1/IC(x)))/(pi/2)
+#' ```
+#' 
+#' And finally the similarity is:
+#' 
+#' ```
+#' 1 - atan(sum_{x in the path}(1/IC(x)))/(pi/2)
+#' ``` 
+#' 
+#' Paper link: <https://doi.org/10.1109/BIBM.2010.5706623>.
 #' 
 #' @rdname temp__Sim_Shen_2010
 Sim_Shen_2010 = function(dag, terms, IC_method = "IC_annotation") {
 	id = term_to_node_id(dag, terms, strict = FALSE)
+
 	if(IC_method == "IC_annotation") {
 		l = validate_annotated_terms(dag, id)
 		id = id[l]
@@ -768,14 +1175,34 @@ Sim_Shen_2010 = function(dag, terms, IC_method = "IC_annotation") {
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_Shen_2010")
+ADD_TERM_SIM_METHOD("Sim_Shen_2010", "IC_method")
+
 
 #' Sim_SSDD_2013
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_SSDD_2013
 #' 
-#' <https://doi.org/10.1016/j.ygeno.2013.04.010>
+#' It is similar as the *Sim_Shen_2010* which also sums content along the path passing through LCA term.
+#' Instead of summing the information content, the *Sim_SSDD_2013* sums up a so-called "T-value":
+#' 
+#' ```
+#' 1 - atan(sum_{x in the path}(T(x)))/(pi/2)
+#' ``` 
+#' 
+#' Each term has a T-value and it measures the semantic content a term averagely inherited from its parents
+#' and distributed to its offsprings. The T-value of root is 1. Assume a term `t` has two parents `p1` and `p1`,
+#' The T-value for term `t` is averaged from its
+#' 
+#' ```
+#' (w1*T(p1) + w2*T(p2))/2
+#' ```
+#' 
+#' Since the parent may have other child terms, a factor `w1` or `w2` is multiplied to `T(p1)` and `T(p2)`. Taking
+#' `p1` as an example, it has `n_p` offsprings (including itself) and `t` has `n_t` offsprings (including itself),
+#' this means `n_t/n_p` of information is transmitted from `p1` to downstream via `t`, thus `w1` is defined as `n_t/n_p`.
+#' 
+#' Paper link: <https://doi.org/10.1016/j.ygeno.2013.04.010>.
 #' 
 #' @rdname temp__Sim_SSDD_2013
 Sim_SSDD_2013 = function(dag, terms) {
@@ -788,17 +1215,38 @@ Sim_SSDD_2013 = function(dag, terms) {
 }
 ADD_TERM_SIM_METHOD("Sim_SSDD_2013")
 
+
 #' Sim_Jiang_1997
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Jiang_1997
 #' 
-#' <https://aclanthology.org/O97-1002/>
+#' First semantic distance between term `a` and `b` via MICA term `c` is defined as:
+#' 
+#' ```
+#' D(a, b) = IC(a) + IC(b) - 2*IC(c)
+#' ```
+#' 
+#' Then there are several normalization method to change the distance to similarity and to scale it into the range of `[0, 1]`.
+#' 
+#' - max: `1 - D(a, b)/2/IC_max`
+#' - Couto: `min(1, D(a, b)/IC_max)`
+#' - Lin: `1 - D(a, b)/(IC(a) + IC(b))` which is the same as the *Sim_Lin_1998* method
+#' - Garla: `1 - log(D(a, b) + 1)/log(2*IC_max + 1)`
+#' - log-Lin: `1 - log(D(a, b) + 1)/log(IC(a) + IC(b) + 1)`
+#' - Rada: `1/(1 + D(a, b))`
+#' 
+#' Paper link: <https://aclanthology.org/O97-1002/>
+#' 
+#' There is a parameter `norm_method` which takes value in "max", "Couto", "Lin", "Carla", "log-Lin", "Rada":
+#' 
+#' ```
+#' term_sim(dag, terms, method = "Sim_Jiang_1997",
+#'     control = list(norm_method = "Lin"))
+#' ```
 #' 
 #' @rdname temp__Sim_Jiang_1997
-Sim_Jiang_1997 = function(dag, terms, normalization = "max") {
-
-	IC_method = "IC_annotation"
+Sim_Jiang_1997 = function(dag, terms, IC_method = "IC_annotation", norm_method = "max") {
 
 	id = term_to_node_id(dag, terms, strict = FALSE)
 
@@ -811,29 +1259,29 @@ Sim_Jiang_1997 = function(dag, terms, normalization = "max") {
 
 	dist = outer(ic, ic, "+") - 2*ic_mica
 	
-	if(normalization == "max") {
+	if(norm_method == "max") {
 		sim = 1 - dist/2/max_ic
-	} else if(normalization == "Couto") {
+	} else if(norm_method == "Couto") {
 		sim = dist/max_ic
 		sim[sim > 1] = 1
 		sim = 1 - sim
-	} else if(normalization == "Lin") {
+	} else if(norm_method == "Lin") {
 		sim = 2*ic_mica/outer(ic, ic, "+")
-	} else if(normalization == "Garla") {
+	} else if(norm_method == "Garla") {
 		sim = 1 - log(dist + 1)/log(2*max_ic + 1)
-	} else if(normalization == "log-Lin") {
+	} else if(norm_method == "log-Lin") {
 		sim = 1 - log(dist + 1)/log(outer(ic, ic, "+") + 1)
-	} else if(normalization == "Rada") {
+	} else if(norm_method == "Rada") {
 		sim = 1/(1 + dist)
 	} else {
-		stop("wrong normalization method.")
+		stop("wrong norm_method")
 	}
 
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_Jiang_1997")
+ADD_TERM_SIM_METHOD("Sim_Jiang_1997", c("IC_method", "norm_method"))
 
 ######################
 ## count-based
@@ -841,8 +1289,19 @@ ADD_TERM_SIM_METHOD("Sim_Jiang_1997")
 
 #' Sim_Kappa
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Kappa
+#' 
+#' Denote two sets `A` and `B` as the items annotated to term `a` and `b`. The similarity value is the kappa coeffcient
+#' of the two sets. 
+#' 
+#' The universe or the background can be set via parameter `anno_universe`:
+#' 
+#' ```
+#' term_sim(dag, terms, method = "Sim_kappa",
+#'     control = list(anno_universe = ...))
+#' ```
+#' 
 #' @rdname temp__Sim_Kappa
 Sim_Kappa = function(dag, terms, anno_universe = NULL) {
 	id = term_to_node_id(dag, terms, strict = FALSE)
@@ -851,12 +1310,24 @@ Sim_Kappa = function(dag, terms, anno_universe = NULL) {
 	id = id[l]
 	.sim_overlap(dag, id, anno_universe, method = "kappa")
 }
-ADD_TERM_SIM_METHOD("Sim_Kappa")
+ADD_TERM_SIM_METHOD("Sim_Kappa", "anno_universe")
+
 
 #' Sim_Jaccard
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Jaccard
+#' 
+#' Denote two sets `A` and `B` as the items annotated to term `a` and `b`. The similarity value is the Jaccard coeffcient
+#' of the two sets, defined as `length(intersect(A, B))/length(union(A, B))`.
+#' 
+#' The universe or the background can be set via parameter `anno_universe`:
+#' 
+#' ```
+#' term_sim(dag, terms, method = "Sim_Jaccard",
+#'     control = list(anno_universe = ...))
+#' ```
+#' 
 #' @rdname temp__Sim_Jaccard
 Sim_Jaccard = function(dag, terms, anno_universe = NULL) {
 	id = term_to_node_id(dag, terms, strict = FALSE)
@@ -867,10 +1338,22 @@ Sim_Jaccard = function(dag, terms, anno_universe = NULL) {
 }
 ADD_TERM_SIM_METHOD("Sim_Jaccard")
 
+
 #' Sim_Dice
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Dice
+#' 
+#' Denote two sets `A` and `B` as the items annotated to term `a` and `b`. The similarity value is the Jaccard coeffcient
+#' of the two sets, defined as `2*length(intersect(A, B))/(length(A) + length(B))`.
+#' 
+#' The universe or the background can be set via parameter `anno_universe`:
+#' 
+#' ```
+#' term_sim(dag, terms, method = "Sim_Dice",
+#'     control = list(anno_universe = ...))
+#' ```
+#' 
 #' @rdname temp__Sim_Dice
 Sim_Dice = function(dag, terms, anno_universe = NULL) {
 	id = term_to_node_id(dag, terms, strict = FALSE)
@@ -879,12 +1362,24 @@ Sim_Dice = function(dag, terms, anno_universe = NULL) {
 	id = id[l]
 	.sim_overlap(dag, id, anno_universe, method = "dice")
 }
-ADD_TERM_SIM_METHOD("Sim_Dice")
+ADD_TERM_SIM_METHOD("Sim_Dice", "anno_universe")
+
 
 #' Sim_Overlap
 #' 
-#' @section method:
+#' @section Methods:
 #' ## Sim_Overlap
+#' 
+#' Denote two sets `A` and `B` as the items annotated to term `a` and `b`. The similarity value is the overlap coeffcient
+#' of the two sets, defined as `length(intersect(A, B))/min(length(A), length(B))`.
+#' 
+#' The universe or the background can be set via parameter `anno_universe`:
+#' 
+#' ```
+#' term_sim(dag, terms, method = "Sim_Overlap",
+#'     control = list(anno_universe = ...))
+#' ```
+#' 
 #' @rdname temp__Sim_Overlap
 Sim_Overlap = function(dag, terms, anno_universe = NULL) {
 	id = term_to_node_id(dag, terms, strict = FALSE)
@@ -893,7 +1388,8 @@ Sim_Overlap = function(dag, terms, anno_universe = NULL) {
 	id = id[l]
 	.sim_overlap(dag, id, anno_universe, method = "overlap")
 }
-ADD_TERM_SIM_METHOD("Sim_Overlap")
+ADD_TERM_SIM_METHOD("Sim_Overlap", "anno_universe")
+
 
 #' @importFrom methods as
 .sim_overlap = function(dag, id, anno_universe = NULL, method = c("kappa", "jaccard", "dice", "overlap")) {
@@ -933,15 +1429,15 @@ ADD_TERM_SIM_METHOD("Sim_Overlap")
 kappa_dist = function(m) {
 	tab = ncol(m)
 	oab = proxyC::simil(m, method = "simple matching")
-	m1 = rowSums(m)
-	m2 = abs(rowSums(m - 1))
+	m1 = Matrix::rowSums(m)
+	m2 = abs(Matrix::rowSums(m - 1))
 	aab = (outer(m1, m1) + outer(m2, m2))/tab/tab
 	k = (oab - aab)/(1 - aab)
 	return(k)
 }
 
 overlap_dist = function(m) {
-	n = rowSums(m)
+	n = Matrix::rowSums(m)
 	proxyC::simil(m, method = "dice")*outer(n, n, "+")/2/outer(n, n, pmin)
 }
 

@@ -5,7 +5,7 @@ using namespace Rcpp;
 #include "utils.h"
 
 // [[Rcpp::export]]
-IntegerVector cpp_n_annotations(S4 dag) {
+IntegerVector cpp_n_annotations(S4 dag, bool unify = true) {
 
 	List lt_children = dag.slot("lt_children");
 	List annotation = dag.slot("annotation");
@@ -15,6 +15,63 @@ IntegerVector cpp_n_annotations(S4 dag) {
 
 	int n = lt_children.size();
 	IntegerVector n_anno(n, 0);
+
+	IntegerVector anno_size(n);
+	if(!unify) {
+		for(int i = 0; i < n; i ++) {
+			IntegerVector anno = lt_annotation[i];
+			anno_size[i] = anno.size();
+		}
+	}
+
+	LogicalVector l_offspring(n, false);
+	for(int i = 0; i < n; i ++) {
+		_find_offspring(lt_children, i, l_offspring, true);  //include self
+
+		if(unify) {
+			LogicalVector l_anno(n_all_anno, false);
+			for(int j = 0; j < n; j ++) {
+				if(l_offspring[j]) {
+					IntegerVector anno = lt_annotation[j];
+					for(int k = 0; k < anno.size(); k ++) {
+						l_anno[anno[k]-1] = true;
+					}
+				}
+			}
+			n_anno[i] = sum(l_anno);
+		} else {
+			IntegerVector anno_sub = anno_size[l_offspring];
+			if(anno_sub.size()) {
+				n_anno[i] = sum(anno_sub);
+			} else {
+				n_anno[i] = 0;
+			}
+		}
+		
+		reset_logical_vector_to_false(l_offspring);
+	}
+
+	return n_anno;
+}
+
+
+// [[Rcpp::export]]
+IntegerVector cpp_n_annotations_with_intersect(S4 dag, IntegerVector anno_id) {
+
+	List lt_children = dag.slot("lt_children");
+	List annotation = dag.slot("annotation");
+	List lt_annotation = annotation["list"];
+	CharacterVector anno_names = annotation["names"];
+	int n_all_anno = anno_names.size();
+
+	int n = lt_children.size();
+	IntegerVector n_anno(n, 0);
+
+	int m = anno_id.size();
+
+	if(m == 0) {
+		return n_anno;
+	}
 
 	LogicalVector l_offspring(n, false);
 	for(int i = 0; i < n; i ++) {
@@ -29,7 +86,12 @@ IntegerVector cpp_n_annotations(S4 dag) {
 				}
 			}
 		}
-		n_anno[i] = sum(l_anno);
+
+		for(int k = 0; k < m; k ++) {
+			if(l_anno[ anno_id[k]-1 ]) {
+				n_anno[i] ++;
+			}
+		}
 
 		reset_logical_vector_to_false(l_offspring);
 	}

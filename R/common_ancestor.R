@@ -1,52 +1,11 @@
 
 
 
-max_ancestor_v = function(dag, terms, value) {
-
-	if(length(value) != dag@n_terms) {
-		stop("Length of `value` should be the same as number of total terms in the DAG.")
-	}
-
-	if(is.character(terms)) {
-		id = term_to_node_id(dag, terms, strict = FALSE)
-	} else {
-		id = terms
-	}
-
-	an = cpp_max_ancestor_v(dag, id, value)
-	dimnames(an) = list(dag@terms[id], dag@terms[id])
-	an
-}
-
-
-max_ancestor_id = function(dag, terms, value, in_labels = FALSE) {
-
-	if(length(value) != dag@n_terms) {
-		stop("Length of `value` should be the same as number of total terms in the DAG.")
-	}
-
-	if(is.character(terms)) {
-		id = term_to_node_id(dag, terms, strict = FALSE)
-	} else {
-		id = terms
-	}
-
-	an = cpp_max_ancestor_id(dag, id, value)
-	dimnames(an) = list(dag@terms[id], dag@terms[id])
-
-	if(in_labels) {
-		structure(dag@terms[an], dim = dim(an), dimnames = dimnames(an))
-	} else {
-		an
-	}
-}
-
-
 #' Various types of common ancestors
 #' 
 #' @param dag An `ontology_DAG` object.
 #' @param terms A vector of term names.
-#' @param IC_method An IC method. Valid values are in [`ALL_IC_METHODS`].
+#' @param IC_method An IC method. Valid values are in [`all_ic_methods()`].
 #' @param in_labels Whether the terms are represented in their names or as the integer indices?
 #' 
 #' @details
@@ -58,12 +17,18 @@ max_ancestor_id = function(dag, terms, value, in_labels = FALSE) {
 #' - NCA (nearest common ancestor): The common ancestor with the smallest distance to the two terms. If there are multiple
 #'        ancestors with the same smallest distance, the ancestor with the largest depth is taken.
 #' 
+#' `max_ancestor_v()` and `max_ancestor_id()` are more general functions which return common ancestors with
+#' the highest value in `value`.
+#' 
 #' @return 
 #' - `MICA_term()` returns an integer or a character matrix of the MICA terms depending on the value of `in_labels`. 
 #' - `MICA_IC()` returns a numeric matrix of the IC of the MICA terms.
 #' - `LCA_term()` returns an integer or a character matrix of the LCA term depending on the value of `in_labels`.
 #' - `LCA_depth()` returns an integer matrix of the depth of the LCA terms.
-#' - `NCA_term()` returns an integer or a character matrix of the NCA term depending on the value of `in_labels`. The shortest distance from NCA terms can be calculated by [`shortest_distances_via_CA()`].
+#' - `NCA_term()` returns an integer or a character matrix of the NCA term depending on the value of `in_labels`. The shortest distance from NCA terms can be calculated by [`shortest_distances_via_NCA()`].
+#' - `max_ancestor_v()` returns a numeric matrix.
+#' - `max_ancestor_id()` returns an integer or a character matrix.
+#' 
 #' @rdname common_ancestor
 #' @export
 #' @examples
@@ -125,4 +90,49 @@ NCA_term = function(dag, terms, in_labels = TRUE) {
 }
 
 
+#' @param value A numeric vector. The elements shoudl corrrespond to terms in `dag_all_terms()`.
+#' 
+#' @rdname common_ancestor
+#' @export
+max_ancestor_v = function(dag, terms, value) {
+
+	if(length(value) != dag@n_terms) {
+		stop("Length of `value` should be the same as number of total terms in the DAG.")
+	}
+
+	if(is.character(terms)) {
+		id = term_to_node_id(dag, terms, strict = FALSE)
+	} else {
+		id = terms
+	}
+
+	an = cpp_max_ancestor_v(dag, id, value)
+	dimnames(an) = list(dag@terms[id], dag@terms[id])
+	an
+}
+
+
+#' @rdname common_ancestor
+#' @export
+max_ancestor_id = function(dag, terms, value, in_labels = FALSE) {
+
+	if(length(value) != dag@n_terms) {
+		stop("Length of `value` should be the same as number of total terms in the DAG.")
+	}
+
+	if(is.character(terms)) {
+		id = term_to_node_id(dag, terms, strict = FALSE)
+	} else {
+		id = terms
+	}
+
+	an = cpp_max_ancestor_id(dag, id, value)
+	dimnames(an) = list(dag@terms[id], dag@terms[id])
+
+	if(in_labels) {
+		structure(dag@terms[an], dim = dim(an), dimnames = dimnames(an))
+	} else {
+		an
+	}
+}
 

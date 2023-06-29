@@ -2,9 +2,12 @@
 % Please edit documentation in R/constructor.R
 \name{dag_all_terms}
 \alias{dag_all_terms}
+\alias{dag_n_terms}
 \title{Names of all terms}
 \usage{
 dag_all_terms(dag)
+
+dag_n_terms(dag)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
@@ -20,4 +23,5 @@ parents  = c("a", "a", "b", "b", "c", "d")
 children = c("b", "c", "c", "d", "e", "f")
 dag = create_ontology_DAG(parents, children)
 dag_all_terms(dag)
+dag_n_terms(dag)
 }

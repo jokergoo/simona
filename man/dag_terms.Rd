@@ -18,9 +18,8 @@ dag_offspring(dag, term, in_labels = TRUE, include_self = FALSE)
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
 
-\item{term}{For \code{dag_parents()} and \code{dag_children()}, the value should be a single term name.
-For \code{dag_ancestors()} and \code{dag_offspring()}, the value can be a vector of multiple term names. If it is a vector, it returns
-union of the ancestor or offspring terms of the selected set of terms.}
+\item{term}{The value can be a vector of multiple term names. If it is a vector, it returns
+union of the upstream/downstream terms of the selected set of terms.}
 
 \item{in_labels}{Whether the terms are represented in their names or as the integer indices?}
 
