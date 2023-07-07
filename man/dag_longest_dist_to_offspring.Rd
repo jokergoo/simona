@@ -5,7 +5,7 @@
 \alias{dag_shortest_dist_to_offspring}
 \alias{dag_longest_dist_from_ancestors}
 \alias{dag_shortest_dist_from_ancestors}
-\title{Distance from terms in the DAG}
+\title{Distance from all ancestors/to all offspring in the DAG}
 \usage{
 dag_longest_dist_to_offspring(dag, from, terms = NULL, background = NULL)
 
@@ -18,7 +18,7 @@ dag_shortest_dist_from_ancestors(dag, to, terms = NULL, background = NULL)
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
 
-\item{from}{A single term or a vector of terms. For all downstream terms, the maximal or the minimal distance to the terms specified in this variable will be taken.}
+\item{from}{A single term name or a vector of term names.}
 
 \item{terms}{A vector of term names. If it is set, the returned vector will be subsetted to the terms that have been set here.}
 
@@ -26,10 +26,24 @@ dag_shortest_dist_from_ancestors(dag, to, terms = NULL, background = NULL)
 
 \item{to}{Same format as the \code{from} argument.}
 }
+\value{
+An integer vector having length the same as the number of terms in the DAG. If terms are not
+reachable to the \code{from} or \code{to} terms, the corresponding value is -1.
+}
 \description{
-Distance from terms in the DAG
+Distance from all ancestors/to all offspring in the DAG
 }
 \details{
+If \code{from} or \code{to} is a vector, for a specific, the longest/shortest distance among all \code{from}/\code{to} terms is taken.
+
 As a special case, when \code{from} is the root term, \code{dag_longest_dist_to_offspring()} is the same as \code{dag_depth()},
 and when \code{to} are all leaf terms, \code{dag_shortest_dist_to_offspring()} is the same as \code{dag_height()}.
+}
+\examples{
+parents  = c("a", "a", "b", "b", "c", "d")
+children = c("b", "c", "c", "d", "e", "f")
+dag = create_ontology_DAG(parents, children)
+dag_longest_dist_from_ancestors(dag, "e")
+dag_shortest_dist_from_ancestors(dag, "e")
+dag_longest_dist_to_offspring(dag, "b")
 }

@@ -13,13 +13,14 @@ dag_filter(dag, terms = NULL, relations = NULL, root = NULL, leaves = NULL)
 
 \item{relations}{A vector of relations. The sub-DAG will only contain these relations.
 Valid values of "relations" should correspond to the values set in the
-\code{relations} argument in the \code{\link[=create_ontology_DAG]{create_ontology_DAG()}}.}
+\code{relations} argument in the \code{\link[=create_ontology_DAG]{create_ontology_DAG()}}. If \code{relations_DAG} is
+already provided, offspring relation types will all be selected.}
 
-\item{root}{A vector of term names which will be used as the root of the sub-DAG. Only
-they with their offspring terms will be kept. If there are multiple root terms set,
+\item{root}{A vector of term names which will be used as roots of the sub-DAG. Only
+these with their offspring terms will be kept. If there are multiple root terms,
 a super root will be automatically added.}
 
-\item{leaves}{A vector of leaf terms. Only they with their ancestor terms will are kept.}
+\item{leaves}{A vector of leaf terms. Only these with their ancestor terms will be kept.}
 }
 \value{
 An \code{ontology_DAG} object.

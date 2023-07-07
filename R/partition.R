@@ -2,9 +2,8 @@
 #' Partition the DAG
 #' 
 #' @param dag An `ontology_DAG` object.
-#' @param level Depth in the DAG to cut. The DAG is cut below terms (or cut the links to their child terms) with depth == level.
+#' @param level Depth in the DAG to cut. The DAG is cut below terms (or cut the links to their child terms) with `depth == level`.
 #' @param from A list of terms to cut. If it is set, `level` is ignored.
-#' @param k Number of terms in a cluster. The splitting stops on a term if all its child-tree is smaller than `k`.
 #' 
 #' @details
 #' Let's call the terms below the `from` term as "top terms" because they will be on top of the sub-DAGs after the partitioning.
@@ -12,8 +11,8 @@
 #' To partition all terms exclusively, a term partitioned to the sub-DAG from the top term with the largest distance to the term.
 #' If a term has the same largest distances to several top terms, a random top term is selected.
 #' 
-#' In `partition_by_k()`, the DAG is first reduced as a tree where a child term only has one parent, also in the tree, the depth
-#' of a term is the same as the height in the DAG. The partition is done recursively by cutting into its child-trees. 
+#' In `partition_by_k()`, the DAG is first reduced to a tree where a child term only has one parent. 
+#' The partition is done recursively by cutting into its child-trees. 
 #' The splitting stops when all the child-trees have size less than `k`.
 #' 
 #' `NA` is assigned to the `from` terms, their ancestor terms, and terms having infinite directed distance to `from` terms.
@@ -52,13 +51,26 @@ partition_by_level = function(dag, level = 0, from = NULL) {
 	structure(partition, names = dag@terms)
 }
 
+#' @param k Number of terms in a cluster. The splitting stops on a term if all its child-tree are smaller than `k`.
 #' @rdname partition_by_level
-partition_by_k = function(dag, k = ceiling(dag_n_terms(dag)/10)) {
+#' @importFrom stats dendrapply
+partition_by_k = function(dag, k) {
 	
 	tree = dag_treelize(dag)
 	dend = dag_as_dendrogram(tree)
 
 	pa = rep(NA_integer_, dag@n_terms)
+
+	get_nodes_attr = function(dend, attr) {
+		v = vector("list", attr(dend, "n_nodes"))
+		i = 1
+		dendrapply(dend, function(d) {
+			v[[i]] <<- attr(d, "attr")
+			i <<- i + 1
+		})
+
+		unlist(v)
+	}
 
 	scan_downstream = function(dend) {
 
@@ -82,4 +94,5 @@ partition_by_k = function(dag, k = ceiling(dag_n_terms(dag)/10)) {
 
 	structure(tree@terms[pa], names = tree@terms)
 }
+
 

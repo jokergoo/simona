@@ -1,6 +1,41 @@
 
 
-#' @importFrom stats p.adjust
+#' Enrichment analysis on offspring terms
+#' 
+#' @param dag An `ontology_DAG` object.
+#' @param terms A vector of term names.
+#' 
+#' @details
+#' Given a list of terms in `terms`, the function tests whether they are enriched in some terms's offspring terms.
+#' The test is based on the hypergeometric distribution. In the following 2x2 contigency table, `S` is the set of `terms`,
+#' for a term `t` in the DAG, `T` is the set of its offspring plus the `t` itself, the aim is to test whether `S` is over-represented
+#' in `T`.
+#' 
+#' ```
+#' +----------+------+----------+-----+
+#' |          | in S | not in S | all |
+#' +----------+------+----------+-----+
+#' | in T     |  x11 |    x12   | x10 |
+#' | not in T |  x21 |    x22   | x20 |
+#' +----------+------+----------+-----+
+#' | all      |  x01 |    x02   |  x  |
+#' +----------+------+----------+-----+
+#' ``` 
+#' 
+#' @return A data frame with the following columns:
+#' 
+#' -`term`: Term names.
+#' -`n_hits`: Number of terms in `terms` intersecting to `t`'s offspring terms. 
+#' -`n_offspring`: Number of offspring terms of `t` (including `t` itself).
+#' -`n_terms`: Number of terms in `term` intersecting to all terms in the DAG.
+#' -`n_all`: Number of all terms in the DAG.
+#' -`p_value`: P-values from hypergeometric test.
+#' -`p_adjust`: Adjusted p-values from the BH method.
+#' 
+#' The number of rows in the data frame is the same as the number of terms in the DAG.
+#' 
+#' @importFrom stats p.adjust phyper
+#' @export
 dag_enrich_terms = function(dag, terms) {
 	n = dag@n_terms
 	ind = which(dag@terms %in% terms)
@@ -12,34 +47,110 @@ dag_enrich_terms = function(dag, terms) {
 	p = phyper(n_hits-1, m, n - m, n_offspring, lower.tail = FALSE)
 	padj = p.adjust(p, "BH")
 	df = data.frame(term = dag@terms, n_hits = n_hits, n_offspring = n_offspring, n_terms = m, n_all = n, p_value = p, p_adjust = padj)
-	df$depth = dag_depth(dag)
-	df$height = dag_height(dag)
 	df
 }
 
-dag_enrich_items = function(dag, p_value) {
+#' Enrichment analysis on offspring terms by permutation test
+#' 
+#' @param dag An `ontology_DAG` object.
+#' @param value A numeric value. The value should correspond to terms in `dag@terms`.
+#' @param n Number of permutations.
+#' 
+#' @details
+#' The function tests whether a term `t`'s offspring terms have an over-represented pattern on values in `value`.
+#' Denote `T` as the set of `t`'s offspring terms plus `t` itself, and `v` as the numeric vector of `value`, we first
+#' calculate a score `s` based on values in `T`:
+#' 
+#' ```
+#' s = mean_{terms in T}(v)
+#' ```
+#' 
+#' To construct a random version of `s`, we randomly sample `n_T` terms from the DAG where `n_T` is the size of set `T`:
+#' 
+#' ```
+#' sr_i = mean_{n_T randomly sampled terms}(v)
+#' ```
+#' 
+#' where index `i` represents the i^th sampling. If we sample `k` times, the p-value is calculated as:
+#' 
+#' ```
+#' p = sum_{go over k}(I(sr > s))/k
+#' ```
+#' 
+#' @return A data frame with the following columns:
+#' 
+#' -`term`: Term names.
+#' -`stats`: The statistics of terms.
+#' -`n_offspring`: Number of offspring terms of `t` (including `t` itself).
+#' -`z_score`: Defined as `(s - mean)/sd` where `mean` and `sd` are calculated from random permutation.
+#' -`log2_fold_enrichment`: defined as `log2(s/mean)` where `mean` is calculated from random permutation.
+#' -`p_value`: P-values from permutation test.
+#' -`p_adjust`: Adjusted p-values from the BH method.
+#' 
+#' The number of rows in the data frame is the same as the number of terms in the DAG.
+#' 
+#' @importFrom stats sd
+dag_enrich_terms_by_permutation = function(dag, value, n = 1000) {
 	n = dag@n_terms
 
-	lt_offspring = dag_all_offspring(dag, in_labels = FALSE)
+	lt_offspring = dag_all_offspring(dag, include_self = TRUE, in_labels = FALSE)
 	n_offspring = sapply(lt_offspring, length)
 
-	s = sapply(lt_offspring, function(x) mean(-log(p_value[x])))
-	sr = matrix(nrow = length(s), ncol = 1000)
+	s = sapply(lt_offspring, function(x) mean(value[x], na.rm = TRUE))
+	sr = matrix(nrow = length(s), ncol = n)
 	p = numeric(n)
 	
-	for(i in 1:1000) {
-		cat(i, "/", 1000, "\n")
+	for(i in 1:n) {
+		cat("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\brandom sampling", i, "/", n)
 		sr[, i] = sapply(n_offspring, function(x) {
-			mean(-log(p_value[sample(p_value, x)]))
+			mean(sample(value, x), na.rm = TRUE)
 		})
 	}
+	cat("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\brandom sampling", n, "/", n, "\n")
 
-	p = sapply(1:n, function(i) sum(sr[, i] - s[i])/length(s))
+	p = sapply(1:n, function(i) sum(sr[, i] > s[i])/length(s))
+	padj = p.adjust(p, "BH")
+	z = sapply(1:n, function(i) (s[i] - mean(sr[, i]))/sd(sr[, i]))
+	log2fe = sapply(1:n, function(i) log2(s[i]/mean(sr[, i])))
 
-	data.frame(term = dag@terms, s = s, p = p)
+	data.frame(term = dag@terms, stat = s, n_offspring = unname(n_offspring), z_score = z, log2_fold_enrichment = log2fe, p_value = p, p_adjust = padj)
 }
 
-#' @importFrom stats phyper
+#' Enrichment analysis on numbers of annotated items
+#' 
+#' @param dag An `ontology_DAG` object.
+#' @param items A vector of item names.
+#' 
+#' @details
+#' The function tests whether the list of items are enriched in some terms.
+#' The test is based on the hypergeometric distribution. In the following 2x2 contigency table, `S` is the set of `items`,
+#' for a term `t` in the DAG, `T` is the set of items annotated to `t` (by automatically merging from its offspring terms), 
+#' the aim is to test whether `S` is over-represented in `T`.
+#' 
+#' ```
+#' +----------+------+----------+-----+
+#' |          | in S | not in S | all |
+#' +----------+------+----------+-----+
+#' | in T     |  x11 |    x12   | x10 |
+#' | not in T |  x21 |    x22   | x20 |
+#' +----------+------+----------+-----+
+#' | all      |  x01 |    x02   |  x  |
+#' +----------+------+----------+-----+
+#' ``` 
+#' 
+#' @return A data frame with the following columns:
+#' 
+#' -`term`: Term names.
+#' -`n_hits`: Number of items in `items` intersecting to `t`'s annotated items.
+#' -`n_anno`: Number of annotated items of `t`.
+#' -`n_items`: Number of items in `items` intersecting to all annotated items in the DAG.
+#' -`n_all`: Number of all annotated items in the DAG.
+#' -`p_value`: P-values from hypergeometric test.
+#' -`p_adjust`: Adjusted p-values from the BH method.
+#' 
+#' The number of rows in the data frame is the same as the number of terms in the DAG.
+#' 
+#' @export
 dag_enrich_items = function(dag, items) {
 	validate_dag_has_annotation(dag)
 
@@ -47,7 +158,7 @@ dag_enrich_items = function(dag, items) {
 	ind = which(dag@annotation$names %in% items)
 	m = length(ind)
 
-	n_anno = n_annotations(dag)
+	n_anno = n_annotations(dag, uniquify = TRUE)
 	n_hits = cpp_n_annotations_with_intersect(dag, ind)
 
 	p = phyper(n_hits-1, m, n - m, n_anno, lower.tail = FALSE)
@@ -58,11 +169,42 @@ dag_enrich_items = function(dag, items) {
 	df
 }
 
-
+#' Randomly sample terms/items
+#' 
+#' @param dag An `ontology_DAG` object.
+#' @param n Number of terms or items.
+#' 
+#' @export
+#' @examples
+#' parents  = c("a", "a", "b", "b", "c", "d")
+#' children = c("b", "c", "c", "d", "e", "f")
+#' annotation = list(
+#'     "a" = c("t1", "t2", "t3"),
+#'     "b" = c("t3", "t4"),
+#'     "c" = "t5",
+#'     "d" = "t7",
+#'     "e" = c("t4", "t5", "t6", "t7"),
+#'     "f" = "t8"
+#' )
+#' dag = create_ontology_DAG(parents, children, annotation = annotation)
+#' random_terms(dag, 3)
+#' random_items(dag, 3)
 random_terms = function(dag, n) {
+	if(n > dag@n_terms) {
+		stop("`n` should not be larger than the total number of terms in the DAG.")
+	}
 	sample(dag@terms, n)
 }
 
+#' @rdname random_terms
+#' @export
 random_items = function(dag, n) {
+	n_anno = length(dag@annotation$names)
+	if(n_anno == 0) {
+		stop("annotation has not been set in the DAG.")
+	}
+	if(n > n_anno) {
+		stop("`n` should not be larger than the total number of annotated items in the DAG.")
+	}
 	sample(dag@annotation$names, n)
 }

@@ -20,9 +20,9 @@ Supported methods
 }
 \details{
 \itemize{
-\item \code{all_ic_methods()}: A vector all supported IC methods.
-\item \code{all_term_sim_methods()}: A vector all supported term similarity methods.
-\item \code{all_group_sim_methods()}: A vector all supported group similarity methods.
+\item \code{all_ic_methods()}: A vector of all supported IC methods.
+\item \code{all_term_sim_methods()}: A vector of all supported term similarity methods.
+\item \code{all_group_sim_methods()}: A vector of all supported group similarity methods.
 }
 }
 \examples{

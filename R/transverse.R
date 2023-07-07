@@ -5,8 +5,8 @@
 #' @param dag An `ontology_DAG` object.
 #' @param term The value can be a vector of multiple term names. If it is a vector, it returns
 #'             union of the upstream/downstream terms of the selected set of terms.
-#' @param in_labels Whether the terms are represented in their names or as the integer indices?
-#' @param include_self For `dag_offspring()` and `dag_ancestors()`, this controls whether to also contain the query term itself/themselves.
+#' @param in_labels Whether the terms are represented in their names or as integer indices?
+#' @param include_self For `dag_offspring()` and `dag_ancestors()`, this controls whether to also include the query term itself.
 #' 
 #' @return An integer vector or a character vector depending on the value of `in_labels`.
 #' @rdname dag_terms
@@ -95,7 +95,7 @@ dag_offspring = function(dag, term, in_labels = TRUE, include_self = FALSE) {
 	}
 }
 
-
+# it returns offspring for all terms, like GOBPOFFSPRING
 dag_all_offspring = function(dag, in_labels = TRUE, include_self = FALSE) {
 	m = cpp_all_offspring(dag, include_self)
 	lt = apply(m, 1, which)
@@ -113,7 +113,7 @@ dag_all_offspring = function(dag, in_labels = TRUE, include_self = FALSE) {
 #' @param dag An `ontology_DAG` object.
 #' @param terms A vector of term names. If the value is `NULL`, it returns for all terms in the DAG.
 #' @param use_cache Internally used.
-#' @param include_self For `n_offspring()` and `n_ancestors()`, this controls whether to also contain the query term itself.
+#' @param include_self For `n_offspring()` and `n_ancestors()`, this controls whether to also include the query term itself.
 #' 
 #' @return An integer vector.
 #' @rdname n_terms
@@ -168,7 +168,7 @@ n_ancestors = function(dag, terms = NULL, use_cache = TRUE, include_self = FALSE
 }
 
 #' @rdname n_terms
-#' @details Leaf nodes have value of zero, so you can identify leaf terms based on the value.
+#' @details Leaf nodes have value of zero, so you can identify leaf terms based on the values.
 #' @export
 n_leaves = function(dag, terms = NULL, use_cache = TRUE) {
 	if(is.null(dag@term_env$n_leaves) || !use_cache) {
@@ -240,7 +240,7 @@ dag_ancestors_of_two_groups = function(dag, group1, group2, type = "union", in_l
 #' @param use_cache Internally used.
 #' @details
 #' The depth of a term in the DAG is defined as the maximal distance from the root. The height
-#' of a term in the DAG is the maximal finite distance to the leaf terms
+#' of a term in the DAG is the maximal finite distance to the leaf terms.
 #' 
 #' `dag_shortest_dist_from_root()` and `dag_shortest_dist_to_leaves()` calculate the minimal distance from the root or to the leaves.
 #' 
@@ -354,19 +354,30 @@ dag_shortest_dist_to_leaves = function(dag, terms = NULL, use_cache = TRUE) {
 	}
 }
 
-#' Distance from terms in the DAG
+#' Distance from all ancestors/to all offspring in the DAG
 #' 
 #' @param dag An `ontology_DAG` object.
-#' @param from A single term or a vector of terms. For all downstream terms, the maximal or the minimal distance to the terms specified in this variable will be taken.
+#' @param from A single term name or a vector of term names.
 #' @param to Same format as the `from` argument.
 #' @param terms A vector of term names. If it is set, the returned vector will be subsetted to the terms that have been set here.
 #' @param background A vector of terms. Then the lookup will only be applied in this set of terms.
 #' 
 #' @details
+#' If `from` or `to` is a vector, for a specific, the longest/shortest distance among all `from`/`to` terms is taken.
+#' 
 #' As a special case, when `from` is the root term, `dag_longest_dist_to_offspring()` is the same as `dag_depth()`,
 #' and when `to` are all leaf terms, `dag_shortest_dist_to_offspring()` is the same as `dag_height()`.
 #' 
+#' @return An integer vector having length the same as the number of terms in the DAG. If terms are not
+#'        reachable to the `from` or `to` terms, the corresponding value is -1.
 #' @export
+#' @examples
+#' parents  = c("a", "a", "b", "b", "c", "d")
+#' children = c("b", "c", "c", "d", "e", "f")
+#' dag = create_ontology_DAG(parents, children)
+#' dag_longest_dist_from_ancestors(dag, "e")
+#' dag_shortest_dist_from_ancestors(dag, "e")
+#' dag_longest_dist_to_offspring(dag, "b")
 dag_longest_dist_to_offspring = function(dag, from, terms = NULL, background = NULL) {
 	.dag_singular_dist(dag, from, terms, background, dist_type = "longest", towards = "offspring")
 }

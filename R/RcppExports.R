@@ -69,6 +69,10 @@ cpp_tpl_longest_path <- function(dag, from, to) {
     .Call(`_simone_cpp_tpl_longest_path`, dag, from, to)
 }
 
+intersectToList_logical <- function(lt, x) {
+    .Call(`_simone_intersectToList_logical`, lt, x)
+}
+
 cpp_term_pos_on_circle <- function(dag, start = 0, end = 360) {
     .Call(`_simone_cpp_term_pos_on_circle`, dag, start, end)
 }

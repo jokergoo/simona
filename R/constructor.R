@@ -10,6 +10,7 @@
 #' @slot lt_children A list of length `n`. Each element in the list is an integer index vector of the child terms of the i^th term.
 #' @slot lt_children_relations A list of length `n`. Each element is a vector of the semantic relations between the i^th term and its child terms.
 #'       The relations are represented as integers. The character name of the relations is in `attr(dag@lt_children_relations, "levels")`.
+#' @slot relations_DAG A simple `ontology_DAG` object but constructed for relation types.
 #' @slot source The source of the ontology. A character scalar only used as a mark of the returned object.
 #' @slot root An integer scalar of the root term.
 #' @slot leaves An integer vector of the indicies of leaf terms.
@@ -23,6 +24,7 @@
 #' @slot aspect_ratio A numeric vector of length two. The aspect ratio is calculated as `w/h`. For each term, there is a distance to root, 
 #'       `h` is the maximal distance of all terms, `w` is the maximal number of items with the same distance. The two values in the `aspect_ratio` slot
 #'       use maximal distance to root (the height) and the shortest distance to root as the distance measure.
+#' @slot metadata An additional data frame with the same number of rows as the number of terms in DAG. Order of rows should be the same as order of terms in `dag@terms`.
 #' 
 #' @export ontology_DAG
 #' @exportClass ontology_DAG
@@ -32,6 +34,7 @@ ontology_DAG = setClass("ontology_DAG",
 		      "lt_parents" = "list",
 		      "lt_children" = "list",
 		      "lt_children_relations" = "list",
+		      "relations_DAG" = "ANY",
 		      "source" = "character",
 		      "root" = "integer",
 		      "leaves" = "integer",
@@ -39,7 +42,8 @@ ontology_DAG = setClass("ontology_DAG",
 		      "tpl_pos" = "integer",
 		      "annotation" = "list",
 		      "term_env" = "environment",
-		      "aspect_ratio" = "numeric"
+		      "aspect_ratio" = "numeric",
+		      "metadata" = "ANY"
 		      )
 )
 
@@ -47,7 +51,9 @@ ontology_DAG = setClass("ontology_DAG",
 #' 
 #' @param parents A character vector of parent terms. 
 #' @param children A character vector of child terms. 
-#' @param relations A character vector of parent-child relations, e.g. "isa", "part of", or self-defined semantic relations.
+#' @param relations A character vector of parent-child relations, e.g. "is_a", "part_of", or self-defined semantic relations.
+#' @param relations_DAG If the relation types also have hierarchical relations, it can also be constructed by `create_ontology_DAG()` first. See **Examples**.
+#'          When the DAG for relation types is provided, in downstream analysis, the ancestor/offspring relationship for relation types will be taken into consideration.
 #' @param source Source of the ontology. It is only used as a mark of the object.
 #' @param annotation A list of character vectors which contain items annotated to the terms. Names of the list should be the term names. In the DAG, items
 #'                   annotated to a term will also be annotated to its parents. Such merging
@@ -77,8 +83,14 @@ ontology_DAG = setClass("ontology_DAG",
 #' 
 #' # with relations
 #' dag = create_ontology_DAG(parents, children, 
-#'     relations = c("isa", "part of", "isa", "part of", "isa", "part of"))
-create_ontology_DAG = function(parents, children, relations = NULL, 
+#'     relations = c("is_a", "part_of", "is_a", "part_of", "is_a", "part_of"))
+#' 
+#' # with relations_DAG
+#' relations_DAG = create_ontology_DAG(c("r2", "r2"), c("r3", "r4"))
+#' dag = create_ontology_DAG(parents, children, 
+#'     relations = c("r1", "r2", "r1", "r3", "r1", "r4"),
+#'     relations_DAG = relations_DAG)
+create_ontology_DAG = function(parents, children, relations = NULL, relations_DAG = NULL,
 	source = "Ontology", annotation = NULL) {
 
 	if(!is.character(parents)) {
@@ -127,8 +139,9 @@ create_ontology_DAG = function(parents, children, relations = NULL,
 	}
 	
 	if(length(root) > 1) {
-
-		warning("There are more than one root:\n", "  ", paste(terms[root], collapse = ", "), "\nA super root (_all_) is added.")
+		txt = strwrap(paste(terms[root], collapse = ", "), width = 60)
+		txt = paste(paste0("  ", txt), collapse = "\n")
+		message("There are more than one root:\n", txt, "\n  A super root (_all_) is added.")
 		
 		super_root = n_terms + 1L
 		lt_parents[[super_root]] = integer(0)
@@ -137,10 +150,16 @@ create_ontology_DAG = function(parents, children, relations = NULL,
 		}
 
 		lt_children[[super_root]] = root
-		if(has_relations) lt_relations[[super_root]] = rep(which(relation_levels == "isa"), length(root))
+		if(has_relations) lt_relations[[super_root]] = rep(which(relation_levels == "is_a"), length(root))
 		terms = c(terms, "_all_")
 		root = super_root
 		n_terms = n_terms + 1
+	}
+
+	if(!is.null(relations_DAG)) {
+		if(!inherits(relations_DAG, "ontology_DAG")) {
+			stop("`relations_DAG` should be constructed by `create_ontology_DAG()`.")
+		}
 	}
 		
 	dag = ontology_DAG(
@@ -149,6 +168,7 @@ create_ontology_DAG = function(parents, children, relations = NULL,
 		lt_parents = lt_parents,
 		lt_children = lt_children,
 		lt_children_relations = lt_relations, 
+		relations_DAG = relations_DAG,
 		source = source,
 		root = root,
 		leaves = leaves,
@@ -223,6 +243,7 @@ setMethod("show",
 		} else {
 			cat("  ", n_terms, " terms / ", n_relations, " relations\n", sep = "")
 		}
+
 		cat("  Root:", paste(object@terms[object@root], collapse = ", "), "\n")
 
 		if(!is.null(object@term_env$dag_depth)) {
@@ -238,11 +259,28 @@ setMethod("show",
 		}
 
 		if(length(object@lt_children_relations)) {
-			cat("  Relations:", paste(attr(object@lt_children_relations, "levels"), collapse = ", "), "\n")
+			txt = strwrap(paste(attr(object@lt_children_relations, "levels"), collapse = ", "), width = 60)
+			txt[1] = paste0("  Relations: ", txt[1])
+			txt[-1] = paste0("             ", txt[-1])
+			cat(txt, sep = "\n")
+
+			if(!is.null(object@relations_DAG)) {
+				if(length(intersect(object@relations_DAG@terms, attr(object@lt_children_relations, "levels")))) {
+					cat("  Relation types may have hierarchical relations.\n")
+				}
+			}
 		}
 
 		if(length(object@annotation$list)) {
 			cat("  Annotations are available.\n")
+		}
+
+		if(!is.null(object@metadata)) {
+			cat("\n")
+			cat("With the following columns in the metadata data frame:\n")
+			txt = strwrap(paste(colnames(object@metadata), collapse = ", "), width = 60)
+			txt = paste0("  ", txt)
+			cat(txt, sep = "\n")
 		}
 	}
 )
@@ -250,10 +288,10 @@ setMethod("show",
 #' Create the ontology_DAG object from the GO.db package
 #' 
 #' @param namespace One of "BP", "CC" and "MF".
-#' @param relations Types of the GO term relations. In the **GO.db** package, the GO term relations can be "isa", "part of",
+#' @param relations Types of the GO term relations. In the **GO.db** package, the GO term relations can be "is_a", "part_of",
 #'               "regulates", "negatively regulates", "positively regulates". Note since "regulates" is a parent relation
 #'               of "negatively regulates", "positively regulates", if "regulates" is selected, "negatively regulates" and "positively regulates"
-#'               are be selected.
+#'               are also selected. Note "is_a" is always included.
 #' @param org_db The name of the organism package or the corresponding database object, e.g. `"org.Hs.eg.db"` or 
 #'            directly the [`org.Hs.eg.db::org.Hs.eg.db`] object for human, then the gene annotation to GO terms will be added
 #'            to the object.
@@ -264,9 +302,9 @@ setMethod("show",
 #' \dontrun{
 #' dag = create_ontology_DAG_from_GO_db()
 #' dag = create_ontology_DAG_from_GO_db("BP", 
-#'     relations = "isa", org_db = "org.Hs.eg.db")
+#'     relations = NULL, org_db = "org.Hs.eg.db")
 #' }
-create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = c("isa", "part of"), org_db = NULL) {
+create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = "part of", org_db = NULL) {
 
 	check_pkg("GO.db", bioc = TRUE)
 
@@ -280,9 +318,15 @@ create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = c("isa",
 		stop("Value of `namespace` can only be one of 'BP', 'MF' and 'CC'.")
 	}
 
+	l = df[, 3] == "isa"
+	df[l, 3] = "is_a"
+	df[, 3] = gsub(" ", "_", df[, 3])
+
+	relations = c("is_a", relations)
 	if("regulates" %in% relations) {
 		relations = c(relations, "negatively regulates", "positively regulates")
 	}
+	relations = gsub(" ", "_", relations)
 	df = df[df[, 3] %in% relations, , drop = FALSE]
 
 	if(!is.null(org_db)) {
@@ -301,15 +345,17 @@ create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = c("isa",
 		annotation = NULL
 	}
 
-	create_ontology_DAG(parents = df[, 2], children = df[, 1], relations = df[, 3],
+	relations_DAG = create_ontology_DAG(c("regulates", "regulates"), c("negatively regulates", "positively regulates"))
+
+	create_ontology_DAG(parents = df[, 2], children = df[, 1], relations = df[, 3], relations_DAG = relations_DAG,
 		annotation = annotation, source = paste0("GO ", namespace))
 }
 
 
-#' Create a sub-DAG
+#' Create sub-DAGs
 #' 
 #' @param x An `ontology_DAG` object.
-#' @param i A single term name.
+#' @param i A single term name. The value should be a character vector.
 #' @param j Ignored.
 #' @param ... Ignored.
 #' @param drop Ignored.
@@ -366,7 +412,7 @@ dag_n_terms = function(dag) {
 #' Root or leaves of the DAG
 #' 
 #' @param dag An `ontology_DAG` object.
-#' @param in_labels Whether the terms are represented in their names or as the integer indices?
+#' @param in_labels Whether the terms are represented in their names or as integer indices?
 #' 
 #' @return A character or an integer vector.
 #' @export
@@ -408,7 +454,7 @@ dag_is_leaf = function(dag, terms) {
 #' 
 #' @param dag An `ontology_DAG` object.
 #' 
-#' @details If `relations` is set in [`create_ontology_DAG()`], relations are also set as an edge attribute in the [`igraph::igraph`] object.
+#' @details If `relations` is already set in [`create_ontology_DAG()`], relations are also set as an edge attribute in the [`igraph::igraph`] object.
 #' 
 #' @return An [`igraph::igraph`] object.
 #' @export
@@ -449,11 +495,12 @@ dag_as_igraph = function(dag) {
 #' @param terms A vector of term names. The sub-DAG will only contain these terms.
 #' @param relations A vector of relations. The sub-DAG will only contain these relations. 
 #'                  Valid values of "relations" should correspond to the values set in the 
-#'                  `relations` argument in the [`create_ontology_DAG()`].
-#' @param root A vector of term names which will be used as the root of the sub-DAG. Only 
-#'             they with their offspring terms will be kept. If there are multiple root terms set, 
+#'                  `relations` argument in the [`create_ontology_DAG()`]. If `relations_DAG` is 
+#'                  already provided, offspring relation types will all be selected.
+#' @param root A vector of term names which will be used as roots of the sub-DAG. Only 
+#'             these with their offspring terms will be kept. If there are multiple root terms, 
 #'             a super root will be automatically added.
-#' @param leaves A vector of leaf terms. Only they with their ancestor terms will are kept.
+#' @param leaves A vector of leaf terms. Only these with their ancestor terms will be kept.
 #' 
 #' @details If the DAG is reduced into several disconnected parts after the filtering, a
 #'          super root is automatically added.
@@ -503,6 +550,11 @@ dag_filter = function(dag, terms = NULL, relations = NULL, root = NULL, leaves =
 	}
 
 	if(!is.null(relations)) {
+
+		if(!is.null(dag@relations_DAG)) {
+			relations = merge_offspring_relation_types(dag@relations_DAG, relations)
+		}
+
 		if(!is.null(v_relations)) {
 			l2 = v_relations %in% relations
 			if(!any(l2)) {
@@ -536,6 +588,54 @@ dag_filter = function(dag, terms = NULL, relations = NULL, root = NULL, leaves =
 	children = dag@terms[children]
 
 	create_ontology_DAG(parents = parents, children = children,
-		relations = relations, annotation = annotation, source = dag@source)
+		relations = relations, relations_DAG = dag@relations_DAG, 
+		annotation = annotation, source = dag@source)
 }
+
+
+#' Get metadata on DAG
+#' 
+#' @param x An `ontology_DAG` object.
+#' @param ... Other argument. For `metadata()`, it can be a vector of column names in the meta data frame.
+#' @exportMethod metadata
+#' @importMethodsFrom S4Vectors metadata
+setMethod("metadata", 
+	signature = "ontology_DAG",
+	definition = function(x, ...) {
+	columns = unlist(list(...))
+	if(length(columns)) {
+		x@metadata[, columns]
+	} else {
+		x@metadata
+	}
+})
+
+
+#' Set metadata on DAG
+#' 
+#' @param x An `ontology_DAG` object.
+#' @param ... Other argument. For `metadata()`, it can be a vector of column names in the meta data frame.
+#' @param value A data frame or a matrix where rows should correspond to terms in `x@terms`.
+#' @exportMethod 'metadata<-'
+#' @importMethodsFrom S4Vectors 'metadata<-'
+#' @examples
+#' parents  = c("a", "a", "b", "b", "c", "d")
+#' children = c("b", "c", "c", "d", "e", "f")
+#' dag = create_ontology_DAG(parents, children)
+#' metadata(dag) = data.frame(id = letters[1:6], v = 1:6)
+#' metadata(dag)
+#' metadata(dag, "id")
+#' dag
+setMethod("metadata<-", 
+	signature = "ontology_DAG",
+	definition = function(x, ..., value) {
+	
+	df = as.data.frame(value)
+	if(nrow(df) != x@n_terms) {
+		stop("value should be a table with the same number of rows as the number of terms in DAG.")
+	}
+
+	x@metadata = value
+	invisible(x)
+})
 

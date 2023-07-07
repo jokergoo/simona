@@ -29,10 +29,10 @@ distance or the shortest distance depending on the function.
 \itemize{
 \item \code{shortest_distances_via_NCA()}: It calculates the smallest \code{d(c, a) + d(c, b)} where \code{d()} calculates the shortest distance between two terms. In this case,
 \code{c} is the NCA (nearest common ancestor) of \code{a} and \code{b}.
-\item \code{longest_distances_via_LCA()}: It calculates the largest \code{d(c, a) + d(c, b)} where \code{d()} calculates the longest distance between two terms via the LCA term. In this case,
+\item \code{longest_distances_via_LCA()}: It calculates the largest \code{d(c, a) + d(c, b)} where \code{d()} calculates the longest distance between two terms \emph{via the LCA (lowest common ancestor) term}. In this case,
 \code{c} is the LCA of \code{a} and \code{b}.
-\item \code{shortest_distances_directed()}: It calculates \code{d(a, b)}. The distance is only calculated when \code{a} is an ancestor of \code{b}.
-\item \code{longest_distances_directed()}: It calculates \code{d(a, b)}. The distance is only calculated when \code{a} is an ancestor of \code{b}.
+\item \code{shortest_distances_directed()}: It calculates \code{d(a, b)} where \code{d()} calculates the shortest distance between two terms. The distance is only calculated when \code{a} is an ancestor of \code{b}, otherwise the distance value is -1.
+\item \code{longest_distances_directed()}: It calculates \code{d(a, b)} where \code{d()} calculates the longest distance between two terms. The distance is only calculated when \code{a} is an ancestor of \code{b}, otherwise the distance value is -1.
 }
 }
 \examples{

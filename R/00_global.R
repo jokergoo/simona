@@ -1,16 +1,4 @@
 
-DEFAULT_RELATIONS = c("isa" = "is_a", 
-	                  "is a" = "is_a", 
-	                  "is_a" = "is_a", 
-	                  "is-a" = "is_a", 
-	                  "part_a" = "part_of", 
-	                  "part a" = "part_of", 
-	                  "part-a" = "part_of", 
-	                  "part of" = "part_of", 
-	                  "part_of" = "part_of",
-	                  "part-of" = "part_of"
-	                  )
-
 
 .ALL_IC_METHODS = NULL
 .ALL_TERM_SIM_METHODS = NULL
@@ -33,9 +21,9 @@ ADD_GROUP_SIM_METHOD = function(method, param = character(0)) {
 #' Supported methods
 #' 
 #' @details
-#' - `all_ic_methods()`: A vector all supported IC methods.
-#' - `all_term_sim_methods()`: A vector all supported term similarity methods.
-#' - `all_group_sim_methods()`: A vector all supported group similarity methods.
+#' - `all_ic_methods()`: A vector of all supported IC methods.
+#' - `all_term_sim_methods()`: A vector of all supported term similarity methods.
+#' - `all_group_sim_methods()`: A vector of all supported group similarity methods.
 #' 
 #' @rdname all_methods
 #' @export
@@ -61,79 +49,41 @@ all_group_sim_methods = function() {
 }
 
 
-get_IC_method = function(method, control = list()) {
-	param = .ALL_IC_METHODS[[method]]
-	if(is.null(param)) {
-		method = grep(method, names(.ALL_IC_METHODS), ignore.case = TRUE, value = TRUE)
-		if(length(method) != 1) {
-			stop("method should be in `all_ic_methods()`.")
-		}
-		param = .ALL_IC_METHODS[[method]]
-	}
-
-	f = get(method, envir = topenv(), inherits = FALSE)
-
-	control = control[intersect(names(control), param)]
-	
-	function(dag) {
-		do.call(f, c(list(dag = dag), control))
-	}
-}
-
-
-get_term_sim_method = function(method, control = list()) {
-	param = .ALL_TERM_SIM_METHODS[[method]]
-	if(is.null(param)) {
-		method = grep(method, names(.ALL_TERM_SIM_METHODS), ignore.case = TRUE, value = TRUE)
-		if(length(method) != 1) {
-			stop("method should be in `all_term_sim_methods()`.")
-		}
-		param = .ALL_TERM_SIM_METHODS[[method]]
-	}
-
-	f = get(method, envir = topenv(), inherits = FALSE)
-
-	control = control[intersect(names(control), param)]
-	
-	function(dag, terms) {
-		do.call(f, c(list(dag = dag, terms = terms), control))
-	}
-}
-
-
-get_group_sim_method = function(method, control = list()) {
-	param = .ALL_GROUP_SIM_METHODS[[method]]
-	if(is.null(param)) {
-		method = grep(method, names(.ALL_GROUP_SIM_METHODS), ignore.case = TRUE, value= TRUE)
-		if(length(method) != 1) {
-			stop("method should be in `all_group_sim_methods()`.")
-		}
-		param = .ALL_GROUP_SIM_METHODS[[method]]
-	}
-
-	f = get(method, envir = topenv(), inherits = FALSE)
-
-	control = control[intersect(names(control), param)]
-	
-	function(dag, group1, group2) {
-		do.call(f, c(list(dag = dag, group1 = group1, group2 = group2), control))
-	}
-}
-
-
 #' Global options
 #' 
-#' @param RESET Ignore.
-#' @param READ.ONLY Ignore.
-#' @param LOCAL Ignore.
-#' @param ADD Ignore.
-#' @param ... Ignore.
+#' @param RESET Reset to default option values.
+#' @param READ.ONLY Only return read only options.
+#' @param LOCAL Only return local options.
+#' @param ADD Add new options.
+#' @param ... Name-value pairs for options.
+#' 
+#' @details
+#' There are the following global options:
+#' 
+#' - `use_cache`: By default, information content of all terms is cached and reused. If `use_cache` is set to `FALSE`, IC will be re-calculated.
+#' - `verbose`: Whether to print messages?
+#' - `anno_uniquify`: In the annotation-based IC method, the union of items annotated to the term as well as all its offspring terms is used, which means
+#'      the set of annotated items for the term is uniquified. If `anno_uniquify` is set to `FALSE`, the uniquification is not applied, we simply add the number
+#'      of items annotated to the term and the numbers of items annotated to each of its offspring terms.
+#' - `robot_jar`: Path of the `robot.jar` file. The file can be found from https://github.com/ontodev/robot/releases.
+#' 
+#' To set an option, you can use the `$`:
+#' 
+#' ```
+#' simone_opt$verbose = FALSE
+#' ```
+#' 
+#' or use it as a function:
+#' 
+#' ```
+#' simone_opt(verbose = FALSE)
+#' ```
 #' 
 #' @export
 #' @import GlobalOptions
 #' @examples
 #' simone_opt
-simone_opt = setGlobalOptions(
+simone_opt = GlobalOptions::setGlobalOptions(
 	use_cache = list(
 		.value = TRUE,
 		.class = "logical",
@@ -148,5 +98,6 @@ simone_opt = setGlobalOptions(
 		.value = TRUE,
 		.class = "logical",
 		.length = 1
-	)
+	),
+	robot_jar = NULL
 )

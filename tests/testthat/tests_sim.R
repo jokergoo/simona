@@ -20,7 +20,7 @@ annotation = list(
 parents  = c("a", "a", "b", "b", "c", "d")
 children = c("b", "c", "c", "d", "e", "f")
 
-dag = create_ontology_DAG(parents, children, relations = c("isa", "part of", "isa", "part of", "isa", "part of"), 
+dag = create_ontology_DAG(parents, children, relations = c("is_a", "part_of", "is_a", "part_of", "is_a", "part_of"), 
 	annotation = annotation)
 
 # IC_annotation:
@@ -64,7 +64,7 @@ test_that("test sim_wang", {
 		(0.36+0.49+0.252+0.42)/(2.61+2.212)
 	)
 
-	m2 = Sim_Wang_2007(dag, letters[1:6], contribution_factor = c("isa" = 0.7, "part of" = 0.6))
+	m2 = Sim_Wang_2007(dag, letters[1:6], contribution_factor = c("is_a" = 0.7, "part_of" = 0.6))
 
 	expect_equal(as.vector(m), as.vector(m2))
 })

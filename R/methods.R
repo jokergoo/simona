@@ -1,5 +1,67 @@
 
 
+
+get_IC_method = function(method, control = list()) {
+	param = .ALL_IC_METHODS[[method]]
+	if(is.null(param)) {
+		i = grep(method, names(.ALL_IC_METHODS), ignore.case = TRUE, value = TRUE)
+		if(length(i) != 1) {
+			stop("method should be in `all_ic_methods()`.")
+		}
+		param = .ALL_IC_METHODS[[i]]
+	}
+
+	f = get(method, envir = topenv(), inherits = FALSE)
+
+	control = control[intersect(names(control), param)]
+	
+	function(dag) {
+		do.call(f, c(list(dag = dag), control))
+	}
+}
+
+
+get_term_sim_method = function(method, control = list()) {
+	param = .ALL_TERM_SIM_METHODS[[method]]
+	if(is.null(param)) {
+		i = grep(method, names(.ALL_TERM_SIM_METHODS), ignore.case = TRUE, value = TRUE)
+		if(length(i) != 1) {
+			stop("method should be in `all_term_sim_methods()`.")
+		}
+		param = .ALL_TERM_SIM_METHODS[[i]]
+	}
+
+	f = get(method, envir = topenv(), inherits = FALSE)
+
+	control = control[intersect(names(control), param)]
+	
+	function(dag, terms) {
+		do.call(f, c(list(dag = dag, terms = terms), control))
+	}
+}
+
+
+get_group_sim_method = function(method, control = list()) {
+	param = .ALL_GROUP_SIM_METHODS[[method]]
+	if(is.null(param)) {
+		i = grep(method, names(.ALL_GROUP_SIM_METHODS), ignore.case = TRUE, value= TRUE)
+		if(length(i) != 1) {
+			stop("method should be in `all_group_sim_methods()`.")
+		}
+		param = .ALL_GROUP_SIM_METHODS[[i]]
+	}
+
+	f = get(method, envir = topenv(), inherits = FALSE)
+
+	control = control[intersect(names(control), param)]
+	
+	function(dag, group1, group2) {
+		do.call(f, c(list(dag = dag, group1 = group1, group2 = group2), control))
+	}
+}
+
+
+
 # cat(paste("#' @inheritSection", all_ic_methods(), "Methods") , sep = "\n")
 
 #' Information content
@@ -64,9 +126,9 @@ term_IC = function(dag, method, terms = NULL, control = list()) {
 #' @inheritSection Sim_FaITH_2010 Methods
 #' @inheritSection Sim_Relevance_2006 Methods
 #' @inheritSection Sim_SimIC_2010 Methods
-#' @inheritSection Sim_EISI_2015 Methods
 #' @inheritSection Sim_XGraSM_2013 Methods
 #' @inheritSection Sim_GraSM_2005 Methods
+#' @inheritSection Sim_EISI_2015 Methods
 #' @inheritSection Sim_AIC_2014 Methods
 #' @inheritSection Sim_Zhang_2006 Methods
 #' @inheritSection Sim_universal Methods
@@ -123,22 +185,19 @@ term_sim = function(dag, terms, method, control = list()) {
 #' @param group1 A vector of term names.
 #' @param group2 A vector of term names.
 #' @param method A group similarity method. All available methods are in [`all_group_sim_methods()`].
-#' @param sim_method A Term similarity method. All available methods are in [`all_term_sim_methods()`].
 #' @param control A list of parameters passing to individual methods. See the subsections.
 #'
 #' 
 #' @section Methods:
 #' 
-#' blablabla
-#' 
 #' @inheritSection GroupSim_pairwise_avg Methods
 #' @inheritSection GroupSim_pairwise_max Methods
-#' @inheritSection GroupSim_pairwise_BMM Methods
 #' @inheritSection GroupSim_pairwise_BMA Methods
+#' @inheritSection GroupSim_pairwise_BMM Methods
 #' @inheritSection GroupSim_pairwise_ABM Methods
 #' @inheritSection GroupSim_pairwise_HDF Methods
-#' @inheritSection GroupSim_pairwise_VHDF Methods
 #' @inheritSection GroupSim_pairwise_MHDF Methods
+#' @inheritSection GroupSim_pairwise_VHDF Methods
 #' @inheritSection GroupSim_pairwise_Froehlich_2007 Methods
 #' @inheritSection GroupSim_pairwise_Joeng_2014 Methods
 #' @inheritSection GroupSim_SimALN Methods
@@ -167,8 +226,8 @@ term_sim = function(dag, terms, method, control = list()) {
 #' annotated items, you can first get the associated terms of the two items by [`annotated_terms()`]:
 #' 
 #' ```
-#' group1 = annotated_terms(dag, item1)
-#' group2 = annotated_terms(dag, item2)
+#' group1 = annotated_terms(dag, item1)[[1]]
+#' group2 = annotated_terms(dag, item2)[[1]]
 #' group_sim(dag, group1, group2, ...)
 #' ```
 #' 
@@ -188,7 +247,7 @@ term_sim = function(dag, terms, method, control = list()) {
 #' dag = create_ontology_DAG(parents, children, annotation = annotation)
 #' group_sim(dag, c("c", "e"), c("d", "f"), 
 #'     method = "GroupSim_pairwise_avg", 
-#'     control = list(sim_method = "Sim_Lin_1998")
+#'     control = list(term_sim_method = "Sim_Lin_1998")
 #' )
 group_sim = function(dag, group1, group2, method, control = list()) {
 	group_sim_fun = get_group_sim_method(method, control)

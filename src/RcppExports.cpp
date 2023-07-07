@@ -220,6 +220,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// intersectToList_logical
+List intersectToList_logical(List lt, StringVector x);
+RcppExport SEXP _simone_intersectToList_logical(SEXP ltSEXP, SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type lt(ltSEXP);
+    Rcpp::traits::input_parameter< StringVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(intersectToList_logical(lt, x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_term_pos_on_circle
 DataFrame cpp_term_pos_on_circle(S4 dag, double start, double end);
 RcppExport SEXP _simone_cpp_term_pos_on_circle(SEXP dagSEXP, SEXP startSEXP, SEXP endSEXP) {
@@ -715,6 +727,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_simone_cpp_tpl_longest_path_length", (DL_FUNC) &_simone_cpp_tpl_longest_path_length, 3},
     {"_simone_cpp_tpl_shortest_path", (DL_FUNC) &_simone_cpp_tpl_shortest_path, 3},
     {"_simone_cpp_tpl_longest_path", (DL_FUNC) &_simone_cpp_tpl_longest_path, 3},
+    {"_simone_intersectToList_logical", (DL_FUNC) &_simone_intersectToList_logical, 2},
     {"_simone_cpp_term_pos_on_circle", (DL_FUNC) &_simone_cpp_term_pos_on_circle, 3},
     {"_simone_cpp_sim_aic", (DL_FUNC) &_simone_cpp_sim_aic, 3},
     {"_simone_cpp_sim_wang", (DL_FUNC) &_simone_cpp_sim_wang, 3},

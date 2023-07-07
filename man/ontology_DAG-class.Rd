@@ -22,6 +22,8 @@ This class defines the DAG structure of an ontology.
 \item{\code{lt_children_relations}}{A list of length \code{n}. Each element is a vector of the semantic relations between the i^th term and its child terms.
 The relations are represented as integers. The character name of the relations is in \code{attr(dag@lt_children_relations, "levels")}.}
 
+\item{\code{relations_DAG}}{A simple \code{ontology_DAG} object but constructed for relation types.}
+
 \item{\code{source}}{The source of the ontology. A character scalar only used as a mark of the returned object.}
 
 \item{\code{root}}{An integer scalar of the root term.}
@@ -42,5 +44,7 @@ is a vector of integer indices of annotated items. The full list of annotated it
 \item{\code{aspect_ratio}}{A numeric vector of length two. The aspect ratio is calculated as \code{w/h}. For each term, there is a distance to root,
 \code{h} is the maximal distance of all terms, \code{w} is the maximal number of items with the same distance. The two values in the \code{aspect_ratio} slot
 use maximal distance to root (the height) and the shortest distance to root as the distance measure.}
+
+\item{\code{metadata}}{An additional data frame with the same number of rows as the number of terms in DAG. Order of rows should be the same as order of terms in \code{dag@terms}.}
 }}
 

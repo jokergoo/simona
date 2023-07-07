@@ -21,9 +21,9 @@ dag_offspring(dag, term, in_labels = TRUE, include_self = FALSE)
 \item{term}{The value can be a vector of multiple term names. If it is a vector, it returns
 union of the upstream/downstream terms of the selected set of terms.}
 
-\item{in_labels}{Whether the terms are represented in their names or as the integer indices?}
+\item{in_labels}{Whether the terms are represented in their names or as integer indices?}
 
-\item{include_self}{For \code{dag_offspring()} and \code{dag_ancestors()}, this controls whether to also contain the query term itself/themselves.}
+\item{include_self}{For \code{dag_offspring()} and \code{dag_ancestors()}, this controls whether to also include the query term itself.}
 }
 \value{
 An integer vector or a character vector depending on the value of \code{in_labels}.

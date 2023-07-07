@@ -10,10 +10,10 @@
 #' 
 #' - `shortest_distances_via_NCA()`: It calculates the smallest `d(c, a) + d(c, b)` where `d()` calculates the shortest distance between two terms. In this case,
 #'     `c` is the NCA (nearest common ancestor) of `a` and `b`.
-#' - `longest_distances_via_LCA()`: It calculates the largest `d(c, a) + d(c, b)` where `d()` calculates the longest distance between two terms via the LCA term. In this case,
+#' - `longest_distances_via_LCA()`: It calculates the largest `d(c, a) + d(c, b)` where `d()` calculates the longest distance between two terms *via the LCA (lowest common ancestor) term*. In this case,
 #'     `c` is the LCA of `a` and `b`.
-#' - `shortest_distances_directed()`: It calculates `d(a, b)`. The distance is only calculated when `a` is an ancestor of `b`.
-#' - `longest_distances_directed()`: It calculates `d(a, b)`. The distance is only calculated when `a` is an ancestor of `b`.
+#' - `shortest_distances_directed()`: It calculates `d(a, b)` where `d()` calculates the shortest distance between two terms. The distance is only calculated when `a` is an ancestor of `b`, otherwise the distance value is -1.
+#' - `longest_distances_directed()`: It calculates `d(a, b)` where `d()` calculates the longest distance between two terms. The distance is only calculated when `a` is an ancestor of `b`, otherwise the distance value is -1.
 #' @rdname distance
 #' @export
 #' @examples

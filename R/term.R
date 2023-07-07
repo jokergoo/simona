@@ -4,11 +4,11 @@
 #' 
 #' @section Methods:
 #' ## IC_offspring
-#' Denote `k` as the number of offspring terms plus the term itself and `N` is such value for root, the information
+#' Denote `k` as the number of offspring terms plus the term itself and `N` is such value for root (or the total number of terms in the DAG), the information
 #' content is calculated as:
 #' 
 #' ```
-#' -log(k/N)
+#' IC = -log(k/N)
 #' ```
 #' 
 #' @rdname temp__IC_annotation
@@ -37,17 +37,18 @@ ADD_IC_METHOD("IC_offspring", "use_cache")
 #' 
 #' @section Methods:
 #' ## IC_depth
-#' For a term `t` in the DAG, denote `d` as the maximal distance to root (i.e. the depth) and `h` as the maximal distance to leaves (i.e. the height),
-#' calculate the relative position on the longest path from root to leaves via term `t` as:
+#' For a term `t` in the DAG, denote `d` as the maximal distance from root (i.e. the depth) and `h` as the maximal distance to leaves (i.e. the height),
+#' the relative position `p` on the longest path from root to leaves via term `t` is calculated as:
 #' 
 #' ```
 #' p = (h + 1)/(h + d + 1)
 #' ```
 #' 
-#' In the formula where 1 is added gets rid of the scenario of p = 0. Then the information content is:
+#' In the formula where 1 is added gets rid of `p = 0`. Then the information content is:
 #' 
 #' ```
-#' -log(p) = -log((h+1)/(h+d+1))
+#' IC = -log(p) 
+#'    = -log((h+1)/(h+d+1))
 #' ```
 #' 
 #' @rdname temp__IC_annotation
@@ -72,23 +73,17 @@ ADD_IC_METHOD("IC_depth", "use_cache")
 #' 
 #' @section Methods:
 #' ## IC_annotation
-#' Denote `k` as the number of items annotated to a term `t`, and `N` is the number of items annotated to the root (there is only one
-#' global root of the DAG), IC for term `t` is calculated as:
+#' Denote `k` as the number of items annotated to a term `t`, and `N` is the number of items annotated to the root (which is
+#' the total number of items annotated to the DAG), IC for term `t` is calculated as:
 #' 
 #' ```
-#' -log(k/N)
+#' IC = -log(k/N)
 #' ```
 #' 
-#' In current implementations in other tools, there is inconsistency of defining `k` and `N`. 
-#' Due to the DAG structure, if an item is annotated to a term, it is also annotated to all its ancestor terms.
-#' In this case, `k` is the number of unique items annotated to term `t` and all its offspring terms:
+#' In current implementations in other tools, there is an inconsistency of defining `k` and `N`. 
+#' Please see [`n_annotations()`] for explanation.
 #' 
-#' ```
-#' k = length(unique(unlist(anno_list[c(t, offspring_of_t)])))
-#' ```
-#' 
-#' Following this definition, root term is annotated to all items (or the full set of items annotated to the DAG) and `N` is the maximal value of `k`.
-#' 
+#' `NA` is assigned to the terms with no item annotated.
 #' 
 #' @rdname temp__IC_annotation
 IC_annotation = function(dag, uniquify = simone_opt$anno_uniquify, use_cache = simone_opt$use_cache) {
@@ -133,13 +128,13 @@ ADD_IC_METHOD("IC_annotation", c("uniquify", "use_cache"))
 #' It measures the probability of a term getting full transmission from the root. Each term is associated with a p-value and the root has
 #' the p-value of 1.
 #' 
-#' For example, an intermediate term `t` has two parents `parent1` and `parent2`, also assume `parent1` has `k1` children
+#' For example, an intermediate term `t` has two parent terms `parent1` and `parent2`, also assume `parent1` has `k1` children
 #' and `parent2` has `k2` children, assume a parent transmits information equally to all its children, then `parent1` only transmits `1/k1` and
 #' `parent2` only transmits `1/k2` of its content to term `t`, or the probability of a parent to reach `t` is `1/k1` or `1/k2`. 
 #' Let's say `p1` and `p2` are the accmulated contents from the root for `parnet1` and `parent2` respectively (or the probability 
 #' of the two parent terms getting full transmission from root), then the probability of reaching `t` via a full transmission graph from `parent1`
-#' is multiplication of `p1` and `1/k1`, which is `p1/k1`, and similar for `p2/k2`. For term `t`, if getting transmitted from `parent1` and
-#' `parent2` are independent, the probability of `t` to get transmitted from both parents is
+#' is the multiplication of `p1` and `1/k1`, which is `p1/k1`, and it is similar for `p2/k2`. Then, for term `t`, if getting transmitted from `parent1` and
+#' `parent2` are independent, the probability of `t` (denoted as `p_t`) to get transmitted from both parents is:
 #' 
 #' ```
 #' p_t = (p1/k1) * (p2/k2)
@@ -149,7 +144,7 @@ ADD_IC_METHOD("IC_annotation", c("uniquify", "use_cache"))
 #' information content is:
 #' 
 #' ```
-#' -log(p_t)
+#' IC = -log(p_t)
 #' ```
 #' 
 #' Paper link: <https://doi.org/10.1155/2012/975783>.
@@ -235,23 +230,22 @@ reachability = function(dag, use_cache = simone_opt$use_cache) {
 #' It measures the number of ways from a term to reach leaf terms. E.g. in the following DAG:
 #' 
 #' ```
-#'      a
+#'      a      upstream
 #'     /|\
 #'    b | c
 #'      |/
-#'      d
+#'      d      downstream
 #' ```
 #' 
 #' term `a` has three ways to reach leaf, which are `a->b`, `a->d` and `a->c->d`.
 #' 
-#' The information content is calculated as 
+#' Let's denote `k` as the number of ways for term `t` to reach leaves and `N` as the maximal value of `k` which
+#' should be associated with the root term, the information content is calculated as 
 #' 
 #' ```
-#' -log(k/N) = log(N) - log(k)
+#' IC = -log(k/N) 
+#'    = log(N) - log(k)
 #' ``` 
-#' 
-#' where `k` is the number of ways for term `t` to reach leaves and `N` is the maximal value of `k` which
-#' should be associated with the root term.
 #' 
 #' Paper link: <https://doi.org/10.1186/1471-2105-7-135>.
 #' 
@@ -278,10 +272,11 @@ ADD_IC_METHOD("IC_Zhang_2006", "use_cache")
 #' The information content is calculated as:
 #' 
 #' ```
-#' 1 - log(k+1)/log(N)
+#' IC = 1 - log(k+1)/log(N)
 #' ```
 #' 
-#' where `k` is the number of offspring terms of `t`
+#' where `k` is the number of offspring terms of `t`, or you can think `k+1` is the number of `t`'s offspring terms plus itself.
+#' `N` is the total number of terms in the DAG.
 #' 
 #' Paper link: <https://dl.acm.org/doi/10.5555/3000001.3000272>.
 #' 
@@ -305,13 +300,14 @@ ADD_IC_METHOD("IC_Seco_2004", "use_cache")
 #' ## IC_Zhou_2008
 #' 
 #' It is a correction of *IC_Seco_2004* which considers the depth of a term in the DAG.
-#' The information content is calculated as
+#' The information content is calculated as:
 #' 
 #' ```
-#' 0.5*IC_Seco + 0.5*log(depth)/log(max_depth)
+#' IC = 0.5*IC_Seco + 0.5*log(depth)/log(max_depth)
 #' ```
 #' 
-#' where `depth` is the depth of term `t` in the DAG, defined as the maximal distance to root. `max_depth` is the largest depth in the DAG.
+#' where `depth` is the depth of term `t` in the DAG, defined as the maximal distance from root. `max_depth` is the largest depth in the DAG.
+#' So IC is composed with two parts: the numbers of offspring terms and positions in the DAG.
 #' 
 #' Paper link: <https://doi.org/10.1109/FGCNS.2008.16>.
 #' 
@@ -381,14 +377,14 @@ ADD_IC_METHOD("IC_Zhou_2008", "use_cache")
 #' @section Methods:
 #' ## IC_Sanchez_2011
 #' 
-#' It measures average contribution of term `t` to leaf terms. First denote `zeta` as the number of leaf terms that
-#' can be reached from term `t`. Since all `t`'s ancestors can also
+#' It measures average contribution of term `t` on leaf terms. First denote `zeta` as the number of leaf terms that
+#' can be reached from term `t` (or `t`'s offspring that are leaves.). Since all `t`'s ancestors can also
 #' reach `t`'s leaves, the contribution of `t` on leaf terms is scaled by `n_ancestors` which is the number of `t`'s ancestor terms.
 #' The final information content is normalized by the total number of leaves in the DAG, which is the possible maximal value of `zeta`.
 #' The complete definition of information content is:
 #' 
 #' ```
-#' -log(zeta/n_ancestor/n_all_leaves)
+#' IC = -log( (zeta/n_ancestor) / n_all_leaves)
 #' ```
 #' 
 #' Paper link: <https://doi.org/10.1016/j.knosys.2010.10.001>.
@@ -428,18 +424,30 @@ ADD_IC_METHOD("IC_Sanchez_2011", "use_cache")
 #' The second factor is calculated as:
 #' 
 #' ```
-#' f1 = 1 - log(1 + sum_{x => t's downstream}(1/depth_x))/log(total_terms)
+#' f1 = 1 - log(1 + sum_{x => t's offspring}(1/depth_x))/log(total_terms)
 #' ```
 #' 
-#' In the equation, the sum goes over `t`'s downstream terms.
+#' In the equation, the summation goes over `t`'s offspring terms.
 #' 
 #' The final information content is the multiplication of `f1` and `f2`:
 #' 
 #' ```
-#' f1 * f2
+#' IC = f1 * f2
 #' ```
 #' 
 #' Paper link: <http://article.nadiapub.com/IJGDC/vol5_no3/6.pdf>.
+#' 
+#' There is one parameter `correct`. If it is set to `TRUE`, the first factor `f1` is calculated as:
+#' 
+#' ```
+#' f1 = log(depth + 1)/long(max_depth + 1)
+#' ```
+#' 
+#' `correct` can be set as:
+#' 
+#' ```
+#' term_IC(dag, method = "IC_Meng_2012", control = list(correct = TRUE))
+#' ```
 #' 
 #' @rdname temp__IC_Meng_2012
 IC_Meng_2012 = function(dag, correct = FALSE, use_cache = simone_opt$use_cache) {
@@ -495,7 +503,7 @@ totipotency = function(dag, use_cache = simone_opt$use_cache) {
 #' ## IC_Wang_2007
 #' 
 #' Each relation is weighted by a value less than 1 based on the semantic relation, i.e. 0.8 for "isa" and 0.6 for "part of".
-#' For a term `t` and one of its ancestor term `a`, it first calculates a "S-value" which correspond to a path from `a` to `t` where
+#' For a term `t` and one of its ancestor term `a`, it first calculates an "S-value" which corresponds to a path from `a` to `t` where
 #' the accumulated multiplication of weights along the path reaches maximal:
 #' 
 #' ```
@@ -504,21 +512,22 @@ totipotency = function(dag, use_cache = simone_opt$use_cache) {
 #' 
 #' Here `max` goes over all possible paths from `a` to `t`, and `prod()` multiplies edge weights in a certain path.
 #' 
-#' The formula can be transformed as:
+#' The formula can be transformed as (we simply rewrite `S(a->t)` to `S`):
 #' 
 #' ```
 #' 1/S = min(prod(1/w))
-#' log(1/S) = min(sum(log(1/w)))
+#' log(1/S) = log(min(prod(1/w)))
+#'          = min(sum(log(1/w)))
 #' ```
 #' 
-#' Since `w < 1`, `log(1/w)` is positive. According to the equation, the path is actually the shortest path from `a` to `t` by taking
+#' Since `w < 1`, `log(1/w)` is positive. According to the equation, the path (`a->...->t`) is actually the shortest path from `a` to `t` by taking
 #' `log(1/w)` as the weight, and `log(1/S)` is the weighted shortest distance.
 #' 
 #' If `S(a->t)` can be thought as the maximal semantic contribution from `a` to `t`, the information content is calculated
 #' as the sum from all `t`'s ancestors (including `t` itself):
 #' 
 #' ```
-#' sum_{a => t's ancestors}(S(a->t))
+#' IC = sum_{a => t's ancestors + t}(S(a->t))
 #' ```
 #' 
 #' Paper link: <https://doi.org/10.1093/bioinformatics/btm087>.
@@ -533,7 +542,7 @@ totipotency = function(dag, use_cache = simone_opt$use_cache) {
 #' ```
 #' 
 #' @rdname temp__IC_Wang_2007
-IC_Wang_2007 = function(dag, contribution_factor = c("isa" = 0.8, "part of" = 0.6), use_cache = simone_opt$use_cache) {
+IC_Wang_2007 = function(dag, contribution_factor = c("is_a" = 0.8, "part_of" = 0.6), use_cache = simone_opt$use_cache) {
 	if(is.null(dag@term_env$IC_Wang_2007) || !use_cache) {
 		if(length(dag@lt_children_relations) == 0) {
 			stop("`relations` is not set when creating the ontology_DAG object.")
@@ -542,6 +551,8 @@ IC_Wang_2007 = function(dag, contribution_factor = c("isa" = 0.8, "part of" = 0.
 		if(is.null(names(contribution_factor))) {
 			stop("`contribution_factor` should be a named numeric vector where names should correspond to all relations.")
 		}
+		
+		contribution_factor = extend_contribution_factor(dag@relations_DAG, contribution_factor)
 		if(length(setdiff(relation_levels, names(contribution_factor)))) {
 			stop("Contribution factor should be provided for all relations.")
 		}

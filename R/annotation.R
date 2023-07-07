@@ -5,7 +5,7 @@
 #' 
 #' @param dag An `ontology_DAG` object.
 #' @param terms A vector of term names. If it is set, the returned vector will be subsetted to the terms that have been set here.
-#' @param uniquify Whether to take the unique annotated items? See **Details**.
+#' @param uniquify Whether to uniquify items that are annotated to the term? See **Details**.
 #' @param use_cache Internally used.
 #' 
 #' @details
@@ -29,10 +29,10 @@
 #' In `n_annotations()`, when `uniquify = TRUE`, the first method is used; and when `uniquify = FALSE`, the second method is used.
 #' 
 #' For some annotation sources, it is possible that an item is annotated to multiple terms, thus, the second method which simply
-#' adds numbers of all its child terms may not be proper because an item maybe counted duplicatedly, thus over-estimating `n`. The two methods
-#' are identical only if an item is annotated to a unique term.
+#' adds numbers of all its child terms may not be proper because an item may be counted duplicatedly, thus over-estimating `n`. The two methods
+#' are identical only if an item is annotated to a unique term in the DAG.
 #' 
-#' We suggest to always set `uniquify = TRUE` (the default), and the scenario of `uniquify = FALSE` is only for the testing or benchmarking purposes. 
+#' We suggest to always set `uniquify = TRUE` (the default), and the scenario of `uniquify = FALSE` is only for the testing or benchmarking purpose. 
 #' 
 #' @returns An integer vector.
 #' @export

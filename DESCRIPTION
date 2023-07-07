@@ -1,20 +1,20 @@
-[[1]Package: simone
+Package: simone
 Type: Package
-Title: Semantic Similarity in Ontologies
+Title: Semantic Similarity in Bio-ontologies
 Version: 0.99.0
 Date: 2023-04-25
 Authors@R: person("Zuguang", "Gu", email = "z.gu@dkfz.de", role = c("aut", "cre"),
                   comment = c('ORCID'="0000-0002-7395-8709"))
 Depends: R (>= 3.5.0)
-Imports: methods, Rcpp, matrixStats, GetoptLong, grid, spiralize, HilbertCurve, GlobalOptions,
-         igraph, xml2
-Suggests: knitr, testthat, BiocManager, GO.db, org.Hs.eg.db, proxyC,
-          Polychrome, AnnotationDbi
+Imports: methods, Rcpp, matrixStats, GetoptLong, grid, GlobalOptions,
+         igraph, Polychrome, S4Vectors
+Suggests: knitr, testthat, BiocManager, GO.db, org.Hs.eg.db, proxyC, AnnotationDbi,
+          Matrix
 LinkingTo: Rcpp
 VignetteBuilder: knitr
-Description: It provides a rich set of implementations for similarity analysis on bio-ontologies, 
-    including calculating information content, similarity between two terms as well as between
-    two groups of terms on the ontology.
+Description: It provides a rich set of implementations for semantic similarity 
+    analysis on bio-ontologies, including information content, similarity between 
+    two terms as well as similarity between two groups of terms.
 biocViews: Software
 URL: https://github.com/jokergoo/simone
 License: MIT + file LICENSE

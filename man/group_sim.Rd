@@ -16,8 +16,6 @@ group_sim(dag, group1, group2, method, control = list())
 \item{method}{A group similarity method. All available methods are in \code{\link[=all_group_sim_methods]{all_group_sim_methods()}}.}
 
 \item{control}{A list of parameters passing to individual methods. See the subsections.}
-
-\item{sim_method}{A Term similarity method. All available methods are in \code{\link[=all_term_sim_methods]{all_term_sim_methods()}}.}
 }
 \value{
 A numeric scalar.
@@ -29,42 +27,35 @@ Semantic similarity between two groups of terms
 If \code{annotation} is set in \code{create_ontology_DAG()} and you want to directly calculate semantic similarity between two
 annotated items, you can first get the associated terms of the two items by \code{\link[=annotated_terms]{annotated_terms()}}:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{group1 = annotated_terms(dag, item1)
-group2 = annotated_terms(dag, item2)
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group1 = annotated_terms(dag, item1)[[1]]
+group2 = annotated_terms(dag, item2)[[1]]
 group_sim(dag, group1, group2, ...)
 }\if{html}{\out{</div>}}
 }
 \section{Methods}{
 
 
-blablabla
-
 
 \subsection{GroupSim_pairwise_avg}{
 
-Denote \code{S(a, b)} as the similarity between terms \code{a} and \code{b} where \code{a} is from \code{group1} and \code{b} is from \code{group2},
-The similarity between group1 and group2 is the average similarity of every pair of individual terms in the two groups:
+Denote \code{S(a, b)} as the semantic similarity between terms \code{a} and \code{b} where \code{a} is from \code{group1} and \code{b} is from \code{group2},
+The similarity between \code{group1} and \code{group2} is the average similarity of every pair of individual terms in the two groups:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{mean_\{any pair a/b from group1/group2\}(S(a, b))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = mean_\{a in group1, b in group2\}(S(a, b))
 }\if{html}{\out{</div>}}
+
+The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
 }
 
 
 \subsection{GroupSim_pairwise_max}{
 
-This is the maximal \code{S(a, b)} among all pairs of terms in group1 and group2:
+This is the maximal \code{S(a, b)} among all pairs of terms in \code{group1} and \code{group2}:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{max_\{any pair a/b from group1/group2\}(S(a, b))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = max_\{a in group1, b in group2\}(S(a, b))
 }\if{html}{\out{</div>}}
-}
 
-
-\subsection{GroupSim_pairwise_BMM}{
-
-BMM stands for "best-match max". It is defined as:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{max(mean_\{a in group1\}(a, group2), mean_\{b in group2\}(b, group1)
-}\if{html}{\out{</div>}}
+The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
 }
 
 
@@ -75,25 +66,40 @@ BMA stands for "best-match average". First define similarity of a term to a grou
 \if{html}{\out{<div class="sourceCode">}}\preformatted{S(x, group) = max_\{y in group\}(x, y)
 }\if{html}{\out{</div>}}
 
-which is the most similar terms in \code{group}.
+which is the most similar terms in \code{group} to \code{x}.
 
 Then the BMA similarity is calculated as:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{0.5*(mean_\{a in group1\}(a, group2) + mean_\{b in group2\}(b, group1)
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = 0.5*(mean_\{a in group1\}(S(a, group2)) + mean_\{b in group2\}(S(b, group1)))
 }\if{html}{\out{</div>}}
 
-So it is the average of every term in group1 to the whole group2 and every term in group2 to the whole group1.
+So it is the average of the similarity of every term in \code{group1} to the whole \code{group2} and every term in \code{group2} to the whole \code{group1}.
+
+The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+}
+
+
+\subsection{GroupSim_pairwise_BMM}{
+
+BMM stands for "best-match max". It is defined as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = max(mean_\{a in group1\}(S(a, group2)), mean_\{b in group2\}(S(b, group1)))
+}\if{html}{\out{</div>}}
+
+The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
 }
 
 
 \subsection{GroupSim_pairwise_ABM}{
 
-ABM stands for "averagebest-match". It is defined as:
+ABM stands for "average best-match". It is defined as:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{(sum_\{a in group1\}(a, group2) + sum_\{b in group2\}(b, group1)/(n1 + n2)
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = (sum_\{a in group1\}(S(a, group2)) + sum_\{b in group2\}(S(b, group1)))/(n1 + n2)
 }\if{html}{\out{</div>}}
 
-where \code{n1} and \code{n2} are the number of terms in group1 and group2.
+where \code{n1} and \code{n2} are the number of terms in \code{group1} and \code{group2}.
+
+The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
 }
 
 
@@ -111,17 +117,10 @@ Then the Hausdorff distance between two groups are:
 
 This final similarity is:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{1 - HDF
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = 1 - HDF
 }\if{html}{\out{</div>}}
-}
 
-
-\subsection{GroupSim_pairwise_VHDF}{
-
-It is defined as:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{0.5*(sqrt(mean_\{a in group1\}(D(a, group2)^2)) + sqrt(mean_\{b in group2\}(D(b, group1)^2)))
-}\if{html}{\out{</div>}}
+The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
 }
 
 
@@ -134,8 +133,22 @@ Instead of using the maximal distance from a group to the other group, MHDF uses
 
 This final similarity is:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{1 - MHDF
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = 1 - MHDF
 }\if{html}{\out{</div>}}
+
+The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+}
+
+
+\subsection{GroupSim_pairwise_VHDF}{
+
+It is defined as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{VHDF = 0.5*(sqrt(mean_\{a in group1\}(D(a, group2)^2)) + sqrt(mean_\{b in group2\}(D(b, group1)^2)))
+group_sim = 1 - VHDF
+}\if{html}{\out{</div>}}
+
+The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
 }
 
 
@@ -143,17 +156,21 @@ This final similarity is:
 
 The similarity is:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{exp(-HDF(group1, group2))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = exp(-HDF(group1, group2))
 }\if{html}{\out{</div>}}
+
+The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
 }
 
 
 \subsection{GroupSim_pairwise_Joeng_2014}{
 
-Similar to \emph{VHDF}, it directly use the similarity:
+Similar to \emph{VHDF}, but it directly uses the similarity:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{0.5*(sqrt(mean_\{a in group1\}(S(a, group2)^2)) + sqrt(mean_\{b in group2\}(S(b, group1)^2)))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = 0.5*(sqrt(mean_\{a in group1\}(S(a, group2)^2)) + sqrt(mean_\{b in group2\}(S(b, group1)^2)))
 }\if{html}{\out{</div>}}
+
+The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
 }
 
 
@@ -161,52 +178,68 @@ Similar to \emph{VHDF}, it directly use the similarity:
 
 It is based on the average distances between every pair of terms in the two groups:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{exp(-mean(d(a, b)))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{exp(-mean_\{a in group1, b in group2\}(d(a, b)))
 }\if{html}{\out{</div>}}
+
+\code{d(a, b)} is the distance between \code{a} and \code{b}, which can be the shortest distance between the two terms or
+the longest distnace via LCA.
+
+Distance method can be set via \code{control = list(distance = ...)}.
 }
 
 
 \subsection{GroupSim_SimINT}{
+
+To be added.
 }
 
 
 \subsection{GroupSim_spgk}{
+
+To be added.
 }
 
 
 \subsection{GroupSim_SimGIC}{
 
-Denote \code{A} and \code{B} as the two sets of ancestors terms of terms in group1 and group2 respectively,
+Denote \code{A} and \code{B} as the two sets of ancestors terms of terms in \code{group1} and \code{group2} respectively,
 the SimGIC is:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{sum_\{x in intersect(A, B)\}(IC(x))/sum_\{x in union(A, B)\}(IC(x))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = sum_\{x in intersect(A, B)\}(IC(x))/sum_\{x in union(A, B)\}(IC(x))
 }\if{html}{\out{</div>}}
+
+IC method can be set via \code{control = list(IC_method = ...)}.
 }
 
 
 \subsection{GroupSim_SimDIC}{
 
-It is:
+Similar as \emph{GroupSim_SimGIC}, it calculates the Dice coeffcient:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{2*sum_\{x in intersect(A, B)\}(IC(x))/(sum_\{x in A\}(IC(x)) + sum_\{x in B\}(IC(x)))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = 2*sum_\{x in intersect(A, B)\}(IC(x))/(sum_\{x in A\}(IC(x)) + sum_\{x in B\}(IC(x)))
 }\if{html}{\out{</div>}}
+
+IC method can be set via \code{control = list(IC_method = ...)}.
 }
 
 
 \subsection{GroupSim_SimUIC}{
 
-It is:
+Similar as \emph{GroupSim_SimGIC}, it is calculated as:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{sum_\{x in intersect(A, B)\}(IC(x))/max(sum_\{x in A\}(IC(x)), sum_\{x in B\}(IC(x)))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = sum_\{x in intersect(A, B)\}(IC(x))/max(sum_\{x in A\}(IC(x)), sum_\{x in B\}(IC(x)))
 }\if{html}{\out{</div>}}
+
+IC method can be set via \code{control = list(IC_method = ...)}.
 }
 
 
 \subsection{GroupSim_SimUI}{
 
-It is only based on the number of terms:
+It is only based on the number of terms. \code{A} is the set of all ancestors of group1 terms and \code{B}
+is the set of all ancestors of group2 terms.
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{length(intersect(A, B))/length(union(A, B))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = length(intersect(A, B))/length(union(A, B))
 }\if{html}{\out{</div>}}
 }
 
@@ -215,7 +248,7 @@ It is only based on the number of terms:
 
 It is:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{2*length(intersect(A, B))/(length(A) + length(B))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = 2*length(intersect(A, B))/(length(A) + length(B))
 }\if{html}{\out{</div>}}
 }
 
@@ -224,7 +257,7 @@ It is:
 
 It is:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{length(intersect(A, B))/max(length(A), length(B))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = length(intersect(A, B))/max(length(A), length(B))
 }\if{html}{\out{</div>}}
 }
 
@@ -233,44 +266,64 @@ It is:
 
 It is:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{length(intersect(A, B))/min(length(A), length(B))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = length(intersect(A, B))/min(length(A), length(B))
 }\if{html}{\out{</div>}}
 }
 
 
 \subsection{GroupSim_SimCOU}{
 
-It is:
+It is based on the dot product of two vectors \code{p} and \code{q} which correspond to terms in \code{group1} and \code{group2}.
+\code{p} and \code{q} have the same length as the total number of terms. Value of position i in \code{p} or \code{q} corresponds to term \code{t}. The value
+takes \code{IC(t)} if \code{t} is an ancestor of any term in \code{p} or \code{q}, and the value takes zero if \code{t} is not. The
+similarity betweem \code{group1} terms and \code{group2} terms is calculated as:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{sum_\{x in intersect(A, B)\}(IC(x)^2)/sum_\{x in A\}(IC(x)^2)/sum_\{x in B\}(IC(x)^2)
+\if{html}{\out{<div class="sourceCode">}}\preformatted{<p,q>/||p||/||q||
 }\if{html}{\out{</div>}}
+
+where \verb{<p,q>} is the dot product between the two, and \verb{||p||} or \verb{||q||} is the norm of the vector.
+The equation can be written as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = sum_\{x in intersect(A, B)\}(IC(x)^2) / 
+              sqrt(sum_\{x in A\}(IC(x)^2)) / 
+              sqrt(sum_\{x in B\}(IC(x)^2))
+}\if{html}{\out{</div>}}
+
+IC method can be set via \code{control = list(IC_method = ...)}.
 }
 
 
 \subsection{GroupSim_SimCOT}{
 
-It is:
+Similar as \emph{GroupSim_SimCOU}, the similarity is:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{sum_\{x in intersect(A, B)\}(IC(x)^2) /
+\if{html}{\out{<div class="sourceCode">}}\preformatted{<p,q>/(||p||^2 + ||q||^2 - <p,q>)
+}\if{html}{\out{</div>}}
+
+And it can be rewritten as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = sum_\{x in intersect(A, B)\}(IC(x)^2) /
     (sum_\{x in A\}(IC(x)^2) + sum_\{x in B\}(IC(x)^2) - sum_\{x in intersect(A, B)\}(IC(x)^2))
 }\if{html}{\out{</div>}}
+
+IC method can be set via \code{control = list(IC_method = ...)}.
 }
 
 
 \subsection{GroupSim_SimLP}{
 
-It is the longest path length in \code{intersect(A, B)}.
+It is the longest depth for the terms in \code{intersect(A, B)}.
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{max(depth(intersect(A, B)))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = max(depth(intersect(A, B)))
 }\if{html}{\out{</div>}}
 }
 
 
 \subsection{GroupSim_Ye_2005}{
 
-It is a scaled version of \emph{GroupSim_SimLP}:
+It is a normalized version of \emph{GroupSim_SimLP}:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{max(depth(intersect(A, B)))/max_depth
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = max(depth(intersect(A, B)))/max_depth
 }\if{html}{\out{</div>}}
 
 Since the minimal depth is zero for root.
@@ -279,26 +332,55 @@ Since the minimal depth is zero for root.
 
 \subsection{GroupSim_SimCHO}{
 
-It is based on the annotated items. Denote \code{sigma(x)} as the number of items of \code{x} after downstream merging, for
+It is based on the annotated items. Denote \code{sigma(t)} as the total annotated items of \code{t}. The similarity is calculated as
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = log(C/sigma_max)/log(sigma_min/sigma_max)
+}\if{html}{\out{</div>}}
+
+where \code{C} is \verb{min(sigma_\{x in intersect(A, B)\}(x))}, i.e., the minimal sigma in the intersection of group1 and group2. Note
+Now \code{A} and \code{B} are just two sets of terms in \code{group1} and \code{group2}.
+\code{sigma_max} is the total number of items annotated to the DAG, \code{sig_min} is the minimal number of items annotated to a term, which
+is mostly 1.
 }
 
 
-what is GroupSim_SimALD
+\subsection{GroupSim_SimALD}{
+
+\code{A} and \code{B} are just two sets of terms in \code{group1} and \code{group2}. The similarity is calculated as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = max_\{t in intersect(A, B)\}(1 - sigma(t)/N)
+}\if{html}{\out{</div>}}
+}
 
 
 \subsection{GroupSim_Jaccard}{
+
+Say \code{A} is the set of items annotated to terms in \code{group1} and \code{B} is the set of items annotated to \code{group2}.
+This is the Jaccard coeffcient between two sets.
+
+The universe/background can be set via \code{control = list(universe = ...)}.
 }
 
 
 \subsection{GroupSim_Dice}{
+
+It is the Dice coeffcient between \code{A} and \code{B}.
+
+The universe/background can be set via \code{control = list(universe = ...)}.
 }
 
 
 \subsection{GroupSim_Overlap}{
+
+It is the Overlap coeffcient between \code{A} and \code{B}.
+
+The universe/background can be set via \code{control = list(universe = ...)}.
 }
 
 
 \subsection{GroupSim_Kappa}{
+
+The universe/background can be set via \code{control = list(universe = ...)}.
 }
 }
 
@@ -316,6 +398,6 @@ annotation = list(
 dag = create_ontology_DAG(parents, children, annotation = annotation)
 group_sim(dag, c("c", "e"), c("d", "f"), 
     method = "GroupSim_pairwise_avg", 
-    control = list(sim_method = "Sim_Lin_1998")
+    control = list(term_sim_method = "Sim_Lin_1998")
 )
 }

@@ -57,12 +57,14 @@
 #' @section Methods:
 #' ## GroupSim_pairwise_avg
 #' 
-#' Denote `S(a, b)` as the similarity between terms `a` and `b` where `a` is from `group1` and `b` is from `group2`, 
-#' The similarity between group1 and group2 is the average similarity of every pair of individual terms in the two groups:
+#' Denote `S(a, b)` as the semantic similarity between terms `a` and `b` where `a` is from `group1` and `b` is from `group2`, 
+#' The similarity between `group1` and `group2` is the average similarity of every pair of individual terms in the two groups:
 #' 
 #' ```
-#' mean_{any pair a/b from group1/group2}(S(a, b))
+#' group_sim = mean_{a in group1, b in group2}(S(a, b))
 #' ```
+#' 
+#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_avg
 GroupSim_pairwise_avg = function(dag, group1, group2, term_sim_method) {
@@ -76,11 +78,13 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_avg", "term_sim_method")
 #' @section Methods:
 #' ## GroupSim_pairwise_max
 #' 
-#' This is the maximal `S(a, b)` among all pairs of terms in group1 and group2:
+#' This is the maximal `S(a, b)` among all pairs of terms in `group1` and `group2`:
 #' 
 #' ```
-#' max_{any pair a/b from group1/group2}(S(a, b))
+#' group_sim = max_{a in group1, b in group2}(S(a, b))
 #' ```
+#' 
+#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_max
 GroupSim_pairwise_max = function(dag, group1, group2, term_sim_method) {
@@ -99,15 +103,17 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_max", "term_sim_method")
 #' S(x, group) = max_{y in group}(x, y)
 #' ```
 #' 
-#' which is the most similar terms in `group`.
+#' which is the most similar terms in `group` to `x`.
 #' 
 #' Then the BMA similarity is calculated as:
 #' 
 #' ```
-#' 0.5*(mean_{a in group1}(a, group2) + mean_{b in group2}(b, group1)
+#' group_sim = 0.5*(mean_{a in group1}(S(a, group2)) + mean_{b in group2}(S(b, group1)))
 #' ```
 #' 
-#' So it is the average of every term in group1 to the whole group2 and every term in group2 to the whole group1.
+#' So it is the average of the similarity of every term in `group1` to the whole `group2` and every term in `group2` to the whole `group1`.
+#' 
+#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_BMA
 GroupSim_pairwise_BMA = function(dag, group1, group2, term_sim_method) {
@@ -124,8 +130,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_BMA", "term_sim_method")
 #' BMM stands for "best-match max". It is defined as:
 #' 
 #' ```
-#' max(mean_{a in group1}(a, group2), mean_{b in group2}(b, group1)
+#' group_sim = max(mean_{a in group1}(S(a, group2)), mean_{b in group2}(S(b, group1)))
 #' ```
+#' 
+#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_BMM
 GroupSim_pairwise_BMM = function(dag, group1, group2, term_sim_method) {
@@ -139,13 +147,15 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_BMM", "term_sim_method")
 #' @section Methods:
 #' ## GroupSim_pairwise_ABM
 #' 
-#' ABM stands for "averagebest-match". It is defined as:
+#' ABM stands for "average best-match". It is defined as:
 #' 
 #' ```
-#' (sum_{a in group1}(a, group2) + sum_{b in group2}(b, group1)/(n1 + n2)
+#' group_sim = (sum_{a in group1}(S(a, group2)) + sum_{b in group2}(S(b, group1)))/(n1 + n2)
 #' ```
 #' 
-#' where `n1` and `n2` are the number of terms in group1 and group2.
+#' where `n1` and `n2` are the number of terms in `group1` and `group2`.
+#' 
+#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_ABM
 GroupSim_pairwise_ABM = function(dag, group1, group2, term_sim_method) {
@@ -174,8 +184,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_ABM", "term_sim_method")
 #' This final similarity is:
 #' 
 #' ```
-#' 1 - HDF
+#' group_sim = 1 - HDF
 #' ```
+#' 
+#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_HDF
 GroupSim_pairwise_HDF = function(dag, group1, group2, term_sim_method) {
@@ -198,8 +210,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_HDF", "term_sim_method")
 #' This final similarity is:
 #' 
 #' ```
-#' 1 - MHDF
+#' group_sim = 1 - MHDF
 #' ```
+#' 
+#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_MHDF
 GroupSim_pairwise_MHDF = function(dag, group1, group2, term_sim_method) {
@@ -217,8 +231,11 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_MHDF", "term_sim_method")
 #' It is defined as:
 #' 
 #' ```
-#' 0.5*(sqrt(mean_{a in group1}(D(a, group2)^2)) + sqrt(mean_{b in group2}(D(b, group1)^2)))
+#' VHDF = 0.5*(sqrt(mean_{a in group1}(D(a, group2)^2)) + sqrt(mean_{b in group2}(D(b, group1)^2)))
+#' group_sim = 1 - VHDF
 #' ```
+#' 
+#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_VHDF
 GroupSim_pairwise_VHDF = function(dag, group1, group2, term_sim_method) {
@@ -235,8 +252,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_VHDF", "term_sim_method")
 #' The similarity is:
 #' 
 #' ```
-#' exp(-HDF(group1, group2))
+#' group_sim = exp(-HDF(group1, group2))
 #' ```
+#' 
+#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_Froehlich_2007
 GroupSim_pairwise_Froehlich_2007 = function(dag, group1, group2, term_sim_method) {
@@ -250,11 +269,13 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_Froehlich_2007", "term_sim_method")
 #' @section Methods:
 #' ## GroupSim_pairwise_Joeng_2014
 #' 
-#' Similar to *VHDF*, it directly use the similarity:
+#' Similar to *VHDF*, but it directly uses the similarity:
 #' 
 #' ```
-#' 0.5*(sqrt(mean_{a in group1}(S(a, group2)^2)) + sqrt(mean_{b in group2}(S(b, group1)^2)))
+#' group_sim = 0.5*(sqrt(mean_{a in group1}(S(a, group2)^2)) + sqrt(mean_{b in group2}(S(b, group1)^2)))
 #' ```
+#' 
+#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_Joeng_2014
 GroupSim_pairwise_Joeng_2014 = function(dag, group1, group2, term_sim_method) {
@@ -271,8 +292,13 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_Joeng_2014", "term_sim_method")
 #' It is based on the average distances between every pair of terms in the two groups:
 #' 
 #' ```
-#' exp(-mean(d(a, b)))
+#' exp(-mean_{a in group1, b in group2}(d(a, b)))
 #' ```
+#' 
+#' `d(a, b)` is the distance between `a` and `b`, which can be the shortest distance between the two terms or
+#' the longest distnace via LCA.
+#' 
+#' Distance method can be set via `control = list(distance = ...)`.
 #' 
 #' @rdname temp__GroupSim_SimALN
 GroupSim_SimALN = function(dag, group1, group2, distance = "longest_distances_via_LCA") {
@@ -299,6 +325,9 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimALN", "distance")
 #' 
 #' @section Methods:
 #' ## GroupSim_SimINT
+#' 
+#' To be added.
+#' 
 #' @rdname temp__GroupSim_SimINT
 GroupSim_SimINT = function(dag, group1, group2) {
 	id1 = term_to_node_id(dag, group1, strict = FALSE)
@@ -316,6 +345,9 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimINT")
 #' 
 #' @section Methods:
 #' ## GroupSim_spgk
+#' 
+#' To be added.
+#' 
 #' @rdname temp__GroupSim_spgk
 GroupSim_spgk = function(dag, group1, group2) {
 	
@@ -350,12 +382,14 @@ GROUPSIM_ANCESTORS_INTERSECT = 2
 #' @section Methods:
 #' ## GroupSim_SimGIC
 #' 
-#' Denote `A` and `B` as the two sets of ancestors terms of terms in group1 and group2 respectively,
+#' Denote `A` and `B` as the two sets of ancestors terms of terms in `group1` and `group2` respectively,
 #' the SimGIC is:
 #' 
 #' ```
-#' sum_{x in intersect(A, B)}(IC(x))/sum_{x in union(A, B)}(IC(x))
+#' group_sim = sum_{x in intersect(A, B)}(IC(x))/sum_{x in union(A, B)}(IC(x))
 #' ```
+#' 
+#' IC method can be set via `control = list(IC_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_SimGIC
 GroupSim_SimGIC = function(dag, group1, group2, IC_method) {
@@ -376,11 +410,13 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimGIC", "IC_method")
 #' @section Methods:
 #' ## GroupSim_SimDIC
 #' 
-#' It is:
+#' Similar as *GroupSim_SimGIC*, it calculates the Dice coeffcient:
 #' 
 #' ```
-#' 2*sum_{x in intersect(A, B)}(IC(x))/(sum_{x in A}(IC(x)) + sum_{x in B}(IC(x)))
+#' group_sim = 2*sum_{x in intersect(A, B)}(IC(x))/(sum_{x in A}(IC(x)) + sum_{x in B}(IC(x)))
 #' ```
+#' 
+#' IC method can be set via `control = list(IC_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_SimDIC
 GroupSim_SimDIC = function(dag, group1, group2, IC_method) {
@@ -402,11 +438,13 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimDIC", "IC_method")
 #' @section Methods:
 #' ## GroupSim_SimUIC
 #' 
-#' It is:
+#' Similar as *GroupSim_SimGIC*, it is calculated as:
 #' 
 #' ```
-#' sum_{x in intersect(A, B)}(IC(x))/max(sum_{x in A}(IC(x)), sum_{x in B}(IC(x)))
+#' group_sim = sum_{x in intersect(A, B)}(IC(x))/max(sum_{x in A}(IC(x)), sum_{x in B}(IC(x)))
 #' ```
+#' 
+#' IC method can be set via `control = list(IC_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_SimUIC
 GroupSim_SimUIC = function(dag, group1, group2, IC_method) {
@@ -428,10 +466,11 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimUIC", "IC_method")
 #' @section Methods:
 #' ## GroupSim_SimUI
 #' 
-#' It is only based on the number of terms:
+#' It is only based on the number of terms. `A` is the set of all ancestors of group1 terms and `B`
+#' is the set of all ancestors of group2 terms.
 #' 
 #' ```
-#' length(intersect(A, B))/length(union(A, B))
+#' group_sim = length(intersect(A, B))/length(union(A, B))
 #' ```
 #' 
 #' @rdname temp__GroupSim_SimUI
@@ -455,7 +494,7 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimUI")
 #' It is:
 #' 
 #' ```
-#' 2*length(intersect(A, B))/(length(A) + length(B))
+#' group_sim = 2*length(intersect(A, B))/(length(A) + length(B))
 #' ```
 #' 
 #' @rdname temp__GroupSim_SimDB
@@ -480,7 +519,7 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimDB")
 #' It is:
 #' 
 #' ```
-#' length(intersect(A, B))/max(length(A), length(B))
+#' group_sim = length(intersect(A, B))/max(length(A), length(B))
 #' ```
 #' 
 #' @rdname temp__GroupSim_SimUB
@@ -505,7 +544,7 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimUB")
 #' It is:
 #' 
 #' ```
-#' length(intersect(A, B))/min(length(A), length(B))
+#' group_sim = length(intersect(A, B))/min(length(A), length(B))
 #' ```
 #' 
 #' @rdname temp__GroupSim_SimNTO
@@ -527,22 +566,36 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimNTO")
 #' @section Methods:
 #' ## GroupSim_SimCOU
 #' 
-#' It is:
+#' It is based on the dot product of two vectors `p` and `q` which correspond to terms in `group1` and `group2`. 
+#' `p` and `q` have the same length as the total number of terms. Value of position i in `p` or `q` corresponds to term `t`. The value
+#' takes `IC(t)` if `t` is an ancestor of any term in `p` or `q`, and the value takes zero if `t` is not. The
+#' similarity betweem `group1` terms and `group2` terms is calculated as:
 #' 
 #' ```
-#' sum_{x in intersect(A, B)}(IC(x)^2)/sum_{x in A}(IC(x)^2)/sum_{x in B}(IC(x)^2)
+#' <p,q>/||p||/||q||
+#' ``` 
+#' 
+#' where `<p,q>` is the dot product between the two, and `||p||` or `||q||` is the norm of the vector.
+#' The equation can be written as:
+#' 
 #' ```
+#' group_sim = sum_{x in intersect(A, B)}(IC(x)^2) / 
+#'               sqrt(sum_{x in A}(IC(x)^2)) / 
+#'               sqrt(sum_{x in B}(IC(x)^2))
+#' ```
+#' 
+#' IC method can be set via `control = list(IC_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_SimCOU
-GroupSim_SimCOU = function(dag, group1, group2) {
+GroupSim_SimCOU = function(dag, group1, group2, IC_method) {
 	id1 = term_to_node_id(dag, group1, strict = FALSE)
 	id2 = term_to_node_id(dag, group2, strict = FALSE)
 
 	i_intersect = intersect(id1, id2)
 
-	ic_anno = IC_annotation(dag, use_cache = TRUE)
+	ic = term_IC(dag, IC_method)
 
-	sum(ic_anno[i_intersect]^2)/sum(ic_anno[id1]^2)/sum(ic_anno[id2]^2)
+	sum(ic[i_intersect]^2)/sqrt(sum(ic[id1]^2))/sqrt(sum(ic[id2]^2))
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimCOU")
 
@@ -552,23 +605,31 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimCOU")
 #' @section Methods:
 #' ## GroupSim_SimCOT
 #' 
-#' It is:
+#' Similar as *GroupSim_SimCOU*, the similarity is:
 #' 
 #' ```
-#' sum_{x in intersect(A, B)}(IC(x)^2) /
+#' <p,q>/(||p||^2 + ||q||^2 - <p,q>)
+#' ``` 
+#' 
+#' And it can be rewritten as:
+#' 
+#' ```
+#' group_sim = sum_{x in intersect(A, B)}(IC(x)^2) /
 #'     (sum_{x in A}(IC(x)^2) + sum_{x in B}(IC(x)^2) - sum_{x in intersect(A, B)}(IC(x)^2))
 #' ```
 #' 
+#' IC method can be set via `control = list(IC_method = ...)`.
+#' 
 #' @rdname temp__GroupSim_SimCOT
-GroupSim_SimCOT = function(dag, group1, group2) {
+GroupSim_SimCOT = function(dag, group1, group2, IC_method) {
 	id1 = term_to_node_id(dag, group1, strict = FALSE)
 	id2 = term_to_node_id(dag, group2, strict = FALSE)
 
 	i_intersect = intersect(id1, id2)
 
-	ic_anno = IC_annotation(dag, use_cache = TRUE)
+	ic = term_IC(dag, IC_method)
 
-	sum(ic_anno[i_intersect]^2)/( sum(ic_anno[id1]^2) + sum(ic_anno[id2]^2) - sum(ic_anno[i_intersect]^2))
+	sum(ic[i_intersect]^2)/( sum(ic[id1]^2) + sum(ic[id2]^2) - sum(ic[i_intersect]^2))
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimCOT")
 
@@ -578,11 +639,11 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimCOT")
 #' @section Methods:
 #' ## GroupSim_SimLP
 #' 
-#' It is the longest path length in `intersect(A, B)`.
+#' It is the longest depth for the terms in `intersect(A, B)`.
 #' 
 #' 
 #' ```
-#' max(depth(intersect(A, B)))
+#' group_sim = max(depth(intersect(A, B)))
 #' ```
 #' 
 #' @rdname temp__GroupSim_SimLP
@@ -602,10 +663,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimLP")
 #' @section Methods:
 #' ## GroupSim_Ye_2005
 #' 
-#' It is a scaled version of *GroupSim_SimLP*:
+#' It is a normalized version of *GroupSim_SimLP*:
 #' 
 #' ```
-#' max(depth(intersect(A, B)))/max_depth
+#' group_sim = max(depth(intersect(A, B)))/max_depth
 #' ```
 #' 
 #' Since the minimal depth is zero for root.
@@ -628,7 +689,16 @@ ADD_GROUP_SIM_METHOD("GroupSim_Ye_2005")
 #' @section Methods:
 #' ## GroupSim_SimCHO
 #' 
-#' It is based on the annotated items. Denote `sigma(x)` as the number of items of `x` after downstream merging, for 
+#' It is based on the annotated items. Denote `sigma(t)` as the total annotated items of `t`. The similarity is calculated as
+#' 
+#' ```
+#' group_sim = log(C/sigma_max)/log(sigma_min/sigma_max)
+#' ```
+#' 
+#' where `C` is `min(sigma_{x in intersect(A, B)}(x))`, i.e., the minimal sigma in the intersection of group1 and group2. Note
+#' Now `A` and `B` are just two sets of terms in `group1` and `group2`.
+#' `sigma_max` is the total number of items annotated to the DAG, `sig_min` is the minimal number of items annotated to a term, which
+#' is mostly 1.
 #' 
 #' @rdname temp__GroupSim_SimCHO
 GroupSim_SimCHO = function(dag, group1, group2) {
@@ -651,7 +721,14 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimCHO")
 #' GroupSim_SimALD
 #' 
 #' @section Methods:
-#' what is GroupSim_SimALD
+#' ## GroupSim_SimALD
+#' 
+#' `A` and `B` are just two sets of terms in `group1` and `group2`. The similarity is calculated as:
+#' 
+#' ```
+#' group_sim = max_{t in intersect(A, B)}(1 - sigma(t)/N)
+#' ```
+#' 
 #' @rdname temp__GroupSim_SimALD
 GroupSim_SimALD = function(dag, group1, group2) {
 
@@ -665,7 +742,7 @@ GroupSim_SimALD = function(dag, group1, group2) {
 	if(length(i_intersect) == 0) {
 		0
 	} else {
-		max(1 - n[i_intersect]/sum(n))
+		max(1 - n[i_intersect]/max(n))
 	}
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimALD")
@@ -675,6 +752,13 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimALD")
 #' 
 #' @section Methods:
 #' ## GroupSim_Jaccard
+#' 
+#' Say `A` is the set of items annotated to terms in `group1` and `B` is the set of items annotated to `group2`.
+#' This is the Jaccard coeffcient between two sets.
+#' 
+#' 
+#' The universe/background can be set via `control = list(universe = ...)`.
+#' 
 #' @rdname temp__GroupSim_Jaccard
 GroupSim_Jaccard = function(dag, group1, group2, universe = NULL) {
 	id1 = term_to_node_id(dag, group1, strict = FALSE)
@@ -693,6 +777,11 @@ ADD_GROUP_SIM_METHOD("GroupSim_Jaccard", "universe")
 #' 
 #' @section Methods:
 #' ## GroupSim_Dice
+#' 
+#' It is the Dice coeffcient between `A` and `B`.
+#' 
+#' The universe/background can be set via `control = list(universe = ...)`.
+#' 
 #' @rdname temp__GroupSim_Dice
 GroupSim_Dice = function(dag, group1, group2, universe = NULL) {
 	id1 = term_to_node_id(dag, group1, strict = FALSE)
@@ -711,6 +800,11 @@ ADD_GROUP_SIM_METHOD("GroupSim_Dice", "universe")
 #' 
 #' @section Methods:
 #' ## GroupSim_Overlap
+#' 
+#' It is the Overlap coeffcient between `A` and `B`.
+#' 
+#' The universe/background can be set via `control = list(universe = ...)`.
+#' 
 #' @rdname temp__GroupSim_Overlap
 GroupSim_Overlap = function(dag, group1, group2, universe = NULL) {
 	id1 = term_to_node_id(dag, group1, strict = FALSE)
@@ -729,6 +823,11 @@ ADD_GROUP_SIM_METHOD("GroupSim_Overlap", "universe")
 #' 
 #' @section Methods:
 #' ## GroupSim_Kappa
+#' 
+# It is the kappa coeffcient between `A` and `B`.
+#' 
+#' The universe/background can be set via `control = list(universe = ...)`.
+#' 
 #' @rdname temp__GroupSim_Kappa
 GroupSim_Kappa = function(dag, group1, group2, universe = NULL) {
 	id1 = term_to_node_id(dag, group1, strict = FALSE)

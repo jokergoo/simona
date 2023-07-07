@@ -31,9 +31,9 @@ max_ancestor_id(dag, terms, value, in_labels = FALSE)
 
 \item{IC_method}{An IC method. Valid values are in \code{\link[=all_ic_methods]{all_ic_methods()}}.}
 
-\item{in_labels}{Whether the terms are represented in their names or as the integer indices?}
+\item{in_labels}{Whether the terms are represented in their names or as integer indices?}
 
-\item{value}{A numeric vector. The elements shoudl corrrespond to terms in \code{dag_all_terms()}.}
+\item{value}{A numeric vector. The elements should corrrespond to terms in \code{dag_all_terms()} (should have the same length as the number of terms in the DAG).}
 }
 \value{
 \itemize{
@@ -54,7 +54,7 @@ There are the following three types of common ancestors:
 \itemize{
 \item MICA (most informative common ancestor): The common ancestor with the highest IC value.
 \item LCA (lowest common ancestor): The common ancestor with the largest depth (The depth of a term is the maximal distance from the root term). If there are multiple ancestors having
-the max depth, the ancestor with the smallest distance to the two terms is taken.
+the same max depth, the ancestor with the smallest distance to the two terms is taken.
 \item NCA (nearest common ancestor): The common ancestor with the smallest distance to the two terms. If there are multiple
 ancestors with the same smallest distance, the ancestor with the largest depth is taken.
 }

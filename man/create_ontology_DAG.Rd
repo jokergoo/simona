@@ -8,6 +8,7 @@ create_ontology_DAG(
   parents,
   children,
   relations = NULL,
+  relations_DAG = NULL,
   source = "Ontology",
   annotation = NULL
 )
@@ -17,7 +18,10 @@ create_ontology_DAG(
 
 \item{children}{A character vector of child terms.}
 
-\item{relations}{A character vector of parent-child relations, e.g. "isa", "part of", or self-defined semantic relations.}
+\item{relations}{A character vector of parent-child relations, e.g. "is_a", "part_of", or self-defined semantic relations.}
+
+\item{relations_DAG}{If the relation types also have hierarchical relations, it can also be constructed by \code{create_ontology_DAG()} first. See \strong{Examples}.
+When the DAG for relation types is provided, in downstream analysis, the ancestor/offspring relationship for relation types will be taken into consideration.}
 
 \item{source}{Source of the ontology. It is only used as a mark of the object.}
 
@@ -49,5 +53,11 @@ dag = create_ontology_DAG(parents, children, annotation = annotation)
 
 # with relations
 dag = create_ontology_DAG(parents, children, 
-    relations = c("isa", "part of", "isa", "part of", "isa", "part of"))
+    relations = c("is_a", "part_of", "is_a", "part_of", "is_a", "part_of"))
+
+# with relations_DAG
+relations_DAG = create_ontology_DAG(c("r2", "r2"), c("r3", "r4"))
+dag = create_ontology_DAG(parents, children, 
+    relations = c("r1", "r2", "r1", "r3", "r1", "r4"),
+    relations_DAG = relations_DAG)
 }

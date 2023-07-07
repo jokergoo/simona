@@ -11,7 +11,7 @@ test_that("test cyclic_node", {
 
 	parents = c("a", "b", "c", "g", "h")
 	children = c("b", "c", "d", "h", "i")
-	expect_warning(
+	expect_message(
 		dag <- create_ontology_DAG(parents, children),
 		"more than one root"
 	)

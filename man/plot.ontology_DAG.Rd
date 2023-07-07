@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{plot.ontology_DAG}
 \alias{plot.ontology_DAG}
-\title{Visualize the DAG}
+\title{Visualize the DAG in a circular layout}
 \usage{
 \method{plot}{ontology_DAG}(x, ...)
 }
@@ -12,5 +12,5 @@
 \item{...}{Other parguments.}
 }
 \description{
-Visualize the DAG
+Visualize the DAG in a circular layout
 }

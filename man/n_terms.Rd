@@ -25,7 +25,7 @@ n_children(dag, terms = NULL, use_cache = TRUE)
 
 \item{use_cache}{Internally used.}
 
-\item{include_self}{For \code{n_offspring()} and \code{n_ancestors()}, this controls whether to also contain the query term itself.}
+\item{include_self}{For \code{n_offspring()} and \code{n_ancestors()}, this controls whether to also include the query term itself.}
 }
 \value{
 An integer vector.
@@ -34,7 +34,7 @@ An integer vector.
 Number of parent/child/ancestor/offspring/leaf terms
 }
 \details{
-Leaf nodes have value of zero, so you can identify leaf terms based on the value.
+Leaf nodes have value of zero, so you can identify leaf terms based on the values.
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")

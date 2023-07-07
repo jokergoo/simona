@@ -6,14 +6,14 @@
 #' @param dag An `ontology_DAG` object.
 #' @param terms A vector of term names.
 #' @param IC_method An IC method. Valid values are in [`all_ic_methods()`].
-#' @param in_labels Whether the terms are represented in their names or as the integer indices?
+#' @param in_labels Whether the terms are represented in their names or as integer indices?
 #' 
 #' @details
 #' There are the following three types of common ancestors:
 #' 
 #' - MICA (most informative common ancestor): The common ancestor with the highest IC value.
 #' - LCA (lowest common ancestor): The common ancestor with the largest depth (The depth of a term is the maximal distance from the root term). If there are multiple ancestors having
-#'        the max depth, the ancestor with the smallest distance to the two terms is taken.
+#'        the same max depth, the ancestor with the smallest distance to the two terms is taken.
 #' - NCA (nearest common ancestor): The common ancestor with the smallest distance to the two terms. If there are multiple
 #'        ancestors with the same smallest distance, the ancestor with the largest depth is taken.
 #' 
@@ -90,7 +90,7 @@ NCA_term = function(dag, terms, in_labels = TRUE) {
 }
 
 
-#' @param value A numeric vector. The elements shoudl corrrespond to terms in `dag_all_terms()`.
+#' @param value A numeric vector. The elements should corrrespond to terms in `dag_all_terms()` (should have the same length as the number of terms in the DAG).
 #' 
 #' @rdname common_ancestor
 #' @export

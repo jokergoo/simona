@@ -7,16 +7,16 @@
 \usage{
 partition_by_level(dag, level = 0, from = NULL)
 
-partition_by_k(dag, k = ceiling(dag_n_terms(dag)/10))
+partition_by_k(dag, k)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
 
-\item{level}{Depth in the DAG to cut. The DAG is cut below terms (or cut the links to their child terms) with depth == level.}
+\item{level}{Depth in the DAG to cut. The DAG is cut below terms (or cut the links to their child terms) with \code{depth == level}.}
 
 \item{from}{A list of terms to cut. If it is set, \code{level} is ignored.}
 
-\item{k}{Number of terms in a cluster. The splitting stops on a term if all its child-tree is smaller than \code{k}.}
+\item{k}{Number of terms in a cluster. The splitting stops on a term if all its child-tree are smaller than \code{k}.}
 }
 \description{
 Partition the DAG
@@ -27,8 +27,8 @@ It is possible that a term in the middle of the DAG can be traced back to more t
 To partition all terms exclusively, a term partitioned to the sub-DAG from the top term with the largest distance to the term.
 If a term has the same largest distances to several top terms, a random top term is selected.
 
-In \code{partition_by_k()}, the DAG is first reduced as a tree where a child term only has one parent, also in the tree, the depth
-of a term is the same as the height in the DAG. The partition is done recursively by cutting into its child-trees.
+In \code{partition_by_k()}, the DAG is first reduced to a tree where a child term only has one parent.
+The partition is done recursively by cutting into its child-trees.
 The splitting stops when all the child-trees have size less than \code{k}.
 
 \code{NA} is assigned to the \code{from} terms, their ancestor terms, and terms having infinite directed distance to \code{from} terms.

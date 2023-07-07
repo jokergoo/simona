@@ -2,12 +2,23 @@
 % Please edit documentation in R/import.R
 \name{import_obo}
 \alias{import_obo}
+\alias{import_ontology}
 \title{Import .obo file to an ontology_DAG object}
 \usage{
-import_obo(file)
+import_obo(file, relation_type = "part_of")
+
+import_ontology(file, robot_jar = simone_opt$robot_jar, JAVA_ARGS = "")
 }
 \arguments{
-\item{file}{Path of the .obo file or an URL. Pass to \code{\link[base:readLines]{base::readLines()}}.}
+\item{file}{Path of the ontology file or an URL.}
+
+\item{relation_type}{Semantic relation types to include. Note \code{is_a} relation is always included.}
+
+\item{robot_jar}{The path of the \code{robot.jar} file. It can be downloaded from https://github.com/ontodev/robot/releases.
+Internally, the file is converted to the obo format and parsed by \code{import_obo()}. The value of \code{robot_jar} can be
+set as a global option \code{simone_opt$robot_jar = ...}.}
+
+\item{JAVA_ARGS}{Options for \code{java}. For example you can set \code{-Xmx20G} if you want to increase the memory to 20G for java.}
 }
 \value{
 An \code{ontology_DAG} object.
@@ -16,16 +27,28 @@ An \code{ontology_DAG} object.
 Import .obo file to an ontology_DAG object
 }
 \details{
-Public bio-ontologies can be obtained from \href{http://obofoundry.org/}{Ontology Foundry} or \href{https://bioportal.bioontology.org/}{BioPortal} where
-.obo files for the corresponding ontologies can be easily found. If there is no such .obo format file, the .owl file
-can be converted to the .obo file using \href{http://robot.obolibrary.org/}{the \strong{ROBOT} tool}. An example command is:
+Public bio-ontologies can be obtained from \href{http://obofoundry.org/}{Ontology Foundry} or \href{https://bioportal.bioontology.org/}{BioPortal}.
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{robot convert --input ontology.owl --output -o ontology.obo --check false
-}\if{html}{\out{</div>}}
+The \code{import_obo()} function parses the ontology file in \code{.obo} format. To parse other formats, external tool \code{robot.jar} is required.
+
+\code{robot.jar} can automatically recognize the following formats:
+\itemize{
+\item \code{json}: OBO Graphs JSON
+\item \code{obo}: OBO Format
+\item \code{ofn}: OWL Functional
+\item \code{omn}: Manchester
+\item \code{owl}: RDF/XML
+\item \code{owx}: OWL/XML
+\item \code{ttl}: Turtle
+}
 }
 \examples{
 \dontrun{
 # The plant ontology: http://obofoundry.org/ontology/po.html 
 dag = import_obo("https://raw.githubusercontent.com/Planteome/plant-ontology/master/po.obo")
+}
+\dontrun{
+# The plant ontology: http://obofoundry.org/ontology/po.html 
+dag = import_ontology("http://purl.obolibrary.org/obo/po.owl", robot_jar = ...)
 }
 }

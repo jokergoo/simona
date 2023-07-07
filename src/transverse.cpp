@@ -719,7 +719,7 @@ void _go_child(List lt_children, int node, IntegerVector path, CharacterVector t
 	if(path.size() > 0) {
 		for(int i = 0; i < path.size(); i ++) {
 			if(path[i] == node) {
-				String message("find a cyclic node:\n  [");
+				String message("find a cyclic node (from parent to child):\n  [");
 				for(int j = i; j < path.size(); j ++) {
 					if(j == path.size()-1) {
 						message = message + terms[ path[j]-1 ] + " " + terms[node-1] + "]";

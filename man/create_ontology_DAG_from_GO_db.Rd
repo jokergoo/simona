@@ -6,17 +6,17 @@
 \usage{
 create_ontology_DAG_from_GO_db(
   namespace = "BP",
-  relations = c("isa", "part of"),
+  relations = "part of",
   org_db = NULL
 )
 }
 \arguments{
 \item{namespace}{One of "BP", "CC" and "MF".}
 
-\item{relations}{Types of the GO term relations. In the \strong{GO.db} package, the GO term relations can be "isa", "part of",
+\item{relations}{Types of the GO term relations. In the \strong{GO.db} package, the GO term relations can be "is_a", "part_of",
 "regulates", "negatively regulates", "positively regulates". Note since "regulates" is a parent relation
 of "negatively regulates", "positively regulates", if "regulates" is selected, "negatively regulates" and "positively regulates"
-are be selected.}
+are also selected. Note "is_a" is always included.}
 
 \item{org_db}{The name of the organism package or the corresponding database object, e.g. \code{"org.Hs.eg.db"} or
 directly the \code{\link[org.Hs.eg.db:org.Hs.egBASE]{org.Hs.eg.db::org.Hs.eg.db}} object for human, then the gene annotation to GO terms will be added
@@ -32,6 +32,6 @@ Create the ontology_DAG object from the GO.db package
 \dontrun{
 dag = create_ontology_DAG_from_GO_db()
 dag = create_ontology_DAG_from_GO_db("BP", 
-    relations = "isa", org_db = "org.Hs.eg.db")
+    relations = NULL, org_db = "org.Hs.eg.db")
 }
 }

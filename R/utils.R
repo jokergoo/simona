@@ -152,3 +152,47 @@ dag_is_tree = function(dag) {
 	n_terms == n_relations + 1
 }
 
+
+merge_offspring_relation_types = function(relations_DAG, relations) {
+	r1 = relations_DAG@terms
+	rc = intersect(r1, relations)
+
+	if(length(rc)) {
+		unique(c(setdiff(relations, rc), dag_offspring(relations_DAG, rc, include_self = TRUE)))
+	} else {
+		relations
+	}
+}
+
+
+# all offspring types are assigned to the same value
+extend_contribution_factor = function(relations_DAG, contribution_factor) {
+
+	cf = contribution_factor
+	
+	if(is.null(relations_DAG)) {
+		return(cf)
+	}
+
+	for(nm in names(contribution_factor)) {
+		if(nm %in% relations_DAG@terms) {
+			offspring = dag_offspring(relations_DAG, nm)
+			if(length(offspring)) {
+				cf[offspring] = contribution_factor[nm]
+			}
+		}
+	}
+
+	cf
+}
+
+
+normalize_relation_type = function(x) {
+
+	x = tolower(x)
+	x = gsub("[- ~]", "_", x)
+	x[x == "isa"] = "is_a"
+	x[x == "part_a"] = "part_of"
+
+	x
+}

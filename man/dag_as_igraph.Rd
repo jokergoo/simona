@@ -16,7 +16,7 @@ An \code{\link[igraph:aaa-igraph-package]{igraph::igraph}} object.
 Convert to an igraph object
 }
 \details{
-If \code{relations} is set in \code{\link[=create_ontology_DAG]{create_ontology_DAG()}}, relations are also set as an edge attribute in the \code{\link[igraph:aaa-igraph-package]{igraph::igraph}} object.
+If \code{relations} is already set in \code{\link[=create_ontology_DAG]{create_ontology_DAG()}}, relations are also set as an edge attribute in the \code{\link[igraph:aaa-igraph-package]{igraph::igraph}} object.
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")

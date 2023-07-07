@@ -7,18 +7,39 @@
 simone_opt(..., RESET = FALSE, READ.ONLY = NULL, LOCAL = FALSE, ADD = FALSE)
 }
 \arguments{
-\item{...}{Ignore.}
+\item{...}{Name-value pairs for options.}
 
-\item{RESET}{Ignore.}
+\item{RESET}{Reset to default option values.}
 
-\item{READ.ONLY}{Ignore.}
+\item{READ.ONLY}{Only return read only options.}
 
-\item{LOCAL}{Ignore.}
+\item{LOCAL}{Only return local options.}
 
-\item{ADD}{Ignore.}
+\item{ADD}{Add new options.}
 }
 \description{
 Global options
+}
+\details{
+There are the following global options:
+\itemize{
+\item \code{use_cache}: By default, information content of all terms is cached and reused. If \code{use_cache} is set to \code{FALSE}, IC will be re-calculated.
+\item \code{verbose}: Whether to print messages?
+\item \code{anno_uniquify}: In the annotation-based IC method, the union of items annotated to the term as well as all its offspring terms is used, which means
+the set of annotated items for the term is uniquified. If \code{anno_uniquify} is set to \code{FALSE}, the uniquification is not applied, we simply add the number
+of items annotated to the term and the numbers of items annotated to each of its offspring terms.
+\item \code{robot_jar}: Path of the \code{robot.jar} file. The file can be found from https://github.com/ontodev/robot/releases.
+}
+
+To set an option, you can use the \code{$}:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{simone_opt$verbose = FALSE
+}\if{html}{\out{</div>}}
+
+or use it as a function:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{simone_opt(verbose = FALSE)
+}\if{html}{\out{</div>}}
 }
 \examples{
 simone_opt

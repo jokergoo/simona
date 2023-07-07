@@ -27,7 +27,8 @@ Semantic similarity
 
 The similarity between two terms \code{a} and \code{b} is calculated as the IC of their MICA term \code{c} normalized by the average of the IC of the two terms:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{IC(c)/((IC(a) + IC(b))/2) = 2*IC(c)/(IC(a) + IC(b))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = IC(c)/((IC(a) + IC(b))/2) 
+    = 2*IC(c)/(IC(a) + IC(b))
 }\if{html}{\out{</div>}}
 
 Paper link: \url{https://dl.acm.org/doi/10.5555/645527.657297}.
@@ -36,32 +37,34 @@ Paper link: \url{https://dl.acm.org/doi/10.5555/645527.657297}.
 
 \subsection{Sim_Resnik_1999}{
 
+The IC method is fixed to \code{IC_annotation}.
+
 The original Resnik similarity is the IC of the MICA term. There are three ways to normalize the Resnik similarity into the scale of \verb{[0, 1]}:
 \enumerate{
 \item \emph{Nunif}
 }
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{IC(c)/log(N)
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = IC(c)/log(N)
 }\if{html}{\out{</div>}}
 
-where \code{N} is the total number of items annotated to the whole DAG, i.g. number of items annotated to the root. then the information content
-of root is \code{-log(1/N)} = log(N)`. So the \emph{Nunif} method normalizes IC to the possible maximal IC in the DAG.
+where \code{N} is the total number of items annotated to the whole DAG, i.e. number of items annotated to the root. Then the IC
+of a term with only one item annotated is \code{-log(1/N)} = log(N)`. So the \emph{Nunif} method normalizes IC to the possible maximal IC in the DAG.
 \enumerate{
 \item \emph{Nmax}
 }
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{IC(c)/IC_max
-}\if{html}{\out{</div>}}
+\code{IC_max} is the maximal IC of all terms. If there is a term with only one item annotated, \code{Nmax} is identical to the `Nunif* method.
 
-The IC is normalized by the maximal IC in the DAG.
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = IC(c)/IC_max
+}\if{html}{\out{</div>}}
 \enumerate{
 \item \emph{Nunivers}
 }
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{IC(c)/max(IC(a), IC(b))
-}\if{html}{\out{</div>}}
+The IC is normalized by the maximal IC of term \code{a} and \code{b}.
 
-The IC is normalized by the larger IC of term \code{a} and \code{b}.
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = IC(c)/max(IC(a), IC(b))
+}\if{html}{\out{</div>}}
 
 Paper link: \url{https://doi.org/10.1613/jair.514}, \url{https://doi.org/10.1186/1471-2105-9-S5-S4}, \url{https://doi.org/10.1186/1471-2105-11-562}, \url{https://doi.org/10.1155/2013/292063}.
 
@@ -78,35 +81,40 @@ Possible values for the \code{norm_method} parameter are "Nunif", "Nmax", "Nuniv
 
 It is calculated as:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{IC(c)/(IC(a) + IC(b) - IC(c))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = IC(c)/(IC(a) + IC(b) - IC(c))
 }\if{html}{\out{</div>}}
 
-The relation of \emph{FaITH_2010} similarity and  \emph{Lin_1998} similarity is:
+The relation between \emph{FaITH_2010} similarity and \emph{Lin_1998} similarity is:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{sim_FaITH = sim_Lin/(2 - sim_Lin)
 }\if{html}{\out{</div>}}
 
-\url{https://doi.org/10.1007/978-3-642-17746-0_39}.
+Paper link: \url{https://doi.org/10.1007/978-3-642-17746-0_39}.
 }
 
 
 \subsection{Sim_Relevance_2006}{
 
-If thinking \emph{Lin_1998} is a measure of how close term \code{a} and \code{b} to their MICA \code{c}, teh relevance method corrects it by multiplying
+The IC method is fixed to \code{IC_annotation}.
+
+If thinking \emph{Lin_1998} is a measure of how close term \code{a} and \code{b} to their MICA \code{c}, the relevance method corrects it by multiplying
 a factor which considers the specificity of how \code{c} brings the information. The factor is calculated as \code{1-p(c)} where \code{p(c)} is the annotation-based
 probability \code{p(c) = k/N} where \code{k} is the number of items annotated to \code{c} and \code{N} is the total number of items annotated to the DAG. Then
 the Relevance semantic similarity is calculated as:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{IC_Lin*(1-p(c)) = (1 - p(c))*2*IC(c)/(IC(a) + IC(b))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = (1 - p(c)) * IC_Lin 
+    = (1 - p(c)) * 2*IC(c)/(IC(a) + IC(b))
 }\if{html}{\out{</div>}}
 
-\url{https://doi.org/10.1186/1471-2105-7-302}
+Paper link: \url{https://doi.org/10.1186/1471-2105-7-302}
 }
 
 
 \subsection{Sim_SimIC_2010}{
 
-The SimIC method is an improved correction method of Relevance method where latter works bad when \code{p(c)} is very small. The SimIC
+The IC method is fixed to \code{IC_annotation}.
+
+The SimIC method is an improved correction method of the Relevance method because the latter works bad when \code{p(c)} is very small. The SimIC
 correction factor for MICA term \code{c} is:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{1 - 1/(1 + IC(c))
@@ -114,62 +122,69 @@ correction factor for MICA term \code{c} is:
 
 Then the similarity is:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{2*IC(c)/(IC(a) + IC(b)) * (1 - 1/(1 + IC(c)))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = (1 - 1/(1 + IC(c))) * IC_Lin 
+    = (1 - 1/(1 + IC(c))) * 2*IC(c)/(IC(a) + IC(b))
 }\if{html}{\out{</div>}}
 
-\url{https://doi.org/10.48550/arXiv.1001.0958}.
+Paper link: \url{https://doi.org/10.48550/arXiv.1001.0958}.
+}
+
+
+\subsection{Sim_XGraSM_2013}{
+
+The IC method is fixed to \code{IC_annotation}.
+
+Being different from the "Relevance" and "SimIC_2010" methods that only use the IC of the MICA term, the \emph{XGraSM_2013} uses IC of all common ancestor terms of \code{a} and \code{b}.
+First it calculates the mean IC of all common ancestor terms with positive IC values:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{IC_mean = mean_t(IC(t)) where t is an ancestor of both a and b, and IC(t) > 0
+}\if{html}{\out{</div>}}
+
+then similar to the \emph{Lin_1998} method, normalize to the average IC of \code{a} and \code{b}:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = IC_mean*2/(IC(a) + IC(b))
+}\if{html}{\out{</div>}}
+
+Paper link: \url{https://doi.org/10.1186/1471-2105-14-284}
+}
+
+
+\subsection{Sim_GraSM_2005}{
+
+The IC method is fixed to \code{IC_annotation}.
+
+It applies a complicate way to selet a subset of common ancestors of terms \code{a} and \code{b}. The main idea is that content transmission fron ancestors to a term
+may overlap and it aims to find upstream paths that give exclusive transmissions.
+
+First, for a terms \code{x} define its disjunctive ancestors (DA) pairs \code{a} and \code{b} where there exists a path from \code{a} to \code{x} which does not pass \code{b}, and at the same
+time there exists a path frmo \code{b} to \code{x} which does not pass \code{a}. In other words, the directed distance between \code{a} and \code{b} is zero. In this way, the two
+DA(x) terms can transmit exclusive contents to \code{x}.
+
+Next, for every common ancestor \code{c} of term \code{a} and \code{b}, \code{c} is only selected if there is another common ancestor \verb{c'} which have smaller IC than \code{c} (\verb{IC(c) > IC(c')}), \verb{(c, c')} is DA of
+either \code{a} or \code{b}.
+
+Then the mean IC of the subset common ancestors is calculated and normalized by the \emph{Lin_1998} method.
+
+Paper link: \url{https://doi.org/10.1145/1099554.1099658}.
 }
 
 
 \subsection{Sim_EISI_2015}{
+
+The IC method is fixed to \code{IC_annotation}.
 
 It also selects a subset of common ancestors of terms \code{a} and \code{b}. It only selects common ancestors which can reach \code{a} or \code{b} via one of its child terms
 that does not belong to the common ancestors (mutual exclusively in \code{a}'s ancestors or in \code{b}'s ancestors).
 
 Then the mean IC of the subset common ancestors is calculated and normalized by the \emph{Lin_1998} method.
 
-\url{https://doi.org/10.1016/j.gene.2014.12.062}
-}
-
-
-\subsection{Sim_XGraSM_2013}{
-
-Being different from previous methods that only use the IC of the MICA term, the \emph{XGraSM_2013} uses IC of all common ancestor terms of \code{a} and \code{b}.
-First it calculates the mean IC of all common ancestor terms with positive IC values:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{IC_mean = mean_t(IC(t)) where t is an ancestor of both and  b, and IC(t) > 0
-}\if{html}{\out{</div>}}
-
-then similar to the \emph{Lin_1998} method, normalize to the average IC of \code{a} and \code{b}:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{IC_mean*2/(IC(a) + IC(b))
-}\if{html}{\out{</div>}}
-
-\url{https://doi.org/10.1186/1471-2105-14-284}
-}
-
-
-\subsection{Sim_GraSM_2005}{
-
-It has a complicate way to selet a subset of common ancestors of terms \code{a} and \code{b}. The main idea is that conent transmission fron ancestors to a term
-may overlap and it aims to find paths that give exclusive transmissions.
-
-First, for a terms \code{x} define its disjunctive ancestors (DA) pairs \code{a} and \code{b} that there exists a path from \code{a} to \code{x} which does not pass \code{b} and at the same
-time there exists a path frmo \code{b} to \code{x} which does not pass \code{a}. In other words, the directed distance between \code{a} and \code{b} is zero. In this way, the two
-DA(x) terms can transmit exclusive contents to \code{x}.
-
-Next, for every common ancestor term \code{c} of term \code{s} and \code{t}, it is only selected if all other common ancestors with higher IC values than \code{IC(c)}, transmit
-exclusive contents against \code{c} to \code{s} or \code{t}.
-
-Then the mean IC of the subset common ancestors is calculated and normalized by the \emph{Lin_1998} method.
-
-\url{https://doi.org/10.1145/1099554.1099658}.
+Paper link: \url{https://doi.org/10.1016/j.gene.2014.12.062}
 }
 
 
 \subsection{Sim_AIC_2014}{
 
-It uses the aggregate information content from ancestors. First define the semantic weight of a term \code{t} in the DAG:
+It uses the aggregate information content from ancestors. First define the semantic weight (\code{Sw}) of a term \code{t} in the DAG:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{Sw = 1/(1 + exp(-1/IC(t)))
 }\if{html}{\out{</div>}}
@@ -182,46 +197,46 @@ SV_a = sum\{a' in a's ancestors\}(Sw(a'))
 SV_b = sum\{b' in b's ancestors\}(Sw(b'))
 }\if{html}{\out{</div>}}
 
-The similarity is calculated as the ration of the aggregation on the common ancestor and the average of that on a's ancestors and b's ancestors separatedly.
+The similarity is calculated as the ratio between the aggregation on the common ancestors and the average on \code{a}'s ancestors and \code{b}'s ancestors separatedly.
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{SV_\{common_ancestors\}*2/(SV_a + SV_b)
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = 2*SV_\{common_ancestors\}/(SV_a + SV_b)
 }\if{html}{\out{</div>}}
 
-\url{https://doi.org/10.1109/tcbb.2013.176}.
+Paper link: \url{https://doi.org/10.1109/tcbb.2013.176}.
 }
 
 
 \subsection{Sim_Zhang_2006}{
 
-It uses \emph{IC_Zhang_2006} for IC values and uses \emph{Lin_1998} method to calculate similarities:
+It uses the \emph{IC_Zhang_2006} IC method and the \emph{Lin_1998} method to calculate similarities:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{2*IC_zhang(c)/(IC_zhang(a) + IC_zhang(b))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = 2*IC_zhang(c)/(IC_zhang(a) + IC_zhang(b))
 }\if{html}{\out{</div>}}
 }
 
 
 \subsection{Sim_universal}{
 
-It uses \emph{IC_universal} for IC values and uses \emph{Nunivers} method to calculate similarities:
+It uses the \emph{IC_universal} IC method and the \emph{Nunivers} method to calculate similarities:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{IC_universal(c)/max(IC_universal(a), IC_universal(b))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = IC_universal(c)/max(IC_universal(a), IC_universal(b))
 }\if{html}{\out{</div>}}
 }
 
 
 \subsection{Sim_Wang_2007}{
 
-First the S-value of an ancestor term \code{t} on a term \code{a} (\code{S_a(t)}) is calculated (the definition of the S-value can be found in the help page of \code{\link[=term_IC]{term_IC()}}).
+First, S-value of an ancestor term \code{c} on a term \code{a} (\code{S(c->a)}) is calculated (the definition of the S-value can be found in the help page of \code{\link[=term_IC]{term_IC()}}).
 Similar to the \emph{Sim_AIC_2014}, aggregation only to common ancestors, to \code{a}'s ancestors and to \code{b}'s ancestors are calculated.
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{SV_\{common ancestors\} = sum_\{t in common ancestors\}(S_a(t) + S_b(t))
-SV_a = sum\{a' in a's ancestors\}(S_a(a'))
-SV_b = sum\{b' in b's ancestors\}(S_b(b'))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{SV_\{common ancestors\} = sum_\{c in common ancestors\}(S(c->a) + S(c->b))
+SV_a = sum\{a' in a's ancestors\}(S(a'->a))
+SV_b = sum\{b' in b's ancestors\}(S(b'->b))
 }\if{html}{\out{</div>}}
 
 Then the similarity is calculated as:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{SV_\{common_ancestors\}*2/(SV_a + SV_b)
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = SV_\{common_ancestors\}*2/(SV_a + SV_b)
 }\if{html}{\out{</div>}}
 
 Paper link: \url{https://doi.org/10.1093/bioinformatics/btm087}.
@@ -240,17 +255,17 @@ vector where names should cover the relations defined in \code{relations} set in
 
 It is based on the distance between term \code{a} and \code{b}. It is defined as:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{1/(1 + d(a, b))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = 1/(1 + d(a, b))
 }\if{html}{\out{</div>}}
 
 The distance can be the shortest distance between \code{a} and \code{b} or the longest distance via the LCA term.
 
-Paper link: \url{https://doi.org/10.1109/21.24528}
+Paper link: \url{https://doi.org/10.1109/21.24528}.
 
-There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
+There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{term_sim(dag, terms, method = "Sim_Rada_1989",
-    control = list(distance = "shortest_distances_via_CA"))
+    control = list(distance = "shortest_distances_via_NCA"))
 }\if{html}{\out{</div>}}
 }
 
@@ -259,18 +274,18 @@ There is a parameter \code{distance} which takes value of "longest_distances_via
 
 It is also based on the distance between term \code{a} and \code{b}:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{1 - d(a, b)/2/max_depth
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = 1 - d(a, b)/2/max_depth
 }\if{html}{\out{</div>}}
 
 where \code{max_depth} is the maximal depth (maximal distance from root) in the DAG. Similarly, \code{d(a, b)} can be the shortest
-distance or the longest distance.
+distance or the longest distance via LCA.
 
-Paper link: \url{https://doi.org/10.1145/1097047.1097051}
+Paper link: \url{https://doi.org/10.1145/1097047.1097051}.
 
-There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
+There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{term_sim(dag, terms, method = "Sim_Resnik_edge_2005",
-    control = list(distance = "shortest_distances_via_CA"))
+    control = list(distance = "shortest_distances_via_NCA"))
 }\if{html}{\out{</div>}}
 }
 
@@ -279,15 +294,15 @@ There is a parameter \code{distance} which takes value of "longest_distances_via
 
 It is similar as the \emph{Sim_Resnik_edge_2005} method, but it applies log-transformation on the distance and the depth:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{1 - log(d(a, b) + 1)/log(2*max_depth + 1)
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = 1 - log(d(a, b) + 1)/log(2*max_depth + 1)
 }\if{html}{\out{</div>}}
 
-Paper link: \url{https://ieeexplore.ieee.org/document/6287675}
+Paper link: \url{https://ieeexplore.ieee.org/document/6287675}.
 
-There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
+There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{term_sim(dag, terms, method = "Sim_Leocock_1998",
-    control = list(distance = "shortest_distances_via_CA"))
+    control = list(distance = "shortest_distances_via_NCA"))
 }\if{html}{\out{</div>}}
 }
 
@@ -296,16 +311,16 @@ There is a parameter \code{distance} which takes value of "longest_distances_via
 
 It is based on the depth of the LCA term \code{c} and the longest distance between term \code{a} and \code{b}:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{2*depth(c)/(len_c(a, b) + 2*depth(c))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = 2*depth(c)/(len_c(a, b) + 2*depth(c))
 }\if{html}{\out{</div>}}
 
-where \code{len_c(a, b)} is the distance between \code{a} and \code{b} via LCA \code{c}. The denominator in the equation can also be written as:
+where \code{len_c(a, b)} is the longest distance between \code{a} and \code{b} via LCA \code{c}. The denominator in the equation can also be written as:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{len_c(a, b) + 2*depth(c) = depth(c) + len(c, a) + depth(c) + len(c, b)
                          = depth_c(a) + depth_c(b)
 }\if{html}{\out{</div>}}
 
-where \code{depth_c(a)} is the distance from root to \code{a} via \code{c}.
+where \code{depth_c(a)} is the longest distance from root to \code{a} passing through \code{c}.
 
 Paper link: \url{https://doi.org/10.3115/981732.981751}.
 }
@@ -313,13 +328,34 @@ Paper link: \url{https://doi.org/10.3115/981732.981751}.
 
 \subsection{Sim_Slimani_2006}{
 
+It is a correction of the \emph{Sim_WP_1994} method. The correction factor for term \code{a} and \code{b} regarding to their LCA \code{t} is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{CF(a, b) = (1-lambda)*(min(depth(a), depth(b)) - depth(c)) + 
+           lambda/(1 + abs(depth(a) - depth(b)))
+}\if{html}{\out{</div>}}
+
+\code{lambda} takes value of 1 if \code{a} and \code{b} are in ancestor-offspring relation, or else it takes 0.
+
 Paper link: \url{https://zenodo.org/record/1075130}.
 }
 
 
 \subsection{Sim_Shenoy_2012}{
 
+It is a correction of the \emph{Sim_WP_1994} method. The correction factor for term \code{a} and \code{b} is:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{CF(a, b) = exp(-lambda*d(a, b)/max_depth)
+}\if{html}{\out{</div>}}
+
+\code{lambda} takes value of 1 if \code{a} and \code{b} are in ancestor-offspring relation, or else it takes 0. `d(a, b)
+
 Paper link: \url{https://doi.org/10.48550/arXiv.1211.4709}.
+
+There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{term_sim(dag, terms, method = "Sim_Leocock_1998",
+    control = list(distance = "shortest_distances_via_NCA"))
+}\if{html}{\out{</div>}}
 }
 
 
@@ -327,8 +363,11 @@ Paper link: \url{https://doi.org/10.48550/arXiv.1211.4709}.
 
 It is very similar to the \emph{Sim_WP_1994} method:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{depth(c)/(len_c(a, b) + depth(c))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = depth(c)/(len_c(a, b) + depth(c))
+    = d(root, c)/(d(c, a) + d(c, b) + d(root, c))
 }\if{html}{\out{</div>}}
+
+where \code{d(a, b)} is the longest distance between \code{a} and \code{b}.
 
 Paper link: \url{https://aclanthology.org/C02-1090/}.
 }
@@ -338,7 +377,7 @@ Paper link: \url{https://aclanthology.org/C02-1090/}.
 
 It is purely based on the depth of term \code{a}, \code{b} and their LCA \code{c}.
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{depth(c)/(depth(a) + depth(b) - depth(c))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = depth(c)/(depth(a) + depth(b) - depth(c))
 }\if{html}{\out{</div>}}
 
 Since the similarity value might be negative because there is no restrction that the path from root to \code{a} or \code{b} must pass \code{c}.
@@ -351,10 +390,10 @@ Paper link: \url{https://doi.org/10.1145/500737.500762}.
 
 It is calculated as:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{depth(c)^2/depth_c(a)/depth_c(b)
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = depth(c)^2/depth_c(a)/depth_c(b)
 }\if{html}{\out{</div>}}
 
-where \code{depth_c(a)} is the longest distance between root to \code{a} via \code{c}.
+where \code{depth_c(a)} is the longest distance between root to \code{a} passing through \code{c}.
 
 Paper link: \url{https://doi.org/10.1186/1477-5956-10-s1-s18}.
 }
@@ -374,24 +413,24 @@ The the distance bewteen term \code{a} and \code{b} via LCA term \code{c} is:
                   = 1/2^depth(c) - 0.5/2^depth(a) - 0.5/2^depth(b)
 }\if{html}{\out{</div>}}
 
-We change the original \code{depth(a)} to let it go through \code{c} when calculating the depth:
+We change the original \code{depth(a)} to let it go through LCA term \code{c} when calculating the depth:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{1/2^depth(c) - 0.5/2^depth(a) - 0.5/2^depth(b) 
-  = 1/2^depth(c)- 0.5/2^(depth(c) + len(c, a)) - 0.5/2^(depth(c) + len(c, b))
-  = 1/2^depth(c) * (1 - 1/2^(len(c, a) + 1) - 1/2^(len(c, b) + 1))
-  = 2^-depth(c) * (1 - 2^-(len(c, a) + 1) - 2^-(len(c, b) + 1))
+    = 1/2^depth(c)- 0.5/2^(depth(c) + len(c, a)) - 0.5/2^(depth(c) + len(c, b))
+    = 1/2^depth(c) * (1 - 1/2^(len(c, a) + 1) - 1/2^(len(c, b) + 1))
+    = 2^-depth(c) * (1 - 2^-(len(c, a) + 1) - 2^-(len(c, b) + 1))
 }\if{html}{\out{</div>}}
 
-And the final similarity is 1 - distance:
+And the final similarity is \code{1 - distance}:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{1 - 2^-depth(c) * (1 - 2^-(len(c, a) + 1) - 2^-(len(c, b) + 1))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = 1 - 2^-depth(c) * (1 - 2^-(len(c, a) + 1) - 2^-(len(c, b) + 1))
 }\if{html}{\out{</div>}}
 
 Paper link: \url{https://doi.org/10.1007/3-540-45483-7_8}.
 
-There is a parameter \code{depth_via_LCA} that can be set to \code{TRUE} or \code{FALSE}. IF it is set to \code{TRUE}, \code{depth(a)} is redefined
+There is a parameter \code{depth_via_LCA} that can be set to \code{TRUE} or \code{FALSE}. IF it is set to \code{TRUE}, \code{depth(a)} is re-defined
 as should pass the LCA term \code{c}. If it is \code{FALSE}, it goes to the original similarity definition in the paper and note the
-distance might be negative.
+similarity might be negative.
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{term_sim(dag, terms, method = "Sim_Zhong_2002",
     control = list(depth_via_LCA = FALSE))
@@ -401,7 +440,7 @@ distance might be negative.
 
 \subsection{Sim_AlMubaid_2006}{
 
-It also takes accoutn of the distance between term \code{a} and \code{b}, and the depth of the LCA term \code{c}.
+It also takes accout of the distance between term \code{a} and \code{b}, and the depth of the LCA term \code{c} in the DAG.
 The distance is calculated as:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{D(a, b) = log(1 + d(a, b)*(max_depth - depth(c)))
@@ -409,14 +448,14 @@ The distance is calculated as:
 
 Here \code{d(a, b)} can be the shortest distance between \code{a} and \code{b} or the longst distance via LCA \code{c}.
 
-Then the distance is transformed into the similarity value by the possible maximal and minimal values of \code{D(a, b)} from the DAG:
+Then the distance is transformed into the similarity value scaled by the possible maximal and minimal values of \code{D(a, b)} from the DAG:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{D_max = log(1 + 2*max_depth * max_depth)
 }\if{html}{\out{</div>}}
 
 And the minimal value of \code{D(a, b)} is zero when \code{a} is identical to \code{b}. Then the similarity value is scaled as:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{1 - D(a, b)/D_max
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = 1 - D(a, b)/D_max
 }\if{html}{\out{</div>}}
 
 Paper link: \url{https://doi.org/10.1109/IEMBS.2006.259235}.
@@ -433,7 +472,7 @@ There is a parameter \code{distance} which takes value of "longest_distances_via
 
 It is similar to the \emph{Sim_AlMubaid_2006} method, but uses a non-linear form:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{exp(0.2*d(a, b)) * atan(0.6*depth(c))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = exp(0.2*d(a, b)) * atan(0.6*depth(c))
 }\if{html}{\out{</div>}}
 
 where \code{d(a, b)} can be the shortest distance or the longest distance via LCA.
@@ -450,15 +489,15 @@ There is a parameter \code{distance} which takes value of "longest_distances_via
 
 \subsection{Sim_RSS_2013}{
 
-The similarity is adjusted by the positions of term \code{a}, \code{b} and the LCA term \code{c} in the DAG. The similarity
+The similarity is adjusted by the positions of term \code{a}, \code{b} and the LCA term \code{c} in the DAG. The similarity is defined as:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{max_depth/(max_depth + d(a, b)) * alpha/(alpha + beta)
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = max_depth/(max_depth + d(a, b)) * alpha/(alpha + beta)
 }\if{html}{\out{</div>}}
 
 where \code{d(a, b)} is the distance between \code{a} and \code{b} which can be the shortest distance or the longest distance via LCA.
 
 In the tuning factor, \code{alpha} is the distance of LCA to root, which is \code{depth(c)}. \code{beta} is the distance to leaves, which
-is the minimal distance (or the height) of term \code{a} and \code{b}:
+is the minimal distance (or the minimal height) of term \code{a} and \code{b}:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{alpha/(alpha + beta) = depth(c)/(depth(c) + min(height(a), height(b)))
 }\if{html}{\out{</div>}}
@@ -477,15 +516,15 @@ There is a parameter \code{distance} which takes value of "longest_distances_via
 
 It is similar as the \emph{Sim_RSS_2013} method, but it uses information content instead of the distance to adjust the similarity.
 
-It first defines the semantic distance between term \code{a} and \code{b} as the sum of the distance to their MICA:
+It first defines the semantic distance between term \code{a} and \code{b} as the sum of the distance to their MICA term \code{c}:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{D(a, b) = D(c, a) + D(c, b)
 }\if{html}{\out{</div>}}
 
 And the distance between an ancestor to a term is:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{D(c, a) = IC(a) - IC(c)
-D(a, b) = D(c, a) + D(c, b) = IC(a) + IC(b) - 2*IC(c)
+\if{html}{\out{<div class="sourceCode">}}\preformatted{D(c, a) = IC(a) - IC(c)  # if c is an ancestor of a
+D(a, b) = D(c, a) + D(c, b) = IC(a) + IC(b) - 2*IC(c) # if c is the MICA of a and b
 }\if{html}{\out{</div>}}
 
 Similarly, the similarity is also corrected by the position of MICA term and \code{a} and \code{b} in the DAG:
@@ -503,7 +542,7 @@ And \code{beta} is the average of the maximal semantic distance of \code{a} and 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{beta = 0.5*(IC(l_a) - IC(a) + IC(l_b) - IC(b))
 }\if{html}{\out{</div>}}
 
-where \code{l_a} is the leaf that \code{a} can reach with the highest IC, and so is \code{l_b}.
+where \code{l_a} is the leaf that \code{a} can reach with the highest IC (i.e. most informative leaf), and so is \code{l_b}.
 
 Paper link: \url{https://doi.org/10.1371/journal.pone.0066745}.
 }
@@ -512,20 +551,21 @@ Paper link: \url{https://doi.org/10.1371/journal.pone.0066745}.
 \subsection{Sim_Shen_2010}{
 
 It is based on the information content of terms on the path connecting term \code{a} and \code{b} via their MICA term \code{c}.
+
 Denote a list of terms \verb{a, ..., c, ..., b} which are composed by the shortest path from \code{a} to \code{c} and from \code{b} to \code{c}, the difference
-between \code{a} and \code{b} is the sum of 1/IC of the terms on the path:
+between \code{a} and \code{b} is the sum of \code{1/IC} of the terms on the path:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{sum_\{x in the path\}(1/IC(x))
 }\if{html}{\out{</div>}}
 
-Then the distance is scaled into \verb{[0, 1]} by:
+Then the distance is scaled into \verb{[0, 1]} by an arctangent tarnsformation:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{atan(sum_\{x in the path\}(1/IC(x)))/(pi/2)
 }\if{html}{\out{</div>}}
 
 And finally the similarity is:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{1 - atan(sum_\{x in the path\}(1/IC(x)))/(pi/2)
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = 1 - atan(sum_\{x in the path\}(1/IC(x)))/(pi/2)
 }\if{html}{\out{</div>}}
 
 Paper link: \url{https://doi.org/10.1109/BIBM.2010.5706623}.
@@ -537,7 +577,7 @@ Paper link: \url{https://doi.org/10.1109/BIBM.2010.5706623}.
 It is similar as the \emph{Sim_Shen_2010} which also sums content along the path passing through LCA term.
 Instead of summing the information content, the \emph{Sim_SSDD_2013} sums up a so-called "T-value":
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{1 - atan(sum_\{x in the path\}(T(x)))/(pi/2)
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sim = 1 - atan(sum_\{x in the path\}(T(x)))/(pi/2)
 }\if{html}{\out{</div>}}
 
 Each term has a T-value and it measures the semantic content a term averagely inherited from its parents
@@ -572,7 +612,7 @@ Then there are several normalization method to change the distance to similarity
 \item Rada: \code{1/(1 + D(a, b))}
 }
 
-Paper link: \url{https://aclanthology.org/O97-1002/}
+Paper link: \url{https://aclanthology.org/O97-1002/}.
 
 There is a parameter \code{norm_method} which takes value in "max", "Couto", "Lin", "Carla", "log-Lin", "Rada":
 
@@ -584,7 +624,7 @@ There is a parameter \code{norm_method} which takes value in "max", "Couto", "Li
 
 \subsection{Sim_Kappa}{
 
-Denote two sets \code{A} and \code{B} as the items annotated to term \code{a} and \code{b}. The similarity value is the kappa coeffcient
+Denote two sets \code{A} and \code{B} as the items annotated to term \code{a} and \code{b}. The similarity value is \href{https://en.wikipedia.org/wiki/Cohen\%27s_kappa}{the kappa coeffcient}
 of the two sets.
 
 The universe or the background can be set via parameter \code{anno_universe}:
@@ -610,7 +650,7 @@ The universe or the background can be set via parameter \code{anno_universe}:
 
 \subsection{Sim_Dice}{
 
-Denote two sets \code{A} and \code{B} as the items annotated to term \code{a} and \code{b}. The similarity value is the Jaccard coeffcient
+Denote two sets \code{A} and \code{B} as the items annotated to term \code{a} and \code{b}. The similarity value is the Dice coeffcient
 of the two sets, defined as \code{2*length(intersect(A, B))/(length(A) + length(B))}.
 
 The universe or the background can be set via parameter \code{anno_universe}:

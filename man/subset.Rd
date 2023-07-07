@@ -3,7 +3,7 @@
 \name{[,ontology_DAG,character,missing-method}
 \alias{[,ontology_DAG,character,missing-method}
 \alias{[[,ontology_DAG,character,missing-method}
-\title{Create a sub-DAG}
+\title{Create sub-DAGs}
 \usage{
 \S4method{[}{ontology_DAG,character,missing}(x, i, j, ..., drop = FALSE)
 
@@ -12,7 +12,7 @@
 \arguments{
 \item{x}{An \code{ontology_DAG} object.}
 
-\item{i}{A single term name.}
+\item{i}{A single term name. The value should be a character vector.}
 
 \item{j}{Ignored.}
 
@@ -24,7 +24,7 @@
 An \code{ontology_DAG} object.
 }
 \description{
-Create a sub-DAG
+Create sub-DAGs
 }
 \details{
 It returns a sub-DAG taking node \code{i} as the root.
