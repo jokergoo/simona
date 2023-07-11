@@ -13,3 +13,5 @@ build_pkg_site.R
 src/*.o$
 src/*.so$
 man/temp__*
+^doc$
+^Meta$

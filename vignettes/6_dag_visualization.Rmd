@@ -1,0 +1,33 @@
+---
+title: "Visualize DAGs"
+author: "Zuguang Gu ( z.gu@dkfz.de )"
+date: '`r Sys.Date()`'
+output: html_document
+vignette: >
+  %\VignetteIndexEntry{6. Visualize DAGs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r}
+library(simone)
+parents  = c("a", "a", "b", "b", "c", "d")
+children = c("b", "c", "c", "d", "e", "f")
+dag_small = create_ontology_DAG(parents, children)
+```
+
+
+```{r}
+dag_graphviz(dag_small)
+```
+
+```{r}
+dag = create_ontology_DAG_from_GO_db()
+dag_graphviz(dag[, "GO:0010228"])
+```
+
+
+```{r, fig.width = 10, fig.height = 10}
+dag_circular_viz(dag)
+```

@@ -1,0 +1,362 @@
+---
+title: "ontology_DAG: a class for ontologies"
+author: "Zuguang Gu ( z.gu@dkfz.de )"
+date: '`r Sys.Date()`'
+output: html_document
+vignette: >
+  %\VignetteIndexEntry{1. ontology_DAG: a class for ontologies}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo = FALSE, message = FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+    error = FALSE,
+    tidy  = FALSE,
+    message = FALSE,
+    warning = FALSE,
+    fig.align = "center")
+```
+
+Ontologies are represented in a format of directed acyclic diagram (DAG). A DAG
+is a generalized form of a tree where a parent term can have multiple child terms,
+and also a child term can have multiple terms. The DAG is directed and a link connects
+from a child term to a parent term, representing "the child is a sub-class of the parent." (left panel).
+However, in other cases, the direction can also be reversed to represent "a parent include the child" (right panel).
+
+<center><img src="dag.svg" /></center>
+
+
+In this vignette, I will introduce the `ontology_DAG` class as well as related
+functions with a tiny example, as shown in the following diagram. There are
+six terms in the DAG and term "a" is the root, term "e" and "f" are two leaf
+terms. Note term "c" has two parents.
+
+<center><img src="example.svg" /></center>
+
+## Construct the object
+
+The DAG object is constructed via a list of parent-child pairs. The following
+code constructs a DAG in the diagram above.
+
+```{r}
+library(simone)
+parents  = c("a", "a", "b", "b", "c", "d")
+children = c("b", "c", "c", "d", "e", "f")
+dag = create_ontology_DAG(parents, children)
+```
+
+Typing `dag` prints the basic information of the DAG.
+
+```{r}
+dag
+```
+
+Aspect ratio is calculated as `width/height`, where `width` is the largest
+number of terms on a specific height (i.e. `max(table(depth(dag)))`).
+Definition of the height of a term in the DAG depends on whether using the
+longest or the shortest distance from root. The aspect ratio gives an
+impression of how the shape of the  DAG looks like (fat or slim).
+
+Following functions return the root term, leaf terms and test whether
+terms are leaves.
+
+```{r}
+dag_root(dag)
+dag_leaves(dag)
+dag_is_leaf(dag, letters[1:6])
+```
+
+`dag_all_terms()` returns a vector of all terms. `dag_n_terms()` simply returns
+the number of all terms in the DAG.
+
+```{r}
+dag_all_terms(dag)
+dag_n_terms(dag)
+```
+
+## DAG traverse
+
+Numbers of child/parent/offspring/ancestor terms.
+
+```{r}
+n_children(dag)
+n_parents(dag)
+n_offspring(dag)
+n_ancestors(dag)
+```
+
+`n_leaves()` does not return the number of leaves in the DAG which can be
+simply obtained by `length(dag_leaves(dag))`. Instead, it returns numbers of
+leaves that every term can reach (or has a finite directed distance to). Leaf
+terms have value of zero.
+
+```{r}
+n_leaves(dag)
+```
+
+Parents/child terms of a single term or union of parents/children of a group
+of terms. The term argument can be a single term name or a vector of term
+names.
+
+```{r}
+dag_parents(dag, "c")
+dag_parents(dag, c("d", "e"))
+dag_children(dag, "b")
+```
+
+Similar for getting offspring/ancestor terms of a single term or a group of
+terms.
+
+```{r}
+dag_offspring(dag, "b")
+dag_ancestors(dag, "e")
+```
+
+## Distance
+
+The depth of a term is defined as the longest distance from root and is
+calculated by `dag_depth()`. If you want the shortest distance from root,
+use `dag_shortest_dist_from_root()`.
+
+```{r}
+dag_depth(dag)
+dag_shortest_dist_from_root(dag)
+```
+
+Similarly, the "height" of a term is defined as the longest distance to its
+reachable leaf terms. `dag_shortest_dist_to_leaves()` returns the shortest
+distance to leaves.
+
+```{r}
+dag_height(dag)
+dag_shortest_dist_to_leaves(dag)
+```
+
+These four functions introduced so far calculate distance from root or to
+leaves for all terms in the DAG. The following functions are more general
+which calculates distance from a self-defined group of terms or until a group
+of terms. Taking `dag_longest_dist_to_offspring()` for example, terms
+upstreaming of `from` terms are set with distance of -1.
+
+`dag_depth()` is identical to `dag_longest_dist_to_offspring(dag, root)`, and
+`dag_height()` is identical to `dag_longest_dist_from_ancestors(dag, leaves)`
+where `root` is a single root term and `leaves` is a vector of all leaf terms
+in the DAG.
+
+```r
+dag_longest_dist_to_offspring(dag, from)
+dag_shortest_dist_to_offspring(dag, from)
+dag_longest_dist_from_ancestors(dag, to)
+dag_shortest_dist_from_ancestors(dag, to)
+```
+
+
+Given any two terms in the DAG, the following four functions calculates their
+pair-wise distance. There are different ways to calculate the distance:
+
+For two terms $a$ and $b$, `shortest_distances_via_NCA()` calculates the
+distance as:
+
+$$ \min_{t \in \mathrm{CA}(a, b)}(D_{sp}(t, a) + D_{sp}(t, b)) $$
+
+where $\mathrm{CA}(a, b)$ is the set of common ancestors (CA) of $a$ and $b$.
+$D_{sp}(x, y)$ is the shortest distance between $x$ and $y$. In this way,
+common ancestor $t$ which returns the minimal distance between $a$ and $b$ is
+called the "nearest common ancestor (NCA)" of $a$ and $b$.
+
+```r
+shortest_distances_via_NCA(dag, terms)
+```
+
+`longest_distances_via_LCA()` calculates the distance as:
+
+$$ \mathrm{len}(t, a) + \mathrm{len}(t, b) $$
+
+where $\mathrm{len}(x, y$ is the longest distance between $x$ and $y$, common ancestor
+$t$ is the one with the largest depth in DAG and it is called the lowest
+common ancestor (LCA) of $a$ and $b$:
+
+$$ t = \argmax_{t \in \mathrm{CA}(a, b)} \delta(t)$$
+
+where $\delta(t)$ is the depth (maximal distance from root) of term $t$.
+
+```r
+longest_distances_via_LCA(dag, terms)
+```
+
+The next two functions treat the DAG relations as directional. There is a
+positive distance value only if a term is an ancestor of the other.
+
+```r
+shortest_distances_directed(dag, terms)
+longest_distances_directed(dag, terms)
+```
+
+## Convert to other formats
+
+DAG is a graph, `dag_as_igraph()` converts the DAG to an `igraph` object.
+
+```{r}
+g = dag_as_igraph(dag)
+g
+```
+
+Draw the graph with a hierarchical graph layout:
+
+```{r}
+library(igraph)
+plot(g, layout = layout.sugiyama)
+```
+
+In a DAG, a term can have multiple parents. A tree is a reduced form of a DAG
+where a term only has one parent. `dag_treelize()` simplifies a DAG to a tree.
+The reducing is applied in a breadth-first manner:
+
+Starting from root and on a certain depth, for every term $a$ on this depth,
+its child term $c$ and parent-child relation are kept only when $\delta_c =
+\delta_a + 1$. If $c$ is selected, it is marked as visited and will not be
+checked again. In this way, depths of all terms in the orignal DAG are still
+identical to the depths in the tree.
+
+
+```{r}
+tree = dag_treelize(dag)
+dag_depth(dag)
+dag_depth(tree)
+```
+
+When the DAG is a tree, it can be converted to a `dendrogram` object.
+Since some nodes only have one child, I add labels on nodes.
+
+```{r}
+dend = dag_as_dendrogram(tree)
+dend = dendrapply(dend, function(d) {
+    attr(d, "nodePar") = list(pch = attr(d, "label"))
+    d
+})
+plot(dend, leaflab = "none")
+```
+
+Note this DAG reducing is mainly for visualization purpose. 
+
+## Add relation types
+
+If `relations` argument is not set, all relations are treated as in "is_a"
+such that a child is a sub-class of a parent class. It is common in
+ontologies, besides the "is_a" relation, there are many other self-defined
+relation types. One typical relation type is "part_of". A vector of relation
+types can be set via the `relations` argument. It might be used later when
+calculating semantic similarities where different relation types are assigned
+with different weights.
+
+```{r}
+relations = c("is_a", "is_a", "part_of", "part_of", "is_a", "is_a")
+dag = create_ontology_DAG(parents, children, relations = relations)
+dag
+```
+
+## Add annotations
+
+Terms can have external items annotated. One typical example is GO terms can
+have genes annotated. Later the annotated items can be used for calculating semantic
+similarities.
+
+The annotation should be set as a list of character vectors, where names of
+the element vectors should correspond to term names in the DAG so that
+annotations can be mapped to terms.
+
+```{r}
+annotation = list(
+    "a" = c("t1", "t2", "t3"),
+    "b" = c("t3", "t4"),
+    "c" = c("t5"),
+    "d" = c("t7"),
+    "e" = c("t4", "t5", "t6", "t7"),
+    "f" = c("t8")
+)
+dag = create_ontology_DAG(parents, children, annotation = annotation)
+dag
+```
+
+Due to the nature of DAG, if a child term is annotated to an item, all its
+ancestor terms are also associated with it. The calculation of annotated items
+is applied in a recursive way.
+
+For a term $x$, denote $\mathcal{C}_h(x)$ is the set of its child terms, the
+items anotated to $x$ denoted as set $G_x$ is the union of all items annotated
+to its child terms.
+
+$$ G_x = \bigcup_{z \in \mathcal{C}_h(x)} G_z $$
+
+And the numbers can be obtained via the function `n_annotations()`.
+The attribute `attr(,"N")` is the maximal number of items annotated to the DAG,
+which normally corresponds to the root term.
+
+```{r}
+n_annotations(dag)
+```
+
+The next two functions return the associatios between terms and items.
+
+```{r}
+term_annotations(dag, letters[1:6])
+annotated_terms(dag, c("t1", "t2", "t3"))
+```
+
+Or return a binary matrix:
+
+```{r}
+term_annotations(dag, letters[1:6], return = "matrix")
+annotated_terms(dag, c("t1", "t2", "t3"), return = "matrix")
+```
+
+
+## Pseudo root
+
+The DAG should be lead by a single root term. If in an ontology there are
+multiple root terms, a pseudo root named `"_all_"` is automatically added:
+
+```{r, message = TRUE}
+parents  = c("a", "a", "b", "x", "x", "y")
+children = c("b", "c", "c", "z", "y", "z")
+create_ontology_DAG(parents, children)
+```
+
+## Sub-DAG
+
+The following code returns a sub-DAG where the input term is picked
+as the root of the sub-DAG.
+
+```{r}
+# or with the double bracket: dag[["b"]]
+dag["b"]
+```
+
+Two indicies can be provided in the brackets where the first one corresponds
+to root terms and the second one corresponds to leaf terms:
+
+```r
+# the same as dag["b"], a sub-DAG where b is the root
+dag["b", ]
+
+# a sub-DAG where b is the root and e is the only leaf
+dag["b", "e"]
+
+# a sub-DAG that contains all e's ancestors and e itself
+dag[, "e"]  
+```
+
+A more general function `dag_filter()`:
+
+```r
+dag_filter(dag, ...)
+```
+
+## Session info
+
+```{r}
+sessionInfo()
+```
+

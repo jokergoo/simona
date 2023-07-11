@@ -45,6 +45,6 @@ is a vector of integer indices of annotated items. The full list of annotated it
 \code{h} is the maximal distance of all terms, \code{w} is the maximal number of items with the same distance. The two values in the \code{aspect_ratio} slot
 use maximal distance to root (the height) and the shortest distance to root as the distance measure.}
 
-\item{\code{metadata}}{An additional data frame with the same number of rows as the number of terms in DAG. Order of rows should be the same as order of terms in \code{dag@terms}.}
+\item{\code{elementMetadata}}{An additional data frame with the same number of rows as the number of terms in DAG. Order of rows should be the same as order of terms in \code{dag@terms}.}
 }}
 

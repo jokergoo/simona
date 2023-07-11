@@ -1,5 +1,6 @@
 
 
+
 #' The ontology_DAG class
 #' 
 #' This class defines the DAG structure of an ontology.
@@ -24,7 +25,7 @@
 #' @slot aspect_ratio A numeric vector of length two. The aspect ratio is calculated as `w/h`. For each term, there is a distance to root, 
 #'       `h` is the maximal distance of all terms, `w` is the maximal number of items with the same distance. The two values in the `aspect_ratio` slot
 #'       use maximal distance to root (the height) and the shortest distance to root as the distance measure.
-#' @slot metadata An additional data frame with the same number of rows as the number of terms in DAG. Order of rows should be the same as order of terms in `dag@terms`.
+#' @slot elementMetadata An additional data frame with the same number of rows as the number of terms in DAG. Order of rows should be the same as order of terms in `dag@terms`.
 #' 
 #' @export ontology_DAG
 #' @exportClass ontology_DAG
@@ -43,7 +44,7 @@ ontology_DAG = setClass("ontology_DAG",
 		      "annotation" = "list",
 		      "term_env" = "environment",
 		      "aspect_ratio" = "numeric",
-		      "metadata" = "ANY"
+		      "elementMetadata" = "ANY"
 		      )
 )
 
@@ -245,7 +246,11 @@ setMethod("show",
 		}
 
 		cat("  Root:", paste(object@terms[object@root], collapse = ", "), "\n")
-
+		txt = strwrap(paste(c(object@terms[1:min(4, object@n_terms)], "..."), collapse = ", "), width = 60)
+		txt[1] = paste0("  Terms: ", txt[1])
+		txt[-1] = paste0("         ", txt[-1])
+		cat(txt, sep = "\n")
+		
 		if(!is.null(object@term_env$dag_depth)) {
 			depth = object@term_env$dag_depth
 			cat("  Max depth:", max(depth), "\n")
@@ -275,10 +280,10 @@ setMethod("show",
 			cat("  Annotations are available.\n")
 		}
 
-		if(!is.null(object@metadata)) {
+		if(!is.null(object@elementMetadata)) {
 			cat("\n")
 			cat("With the following columns in the metadata data frame:\n")
-			txt = strwrap(paste(colnames(object@metadata), collapse = ", "), width = 60)
+			txt = strwrap(paste(colnames(object@elementMetadata), collapse = ", "), width = 60)
 			txt = paste0("  ", txt)
 			cat(txt, sep = "\n")
 		}
@@ -347,32 +352,67 @@ create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = "part of
 
 	relations_DAG = create_ontology_DAG(c("regulates", "regulates"), c("negatively regulates", "positively regulates"))
 
-	create_ontology_DAG(parents = df[, 2], children = df[, 1], relations = df[, 3], relations_DAG = relations_DAG,
-		annotation = annotation, source = paste0("GO ", namespace))
+	dag = create_ontology_DAG(parents = df[, 2], children = df[, 1], relations = df[, 3], relations_DAG = relations_DAG,
+		annotation = annotation, source = paste0("GO ", namespace, " / GO.db package"))
+
+	go = GO.db::GOTERM[dag@terms]
+	meta = data.frame(id = AnnotationDbi::GOID(go),
+		        name = AnnotationDbi::Term(go),
+		        definition = AnnotationDbi::Definition(go))
+	rownames(meta) = dag@terms
+
+	mcols(dag) = meta
+
+	dag
 }
 
 
 #' Create sub-DAGs
 #' 
 #' @param x An `ontology_DAG` object.
-#' @param i A single term name. The value should be a character vector.
-#' @param j Ignored.
+#' @param i A single term name. The value should be a character vector. This corresponds to the roots.
+#' @param j A single term name. The value should be a character vector. This corresponds to the leaves.
 #' @param ... Ignored.
 #' @param drop Ignored.
 #' 
-#' @details It returns a sub-DAG taking node `i` as the root.
+#' @details It returns a sub-DAG taking node `i` as the root and `j` as the leaves.
 #' @return An `ontology_DAG` object.
 #' 
 #' @rdname subset
 #' @exportMethod [
+#' @examples
+#' parents  = c("a", "a", "b", "b", "c", "d")
+#' children = c("b", "c", "c", "d", "e", "f")
+#' dag = create_ontology_DAG(parents, children)
+#' dag["b"]
+#' dag[["b"]]
+#' dag["b", "f"]
+#' dag[, "f"]
 setMethod("[", 
-	signature = c("ontology_DAG", "character", "missing", "ANY"),
+	signature = c("ontology_DAG"),
 	definition = function(x, i, j, ..., drop = FALSE) {
 
-	if(!is.character(i)) {
-		stop("Only the character term name should be used as index.")
+	if(!missing(i)) {
+		if(!is.character(i)) {
+			stop("Only the character term name should be used as index.")
+		}
 	}
-	dag_filter(x, root = i)
+	if(!missing(j)) {
+		if(!is.character(j)) {
+			stop("Only the character term name should be used as index.")
+		}
+	}
+
+	if(!missing(i) && missing(j)) {  ## dag[i] or dag[i, ]
+		dag_filter(x, root = i)
+	} else if(!missing(i) && !missing(j)) {  ## dag[i, j]
+		dag_filter(x, root = i, leaves = j)
+	} else if(missing(i) && !missing(j)) {  ## dag[, j]
+		dag_filter(x, leaves = j)
+	} else {    ## dag[, ]
+		x
+	}
+	
 })
 
 #' @rdname subset
@@ -542,7 +582,7 @@ dag_filter = function(dag, terms = NULL, relations = NULL, root = NULL, leaves =
 		annotation = NULL
 	}
 
-	l = rep(TRUE, dag@n_terms)
+	l = rep(TRUE, length(parents))
 
 	if(!is.null(terms)) {
 		terms = term_to_node_id(dag, terms)
@@ -578,55 +618,66 @@ dag_filter = function(dag, terms = NULL, relations = NULL, root = NULL, leaves =
 
 	parents = parents[l]
 	children = children[l]
-	if(!is.null(relations)) {
-		relations = relations[l]
+	if(!is.null(v_relations)) {
+		v_relations = v_relations[l]
 	}
-	if(!is.null(annotation)) {
-		annotation = annotation[l]
-	}
+
 	parents = dag@terms[parents]
 	children = dag@terms[children]
 
-	create_ontology_DAG(parents = parents, children = children,
-		relations = relations, relations_DAG = dag@relations_DAG, 
+	all_terms = unique(c(parents, children))
+	if(!is.null(annotation)) {
+		annotation = annotation[all_terms]
+	}
+
+	dag2 = create_ontology_DAG(parents = parents, children = children,
+		relations = v_relations, relations_DAG = dag@relations_DAG, 
 		annotation = annotation, source = dag@source)
+
+	meta = mcols(dag)
+	if(!is.null(meta)) {
+		mcols(dag2) = meta[dag2@terms, , drop = FALSE]
+	}
+
+	dag2
 }
 
 
-#' Get metadata on DAG
+#' Get meta columns on DAG
 #' 
 #' @param x An `ontology_DAG` object.
-#' @param ... Other argument. For `metadata()`, it can be a vector of column names in the meta data frame.
-#' @exportMethod metadata
-#' @importMethodsFrom S4Vectors metadata
-setMethod("metadata", 
+#' @param use.names Please ignore.
+#' @param ... Other argument. For `mcols()`, it can be a vector of column names in the meta data frame.
+#' @exportMethod mcols
+#' @importMethodsFrom S4Vectors mcols
+setMethod("mcols", 
 	signature = "ontology_DAG",
-	definition = function(x, ...) {
+	definition = function(x, use.names = TRUE, ...) {
 	columns = unlist(list(...))
 	if(length(columns)) {
-		x@metadata[, columns]
+		x@elementMetadata[, columns]
 	} else {
-		x@metadata
+		x@elementMetadata
 	}
 })
 
 
-#' Set metadata on DAG
+#' Set meta columns on DAG
 #' 
 #' @param x An `ontology_DAG` object.
-#' @param ... Other argument. For `metadata()`, it can be a vector of column names in the meta data frame.
+#' @param ... Other argument. For `mcols()`, it can be a vector of column names in the meta data frame.
 #' @param value A data frame or a matrix where rows should correspond to terms in `x@terms`.
-#' @exportMethod 'metadata<-'
-#' @importMethodsFrom S4Vectors 'metadata<-'
+#' @exportMethod 'mcols<-'
+#' @importMethodsFrom S4Vectors 'mcols<-'
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
 #' children = c("b", "c", "c", "d", "e", "f")
 #' dag = create_ontology_DAG(parents, children)
-#' metadata(dag) = data.frame(id = letters[1:6], v = 1:6)
-#' metadata(dag)
-#' metadata(dag, "id")
+#' mcols(dag) = data.frame(id = letters[1:6], v = 1:6)
+#' mcols(dag)
+#' mcols(dag, "id")
 #' dag
-setMethod("metadata<-", 
+setMethod("mcols<-", 
 	signature = "ontology_DAG",
 	definition = function(x, ..., value) {
 	
@@ -635,7 +686,7 @@ setMethod("metadata<-",
 		stop("value should be a table with the same number of rows as the number of terms in DAG.")
 	}
 
-	x@metadata = value
+	x@elementMetadata = value
 	invisible(x)
 })
 

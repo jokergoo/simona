@@ -2,10 +2,13 @@
 % Please edit documentation in R/import.R
 \name{import_obo}
 \alias{import_obo}
+\alias{import_owl}
 \alias{import_ontology}
 \title{Import .obo file to an ontology_DAG object}
 \usage{
 import_obo(file, relation_type = "part_of")
+
+import_owl(file, relation_type = "part_of")
 
 import_ontology(file, robot_jar = simone_opt$robot_jar, JAVA_ARGS = "")
 }

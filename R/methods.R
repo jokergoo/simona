@@ -72,7 +72,7 @@ get_group_sim_method = function(method, control = list()) {
 #' @param control A list of parameters passing to individual methods. See the subsections.
 #' 
 #' @inheritSection IC_offspring Methods
-#' @inheritSection IC_depth Methods
+#' @inheritSection IC_height Methods
 #' @inheritSection IC_annotation Methods
 #' @inheritSection IC_universal Methods
 #' @inheritSection IC_Zhang_2006 Methods

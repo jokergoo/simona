@@ -33,89 +33,7 @@ content is calculated as:
 }
 
 
-\subsection{IC_depth}{
-
-For a term \code{t} in the DAG, denote \code{d} as the maximal distance from root (i.e. the depth) and \code{h} as the maximal distance to leaves (i.e. the height),
-the relative position \code{p} on the longest path from root to leaves via term \code{t} is calculated as:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{p = (h + 1)/(h + d + 1)
-}\if{html}{\out{</div>}}
-
-In the formula where 1 is added gets rid of \code{p = 0}. Then the information content is:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{IC = -log(p) 
-   = -log((h+1)/(h+d+1))
-}\if{html}{\out{</div>}}
-}
-
-
-\subsection{IC_annotation}{
-
-Denote \code{k} as the number of items annotated to a term \code{t}, and \code{N} is the number of items annotated to the root (which is
-the total number of items annotated to the DAG), IC for term \code{t} is calculated as:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{IC = -log(k/N)
-}\if{html}{\out{</div>}}
-
-In current implementations in other tools, there is an inconsistency of defining \code{k} and \code{N}.
-Please see \code{\link[=n_annotations]{n_annotations()}} for explanation.
-
-\code{NA} is assigned to the terms with no item annotated.
-}
-
-
-\subsection{IC_offspring}{
-
-Denote \code{k} as the number of offspring terms plus the term itself and \code{N} is such value for root (or the total number of terms in the DAG), the information
-content is calculated as:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{IC = -log(k/N)
-}\if{html}{\out{</div>}}
-}
-
-
-\subsection{IC_depth}{
-
-For a term \code{t} in the DAG, denote \code{d} as the maximal distance from root (i.e. the depth) and \code{h} as the maximal distance to leaves (i.e. the height),
-the relative position \code{p} on the longest path from root to leaves via term \code{t} is calculated as:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{p = (h + 1)/(h + d + 1)
-}\if{html}{\out{</div>}}
-
-In the formula where 1 is added gets rid of \code{p = 0}. Then the information content is:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{IC = -log(p) 
-   = -log((h+1)/(h+d+1))
-}\if{html}{\out{</div>}}
-}
-
-
-\subsection{IC_annotation}{
-
-Denote \code{k} as the number of items annotated to a term \code{t}, and \code{N} is the number of items annotated to the root (which is
-the total number of items annotated to the DAG), IC for term \code{t} is calculated as:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{IC = -log(k/N)
-}\if{html}{\out{</div>}}
-
-In current implementations in other tools, there is an inconsistency of defining \code{k} and \code{N}.
-Please see \code{\link[=n_annotations]{n_annotations()}} for explanation.
-
-\code{NA} is assigned to the terms with no item annotated.
-}
-
-
-\subsection{IC_offspring}{
-
-Denote \code{k} as the number of offspring terms plus the term itself and \code{N} is such value for root (or the total number of terms in the DAG), the information
-content is calculated as:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{IC = -log(k/N)
-}\if{html}{\out{</div>}}
-}
-
-
-\subsection{IC_depth}{
+\subsection{IC_height}{
 
 For a term \code{t} in the DAG, denote \code{d} as the maximal distance from root (i.e. the depth) and \code{h} as the maximal distance to leaves (i.e. the height),
 the relative position \code{p} on the longest path from root to leaves via term \code{t} is calculated as:
@@ -277,7 +195,7 @@ There is one parameter \code{correct}. If it is set to \code{TRUE}, the first fa
 
 \subsection{IC_Wang_2007}{
 
-Each relation is weighted by a value less than 1 based on the semantic relation, i.e. 0.8 for "isa" and 0.6 for "part of".
+Each relation is weighted by a value less than 1 based on the semantic relation, i.e. 0.8 for "is_a" and 0.6 for "part_of".
 For a term \code{t} and one of its ancestor term \code{a}, it first calculates an "S-value" which corresponds to a path from \code{a} to \code{t} where
 the accumulated multiplication of weights along the path reaches maximal:
 

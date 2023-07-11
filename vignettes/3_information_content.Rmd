@@ -1,0 +1,306 @@
+---
+title: "Information content"
+author: "Zuguang Gu ( z.gu@dkfz.de )"
+date: '`r Sys.Date()`'
+output: html_document
+vignette: >
+  %\VignetteIndexEntry{3. Information content}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo = FALSE, message = FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+    error = FALSE,
+    tidy  = FALSE,
+    message = FALSE,
+    warning = FALSE,
+    fig.align = "center")
+```
+
+
+```{r}
+library(simone)
+dag = create_ontology_DAG_from_GO_db(namespace = "BP", org_db = "org.Hs.eg.db")
+```
+
+## Denotations
+
+The following denotations will be used throughout the vignette.
+
+|  Denotation |  Description    |
+| ------ | ------------------------- |
+| $r$ | The root of the DAG.  |
+| $\delta(a)$ | The depth of a term $a$ in the DAG, which is the longest distance from root $r$. |
+| $\delta_s(a)$ | The longest distance from root $r$ to a term $a$, passing through term $s$. |
+| $\delta_\max$ | The maximal depth in the DAG. |
+| $\eta(a)$ | The height of term $a$ in the DAG, which is the longest finite distance to all leaf terms. |
+| $\mathcal{C}_h(s)$ | The set of child terms of term $s$. |
+| $\mathcal{P}_a(s)$ | The set of parents terms of term $s$. |
+| $\mathcal{A}_s$ | The set of ancestor terms of term $s$. |
+| $\mathcal{A}_s^+$ | The set of ancestor terms of term $s$, including $s$ itself. |
+| $\mathcal{D}_s$ | The set of offspring terms of term $s$. |
+| $\mathcal{D}_s^+$ | The set of offspring terms of term $s$, including $s$ itself. |
+| $\left| A \right|$ | Number of elements in set $A$. |
+| $D_\mathrm{sp}(a, b)$ | The shortest distance bewteen $a$ and $b$. | 
+| $\mathrm{len}(a, b)$ | The longest distance bewteen $a$ and $b$. |
+| $\mathrm{len}_s(a, b)$ | The longest distance distance connecting $a$ and $b$ via $s$. |
+| $\mathrm{CA}(a, b)$ | The set of common ancestors of term $a$ and $b$. |
+| $\mathrm{LCA}(a, b)$ | Lowest common ancestor of $a$ and $b$, which is the common ancestor with the highest depth in DAG. There might be more than one LCA terms for given two terms, but for simplification, we only take one LCA based on certain rules. |
+| $\mathrm{NCA}(a, b)$ | Nearest common ancestor of $a$ and $b$. |
+| $\mathrm{MICA}(a, b)$ | Most informative common ancestor of $a$ and $b$. |
+| $G_s$ | The set of annotated items on term $s$. |
+
+$$ \mathrm(IC)(x) = -log(p(x)) $$
+
+Basically most to the leaves, higher information content a term has.
+
+## IC_offspring
+
+The information content is calculated as:
+
+$$ \mathrm{IC}(x) = -log \left(  \frac{|\mathcal{D}_x^+|}{|\mathcal{D}_r^+|} \right) $$
+
+In the bracket is the fraction of number of offspring terms to the total number
+of terms in DAG.
+
+```r
+term_IC(dag, method = "IC_offspring")
+```
+
+
+## IC_height
+
+It measures the relative position of a term in the DAG:
+
+$$ \mathrm{IC}(x) = -log \left( \frac{\eta(x) + 1}{\delta_(x) + \eta(x) + 1} \right) $$
+
+1 is added in the formula to get rid of $p = 0$ for leaf terms.
+
+```r
+term_IC(dag, method = "IC_height")
+```
+
+## IC_annotation
+
+Due to the nature of DAG, if a child term is annotated to an item, all its
+ancestor terms are also associated with it. The calculation of annotated items
+is applied in a recursive way.
+
+The items anotated to $x$ denoted as set $G_x$ is the union of all items
+annotated to its child terms.
+
+$$ G_x = \bigcup_{z \in \mathcal{C}_h(x)} G_z $$
+
+And the information content is:
+
+$$ \mathrm{IC}(x) = -log \left( \frac{|G_x|}{|G_r|} \right) $$
+
+where $G_r$ is the set of all items annotated to the DAG (i.e. to the root).
+
+
+```r
+term_IC(dag, method = "IC_height")
+```
+
+`NA` is assigned to the terms with no item annotated.
+
+In some implementations, number of annotated items on a term is calculated
+by adding such numbers for all its child terms, as shown in the following equation:
+
+$$ f(x) = \left\{ \begin{array}{lr}
+\beta(x) & \text{if } \textit{x} \text{ is a leaf} \\
+\beta(x) + \sum_{z \in \mathcal{C}_h} \beta(z) & \text{otherwise}
+\end{array} \right. $$
+
+
+
+where $\beta(x)$ is the number of items annotated to term $x$. 
+It should be noted that this way over-estimated the number 
+of annotated items because an item can be annotated to multiple terms.
+For example, a gene can be annotated to multiple GO terms, and
+even for a single term, it may have duplicated annotated genes with
+multipel evidence score.
+
+The two methods are identical only if an item is uniquely annotated to a term
+in the DAG. 
+
+We can compare the two different implementations with or without uniquifying
+annotations:
+
+```{r}
+ic1 = term_IC(dag, method = "IC_annotation")
+ic2 = term_IC(dag, method = "IC_annotation", control = list(uniquify = FALSE))
+rg = c(0, max(ic1, ic2, na.rm = TRUE))
+plot(ic1, ic2, xlim = rg, ylim = rg,
+   xlab = "uniquified", ylab = "not uniquified", 
+   pch = 16, col = "#00000020", main = "compare IC_annotation")
+abline(a = 0, b = 1, col = "red")
+```
+
+It shows although xx the trend is very linear.
+
+
+## IC_universal
+
+It measures the probability of a term getting full transmission from the root.
+Each term is associated with a p-value and the root has the p-value of 1.
+
+For example, an intermediate term $t$ has two parent terms parent1 and parent2,
+also assume parent1 has k1 children and parent2 has k2 children, assume a
+parent transmits information equally to all its children, then parent1 only
+transmits 1/k1 and parent2 only transmits 1/k2 of its content to term t, or
+the probability of a parent to reach t is 1/k1 or 1/k2. Let's say p1 and p2
+are the accmulated contents from the root for parnet1 and parent2 respectively
+(or the probability of the two parent terms getting full transmission from
+root), then the probability of reaching t via a full transmission graph from
+parent1 is the multiplication of p1 and 1/k1, which is p1/k1, and it is
+similar for p2/k2. Then, for term t, if getting transmitted from parent1 and
+parent2 are independent, the probability of t (denoted as p_t) to get
+transmitted from both parents is:
+
+p_t = (p1/k1) * (p2/k2)
+Since the two parents are the full set of t's parents, p_t is the probability of t getting full transmission from root. And the final information content is:
+
+IC = -log(p_t)
+
+$$ p(x) = \left\{ \begin{array}{cl}
+1 & \text{if } \textit{x} \text{ is a root} \\
+\prod_{t \in \mathcal{P}_a(x)} \frac{p(t)}{|\mathcal{C}_h(t)|} & \text{otherwise}
+\end{array} \right. $$
+
+Paper link: https://doi.org/10.1155/2012/975783.
+
+## IC_Zhang_2006
+
+It measures the number of ways from a term to reach leaf terms. E.g. in the following DAG:
+
+```
+     a      upstream
+    /|\
+   b | c
+     |/
+     d      downstream
+```
+
+term a has three ways to reach leaf, which are `a->b`, `a->d` and `a->c->d`.
+
+Let's denote k as the number of ways for term t to reach leaves and N as the maximal value of k which should be associated with the root term, the information content is calculated as
+
+IC = -log(k/N) 
+   = log(N) - log(k)
+
+$$ f(x) = \left\{ \begin{array}{cl}
+1 & \text{if } \textit{x} \text{ is a leaf} \\
+\sum_{t \in \mathcal{C}_h(x)} f(t) & \text{otherwise}
+\end{array} \right. $$
+
+$$ \mathrm{IC}(x) = -log \left( \frac{f(x)}{f(r)} \right) $$
+
+
+Paper link: https://doi.org/10.1186/1471-2105-7-135.
+
+## IC_Seco_2004
+
+It is based on the number of offspring terms of term t. The information content is calculated as:
+
+IC = 1 - log(k+1)/log(N)
+
+$$ \mathrm{IC}(x) = 1 - log \left( \frac{f(x) + 1}{f(r) + 1} \right) $$
+
+
+where k is the number of offspring terms of t, or you can think k+1 is the number of t's offspring terms plus itself. N is the total number of terms in the DAG.
+
+Paper link: https://dl.acm.org/doi/10.5555/3000001.3000272.
+
+## IC_Zhou_2008
+
+It is a correction of IC_Seco_2004 which considers the depth of a term in the DAG. The information content is calculated as:
+
+IC = 0.5*IC_Seco + 0.5*log(depth)/log(max_depth)
+
+$$ \mathrm{IC}(x) = 0.5 * \mathrm{IC}_\mathrm{Seco} + 0.5*\frac{log(\delta(x))}{log(\delta_\mathrm{max})} $$
+
+where depth is the depth of term t in the DAG, defined as the maximal distance from root. max_depth is the largest depth in the DAG. So IC is composed with two parts: the numbers of offspring terms and positions in the DAG.
+
+Paper link: https://doi.org/10.1109/FGCNS.2008.16.
+
+## IC_Sanchez_2011
+
+It measures average contribution of term t on leaf terms. First denote zeta as the number of leaf terms that can be reached from term t (or t's offspring that are leaves.). Since all t's ancestors can also reach t's leaves, the contribution of t on leaf terms is scaled by n_ancestors which is the number of t's ancestor terms. The final information content is normalized by the total number of leaves in the DAG, which is the possible maximal value of zeta. The complete definition of information content is:
+
+IC = -log( (zeta/n_ancestor) / n_all_leaves)
+
+$$ \mathrm{IC}(x) = -log \left( frac{\zeta_x}{|\mathcal{A}_x^+| * \zeta_\mathrm{leaf}} \right) $$
+
+Paper link: https://doi.org/10.1016/j.knosys.2010.10.001.
+
+## IC_Meng_2012
+
+It has a complex form which takes account of the term depth and the downstream of the term. The first factor is calculated as:
+
+f1 = log(depth)/long(max_depth)
+The second factor is calculated as:
+
+f1 = 1 - log(1 + sum_{x => t's offspring}(1/depth_x))/log(total_terms)
+In the equation, the summation goes over t's offspring terms.
+
+The final information content is the multiplication of f1 and f2:
+
+IC = f1 * f2
+Paper link: http://article.nadiapub.com/IJGDC/vol5_no3/6.pdf.
+
+There is one parameter correct. If it is set to TRUE, the first factor f1 is calculated as:
+
+f1 = log(depth + 1)/long(max_depth + 1)
+correct can be set as:
+
+
+$$ \mathrm{IC}(x) = \frac{\log(\delta(x))}{\log(\delta_\mathrm{max})} * \left( 1 - \frac{\log 
+\left(1 + \sum_{t \in \mathcal{D}_x} \frac{1}{\delta(t)} \right)}{\log(\lambda_\mathrm{node})} \right) $$
+
+term_IC(dag, method = "IC_Meng_2012", control = list(correct = TRUE))
+
+## IC_Wang_2007
+
+Each relation is weighted by a value less than 1 based on the semantic relation, i.e. 0.8 for "is_a" and 0.6 for "part_of". For a term t and one of its ancestor term a, it first calculates an "S-value" which corresponds to a path from a to t where the accumulated multiplication of weights along the path reaches maximal:
+
+$$ S_x(t) = \left\{ \begin{array}{cl}
+1 & \text{if } \textit{t = x} \\
+\max_{t' \in \mathcal{C}_h(t)}{w_e * S_x(t')} & \text{otherwise}
+\end{array} \right. $$
+
+$$ T_x(t) = log(1/S_x(t)) $$
+
+$$ T_x(t) = \left\{ \begin{array}{cl}
+0 & \text{if } \textit{t = x} \\
+\min_{t' \in \mathcal{C}_h(t)}{1/w_e * T_x(t')} & \text{otherwise}
+\end{array} \right. $$
+
+In this way, $T_x(t)$ is actually the shortest distance from $t$ to $x$ taking $1/w_e$ as the edge weight. and we can obtain $S_x(t)$ by $S_x(t) = \exp^{-T_x(t)}$
+
+
+$$ \mathrm{IC}(x) = \sum_{t \in \mathcal{A}_x^+} S_x(t) $$
+
+S(a->t) = max(prod(w))
+Here max goes over all possible paths from a to t, and prod() multiplies edge weights in a certain path.
+
+The formula can be transformed as (we simply rewrite S(a->t) to S):
+
+1/S = min(prod(1/w))
+log(1/S) = log(min(prod(1/w)))
+         = min(sum(log(1/w)))
+Since w < 1, log(1/w) is positive. According to the equation, the path (a->...->t) is actually the shortest path from a to t by taking log(1/w) as the weight, and log(1/S) is the weighted shortest distance.
+
+If S(a->t) can be thought as the maximal semantic contribution from a to t, the information content is calculated as the sum from all t's ancestors (including t itself):
+
+IC = sum_{a => t's ancestors + t}(S(a->t))
+Paper link: https://doi.org/10.1093/bioinformatics/btm087.
+
+The contribution of different semantic relations can be set with the contribution_factor parameter. The value should be a named numeric vector where names should cover the relations defined in relations set in create_ontology_DAG(). For example, if there are two relations "relation_a" and "relation_b" set in the DAG, the value for contribution_factor can be set as:
+
+term_IC(dag, method = "IC_Wang", 
+    control = list(contribution_factor = c("relation_a" = 0.8, "relation_b" = 0.6)))
+
+## Comparisons

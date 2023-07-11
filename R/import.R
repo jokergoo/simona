@@ -117,7 +117,19 @@ import_obo = function(file, relation_type = "part_of") {
 
 	rownames(term_meta) = term_meta$id
 	term_meta = term_meta[dag@terms, , drop = FALSE]
-	metadata(dag) = term_meta
+	
+	if(dag_root(dag) == "_all_") {
+		nr = nrow(term_meta)
+		term_meta$id[nr] = "_all_"
+		term_meta$short_id[nr] = "_all_"
+	}
+
+	mcols(dag) = term_meta
+
+	if(!any(duplicated(term_meta$short_id))) {
+		dag@terms = term_meta$short_id
+		rownames(dag@elementMetadata) = dag@terms
+	}
 
 	dag
 }
@@ -166,9 +178,7 @@ import_obo = function(file, relation_type = "part_of") {
 			short_id = sapply(lt_data, "[[", "short_id"),
 			name = sapply(lt_data, "[[", "name"),
 			namespace = sapply(lt_data, "[[", "namespace"),
-			definition = sapply(lt_data, "[[", "def"),
-			is_transitive = sapply(lt_data, "[[", "is_transitive"),
-			inverse_of = sapply(lt_data, "[[", "inverse_of")
+			definition = sapply(lt_data, "[[", "def")
 		)
 	}
 	
@@ -276,198 +286,238 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 }
 
 
-# .owl_get_text = function(nodes, xpath, default = NA, return_list = FALSE) {
-# 	if(return_list) {
-# 		lapply(xml_find_all(nodes, xpath, flatten = FALSE), function(x) {
-# 			if(length(x) == 0) {
-# 				character(0)
-# 			} else {
-# 				xml_text(x)
-# 			}
-# 		})
-# 	} else {
-# 		sapply(xml_find_all(nodes, xpath, flatten = FALSE), function(x) {
-# 			if(length(x) == 0) {
-# 				default
-# 			} else {
-# 				xml_text(x)[1]
-# 			}
-# 		})
-# 	}
-# }
+.owl_get_text = function(nodes, xpath, default = NA, return_list = FALSE) {
+	if(return_list) {
+		lapply(xml_find_all(nodes, xpath, flatten = FALSE), function(x) {
+			if(length(x) == 0) {
+				character(0)
+			} else {
+				xml_text(x)
+			}
+		})
+	} else {
+		sapply(xml_find_all(nodes, xpath, flatten = FALSE), function(x) {
+			if(length(x) == 0) {
+				default
+			} else {
+				xml_text(x)[1]
+			}
+		})
+	}
+}
 
-# .owl_get_attr = function(nodes, xpath, attr, default = NA) {
-# 	lapply(xml_find_all(nodes, xpath, flatten = FALSE), function(x) {
-# 		xml_attr(x, attr)
-# 	})
-# }
+.owl_get_attr = function(nodes, xpath, attr, default = NA) {
+	lapply(xml_find_all(nodes, xpath, flatten = FALSE), function(x) {
+		xml_attr(x, attr)
+	})
+}
 
-# #' @rdname import_obo
-# #' @export
-# #' @import xml2
-# import_owl = function(file) {
+#' @rdname import_obo
+#' @export
+#' @import xml2
+#' @export
+import_owl = function(file, relation_type = "part_of") {
 	
-# 	owl = read_xml(file, options = "HUGE")
+	owl = read_xml(file, options = "HUGE")
 
-# 	Class = xml_find_all(owl, ".//owl:Class")
-# 	id = xml_attr(Class, "about")
-# 	l = !is.na(id)
-
-# 	id = id[l]
-# 	Class = Class[l]
-
-# 	n = length(Class)
-
-# 	if(n == 0) {
-# 		stop("Cannot find any owl:Class.")
-# 	}
-
-# 	message("parsing <owl:Class> ...")
-# 	id = xml_attr(Class, "about")
-# 	short_id = .owl_get_text(Class, ".//*[local-name()='id']", NA)
-# 	short_id = ifelse(is.na(short_id), gsub("^.*#", "", basename(id)), short_id)
-# 	name = .owl_get_text(Class, ".//rdfs:label[@xml:lang='en'] | .//rdfs:label[not(@xml:lang)]", NA)
-# 	def = .owl_get_text(Class, ".//*[local-name()='IAO_0000115']", NA)
-# 	namespace = .owl_get_text(Class, ".//*[local-name()='hasOBONamespace']", NA)
-# 	is_obsolete = .owl_get_text(Class, ".//owl:deprecated", "false")
-# 	isa = .owl_get_text(Class, ".//rdfs:subClassOf[@rdf:resource]/@rdf:resource", character(0), return_list = TRUE)
-# 	isa = lapply(isa, function(x) {
-# 		structure(x, names = rep("isa", length(x)))
-# 	})
-# 	value = .owl_get_attr(Class, ".//rdfs:subClassOf/owl:Restriction/*[self::owl:someValuesFrom or self::owl:allValuesFrom or self::owl:onClass]", "resource")
-# 	property = .owl_get_attr(Class, ".//rdfs:subClassOf/owl:Restriction/*[self::owl:someValuesFrom or self::owl:allValuesFrom or self::owl:onClass]/preceding-sibling::owl:onProperty", "resource")
+	####### relation / ObjectProperty ########
+	message("parsing <owl:ObjectProperty> ...")
+	ObjectProperty = xml_find_all(owl, ".//owl:ObjectProperty")
 	
-# 	lt_terms = vector("list", length(id))
-# 	for(i in seq_along(id)) {
-# 		lt_terms[[i]]$id = id[i]
-# 		lt_terms[[i]]$short_id = short_id[i]
-# 		lt_terms[[i]]$name = name[i]
-# 		lt_terms[[i]]$def = def[i]
-# 		lt_terms[[i]]$namespace = namespace[i]
-# 		lt_terms[[i]]$is_obsolete = is_obsolete[i]
+	id = xml_attr(ObjectProperty, "about")
+	short_id = .owl_get_text(ObjectProperty, ".//*[local-name()='id']", NA)
+	short_id = ifelse(is.na(short_id), gsub("^.*#", "", basename(id)), short_id)
+	name = .owl_get_text(ObjectProperty, ".//rdfs:label[@xml:lang='en'] | .//rdfs:label[not(@xml:lang)]", NA); name = gsub(" ", "_", name);
+	def = .owl_get_text(ObjectProperty, ".//*[local-name()='IAO_0000115']", NA)
+	namespace = .owl_get_text(ObjectProperty, ".//*[local-name()='hasOBONamespace']", NA)
+	is_obsolete = .owl_get_text(ObjectProperty, ".//owl:deprecated", "false")
+	is_a = .owl_get_text(ObjectProperty, ".//rdfs:subPropertyOf[@rdf:resource]/@rdf:resource", character(0), return_list = TRUE)
+	is_a = lapply(is_a, function(x) {
+		structure(x, names = rep("is_a", length(x)))
+	})
+	
+	lt_relations = vector("list", length(id))
+	for(i in seq_along(id)) {
+		lt_relations[[i]]$id = id[i]
+		lt_relations[[i]]$short_id = short_id[i]
+		lt_relations[[i]]$name = name[i]
+		lt_relations[[i]]$def = def[i]
+		lt_relations[[i]]$namespace = namespace[i]
+		lt_relations[[i]]$is_obsolete = is_obsolete[i]
+		lt_relations[[i]]$relationship = is_a[[i]]
+	}
+
+	## relations
+	if(length(lt_relations)) {
+		lt = .wrap_relations(lt_relations, type = "relation")
+		relation_meta = lt$meta
+		relation_relations = lt$relations
+	} else {
+		relation_meta = data.frame()
+		relation_relations = data.frame()
+	}
+
+	relations_id_to_name = structure(ifelse(is.na(relation_meta$name), relation_meta$id, relation_meta$name), names = relation_meta$id)
+	relations_id_to_name["is_a"] = "is_a"
+	
+	if(nrow(relation_relations)) {
 		
-# 		rlv = value[[i]]
-# 		rlp = property[[i]]
-# 		l = !is.na(rlv)
-# 		rlv = rlv[l]
-# 		rlp = rlp[l]
+		relation_relations$parent = unname(relations_id_to_name[relation_relations$parent])
+		relation_relations$child = unname(relations_id_to_name[relation_relations$child])
 
-# 		lt_terms[[i]]$relationship = c(isa[[i]], structure(rlv, names = rlp))
-# 	}
+		suppressWarnings(suppressMessages(relations_DAG <- create_ontology_DAG(relation_relations$parent, relation_relations$child)))
+
+		relation_type = merge_offspring_relation_types(relations_DAG, relation_type)
+	} else {
+		relations_DAG = NULL
+	}
 
 
-# 	####### relation / ObjectProperty ########
-# 	message("parsing <owl:ObjectProperty> ...")
-# 	ObjectProperty = xml_find_all(owl, ".//owl:ObjectProperty")
+	### Class #####
+	Class = xml_find_all(owl, ".//owl:Class")
+	id = xml_attr(Class, "about")
+	l = !is.na(id)
+
+	id = id[l]
+	Class = Class[l]
+
+	n = length(Class)
+
+	if(n == 0) {
+		stop("Cannot find any owl:Class.")
+	}
+
+	message("parsing <owl:Class> ...")
+	id = xml_attr(Class, "about")
+	short_id = .owl_get_text(Class, ".//*[local-name()='id']", NA)
+	short_id = ifelse(is.na(short_id), gsub("^.*#", "", basename(id)), short_id)
+	name = .owl_get_text(Class, ".//rdfs:label[@xml:lang='en'] | .//rdfs:label[not(@xml:lang)]", NA)
+	def = .owl_get_text(Class, ".//*[local-name()='IAO_0000115']", NA)
+	namespace = .owl_get_text(Class, ".//*[local-name()='hasOBONamespace']", NA)
+	is_obsolete = .owl_get_text(Class, ".//owl:deprecated", "false")
+	is_a = .owl_get_text(Class, ".//rdfs:subClassOf[@rdf:resource]/@rdf:resource", character(0), return_list = TRUE)
+	is_a = lapply(is_a, function(x) {
+		structure(x, names = rep("is_a", length(x)))
+	})
+	value = .owl_get_attr(Class, ".//rdfs:subClassOf/owl:Restriction/*[self::owl:someValuesFrom or self::owl:allValuesFrom or self::owl:onClass]", "resource")
+	property = .owl_get_attr(Class, ".//rdfs:subClassOf/owl:Restriction/*[self::owl:someValuesFrom or self::owl:allValuesFrom or self::owl:onClass]/preceding-sibling::owl:onProperty", "resource")
+
+	lt_terms = vector("list", length(id))
+	for(i in seq_along(id)) {
+		lt_terms[[i]]$id = id[i]
+		lt_terms[[i]]$short_id = short_id[i]
+		lt_terms[[i]]$name = name[i]
+		lt_terms[[i]]$def = def[i]
+		lt_terms[[i]]$namespace = namespace[i]
+		lt_terms[[i]]$is_obsolete = is_obsolete[i]
+		
+		rlv = value[[i]]
+		rlp = relations_id_to_name[ property[[i]] ]
+		l = !is.na(rlv)
+		rlv = rlv[l]
+		rlp = rlp[l]
+
+		l = rlp %in% relation_type
+		rlv = rlv[l]
+		rlp = rlp[l]
+
+		lt_terms[[i]]$relationship = c(is_a[[i]], structure(rlv, names = rlp))
+	}
+
+	###### Description ######
+	Description = xml_find_all(owl, ".//rdf:Description")
+
+	if(length(Description)) {
+		message("parsing <rdf:Description> ...")
+		id = xml_attr(Description, "about")
+		name = .owl_get_text(Description, ".//*[local-name()='prefLabel']", NA)
+		def = .owl_get_text(Description, ".//*[local-name()='definition']", NA)
+
+		lt_description = vector("list", length(id))
+		for(i in seq_along(id)) {
+			lt_description[[i]]$id = id[i]
+			lt_description[[i]]$name = name[i]
+			lt_description[[i]]$def = def[i]
+		}
+		names(lt_description) = id
+	} else {
+		lt_description = list()
+	}
+
+	###### fill name and def in `lt_terms` #######
+	if(length(lt_description)) {
+		lt_terms = lapply(lt_terms, function(x) {
+			if(is.na(x$name)) {
+				v = lt_description[[x$id]]$name
+				if(length(v) > 0) {
+					x$name = v
+				}
+			}
+			if(is.na(x$def)) {
+				v = lt_description[[x$id]]$def
+				if(length(v) > 0) {
+					x$def = v
+				}
+			}
+			x
+		})
+
+		lt_relations = lapply(lt_relations, function(x) {
+			if(is.na(x$name)) {
+				v = lt_description[[x$id]]$name
+				if(length(v) > 0) {
+					x$name = v
+				}
+			}
+			if(is.na(x$def)) {
+				v = lt_description[[x$id]]$def
+				if(length(v) > 0) {
+					x$def = v
+				}
+			}
+			x
+		})
+	}
+
+	## terms
+	lt = .wrap_relations(lt_terms, "term")
+	term_meta = lt$meta
+	term_relations = lt$relations
+
+	## some meta for the whole ontology
+	version = xml_text(xml_find_all(owl, ".//owl:Ontology/owl:versionInfo"))
+	if(length(version) == 0) {
+		version = xml_attr(xml_find_all(owl, ".//owl:Ontology/owl:versionIRI"), "resource")
+	}
+	ontology = xml_text(xml_find_all(owl, ".//owl:Ontology/*[local-name()='title']"))
+	if(length(ontology) == 0) {
+		ontology = xml_attr(xml_find_all(owl, ".//owl:Ontology"), "about")
+	}
+
+	dag = create_ontology_DAG(parents = term_relations$parent, children = term_relations$child, relations = term_relations$relation,
+		source = paste0(ontology, ", ", version), relations_DAG = relations_DAG)
+
+
+	rownames(term_meta) = term_meta$id
+	term_meta = term_meta[dag@terms, , drop = FALSE]
 	
-# 	id = xml_attr(ObjectProperty, "about")
-# 	short_id = .owl_get_text(ObjectProperty, ".//*[local-name()='id']", NA)
-# 	short_id = ifelse(is.na(short_id), gsub("^.*#", "", basename(id)), short_id)
-# 	name = .owl_get_text(ObjectProperty, ".//rdfs:label[@xml:lang='en'] | .//rdfs:label[not(@xml:lang)]", NA)
-# 	def = .owl_get_text(ObjectProperty, ".//*[local-name()='IAO_0000115']", NA)
-# 	namespace = .owl_get_text(ObjectProperty, ".//*[local-name()='hasOBONamespace']", NA)
-# 	is_obsolete = .owl_get_text(ObjectProperty, ".//owl:deprecated", "false")
-# 	isa = .owl_get_text(ObjectProperty, ".//rdfs:subPropertyOf[@rdf:resource]/@rdf:resource", character(0), return_list = TRUE)
-# 	isa = lapply(isa, function(x) {
-# 		structure(x, names = rep("isa", length(x)))
-# 	})
+	if(dag_root(dag) == "_all_") {
+		nr = nrow(term_meta)
+		term_meta$id[nr] = "_all_"
+		term_meta$short_id[nr] = "_all_"
+	}
+
+	mcols(dag) = term_meta
+
+
+	if(!any(duplicated(term_meta$short_id))) {
+		dag@terms = term_meta$short_id
+		rownames(dag@elementMetadata) = dag@terms
+	}
+
+	dag
 	
-# 	lt_relations = vector("list", length(id))
-# 	for(i in seq_along(id)) {
-# 		lt_relations[[i]]$id = id[i]
-# 		lt_relations[[i]]$short_id = short_id[i]
-# 		lt_relations[[i]]$name = name[i]
-# 		lt_relations[[i]]$def = def[i]
-# 		lt_relations[[i]]$namespace = namespace[i]
-# 		lt_relations[[i]]$is_obsolete = is_obsolete[i]
-# 		lt_relations[[i]]$relationship = isa[[i]]
-# 	}
-
-# 	###### Description ######
-# 	Description = xml_find_all(owl, ".//rdf:Description")
-
-# 	if(length(Description)) {
-# 		message("parsing <rdf:Description> ...")
-# 		id = xml_attr(Description, "about")
-# 		name = .owl_get_text(Description, ".//*[local-name()='prefLabel']", NA)
-# 		def = .owl_get_text(Description, ".//*[local-name()='definition']", NA)
-
-# 		lt_description = vector("list", length(id))
-# 		for(i in seq_along(id)) {
-# 			lt_description[[i]]$id = id[i]
-# 			lt_description[[i]]$name = name[i]
-# 			lt_description[[i]]$def = def[i]
-# 		}
-# 		names(lt_description) = id
-# 	} else {
-# 		lt_description = list()
-# 	}
-
-# 	###### fill name and def in `lt_terms` #######
-# 	if(length(lt_description)) {
-# 		lt_terms = lapply(lt_terms, function(x) {
-# 			if(is.na(x$name)) {
-# 				v = lt_description[[x$id]]$name
-# 				if(length(v) > 0) {
-# 					x$name = v
-# 				}
-# 			}
-# 			if(is.na(x$def)) {
-# 				v = lt_description[[x$id]]$def
-# 				if(length(v) > 0) {
-# 					x$def = v
-# 				}
-# 			}
-# 			x
-# 		})
-
-# 		lt_relations = lapply(lt_relations, function(x) {
-# 			if(is.na(x$name)) {
-# 				v = lt_description[[x$id]]$name
-# 				if(length(v) > 0) {
-# 					x$name = v
-# 				}
-# 			}
-# 			if(is.na(x$def)) {
-# 				v = lt_description[[x$id]]$def
-# 				if(length(v) > 0) {
-# 					x$def = v
-# 				}
-# 			}
-# 			x
-# 		})
-# 	}
-
-# 	## terms
-# 	lt = .wrap_relations(lt_terms, "term")
-# 	term_meta = lt$meta
-# 	term_relations = lt$relations
-
-# 	## relations
-# 	if(length(lt_relations)) {
-# 		lt = .wrap_relations(lt_relations, "relation")
-# 		relation_meta = lt$meta
-# 		relation_relations = lt$relations
-# 	} else {
-# 		relation_meta = data.frame()
-# 		relation_relations = data.frame()
-# 	}
-
-# 	## some meta for the whole ontology
-# 	version = xml_text(xml_find_all(owl, ".//owl:Ontology/owl:versionInfo"))
-# 	if(length(version) == 0) {
-# 		version = xml_attr(xml_find_all(owl, ".//owl:Ontology/owl:versionIRI"), "resource")
-# 	}
-# 	ontology = xml_text(xml_find_all(owl, ".//owl:Ontology/*[local-name()='title']"))
-# 	if(length(ontology) == 0) {
-# 		ontology = xml_attr(xml_find_all(owl, ".//owl:Ontology"), "about")
-# 	}
-
-# 	new("ontology_Raw", ontology = ontology, version = version,
-# 		 term_meta = term_meta, term_relations = term_relations, 
-# 		 relation_meta = relation_meta, relation_relations = relation_relations)
-	
-# }
+}
 
 #' @param robot_jar The path of the `robot.jar` file. It can be downloaded from https://github.com/ontodev/robot/releases.
 #'         Internally, the file is converted to the obo format and parsed by `import_obo()`. The value of `robot_jar` can be

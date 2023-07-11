@@ -11,7 +11,7 @@
 #' IC = -log(k/N)
 #' ```
 #' 
-#' @rdname temp__IC_annotation
+#' @rdname temp__IC_offspring
 IC_offspring = function(dag, use_cache = simone_opt$use_cache) {
 
 	if(is.null(dag@term_env$IC_offspring)) {
@@ -36,7 +36,7 @@ ADD_IC_METHOD("IC_offspring", "use_cache")
 #' IC_depth
 #' 
 #' @section Methods:
-#' ## IC_depth
+#' ## IC_height
 #' For a term `t` in the DAG, denote `d` as the maximal distance from root (i.e. the depth) and `h` as the maximal distance to leaves (i.e. the height),
 #' the relative position `p` on the longest path from root to leaves via term `t` is calculated as:
 #' 
@@ -51,22 +51,22 @@ ADD_IC_METHOD("IC_offspring", "use_cache")
 #'    = -log((h+1)/(h+d+1))
 #' ```
 #' 
-#' @rdname temp__IC_annotation
-IC_depth = function(dag, use_cache = simone_opt$use_cache) {
-	if(is.null(dag@term_env$IC_depth)) {
+#' @rdname temp__IC_height
+IC_height = function(dag, use_cache = simone_opt$use_cache) {
+	if(is.null(dag@term_env$IC_height)) {
 		use_cache = FALSE
 	} 
 	if(!use_cache) {
 
 		ic = -log((dag_height(dag) + 1)/(dag_depth(dag) + dag_height(dag) + 1))
-		dag@term_env$IC_depth = ic
+		dag@term_env$IC_height = ic
 		
 	}
 	
 	
-	dag@term_env$IC_depth
+	dag@term_env$IC_height
 }
-ADD_IC_METHOD("IC_depth", "use_cache")
+ADD_IC_METHOD("IC_height", "use_cache")
 
 
 #' IC_annotation
@@ -502,7 +502,7 @@ totipotency = function(dag, use_cache = simone_opt$use_cache) {
 #' @section Methods:
 #' ## IC_Wang_2007
 #' 
-#' Each relation is weighted by a value less than 1 based on the semantic relation, i.e. 0.8 for "isa" and 0.6 for "part of".
+#' Each relation is weighted by a value less than 1 based on the semantic relation, i.e. 0.8 for "is_a" and 0.6 for "part_of".
 #' For a term `t` and one of its ancestor term `a`, it first calculates an "S-value" which corresponds to a path from `a` to `t` where
 #' the accumulated multiplication of weights along the path reaches maximal:
 #' 

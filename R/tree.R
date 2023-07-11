@@ -70,6 +70,7 @@ dag_treelize = function(dag) {
 }
 
 #' @rdname dag_treelize
+#' @export
 #' @details
 #' `dag_as_dendrogram()` coverts the tree to a `dendrogram` object.
 dag_as_dendrogram = function(dag) {
