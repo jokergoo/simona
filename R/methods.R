@@ -78,6 +78,7 @@ get_group_sim_method = function(method, control = list()) {
 #' @inheritSection IC_Zhang_2006 Methods
 #' @inheritSection IC_Seco_2004 Methods
 #' @inheritSection IC_Zhou_2008 Methods
+#' @inheritSection IC_Seddiqui_2010 Methods
 #' @inheritSection IC_Sanchez_2011 Methods
 #' @inheritSection IC_Meng_2012 Methods
 #' @inheritSection IC_Wang_2007 Methods

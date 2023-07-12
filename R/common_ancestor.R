@@ -13,9 +13,9 @@
 #' 
 #' - MICA (most informative common ancestor): The common ancestor with the highest IC value.
 #' - LCA (lowest common ancestor): The common ancestor with the largest depth (The depth of a term is the maximal distance from the root term). If there are multiple ancestors having
-#'        the same max depth, the ancestor with the smallest distance to the two terms is taken.
+#'        the same max depth, the ancestor with the smallest distance to the two terms is used
 #' - NCA (nearest common ancestor): The common ancestor with the smallest distance to the two terms. If there are multiple
-#'        ancestors with the same smallest distance, the ancestor with the largest depth is taken.
+#'        ancestors with the same smallest distance, the ancestor with the largest depth is used
 #' 
 #' `max_ancestor_v()` and `max_ancestor_id()` are more general functions which return common ancestors with
 #' the highest value in `value`.

@@ -178,7 +178,7 @@ where $\mathrm{len}(x, y$ is the longest distance between $x$ and $y$, common an
 $t$ is the one with the largest depth in DAG and it is called the lowest
 common ancestor (LCA) of $a$ and $b$:
 
-$$ t = \argmax_{t \in \mathrm{CA}(a, b)} \delta(t)$$
+$$ t = \operatorname*{argmin}_{t \in \mathrm{CA}(a, b)} \delta(t)$$
 
 where $\delta(t)$ is the depth (maximal distance from root) of term $t$.
 

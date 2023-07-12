@@ -54,9 +54,9 @@ There are the following three types of common ancestors:
 \itemize{
 \item MICA (most informative common ancestor): The common ancestor with the highest IC value.
 \item LCA (lowest common ancestor): The common ancestor with the largest depth (The depth of a term is the maximal distance from the root term). If there are multiple ancestors having
-the same max depth, the ancestor with the smallest distance to the two terms is taken.
+the same max depth, the ancestor with the smallest distance to the two terms is used
 \item NCA (nearest common ancestor): The common ancestor with the smallest distance to the two terms. If there are multiple
-ancestors with the same smallest distance, the ancestor with the largest depth is taken.
+ancestors with the same smallest distance, the ancestor with the largest depth is used
 }
 
 \code{max_ancestor_v()} and \code{max_ancestor_id()} are more general functions which return common ancestors with

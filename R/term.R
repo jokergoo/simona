@@ -328,44 +328,44 @@ ADD_IC_METHOD("IC_Zhou_2008", "use_cache")
 # ########################################
 # ### Seddiqui et al
 
-# #' IC_Seddiqui_2010
-# #' 
-# #' @section Methods:
-# #' ## IC_Seddiqui_2010
-# #' 
-# #' It is also a correction to *IC_Seco_2004*, but considers number of relations connecting a term (i.e. number of parent terms and child terms).
-# #' The information content is defined as:
-# #' 
-# #' ```
-# #' (1-sigma)*IC_Seco + sigma*log((n_parents + n_children + 1)/log((total_edges + 1))
-# #' ```
-# #' 
-# #' where `n_parents` and `n_children` are the numbers of parents and children of term `t`. The tuning factor `sigma` is defined as 
-# #' 
-# #' ```
-# #' sigma = log(total_edges+1)/(log(total_edges) + log(total_terms))
-# #' ```
-# #' 
-# #' where `total_edges` is the number of all relations (all parent-child relations)
-# #' and `total_terms` is the number of all terms in the DAG. 
-# #' 
-# #' Paper link: <https://dl.acm.org/doi/10.5555/1862330.1862343>.
-# #' 
-# #' @rdname temp__IC_Seddiqui_2010
-# IC_Seddiqui_2010 = function(dag, use_cache = simone_opt$use_cache) {
-# 	if(is.null(dag@term_env$IC_Seddiqui_2010) || !use_cache) {
-# 		n_relations = dag@term_env$n_parents + dag@term_env$n_children
-# 		n_edges = sum(dag@term_env$n_parents)
-# 		n_nodes = dag@n_terms
+#' IC_Seddiqui_2010
+#' 
+#' @section Methods:
+#' ## IC_Seddiqui_2010
+#' 
+#' It is also a correction to *IC_Seco_2004*, but considers number of relations connecting a term (i.e. number of parent terms and child terms).
+#' The information content is defined as:
+#' 
+#' ```
+#' (1-sigma)*IC_Seco + sigma*log((n_parents + n_children + 1)/log((total_edges + 1))
+#' ```
+#' 
+#' where `n_parents` and `n_children` are the numbers of parents and children of term `t`. The tuning factor `sigma` is defined as 
+#' 
+#' ```
+#' sigma = log(total_edges+1)/(log(total_edges) + log(total_terms))
+#' ```
+#' 
+#' where `total_edges` is the number of all relations (all parent-child relations)
+#' and `total_terms` is the number of all terms in the DAG. 
+#' 
+#' Paper link: <https://dl.acm.org/doi/10.5555/1862330.1862343>.
+#' 
+#' @rdname temp__IC_Seddiqui_2010
+IC_Seddiqui_2010 = function(dag, use_cache = simone_opt$use_cache) {
+	if(is.null(dag@term_env$IC_Seddiqui_2010) || !use_cache) {
+		n_relations = dag@term_env$n_parents + dag@term_env$n_children
+		n_edges = sum(dag@term_env$n_parents)
+		n_nodes = dag@n_terms
 
-# 		ic_seco = IC_Seco_2004(dag, use_cache)
+		ic_seco = IC_Seco_2004(dag, use_cache)
 
-# 		sigma = log(n_edges + 1)/( log(n_edges) + log(n_nodes) )
-# 		dag@term_env$IC_Seddiqui_2010 = (1 - sigma)*ic_seco + sigma*log(n_relations + 1)/log(n_edges + 1)
-# 	}
-# 	dag@term_env$IC_Seddiqui_2010
-# }
-# ADD_IC_METHOD("IC_Seddiqui_2010", "use_cache")
+		sigma = log(n_edges + 1)/( log(n_edges) + log(n_nodes) )
+		dag@term_env$IC_Seddiqui_2010 = (1 - sigma)*ic_seco + sigma*log(n_relations + 1)/log(n_edges + 1)
+	}
+	dag@term_env$IC_Seddiqui_2010
+}
+ADD_IC_METHOD("IC_Seddiqui_2010", "use_cache")
 
 
 

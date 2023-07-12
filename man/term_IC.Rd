@@ -144,6 +144,26 @@ Paper link: \url{https://doi.org/10.1109/FGCNS.2008.16}.
 }
 
 
+\subsection{IC_Seddiqui_2010}{
+
+It is also a correction to \emph{IC_Seco_2004}, but considers number of relations connecting a term (i.e. number of parent terms and child terms).
+The information content is defined as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{(1-sigma)*IC_Seco + sigma*log((n_parents + n_children + 1)/log((total_edges + 1))
+}\if{html}{\out{</div>}}
+
+where \code{n_parents} and \code{n_children} are the numbers of parents and children of term \code{t}. The tuning factor \code{sigma} is defined as
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{sigma = log(total_edges+1)/(log(total_edges) + log(total_terms))
+}\if{html}{\out{</div>}}
+
+where \code{total_edges} is the number of all relations (all parent-child relations)
+and \code{total_terms} is the number of all terms in the DAG.
+
+Paper link: \url{https://dl.acm.org/doi/10.5555/1862330.1862343}.
+}
+
+
 \subsection{IC_Sanchez_2011}{
 
 It measures average contribution of term \code{t} on leaf terms. First denote \code{zeta} as the number of leaf terms that

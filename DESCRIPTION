@@ -9,7 +9,7 @@ Depends: R (>= 3.5.0)
 Imports: methods, Rcpp, matrixStats, GetoptLong, grid, GlobalOptions,
          igraph, Polychrome, S4Vectors, xml2
 Suggests: knitr, testthat, BiocManager, GO.db, org.Hs.eg.db, proxyC, AnnotationDbi,
-          Matrix, DiagrammeR
+          Matrix, DiagrammeR, ComplexHeatmap
 LinkingTo: Rcpp
 VignetteBuilder: knitr
 Description: It provides a rich set of implementations for semantic similarity 
