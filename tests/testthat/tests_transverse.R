@@ -140,7 +140,7 @@ test_that("test other distances", {
 	)
 })
 
-test_that("test n_children/n_parents/n_leaves", {
+test_that("test n_children/n_parents/n_connected_leaves", {
 	expect_equal(
 		unname(n_offspring(dag)),
 		c(5, 4, 1, 1, 0, 0)
@@ -158,7 +158,7 @@ test_that("test n_children/n_parents/n_leaves", {
 		c(0, 1, 2, 2, 3, 3) + 1
 	)
 	expect_equal(
-		unname(n_leaves(dag)),
+		unname(n_connected_leaves(dag)),
 		c(2, 2, 1, 1, 0, 0)
 	)
 })

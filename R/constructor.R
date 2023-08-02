@@ -116,6 +116,7 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 	lt_parents2 = split(unname(terms2ind[parents]), children)
 	lt_children2 = split(unname(terms2ind[children]), parents)
 	if(has_relations) {
+		relations[grepl("^is.*a$", relations, ignore.case = TRUE)] = "is_a"
 		relations = as.factor(relations)
 		relation_levels = levels(relations)
 		relations = as.integer(relations)
@@ -327,6 +328,14 @@ create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = "part of
 	df[l, 3] = "is_a"
 	df[, 3] = gsub(" ", "_", df[, 3])
 
+	if(length(relations) == 0) {
+		relations = character(0)
+	}
+
+	if(identical(relations, NA)) {
+		relations = character(0)
+	}
+
 	relations = c("is_a", relations)
 	if("regulates" %in% relations) {
 		relations = c(relations, "negatively regulates", "positively regulates")
@@ -536,7 +545,8 @@ dag_as_igraph = function(dag) {
 #' @param relations A vector of relations. The sub-DAG will only contain these relations. 
 #'                  Valid values of "relations" should correspond to the values set in the 
 #'                  `relations` argument in the [`create_ontology_DAG()`]. If `relations_DAG` is 
-#'                  already provided, offspring relation types will all be selected.
+#'                  already provided, offspring relation types will all be selected. Note "is_a"
+#'                  is always included.
 #' @param root A vector of term names which will be used as roots of the sub-DAG. Only 
 #'             these with their offspring terms will be kept. If there are multiple root terms, 
 #'             a super root will be automatically added.
@@ -590,6 +600,10 @@ dag_filter = function(dag, terms = NULL, relations = NULL, root = NULL, leaves =
 	}
 
 	if(!is.null(relations)) {
+
+		if("is_a" %in% relations) {
+			stop("'is_a' must be included.")
+		}
 
 		if(!is.null(dag@relations_DAG)) {
 			relations = merge_offspring_relation_types(dag@relations_DAG, relations)
@@ -680,6 +694,10 @@ setMethod("mcols",
 setMethod("mcols<-", 
 	signature = "ontology_DAG",
 	definition = function(x, ..., value) {
+
+	if(is.null(value)) {
+		return(x)
+	}
 	
 	df = as.data.frame(value)
 	if(nrow(df) != x@n_terms) {

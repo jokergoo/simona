@@ -2,15 +2,94 @@
 % Please edit documentation in R/plot.R
 \name{dag_circular_viz}
 \alias{dag_circular_viz}
+\alias{dag_as_DOT}
 \alias{dag_graphviz}
 \title{Visualize the DAG}
 \usage{
-dag_circular_viz(dag)
+dag_circular_viz(
+  dag,
+  highlight = NULL,
+  start = 0,
+  end = 360,
+  reorder_level = NA,
+  partition_level = 0,
+  node_col = NULL,
+  node_transparency = 0.5,
+  node_size = NULL,
+  edge_col = NULL,
+  edge_transparency = 0.98,
+  legend_labels_from = NULL,
+  legend_labels_max_width = 50
+)
 
-dag_graphviz(dag)
+dag_as_DOT(
+  dag,
+  color = "black",
+  style = "solid",
+  fontcolor = "black",
+  fontsize = 10,
+  shape = "box",
+  edge_color = NULL,
+  edge_style = NULL
+)
+
+dag_graphviz(
+  dag,
+  color = "black",
+  fontcolor = "black",
+  fontsize = 10,
+  shape = "box",
+  edge_color = NULL,
+  edge_style = NULL,
+  ...
+)
 }
 \arguments{
 \item{dag}{An \code{ontology_Dag} object.}
+
+\item{highlight}{A vector of terms to be highlighted on the DAG.}
+
+\item{start}{Start of the circle, measured in degree.}
+
+\item{end}{End of the circle, measured in degree.}
+
+\item{reorder_level}{Whether to reorder child terms. See \code{\link[=dag_reorder]{dag_reorder()}}.}
+
+\item{partition_level}{If \code{node_col} is not set, users can cut the DAG into clusters with different node colors.}
+
+\item{node_col}{Colors of nodes. If the value is a vector, the order should correspond to terms in \code{\link[=dag_all_terms]{dag_all_terms()}}.}
+
+\item{node_transparency}{Transparency of nodes. The same format as \code{node_col}.}
+
+\item{node_size}{Size of nodes. The same format as \code{node_col}.}
+
+\item{edge_col}{A named vector where names correspond to relation types.}
+
+\item{edge_transparency}{A named vector where names correspond to relation types.}
+
+\item{legend_labels_from}{If partitioning is applied on the DAG, a legend is generated showing different top
+terms. By default, the legend labels are the term IDs. If there are additionally column stored
+in the meta data frame of the DAG object, the column name can be set here to replace the term IDs as
+legend labels.}
+
+\item{legend_labels_max_width}{Maximal width of legend labels. Labels are wrapped into
+multiple lines if the widths exceed it.}
+
+\item{color}{A vector of colors. If the value is a vector, the order should correspond to terms in \code{\link[=dag_all_terms]{dag_all_terms()}}.}
+
+\item{style}{Style of the nodes. See https://graphviz.org/docs/attr-types/style/ for possible values.}
+
+\item{fontcolor}{Color of labels.}
+
+\item{fontsize}{Font size of labels.}
+
+\item{shape}{Shape of nodes. See https://graphviz.org/doc/info/shapes.html#polygon for possible values.}
+
+\item{edge_color}{A named vector where names correspond to relation types.}
+
+\item{edge_style}{A named vector where names correspond to relation types. See https://graphviz.org/docs/attr-types/style/ for possible values for edges.}
+
+\item{...}{Pass to \code{\link[DiagrammeR:grViz]{DiagrammeR::grViz()}}.}
 }
 \description{
 Visualize the DAG
@@ -18,4 +97,11 @@ Visualize the DAG
 \details{
 \code{dag_circular_viz()} uses a circular layout for visualizing large DAGs. \code{dag_graphviz()}
 uses a hierarchical layout for visualizing small DAGs.
+
+\code{dag_as_DOT()} generates the DOT code of the DAG.
+
+\code{dag_graphviz()} visualizes the DAG with the \strong{DiagrammeR} package.
+}
+\seealso{
+http://magjac.com/graphviz-visual-editor/ is nice place to try the DOT code.
 }

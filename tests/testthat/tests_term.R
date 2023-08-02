@@ -124,19 +124,19 @@ dag = create_ontology_DAG(parents, children, relations = c("isa", "part of", "is
 	annotation = annotation)
 test_that("test IC_Wang_2007", {
 	expect_equal(
-		IC_Wang_2007(dag, c("isa" = 0.7, "part of" = 0.6), use_cache = FALSE),
+		IC_Wang_2007(dag, c("is_a" = 0.7, "part of" = 0.6), use_cache = FALSE),
 		c(1, 1.7, 2.3, 2.02, 2.61, 2.212)
 	)
 })
 
 library(igraph)
 g = dag_as_igraph(dag)
-E(g)$weight = c("isa" = 0.7, "part of" = 0.6)[E(g)$relation]
+E(g)$weight = c("is_a" = 0.7, "part of" = 0.6)[E(g)$relation]
 d = distances(g, mode = "out", weights = -log(E(g)$weight))
 s = exp(-d)
 test_that("test IC_Wang_2007 and shortest path weighted by 1/w", {
 	expect_equal(
-		IC_Wang_2007(dag, c("isa" = 0.7, "part of" = 0.6), use_cache = FALSE),
+		IC_Wang_2007(dag, c("is_a" = 0.7, "part of" = 0.6), use_cache = FALSE),
 		unname(colSums(s))
 	)
 })

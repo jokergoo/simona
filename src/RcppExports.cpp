@@ -245,6 +245,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// n_links_from_two_groups_of_nodes
+int n_links_from_two_groups_of_nodes(S4 dag, IntegerVector nodes1, IntegerVector nodes2);
+RcppExport SEXP _simone_n_links_from_two_groups_of_nodes(SEXP dagSEXP, SEXP nodes1SEXP, SEXP nodes2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type nodes1(nodes1SEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type nodes2(nodes2SEXP);
+    rcpp_result_gen = Rcpp::wrap(n_links_from_two_groups_of_nodes(dag, nodes1, nodes2));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_sim_aic
 NumericMatrix cpp_sim_aic(S4 dag, IntegerVector nodes, NumericVector ic);
 RcppExport SEXP _simone_cpp_sim_aic(SEXP dagSEXP, SEXP nodesSEXP, SEXP icSEXP) {
@@ -729,6 +742,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_simone_cpp_tpl_longest_path", (DL_FUNC) &_simone_cpp_tpl_longest_path, 3},
     {"_simone_intersectToList_logical", (DL_FUNC) &_simone_intersectToList_logical, 2},
     {"_simone_cpp_term_pos_on_circle", (DL_FUNC) &_simone_cpp_term_pos_on_circle, 3},
+    {"_simone_n_links_from_two_groups_of_nodes", (DL_FUNC) &_simone_n_links_from_two_groups_of_nodes, 3},
     {"_simone_cpp_sim_aic", (DL_FUNC) &_simone_cpp_sim_aic, 3},
     {"_simone_cpp_sim_wang", (DL_FUNC) &_simone_cpp_sim_wang, 3},
     {"_simone_cpp_wang_sv_to_sim", (DL_FUNC) &_simone_cpp_wang_sv_to_sim, 1},

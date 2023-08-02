@@ -52,8 +52,8 @@ DataFrame cpp_term_pos_on_circle(S4 dag, double start = 0, double end = 360) {
 	NumericVector parent_range_right(n);
 
 	l_current_parent[i_root] = true;
-	parent_range_left[i_root] = 0;
-	parent_range_right[i_root] = 360;
+	parent_range_left[i_root] = start;
+	parent_range_right[i_root] = end;
 
 	int current_depth = 0;
 
@@ -66,13 +66,6 @@ DataFrame cpp_term_pos_on_circle(S4 dag, double start = 0, double end = 360) {
 		DataFrame df = DataFrame::create(Named("theta") = theta, Named("rho") = rho, Named("level1_group") = -1, Named("width") = width);
 
 		return df;
-	}
-
-	// level 1
-	IntegerVector level1 = lt_children[i_root];
-	IntegerVector level1_group(n);
-	for(int i = 0; i < level1.size(); i ++) {
-		level1_group[ level1[i]-1 ] = level1[i];
 	}
 
 	while(1) {
@@ -109,9 +102,6 @@ DataFrame cpp_term_pos_on_circle(S4 dag, double start = 0, double end = 360) {
 					parent_range_left[ children2[j]-1 ] = breaks[j];
 					parent_range_right[ children2[j]-1 ] = breaks[j+1];
 
-					if(current_depth > 1) {
-						level1_group[ children2[j]-1 ] = level1_group[i];
-					}
 				}
 
 				for(int j = 0; j < n_children2; j ++) {
@@ -129,7 +119,7 @@ DataFrame cpp_term_pos_on_circle(S4 dag, double start = 0, double end = 360) {
 		}
 	}
 
-	DataFrame df = DataFrame::create(Named("theta") = theta, Named("rho") = rho, Named("level1_group") = level1_group, Named("width") = width);
+	DataFrame df = DataFrame::create(Named("theta") = theta, Named("rho") = rho, Named("width") = width);
 
 	return df;
 }

@@ -77,6 +77,10 @@ cpp_term_pos_on_circle <- function(dag, start = 0, end = 360) {
     .Call(`_simone_cpp_term_pos_on_circle`, dag, start, end)
 }
 
+n_links_from_two_groups_of_nodes <- function(dag, nodes1, nodes2) {
+    .Call(`_simone_n_links_from_two_groups_of_nodes`, dag, nodes1, nodes2)
+}
+
 cpp_sim_aic <- function(dag, nodes, ic) {
     .Call(`_simone_cpp_sim_aic`, dag, nodes, ic)
 }

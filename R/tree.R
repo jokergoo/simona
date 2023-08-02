@@ -66,6 +66,9 @@ dag_treelize = function(dag) {
 	tree = create_ontology_DAG(dag@terms[parents], dag@terms[children])
 	tree@annotation = dag@annotation
 
+	if(!is.null(mcols(dag))) {
+		mcols(tree) = mcols(dag)[tree@terms, , drop = FALSE]
+	}
 	tree
 }
 
@@ -76,7 +79,7 @@ dag_treelize = function(dag) {
 dag_as_dendrogram = function(dag) {
 
 	if(!dag_is_tree(dag)) {
-		stop("dag is not a tree.")
+		stop("dag is not a tree. run `dag_treelize()` first.")
 	}
 
 	add_dend = function(node, lt_children, height) {
@@ -200,4 +203,6 @@ dend_sort = function(dend, by = "n_nodes", decreasing = TRUE) {
 	dend = reorder(dend)
 	dend_set_midpoint(dend)
 }
+
+
 

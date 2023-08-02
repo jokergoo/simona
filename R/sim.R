@@ -1310,11 +1310,11 @@ Sim_Jiang_1997 = function(dag, terms, IC_method = "IC_annotation", norm_method =
 	id = id[l]
 
 	ic_mica = MICA_IC(dag, id, IC_method)
-	ic = term_IC(dag, IC_method)[id]
-	max_ic = max(ic)
+	ic = term_IC(dag, IC_method)
+	max_ic = max(ic, na.rm = TRUE)  # IC_annotation generates NA
+	ic = ic[id]
 
 	dist = outer(ic, ic, "+") - 2*ic_mica
-	
 	if(norm_method == "max") {
 		sim = 1 - dist/2/max_ic
 	} else if(norm_method == "Couto") {

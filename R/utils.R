@@ -11,16 +11,18 @@ term_to_node_id = function(dag, term, strict = TRUE) {
 
 		i
 	} else if(length(term) > 1) {
-		i = which(dag@terms %in% term)
+		unique_term = unique(term)
+		i = which(dag@terms %in% unique_term)
 
 		if(length(i) == 0) {
 			stop("Cannot find all these terms.")
 		}
-		if(length(i) != length(term)) {
+
+		if(length(i) != length(unique_term)) {
 			if(strict) {
 				stop("Cannot find some of the terms in the DAG.")
 			} else {
-				message("removed ", length(term) - length(i), " terms that cannot be found in the DAG.")
+				message("removed ", length(unique_term) - length(i), " terms that cannot be found in the DAG.")
 			}
 		}
 

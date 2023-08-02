@@ -393,7 +393,7 @@ ADD_IC_METHOD("IC_Seddiqui_2010", "use_cache")
 IC_Sanchez_2011 = function(dag, use_cache = simone_opt$use_cache) {
 	if(is.null(dag@term_env$IC_Sanchez_2011) || !use_cache) {
 		nl = length(dag@leaves)
-		n_connected_leaves = n_leaves(dag)
+		n_connected_leaves = n_connected_leaves(dag)
 
 		na = n_ancestors(dag)
 		na[na == 0] = 1

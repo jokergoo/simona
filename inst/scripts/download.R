@@ -23,7 +23,7 @@ for(f in list.files(path = "~/project/development/purl.obolibrary.org/config", f
 options(timeout = 9999999)
 
 ## https://bioportal.bioontology.org/
-apikey = "5cde006c-26ea-44a2-991b-e60b997d27dc"
+apikey = 
 js = fromJSON(qq("https://data.bioontology.org/ontologies?apikey=@{apikey}"))
 
 for(i in seq_len(nrow(js))) {

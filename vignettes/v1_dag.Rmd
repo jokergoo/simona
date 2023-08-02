@@ -19,18 +19,20 @@ knitr::opts_chunk$set(
     fig.align = "center")
 ```
 
-Ontologies are represented in a format of directed acyclic diagram (DAG). A DAG
-is a generalized form of a tree where a parent term can have multiple child terms,
-and also a child term can have multiple terms. The DAG is directed and a link connects
-from a child term to a parent term, representing "the child is a sub-class of the parent." (left panel).
-However, in other cases, the direction can also be reversed to represent "a parent include the child" (right panel).
+Ontologies are represented in a form of directed acyclic diagram (DAG). A DAG
+is a generalized form of tree where a parent term can have multiple child
+terms, and also a child term can have multiple parent terms. The DAG is
+directed and a link connects from a child term to a parent term, representing
+"the child is a sub-class of the parent." (left panel). However, in other
+cases, the direction can also be reversed to represent "a parent includes the
+child" (right panel).
 
 <center><img src="dag.svg" /></center>
 
 
 In this vignette, I will introduce the `ontology_DAG` class as well as related
-functions with a tiny example, as shown in the following diagram. There are
-six terms in the DAG and term "a" is the root, term "e" and "f" are two leaf
+functions with a tiny example. As shown in the following diagram, there are
+six terms in the DAG where term "a" is the root, term "e" and "f" are two leaf
 terms. Note term "c" has two parents.
 
 <center><img src="example.svg" /></center>
@@ -54,7 +56,7 @@ dag
 ```
 
 Aspect ratio is calculated as `width/height`, where `width` is the largest
-number of terms on a specific height (i.e. `max(table(depth(dag)))`).
+number of terms on a specific height (i.e. `max(table(height(dag)))`).
 Definition of the height of a term in the DAG depends on whether using the
 longest or the shortest distance from root. The aspect ratio gives an
 impression of how the shape of the  DAG looks like (fat or slim).
@@ -87,16 +89,15 @@ n_offspring(dag)
 n_ancestors(dag)
 ```
 
-`n_leaves()` does not return the number of leaves in the DAG which can be
-simply obtained by `length(dag_leaves(dag))`. Instead, it returns numbers of
+`n_connected_leaves()` returns numbers of
 leaves that every term can reach (or has a finite directed distance to). Leaf
 terms have value of zero.
 
 ```{r}
-n_leaves(dag)
+n_connected_leaves(dag)
 ```
 
-Parents/child terms of a single term or union of parents/children of a group
+Parents/children of a single term or union of parents/children of a group
 of terms. The term argument can be a single term name or a vector of term
 names.
 
@@ -106,7 +107,7 @@ dag_parents(dag, c("d", "e"))
 dag_children(dag, "b")
 ```
 
-Similar for getting offspring/ancestor terms of a single term or a group of
+It is similar to get offspring/ancestor terms of a single term or a group of
 terms.
 
 ```{r}
@@ -137,8 +138,7 @@ dag_shortest_dist_to_leaves(dag)
 These four functions introduced so far calculate distance from root or to
 leaves for all terms in the DAG. The following functions are more general
 which calculates distance from a self-defined group of terms or until a group
-of terms. Taking `dag_longest_dist_to_offspring()` for example, terms
-upstreaming of `from` terms are set with distance of -1.
+of terms. 
 
 `dag_depth()` is identical to `dag_longest_dist_to_offspring(dag, root)`, and
 `dag_height()` is identical to `dag_longest_dist_from_ancestors(dag, leaves)`
@@ -153,7 +153,7 @@ dag_shortest_dist_from_ancestors(dag, to)
 ```
 
 
-Given any two terms in the DAG, the following four functions calculates their
+Given any two terms in the DAG, the following four functions calculate their
 pair-wise distance. There are different ways to calculate the distance:
 
 For two terms $a$ and $b$, `shortest_distances_via_NCA()` calculates the
@@ -174,7 +174,7 @@ shortest_distances_via_NCA(dag, terms)
 
 $$ \mathrm{len}(t, a) + \mathrm{len}(t, b) $$
 
-where $\mathrm{len}(x, y$ is the longest distance between $x$ and $y$, common ancestor
+where $\mathrm{len}(x, y)$ is the longest distance between $x$ and $y$. Common ancestor
 $t$ is the one with the largest depth in DAG and it is called the lowest
 common ancestor (LCA) of $a$ and $b$:
 
@@ -196,6 +196,8 @@ longest_distances_directed(dag, terms)
 
 ## Convert to other formats
 
+### To an igraph object
+
 DAG is a graph, `dag_as_igraph()` converts the DAG to an `igraph` object.
 
 ```{r}
@@ -209,6 +211,8 @@ Draw the graph with a hierarchical graph layout:
 library(igraph)
 plot(g, layout = layout.sugiyama)
 ```
+
+### To a dendrogram object
 
 In a DAG, a term can have multiple parents. A tree is a reduced form of a DAG
 where a term only has one parent. `dag_treelize()` simplifies a DAG to a tree.
@@ -227,8 +231,16 @@ dag_depth(dag)
 dag_depth(tree)
 ```
 
+Note, although we are talking about "a tree", `tree` in the example is still
+an `ontology_DAG` object where only multi-parent relations are removed.
+If `n_relations + 1 = n_terms`, there is special mark of being a tree in the object.
+
+```{r}
+tree
+```
+
 When the DAG is a tree, it can be converted to a `dendrogram` object.
-Since some nodes only have one child, I add labels on nodes.
+Since some nodes only have one child, I add labels on nodes to mark the nodes are there.
 
 ```{r}
 dend = dag_as_dendrogram(tree)
@@ -281,24 +293,31 @@ dag
 ```
 
 Due to the nature of DAG, if a child term is annotated to an item, all its
-ancestor terms are also associated with it. The calculation of annotated items
+ancestor terms are also associated with that item. The calculation of annotated items
 is applied in a recursive way.
 
-For a term $x$, denote $\mathcal{C}_h(x)$ is the set of its child terms, the
-items anotated to $x$ denoted as set $G_x$ is the union of all items annotated
-to its child terms.
+For a term $x$, denote $\mathcal{C}_x$ is the set of its child terms, the
+items "directedly" annotated to $x$ denoted as set $G^*_x$, then the final
+set of items annotated to $x$ denoted as $G_x$ is the union of all items annotated
+to its child terms as well as $x$ itself.
 
-$$ G_x = \bigcup_{z \in \mathcal{C}_h(x)} G_z $$
+$$ G_x = \left( \bigcup_{z \in \mathcal{C}_x} G_z \right) \bigcup G^*_x $$
 
-And the numbers can be obtained via the function `n_annotations()`.
-The attribute `attr(,"N")` is the maximal number of items annotated to the DAG,
-which normally corresponds to the root term.
+Note above equation is applied resursively. If denoting $\mathcal{D}^+_x$
+as the set of $x$'s offspring terms plus $x$ itself, $G^*_x$ can also be written as:
+
+$$ G_x = \bigcup_{z \in \mathcal{D}^+_x} G_z $$
+
+The numbers of annotated items of DAG terms can be obtained via the function
+`n_annotations()`. The attribute `attr(,"N")` is the maximal number of items
+annotated to the DAG (the same as `max(n_annotations(dag))`), which normally
+corresponds to the root term.
 
 ```{r}
 n_annotations(dag)
 ```
 
-The next two functions return the associatios between terms and items.
+The next two functions return the associations between terms and items.
 
 ```{r}
 term_annotations(dag, letters[1:6])
@@ -316,7 +335,8 @@ annotated_terms(dag, c("t1", "t2", "t3"), return = "matrix")
 ## Pseudo root
 
 The DAG should be lead by a single root term. If in an ontology there are
-multiple root terms, a pseudo root named `"_all_"` is automatically added:
+multiple root terms, a pseudo root named `"_all_"` is automatically added.
+You can see this process from the message of the function call.
 
 ```{r, message = TRUE}
 parents  = c("a", "a", "b", "x", "x", "y")
@@ -348,11 +368,18 @@ dag["b", "e"]
 dag[, "e"]  
 ```
 
-A more general function `dag_filter()`:
+With the more general function `dag_filter()`, you can obtain a sub-DAG by providing
+a group of terms, a subset of relations, a group of root terms or a leaf terms. Note
+if there are multiple root after the fitlering, a pseudo node will be automatically added.
 
 ```r
-dag_filter(dag, ...)
+dag_filter(dag, terms, relations, root, leaves)
 ```
+
+## Meta data frame
+
+The DAG object can have a meta data frame attached, which provides more information
+on the terms in the DAG. Examples can be found from [the "2. Gene ontology" vignette](v2_GO.html).
 
 ## Session info
 

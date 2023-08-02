@@ -81,7 +81,7 @@ NumericMatrix cpp_max_ancestor_v(S4 dag, IntegerVector nodes, NumericVector v) {
 		return score;
 	}
 
-	Rcout << "colecting all ancestors of input terms ...\n";
+	Rcout << "collecting all ancestors of input terms ...\n";
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
@@ -149,7 +149,7 @@ IntegerMatrix cpp_max_ancestor_id(S4 dag, IntegerVector nodes, NumericVector v) 
 		return id;
 	}
 
-	Rcout << "colecting all ancestors of input terms ...\n";
+	Rcout << "collecting all ancestors of input terms ...\n";
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
@@ -221,7 +221,7 @@ IntegerMatrix cpp_distances(S4 dag, IntegerVector nodes, int type = 1) { // 1: l
 		return dd;
 	}
 
-	Rcout << "colecting all ancestors of input terms ...\n";
+	Rcout << "collecting all ancestors of input terms ...\n";
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
@@ -312,7 +312,7 @@ IntegerMatrix cpp_longest_distances_via_LCA(S4 dag, IntegerVector nodes) {
 		return dd;
 	}
 
-	Rcout << "colecting all ancestors of input terms ...\n";
+	Rcout << "collecting all ancestors of input terms ...\n";
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
@@ -402,7 +402,7 @@ List cpp_longest_distances_from_LCA(S4 dag, IntegerVector nodes) {
 		return lt;
 	}
 
-	Rcout << "colecting all ancestors of input terms ...\n";
+	Rcout << "collecting all ancestors of input terms ...\n";
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
@@ -491,7 +491,7 @@ IntegerMatrix cpp_distances_directed(S4 dag, IntegerVector nodes, int type = 1) 
 		nodes_ind[ nodes[i]-1 ] = i;
 	}
 
-	Rcout << "colecting all ancestors of input terms ...\n";
+	Rcout << "collecting all ancestors of input terms ...\n";
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
@@ -572,7 +572,7 @@ IntegerMatrix cpp_nearest_common_ancestor(S4 dag, IntegerVector nodes) {
 		return id;
 	}
 
-	Rcout << "colecting all ancestors of input terms ...\n";
+	Rcout << "collecting all ancestors of input terms ...\n";
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
@@ -654,7 +654,7 @@ IntegerMatrix cpp_shortest_distances_via_NCA(S4 dag, IntegerVector nodes) {
 		return dd;
 	}
 
-	Rcout << "colecting all ancestors of input terms ...\n";
+	Rcout << "collecting all ancestors of input terms ...\n";
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);

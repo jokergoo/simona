@@ -4,7 +4,7 @@ author: "Zuguang Gu ( z.gu@dkfz.de )"
 date: '`r Sys.Date()`'
 output: html_document
 vignette: >
-  %\VignetteIndexEntry{2. Import ontology files}
+  %\VignetteIndexEntry{3. Import ontology files}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -57,20 +57,19 @@ Note rows in `mcols(dag1)` corresponds to terms in `dag_all_terms(dag)`.
 
 The `is_a` relation between classes is of course saved in the DAG object
 (specified in the `is_a` tag in the `.obo` file). Additional relation types
-can also be selected (specified in the `relationship` tag). By default only the
-relation type `part_of` is used. You can check other values associated with
-the `relationship` tag and the `[Typedef]` section in the `.obo` file to select
-proper additional relation types. Just make sure that the selected relation
-types are transitive and not inversed (e.g. you cannot select `has_part` which is
-a reversed relation of `part_of`).
+can also be selected (specified in the `relationship` tag). By default only
+the relation type `part_of` is used. You can check other values associated
+with the `relationship` tag and the `[Typedef]` section in the `.obo` file to
+select proper additional relation types. Just make sure that the selected
+relation types are transitive and not inversed (e.g. you cannot select
+`has_part` which is a reversed relation of `part_of`).
 
 Relations can also have a DAG structure. In `import_obo()`, if a parent
 relation type is selected, all its offspring types are automatically selected.
 For example, in GO, besides relations of `is_a` and `part_of`, there are also
-`regulates`, `positively_regulates` and `negatively_regulates`, where the latter ones are child
-relations of `regulates`. So if
-`regulates` is selected as an additional relation type, the other two are
-automatically selected.
+`regulates`, `positively_regulates` and `negatively_regulates`, where the
+latter two are child relations of `regulates`. So if `regulates` is selected
+as an additional relation type, the other two are automatically selected.
 
 
 ```r
@@ -86,13 +85,13 @@ For ontologies in other formats, **simone** uses an external tool
 [**ROBOT**](http://robot.obolibrary.org/) to convert them to `.obo` format and
 internally uses `import_obo()` to import them. The file `robot.jar` is needed and
 it can be downloaded from https://github.com/ontodev/robot/releases (Since
-this is a tool in Java, you should have Java already available on the
+this is a tool in Java, you should have Java already available on your
 machine).
 
 The file `po.owl` can also be found from the [Plant
 Ontology](http://obofoundry.org/ontology/po.html) web page.
 
-```{r, eval = identical(Sys.info()["user"], "guz")}
+```{r, eval = Sys.info()["user"] == "guz"}
 dag2 = import_ontology("https://raw.githubusercontent.com/Planteome/plant-ontology/master/po.owl", 
     robot_jar = "~/Downloads/robot.jar")
 ```
@@ -102,7 +101,7 @@ dag2
 ```
 
 ```{r, echo = FALSE}
-if(identical(Sys.info()["user"], "guz")) {
+if(Sys.info()["user"] == "guz") {
     print(dag2)
 } else {
     cat(
@@ -121,8 +120,6 @@ With the following columns in the metadata data frame:
 ")
 }
 ```
-
-The number of terms and relations are the same as in `dag1`.
 
 More conveniently, the path of `robot.jar` can be set as a global option:
 
@@ -147,9 +144,9 @@ identified according to the file contents.
 For some huge ontologies, it requires a huge amount of memory for **ROBOT** to
 convert to the `.obo` format. If the ontology is in the `.owl` format (in the
 RDF/XML seriation format), the function `import_owl()` can be optionally used.
-`import_owl()` directly parses the `.owl` file and returns an `ontology_DAG` object.
-The `import_owl()` is written from scratch and it is recommended to use only when `import_ontology()`
-does not work.
+`import_owl()` directly parses the `.owl` file and returns an `ontology_DAG`
+object. The `import_owl()` is written from scratch and it is recommended to
+use only when `import_ontology()` does not work.
 
 
 ```{r}
@@ -157,7 +154,6 @@ dag3 = import_owl("https://raw.githubusercontent.com/Planteome/plant-ontology/ma
 dag3
 ```
 
-As you see, all the three DAG objects contain the same numbers of terms and relations.
 
 ## Session info
 

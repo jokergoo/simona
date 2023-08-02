@@ -32,8 +32,6 @@ get_term_sim_method = function(method, control = list()) {
 	}
 
 	f = get(method, envir = topenv(), inherits = FALSE)
-
-	control = control[intersect(names(control), param)]
 	
 	function(dag, terms) {
 		do.call(f, c(list(dag = dag, terms = terms), control))
@@ -53,7 +51,9 @@ get_group_sim_method = function(method, control = list()) {
 
 	f = get(method, envir = topenv(), inherits = FALSE)
 
-	control = control[intersect(names(control), param)]
+	if(!"..." %in% param) {
+		control = control[intersect(names(control), param)]
+	}
 	
 	function(dag, group1, group2) {
 		do.call(f, c(list(dag = dag, group1 = group1, group2 = group2), control))
@@ -183,8 +183,8 @@ term_sim = function(dag, terms, method, control = list()) {
 #' Semantic similarity between two groups of terms
 #' 
 #' @param dag An `ontology_DAG` object.
-#' @param group1 A vector of term names.
-#' @param group2 A vector of term names.
+#' @param group1 A vector of term names or a list of term vectors.
+#' @param group2 A vector of term names or a list of term vectors..
 #' @param method A group similarity method. All available methods are in [`all_group_sim_methods()`].
 #' @param control A list of parameters passing to individual methods. See the subsections.
 #'
@@ -232,7 +232,7 @@ term_sim = function(dag, terms, method, control = list()) {
 #' group_sim(dag, group1, group2, ...)
 #' ```
 #' 
-#' @return A numeric scalar.
+#' @return A numeric scalar, a numeric vector or a matrix depending on the dat type of `group1` and `group2`.
 #' @export
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
@@ -251,7 +251,61 @@ term_sim = function(dag, terms, method, control = list()) {
 #'     control = list(term_sim_method = "Sim_Lin_1998")
 #' )
 group_sim = function(dag, group1, group2, method, control = list()) {
+
+	if(has_annotation(dag)) {
+		if(!"term_sim_method" %in% names(control)) {
+			control$term_sim_method = "Sim_Lin_1998"
+		}
+	} else {
+		if(!"term_sim_method" %in% names(control)) {
+			control$term_sim_method = "Sim_WP_1994"
+		}
+	}
 	group_sim_fun = get_group_sim_method(method, control)
 
-	group_sim_fun(dag, group1, group2)
+	if(missing(group2)) {
+		if(is.list(group1)) {
+			if(length(group1) <= 1) {
+				stop("If `group1` is a list, its length should be > 1")
+			}
+			ng = length(group1)
+			m = matrix(NA, nrow = ng, ncol = ng, dimnames = list(names(group1), names(group1)))
+			for(i in 1:(ng-1)) {
+				for(j in (i+1):ng) {
+					m[i, j] = m[j, i] = group_sim_fun(dag, group1[[i]], group1[[j]])
+				}
+			}
+			diag(m) = 1
+			return(m)
+		}
+	}
+	
+	if(is.list(group1) && is.list(group2)) {
+		ng1 = length(group1)
+		ng2 = length(group2)
+		m = matrix(NA, nrow = ng1, ncol = ng2, dimnames = list(names(group1), names(group2)))
+		for(i in 1:ng1) {
+			for(j in 1:ng2) {
+				m[i, j] = group_sim_fun(dag, group1[[i]], group2[[j]])
+			}
+		}
+		return(m)
+	} else if(is.list(group1)) {
+		ng1 = length(group1)
+		v = rep(NA, ng1); names(v) = names(group1)
+		for(i in 1:ng1) {
+			v[i] = group_sim_fun(dag, group1[[i]], group2)
+		}
+		return(v)
+	} else if(is.list(group2)) {
+		ng2 = length(group2)
+		v = rep(NA, ng2); names(v) = names(group2)
+		for(j in 1:ng2) {
+			v[j] = group_sim_fun(dag, group1, group2[[j]])
+		}
+		return(v)
+	} else {
+		v = group_sim_fun(dag, group1, group2)
+		return(v)
+	}
 }

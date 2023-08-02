@@ -1,7 +1,7 @@
 
 
 #' @importFrom matrixStats rowMaxs colMaxs
-.GroupSim_pairwise = function(dag, group1, group2, term_sim_method, group_sim_method = "avg") {
+.GroupSim_pairwise = function(dag, group1, group2, term_sim_method, group_sim_method = "avg", ...) {
 
 	id1 = term_to_node_id(dag, group1, strict = FALSE)
 	id2 = term_to_node_id(dag, group2, strict = FALSE)
@@ -9,7 +9,7 @@
 	group2 = dag@terms[id2]
 
 	group = union(group1, group2)
-	sim = term_sim(dag, group, term_sim_method)
+	sim = term_sim(dag, group, term_sim_method, control = list(...))
 	sim = sim/max(sim)
 	group1 = intersect(group1, rownames(sim))
 	group2 = intersect(group2, rownames(sim))
@@ -67,10 +67,10 @@
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_avg
-GroupSim_pairwise_avg = function(dag, group1, group2, term_sim_method) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "avg")
+GroupSim_pairwise_avg = function(dag, group1, group2, term_sim_method, ...) {
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "avg", ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_avg", "term_sim_method")
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_avg", c("term_sim_method", "..."))
 
 
 #' GroupSim_pairwise_max
@@ -87,10 +87,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_avg", "term_sim_method")
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_max
-GroupSim_pairwise_max = function(dag, group1, group2, term_sim_method) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "max")
+GroupSim_pairwise_max = function(dag, group1, group2, term_sim_method, ...) {
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "max", ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_max", "term_sim_method")
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_max", c("term_sim_method", "..."))
 
 #' GroupSim_pairwise_BMA
 #' 
@@ -116,10 +116,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_max", "term_sim_method")
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_BMA
-GroupSim_pairwise_BMA = function(dag, group1, group2, term_sim_method) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "BMA")
+GroupSim_pairwise_BMA = function(dag, group1, group2, term_sim_method, ...) {
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "BMA", ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_BMA", "term_sim_method")
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_BMA", c("term_sim_method", "..."))
 
 
 #' GroupSim_pairwise_BMM
@@ -136,10 +136,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_BMA", "term_sim_method")
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_BMM
-GroupSim_pairwise_BMM = function(dag, group1, group2, term_sim_method) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "BMM")
+GroupSim_pairwise_BMM = function(dag, group1, group2, term_sim_method, ...) {
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "BMM", ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_BMM", "term_sim_method")
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_BMM", c("term_sim_method", "..."))
 
 
 #' GroupSim_pairwise_ABM
@@ -158,10 +158,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_BMM", "term_sim_method")
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_ABM
-GroupSim_pairwise_ABM = function(dag, group1, group2, term_sim_method) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "ABM")
+GroupSim_pairwise_ABM = function(dag, group1, group2, term_sim_method, ...) {
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "ABM", ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_ABM", "term_sim_method")
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_ABM", c("term_sim_method", "..."))
 
 
 #' GroupSim_pairwise_HDF
@@ -190,10 +190,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_ABM", "term_sim_method")
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_HDF
-GroupSim_pairwise_HDF = function(dag, group1, group2, term_sim_method) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "HDF")
+GroupSim_pairwise_HDF = function(dag, group1, group2, term_sim_method, ...) {
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "HDF", ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_HDF", "term_sim_method")
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_HDF", c("term_sim_method", "..."))
 
 
 #' GroupSim_pairwise_MHDF
@@ -216,10 +216,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_HDF", "term_sim_method")
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_MHDF
-GroupSim_pairwise_MHDF = function(dag, group1, group2, term_sim_method) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "MHDF")
+GroupSim_pairwise_MHDF = function(dag, group1, group2, term_sim_method, ...) {
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "MHDF", ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_MHDF", "term_sim_method")
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_MHDF", c("term_sim_method", "..."))
 
 
 
@@ -238,10 +238,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_MHDF", "term_sim_method")
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_VHDF
-GroupSim_pairwise_VHDF = function(dag, group1, group2, term_sim_method) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "VHDF")
+GroupSim_pairwise_VHDF = function(dag, group1, group2, term_sim_method, ...) {
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "VHDF", ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_VHDF", "term_sim_method")
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_VHDF", c("term_sim_method", "..."))
 
 
 #' GroupSim_pairwise_Froehlich_2007
@@ -258,10 +258,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_VHDF", "term_sim_method")
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_Froehlich_2007
-GroupSim_pairwise_Froehlich_2007 = function(dag, group1, group2, term_sim_method) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "froehlich_2007")
+GroupSim_pairwise_Froehlich_2007 = function(dag, group1, group2, term_sim_method, ...) {
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "froehlich_2007", ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_Froehlich_2007", "term_sim_method")
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_Froehlich_2007", c("term_sim_method", "..."))
 
 
 #' GroupSim_pairwise_Joeng_2014
@@ -278,10 +278,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_Froehlich_2007", "term_sim_method")
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_Joeng_2014
-GroupSim_pairwise_Joeng_2014 = function(dag, group1, group2, term_sim_method) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "joeng_2014")
+GroupSim_pairwise_Joeng_2014 = function(dag, group1, group2, term_sim_method, ...) {
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "joeng_2014", ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_Joeng_2014", "term_sim_method")
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_Joeng_2014", c("term_sim_method", "..."))
 
 
 #' GroupSim_SimALN

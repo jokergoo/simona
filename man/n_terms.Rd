@@ -3,7 +3,7 @@
 \name{n_offspring}
 \alias{n_offspring}
 \alias{n_ancestors}
-\alias{n_leaves}
+\alias{n_connected_leaves}
 \alias{n_parents}
 \alias{n_children}
 \title{Number of parent/child/ancestor/offspring/leaf terms}
@@ -12,7 +12,7 @@ n_offspring(dag, terms = NULL, use_cache = TRUE, include_self = FALSE)
 
 n_ancestors(dag, terms = NULL, use_cache = TRUE, include_self = FALSE)
 
-n_leaves(dag, terms = NULL, use_cache = TRUE)
+n_connected_leaves(dag, terms = NULL, use_cache = TRUE)
 
 n_parents(dag, terms = NULL, use_cache = TRUE)
 
@@ -44,5 +44,5 @@ n_parents(dag)
 n_children(dag)
 n_offspring(dag)
 n_ancestors(dag)
-n_leaves(dag)
+n_connected_leaves(dag)
 }

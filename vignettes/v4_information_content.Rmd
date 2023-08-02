@@ -4,7 +4,7 @@ author: "Zuguang Gu ( z.gu@dkfz.de )"
 date: '`r Sys.Date()`'
 output: html_document
 vignette: >
-  %\VignetteIndexEntry{3. Information content}
+  %\VignetteIndexEntry{4. Information content}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,10 +20,24 @@ knitr::opts_chunk$set(
     fig.align = "center")
 ```
 
-The xxx are mainly from the [supplementary file](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/bib/18/5/10.1093_bib_bbw067/2/bbw067_supplementary_file.pdf?Expires=1692176766&Signature=Ks4C96x-kinySVP7rzVzMn8cGnQWXOqkB-6gYHhs48Bl9A2Vj~-mcI9pEnvntNBvjBD1hp4ZncMWUNT-y1ArrrQgDJ0dCCEJp5LG0Ag2oPWsC5NFEeUQiYNZCXal8Kwa3Ze1vtDHjIwZpT9-sZhn9ryqKHd3C88RvuGx10jcSYRL1Pec0F~a9CnrbivieCfFELg2OQTf5zpAobxhlqzWqv~sa1b62PunNZ~XkmnTGOJoSMQFnNaBy~bDNEf9Pd6eRYaOc8MUh5Br4xB4y8mivT6Et2vKzLrGJFQjYpvouQpBu0nf03xwHVmNFN5-6LsDnpyQPCy4nQ5DHYltVHkEOA__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA)
-of the paper "Mazandu et al., Gene Ontology semantic similarity tools: survey on features and challenges for biological knowledge discovery. Briefings in Bioinformatics 2017.". Original
-denotations have been slightly modified to make more consistent. Also more explanations have been added 
-in this vignette. Most of the credit goes to 
+```{r, echo = FALSE}
+knitr::knit_hooks$set(pngquant = knitr::hook_pngquant)
+
+knitr::opts_chunk$set(
+  dev = "ragg_png",
+  fig.align = "center",
+  pngquant = "--speed=10 --quality=30"
+)
+```
+
+The methods of information content implemented in **simone** are mainly from
+the [supplementary file](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/bib/18/5/10.1093_bib_bbw067/2/bbw067_supplementary_file.pdf?Expires=1692176766&Signature=Ks4C96x-kinySVP7rzVzMn8cGnQWXOqkB-6gYHhs48Bl9A2Vj~-mcI9pEnvntNBvjBD1hp4ZncMWUNT-y1ArrrQgDJ0dCCEJp5LG0Ag2oPWsC5NFEeUQiYNZCXal8Kwa3Ze1vtDHjIwZpT9-sZhn9ryqKHd3C88RvuGx10jcSYRL1Pec0F~a9CnrbivieCfFELg2OQTf5zpAobxhlqzWqv~sa1b62PunNZ~XkmnTGOJoSMQFnNaBy~bDNEf9Pd6eRYaOc8MUh5Br4xB4y8mivT6Et2vKzLrGJFQjYpvouQpBu0nf03xwHVmNFN5-6LsDnpyQPCy4nQ5DHYltVHkEOA__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA)
+of the paper ["Mazandu et al., Gene Ontology semantic similarity tools: survey
+on features and challenges for biological knowledge discovery. Briefings in
+Bioinformatics 2017"](https://doi.org/10.1093/bib/bbw067). Original
+denotations have been slightly modified to make them more consistent. Also
+more explanations have been added in this vignette. Credits go to
+the original paper.
 
 ## Denotations
 
@@ -47,37 +61,52 @@ The following denotations will be used throughout the vignette.
 | $D_\mathrm{sp}(a, b)$ | The shortest distance bewteen $a$ and $b$. | 
 | $\mathrm{len}(a, b)$ | The longest distance bewteen $a$ and $b$. |
 | $\mathrm{len}_s(a, b)$ | The length of the longest path from $a$ and $b$ via $s$. |
-| $\mathrm{CA}(a, b)$ | The set of common ancestors of term $a$ and $b$, i.e. $\mathrm{CA}(a, b) = \mathcal{A}_a^+ \bigcap \mathcal{A}_b^+$ |
-| $\mathrm{LCA}(a, b)$ | Lowest common ancestor of $a$ and $b$, which is the common ancestor with the highest depth in DAG, i.e. $$\operatorname*{argmax}_{t \in \mathrm{CA}(a, b)} \delta(t)$$ There might be more than one LCA terms for given two terms, the one with the smallest distance to $a$ and $b$ is used. |
-| $\mathrm{NCA}(a, b)$ | Nearest common ancestor of $a$ and $b$, i.e. $$\operatorname*{argmin}_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t, a) + D_\mathrm{sp}(t, b) \right)$$. If there are more than one NCA terms, the one with the highest depth is used. |
-| $\mathrm{MICA}(a, b)$ | Most informative common ancestor of $a$ and $b$, i.e. $$\operatorname*{argmax}_{t \in \mathrm{CA}(a, b)} \left( \mathrm{IC}(t) \right )$$. There might be more than one MICA terms for given two terms, the one with the smallest distance to $a$ and $b$ is used.|
+| $\mathrm{CA}(a, b)$ | The set of common ancestors of term $a$ and $b$, i.e. $\mathrm{CA}(a, b) = \mathcal{A}_a^+ \cap \mathcal{A}_b^+$ |
+| $\mathrm{LCA}(a, b)$ | Lowest common ancestor of $a$ and $b$, which is the common ancestor with the largest depth in DAG, i.e. $$\operatorname*{argmax}_{t \in \mathrm{CA}(a, b)} \delta(t)$$ There might be more than one LCA terms for given two terms, to simplify the calculation, the one with the smallest distance to $a$ and $b$ is used. |
+| $\mathrm{NCA}(a, b)$ | Nearest common ancestor of $a$ and $b$, i.e. $$\operatorname*{argmin}_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t, a) + D_\mathrm{sp}(t, b) \right)$$ If there are more than one NCA terms, the one with the highest depth is used. |
+| $\mathrm{MICA}(a, b)$ | Most informative common ancestor of $a$ and $b$, i.e. $$\operatorname*{argmax}_{t \in \mathrm{CA}(a, b)} \left( \mathrm{IC}(t) \right )$$ There might be more than one MICA terms for given two terms, the one with the smallest distance to $a$ and $b$ is used.|
 | $G_s$ | The set of annotated items on term $s$. |
 
+Assume term $a$ is an ancestor of term $b$, $D_\mathrm{sp}(a, b)$ (the order
+of $a$ and $b$ does not matter) is the normal shortest distance from $a$ to
+$b$ in a directed graph. The definition is similar for $\mathrm{len}(a, b)$.
+
+If term $a$ and $b$ are not in offspring/ancestor relationship, i.e. $a$ is
+not an ancestor of $b$, and $b$ is not an ancestor of $a$, then
+
+$$
+\begin{align*}
+D_\mathrm{sp}(a, b) &= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t, a) + D_\mathrm{sp}(t, b) \right) \\
+\mathrm{len}(a, b) &= \max_{t \in \mathrm{CA}(a, b)} \left( \mathrm{len}(t, a) + \mathrm{len}(t, b) \right)
+\end{align*}
+$$
 
 For many information content (IC) definitions, it has the following form:
 
 $$ \mathrm{IC}(x) = -\log(p(x)) $$
 
-where $p(x)$ is the probability of term $x$ under a certain measure. If a term
-has smaller probability, it means it is more specific, thus the form
-$-\log(p(x))$ is called the "information content". Basically the more to the leaves
-in the DAG, the higher information content a term has.
+where $p(x)$ is the probability of term $x$ under a certain measure in the
+DAG. If a term has a smaller probability, it means it is more specific, the
+form $-\log(p(x))$ will have a larger value, thus it is called the
+"information content". Basically the more to the leaves in the DAG, a smaller
+p-value is gained and the higher information content a term has.
 
 In the following sections, I will use Gene Ontology as an example to
 demonstrate various IC methods supported in the **simone** package. Note
-here I also set the gene annotations because some IC methods depend on 
-the number of annotated genes on terms.
+here I also set the gene annotation because some IC methods depend on 
+the number of annotated genes on GO terms.
 
 ```{r}
 library(simone)
 dag = create_ontology_DAG_from_GO_db(namespace = "BP", org_db = "org.Hs.eg.db")
+dag
 ```
 
-And the function `term_IC()` calculates information contents of terms in the DAG with a specific 
-method.
+The wrapper function `term_IC()` calculates information contents of terms in
+the DAG with a specific method. Note the method name can be partially matched.
 
 ```r
-term_IC(dag, method = ...)
+term_IC(dag, method = ..., control = list(...))
 ```
 
 ## IC_offspring
@@ -110,15 +139,15 @@ term_IC(dag, method = "IC_height")
 ## IC_annotation
 
 Due to the nature of DAG, if a child term is annotated to an item, all its
-ancestor terms are also associated with it. The calculation of annotated items
+ancestor terms are also associated with that item. The calculation of annotated items
 is applied in a recursive way.
 
-Denote $G'_x$ as the set of items _directly_ annotated to $x$, and $G_x$ as
+Denote $G^*_x$ as the set of items _directly_ annotated to $x$, and $G_x$ as
 the set of items annotated to $x$ after merging from its child terms. $G_x$ is
 the union of all items annotated to its child terms and the items directly
 annotated to $x$.
 
-$$ G_x = G'_x \bigcup \left( \bigcup_{z \in \mathcal{C}(x)} G_z \right) $$
+$$ G_x = \left( \bigcup_{z \in \mathcal{C}_x} G_z \right) \bigcup G^*_x $$
 
 And the information content is:
 
@@ -128,28 +157,29 @@ where $G_r$ is the set of all items annotated to the DAG (i.e. to the root).
 
 
 ```r
-term_IC(dag, method = "IC_height")
+term_IC(dag, method = "IC_annotation")
 ```
 
 `NA` is assigned to the terms with no item annotated.
 
-In some implementations, number of annotated items on a term is calculated by
-simply adding such numbers from all its child terms, as shown in the following
-equation:
+In some implementation of current tools, number of annotated items on a term
+is calculated by simply adding such numbers from all its child terms, as shown
+in the following equation:
 
 $$ f(x) = \left\{ \begin{array}{lr}
 \beta(x) & \text{if } \textit{x} \text{ is a leaf} \\
-\beta(x) + \sum\limits_{z \in \mathcal{C}} \beta(z) & \text{otherwise}
+\beta(x) + \sum\limits_{z \in \mathcal{C}_x} \beta(z) & \text{otherwise}
 \end{array} \right. $$
 
 
-where $\beta(x)$ is the number of items annotated to term $x$. It should be
-noted that this way over-estimates the number of annotated items because an
-item can be annotated to multiple terms. For example, a gene can be annotated
-to multiple GO terms (you can check the object `org.Hs.eg.db::org.Hs.egGO`.
-And even for the same term, it may have duplicated annotated genes with
-multipel evidence codes (e.g. the gene with Entrez ID `"994"` is annotated to
-a GO term `"GO:0000086"` twice with evidence code `"IBA"` and `"TAS"`.
+where $\beta(x)$ is the number of items directly annotated to term $x$. It
+should be noted that this way over-estimates the number of annotated items
+because an item can be annotated to multiple terms. For example, a gene can be
+annotated to multiple GO terms (you can check the object
+`org.Hs.eg.db::org.Hs.egGO`. And even for the same term, it may have
+duplicated annotated genes with multiple evidence codes (e.g. the gene with
+Entrez ID `"994"` is annotated to a GO term `"GO:0000086"` twice with evidence
+code `"IBA"` and `"TAS"`).
 
 Since annotated-based $p(x)$ is the probability of a term being annotated when
 randomly selecting an item, the second way might not be proper. The two
@@ -157,12 +187,13 @@ methods are identical only if an item is uniquely annotated to a term in the
 DAG.
 
 We can compare the two different implementations with or without uniquifying
-annotations. We can specify an additional parameter for `IC_annotation`:
+annotations. We can specify an additional parameter for the *IC_annotation* method:
 `control = list(uniquify = FALSE)` to use the second method.
 
-```{r}
+```{r, fig.width = 6, fig.height = 6}
 ic1 = term_IC(dag, method = "IC_annotation")
 ic2 = term_IC(dag, method = "IC_annotation", control = list(uniquify = FALSE))
+# ranges on both x- and y-axes
 rg = c(0, max(ic1, ic2, na.rm = TRUE))
 plot(ic1, ic2, xlim = rg, ylim = rg,
     xlab = "uniquified (first method)", ylab = "not uniquified (second method)", 
@@ -170,26 +201,26 @@ plot(ic1, ic2, xlim = rg, ylim = rg,
 abline(a = 0, b = 1, col = "red")
 ```
 
-It shows anyway the trend from the two methods is very linear.
+It shows there is a systematic shift between the two methods.
 
-"IC_annotation" is the only method which replies on external annotation data.
+*IC_annotation* is the only method which replies on external annotation data.
 This type of method has been criticized because it replies on changable
-external data and people argue the IC should be an intrinsic attribute and
+external data and people argue that IC should be an intrinsic attribute and
 only depends on the DAG structure itself. All other IC methods introduced in
-later sections only reply on the DAG structure itself.
+later sections only purely reply on the DAG structure itself.
 
 ## IC_universal
 
 It measures the probability of a term getting full transmission from the root.
 Each term is associated with a p-value and the root has the p-value of 1.
 
-To understand this method, let's think the DAG relates a kind of information
-transmission from the root to the inner of the DAG, where the information is
-100% on root. Then, in a certain step in the DAG, an intermediate term $x$ has
-two parents $t_1$ and $t_2$, also let's assume $t_1$ has $k_1$ children and
-$t_2$ has $k_2$ children, next we assume a parent transmits information
+To understand this method, let's think the DAG relates to a kind of
+information transmission from the root to the inner DAG, where information is
+100% on root. Then, in a certain level in the DAG, a term $x$
+has two parents $t_1$ and $t_2$, also let's assume $t_1$ has $k_1$ children
+and $t_2$ has $k_2$ children, next we assume a parent transmits information
 equally to all its children, then $t_1$ only transmits $1/k_1$ and $t_2$ only
-transmits $1/k_2$ of its content to term $x$, on which we can also say, the
+transmits $1/k_2$ of its content to term $x$, on which we could also say, the
 probability of $t_1$ or $t_2$ to reach $x$ is $1/k_1$ or $1/k_2$. Let's assume
 $p(t_1)$ and $p(t_2)$ are the accumulated contents from the root to $t_1$ and
 $t_2$ already (or the probability of the two parent terms getting full
@@ -216,14 +247,14 @@ The formal definition is:
 
 $$ p(x) = \left\{ \begin{array}{cl}
 1 & \text{if } \textit{x} \text{ is a root} \\
-\prod\limits_{t \in \mathcal{P}(x)} \frac{p(t)}{|\mathcal{C}(t)|} & \text{otherwise}
+\prod\limits_{t \in \mathcal{P}_x} \frac{p(t)}{|\mathcal{C}_t|} & \text{otherwise}
 \end{array} \right. $$
 
 Paper link: https://doi.org/10.1155/2012/975783.
 
 ## IC_Zhang_2006
 
-It measures the number of ways from a term to reach leaf terms. E.g. in the
+It measures the number of ways of a term to reach leaf terms. E.g. in the
 following DAG:
 
 ```
@@ -237,12 +268,12 @@ following DAG:
 Term "a" has three ways to reach leaves, which are `a->b`, `a->d` and
 `a->c->d`.
 
-The number of ways for term $x$ to reach leaf terms can be obtained in a
+The number of ways of term $x$ to reach leaf terms can be obtained in a
 recursively way:
 
 $$ f(x) = \left\{ \begin{array}{cl}
 1 & \text{if } \textit{x} \text{ is a leaf} \\
-\sum\limits_{t \in \mathcal{C}(x)} f(t) & \text{otherwise}
+\sum\limits_{t \in \mathcal{C}_x} f(t) & \text{otherwise}
 \end{array} \right. $$
 
 And the information content:
@@ -267,7 +298,10 @@ $$
 \begin{align*}
 \mathrm{IC}(x) & = \frac{\log(\frac{|\mathcal{D}_x^+|}{|\mathcal{D}_r^+|})}{\log(\frac{1}{|\mathcal{D}_r^+|})}  \\
  & = 1 - \frac{\log(|\mathcal{D}_x^+|)}{\log(|\mathcal{D}_r^+|)}
-\end{align*} $$
+\end{align*} 
+$$
+
+where $\|\mathcal{D}_r^+\|$ is the total number of terms in the DAG.
 
 ```r
 term_IC(dag, method = "IC_Seco_2004")
@@ -332,12 +366,11 @@ Paper link: https://dl.acm.org/doi/10.5555/1862330.1862343.
 
 ## IC_Sanchez_2011
 
-It measures average contribution of term $x$ on leaf terms. First denote
-$\zeta_x$ as the number of leaf terms that can be reached from term $x$ (or in
-other words, $x$'s offspring terms that are leaves). Since all $x$'s ancestors
-can also reach $x$'s leaves, the contribution of $x$ on leaf terms is scaled
-by the number of its ancestors. The final information content is normalized by
-the total number of leaves in the DAG. 
+It measures the average contribution of term $x$ on leaf terms. First denote
+$\zeta_x$ as the number of leaf terms that can be reached from term $x$. Since
+all $x$'s ancestors can also reach $x$'s leaves, the contribution of $x$ on
+leaf terms is scaled by the number of its ancestors. The final information
+content is normalized by the total number of leaves in the DAG.
 
 $$ \mathrm{IC}(x) = -\log \left( \frac{\zeta_x}{|\mathcal{A}_x^+| * \zeta_\mathrm{leaf}} \right) $$
 
@@ -359,11 +392,11 @@ $$ r_1 = \frac{\log(\delta(x))}{\log(\delta_\mathrm{max})} $$
 
 The second factor $r_2$ is calculated as:
 
-$$ r_2 = 1 - \frac{\log \left(1 + \sum_{t \in \mathcal{D}_x} \frac{1}{\delta(t)} \right)}{\log(\lambda_\mathrm{node})} $$
+$$ r_2 = 1 - \frac{\log \left(1 + \sum\limits_{t \in \mathcal{D}_x} \frac{1}{\delta(t)} \right)}{\log(\lambda_\mathrm{node})} $$
 
-In the equation, the summation goes over t's offspring terms.
+In the equation, the summation goes over $t$'s offspring terms.
 
-The final information content is the multiplication of f1 and f2:
+The final information content is the multiplication of $r_1$ and $r_2$:
 
 $$ \mathrm{IC}(x) = r_1 * r_2 $$
 
@@ -386,7 +419,7 @@ weights along the path reaches maximal:
 
 $$ S_x(t) = \left\{ \begin{array}{cl}
 1 & \text{if } \textit{t = x} \\
-\max\limits_{t' \in \mathcal{C}(t)}{w_e * S_x(t')} & \text{otherwise}
+\max\limits_{t' \in \mathcal{C}_t}{w_e * S_x(t')} & \text{otherwise}
 \end{array} \right. $$
 
 To properly understand this setting, let's first apply the following transformation:
@@ -397,19 +430,20 @@ And the definition from $S_x(t)$ is converted to $T_x(t)$:
 
 $$ T_x(t) = \left\{ \begin{array}{cl}
 0 & \text{if } \textit{t = x} \\
-\min\limits_{t' \in \mathcal{C}(t)}{\frac{1}{w_e} * T_x(t')} & \text{otherwise}
+\min\limits_{t' \in \mathcal{C}_t}{\frac{1}{w_e} * T_x(t')} & \text{otherwise}
 \end{array} \right. $$
 
 In this way, $T_x(t)$ is actually the shortest distance from $t$ to $x$ taking
 $1/w_e$ as the edge weight. We can obtain $S_x(t)$ back by:
 
-$$ S_x(t) = \exp^{-T_x(t)} $$
+$$ S_x(t) = \exp(-T_x(t)) $$
 
 The information content is the summation over all $x$'s ancestors:
 
 $$ \mathrm{IC}(x) = \sum\limits_{t \in \mathcal{A}_x^+} S_x(t) $$
 
-Normally _IC_Wang_2007_ is only used ...
+Normally _IC_Wang_2007_ is only used for calculating the semantic similarity
+using _Sim_Wang_2007_ method.
 
 The contribution of different semantic relations can be set with the
 `contribution_factor` parameter. The value should be a named numeric vector
@@ -426,11 +460,13 @@ term_IC(dag, method = "IC_Wang_2007",
 By default 0.8 is set for "is_a" and 0.6 for "part_of".
 
 If you are not sure what types of relations have been set, simply type the `dag` object.
-The relation types will be printed there.
+The relation types are all printed there.
 
 Paper link: https://doi.org/10.1093/bioinformatics/btm087.
 
 ## Comparisons
+
+Let's make a comparison of various IC metrics, using the GO BP ontology.
 
 ```r
 dag = create_ontology_DAG_from_GO_db(namespace = "BP", org_db = "org.Hs.eg.db")
@@ -449,8 +485,7 @@ df = readRDS(system.file("extdata", "go_ic.rds", package = "simone"))
 pairs(df, pch = ".", col = dag_depth(dag), gap = 0)
 ```
 
-And the heatmap of the correlation. Using `use = "pairwise.complete.obs"` because
-there might be `NA` values for ...
+And the heatmap of the correlations of IC metrics. 
 
 ```{r, fig.width = 6, fig.height = 6}
 cor = cor(df, method = "spearman", use = "pairwise.complete.obs")

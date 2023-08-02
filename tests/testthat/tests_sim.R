@@ -20,26 +20,12 @@ annotation = list(
 parents  = c("a", "a", "b", "b", "c", "d")
 children = c("b", "c", "c", "d", "e", "f")
 
-dag = create_ontology_DAG(parents, children, relations = c("is_a", "part_of", "is_a", "part_of", "is_a", "part_of"), 
+dag = create_ontology_DAG(parents, children, 
+	relations = c("is_a", "part_of", "is_a", "part_of", "is_a", "part_of"), 
 	annotation = annotation)
 
-# IC_annotation:
-# -c(log(8/8), log(6/8), log(4/8), log(2/8), log(4/8), log(1/8))
-# test_that("test sim_XGraSM", {
-# 	m = 
-# })
 
-# test_that("test sim_EISI", {
-
-# })
-
-# test_that("test sim_AIC", {
-
-# })
-
-# test_that("test sim_zhong", {
-
-# })
+IC_annotation = -c(log(8/8), log(6/8), log(4/8), log(2/8), log(4/8), log(1/8))
 
 
 ### Sw:

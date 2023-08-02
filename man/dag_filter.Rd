@@ -14,7 +14,8 @@ dag_filter(dag, terms = NULL, relations = NULL, root = NULL, leaves = NULL)
 \item{relations}{A vector of relations. The sub-DAG will only contain these relations.
 Valid values of "relations" should correspond to the values set in the
 \code{relations} argument in the \code{\link[=create_ontology_DAG]{create_ontology_DAG()}}. If \code{relations_DAG} is
-already provided, offspring relation types will all be selected.}
+already provided, offspring relation types will all be selected. Note "is_a"
+is always included.}
 
 \item{root}{A vector of term names which will be used as roots of the sub-DAG. Only
 these with their offspring terms will be kept. If there are multiple root terms,

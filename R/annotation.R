@@ -84,6 +84,10 @@ n_annotations = function(dag, terms = NULL, uniquify = simone_opt$anno_uniquify,
 
 }
 
+has_annotation = function(dag) {
+	length(dag@annotation$list) > 0
+}
+
 validate_dag_has_annotation = function(dag) {
 	if(length(dag@annotation$list) == 0) {
 		stop("`annotation` should be set in `create_ontology_DAG()`.")

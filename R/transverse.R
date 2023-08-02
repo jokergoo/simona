@@ -126,7 +126,7 @@ dag_all_offspring = function(dag, in_labels = TRUE, include_self = FALSE) {
 #' n_children(dag)
 #' n_offspring(dag)
 #' n_ancestors(dag)
-#' n_leaves(dag)
+#' n_connected_leaves(dag)
 n_offspring = function(dag, terms = NULL, use_cache = TRUE, include_self = FALSE) {
 	if(is.null(dag@term_env$n_offspring) || !use_cache) {
 		dag@term_env$n_offspring = cpp_n_offspring(dag, FALSE)
@@ -170,7 +170,7 @@ n_ancestors = function(dag, terms = NULL, use_cache = TRUE, include_self = FALSE
 #' @rdname n_terms
 #' @details Leaf nodes have value of zero, so you can identify leaf terms based on the values.
 #' @export
-n_leaves = function(dag, terms = NULL, use_cache = TRUE) {
+n_connected_leaves = function(dag, terms = NULL, use_cache = TRUE) {
 	if(is.null(dag@term_env$n_leaves) || !use_cache) {
 		dag@term_env$n_leaves = cpp_n_leaves(dag)
 	}

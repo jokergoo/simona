@@ -9,16 +9,16 @@ group_sim(dag, group1, group2, method, control = list())
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
 
-\item{group1}{A vector of term names.}
+\item{group1}{A vector of term names or a list of term vectors.}
 
-\item{group2}{A vector of term names.}
+\item{group2}{A vector of term names or a list of term vectors..}
 
 \item{method}{A group similarity method. All available methods are in \code{\link[=all_group_sim_methods]{all_group_sim_methods()}}.}
 
 \item{control}{A list of parameters passing to individual methods. See the subsections.}
 }
 \value{
-A numeric scalar.
+A numeric scalar, a numeric vector or a matrix depending on the dat type of \code{group1} and \code{group2}.
 }
 \description{
 Semantic similarity between two groups of terms
