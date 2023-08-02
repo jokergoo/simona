@@ -108,6 +108,16 @@ dag_circular_viz(dag, reorder_level = 3, legend_labels_from = "name")
 ![image](https://github.com/jokergoo/simone/assets/449218/9be7c8e6-0061-46a8-93ad-4a92d0a5fe27)
 
 
+The methods of semantic similarity implemented in **simone** are mainly from
+the [supplementary file](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/bib/18/5/10.1093_bib_bbw067/2/bbw067_supplementary_file.pdf?Expires=1692176766&Signature=Ks4C96x-kinySVP7rzVzMn8cGnQWXOqkB-6gYHhs48Bl9A2Vj~-mcI9pEnvntNBvjBD1hp4ZncMWUNT-y1ArrrQgDJ0dCCEJp5LG0Ag2oPWsC5NFEeUQiYNZCXal8Kwa3Ze1vtDHjIwZpT9-sZhn9ryqKHd3C88RvuGx10jcSYRL1Pec0F~a9CnrbivieCfFELg2OQTf5zpAobxhlqzWqv~sa1b62PunNZ~XkmnTGOJoSMQFnNaBy~bDNEf9Pd6eRYaOc8MUh5Br4xB4y8mivT6Et2vKzLrGJFQjYpvouQpBu0nf03xwHVmNFN5-6LsDnpyQPCy4nQ5DHYltVHkEOA__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA)
+of the paper ["Mazandu et al., Gene Ontology semantic similarity tools: survey
+on features and challenges for biological knowledge discovery. Briefings in
+Bioinformatics 2017"](https://doi.org/10.1093/bib/bbw067). Original
+denotations have been slightly modified to make them more consistent. Also
+more explanations have been added in this vignette. Credits go to
+the original paper.
+
+
 ## License
 
 MIT @ Zuguang Gu
