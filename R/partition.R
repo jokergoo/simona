@@ -4,6 +4,7 @@
 #' @param dag An `ontology_DAG` object.
 #' @param level Depth in the DAG to cut. The DAG is cut below terms (or cut the links to their child terms) with `depth == level`.
 #' @param from A list of terms to cut. If it is set, `level` is ignored.
+#' @param term_pos Internally used.
 #' 
 #' @details
 #' Let's call the terms below the `from` term as "top terms" because they will be on top of the sub-DAGs after the partitioning.
@@ -26,7 +27,7 @@
 #' pa = partition_by_k(dag, k = 1000)
 #' table(pa)
 #' }
-partition_by_level = function(dag, level = 0, from = NULL) {
+partition_by_level = function(dag, level = 0, from = NULL, term_pos = NULL) {
 
 	if(is.null(from)) {
 		depth = dag_depth(dag)
@@ -39,16 +40,29 @@ partition_by_level = function(dag, level = 0, from = NULL) {
 		from = term_to_node_id(dag, from, strict = FALSE)
 	}
 
-	children = dag_children(dag, from, in_labels = FALSE)
-	m = matrix(nrow = length(children), ncol = dag@n_terms)
-	for(i in seq_along(children)) {
-		m[i, ] = cpp_dag_longest_dist_to_offspring(dag, children[i])
+	if(is.null(term_pos)) {
+		if(dag_is_tree(dag)) {
+			tree = dag
+		} else {
+			tree = dag_treelize(dag)
+		}
+		term_pos = cpp_term_pos_on_circle(tree, n_offspring(dag), 0, 360) ## in polar coordinate
 	}
 
-	ind = apply(m, 2, which.max)
-	partition = dag@terms[ children[ind] ]
-	partition[apply(m < 0, 2, all)] = NA
-	structure(partition, names = dag@terms)
+	from = from[order(term_pos[from, "rho"])]
+	range = data.frame(left = term_pos[from, "theta"] - term_pos[from, "width"]/2,
+		               right = term_pos[from, "theta"] + term_pos[from, "width"]/2)
+
+	partition = rep(NA_character_, dag@n_terms)
+	all_offspring = setdiff(1:dag@n_terms, dag_ancestors(dag, from, in_labels = FALSE))
+	l_offspring = rep(FALSE, dag@n_terms)
+	l_offspring[all_offspring] =  TRUE
+	for(i in seq_along(from)) {
+		l = term_pos$theta >= range$left[i] & term_pos$theta <= range$right[i] & l_offspring
+		partition[l] =  dag@terms[ from[i] ]
+	}
+
+	partition
 }
 
 #' @param k Number of terms in a cluster. The splitting stops on a term if all its child-tree are smaller than `k`.

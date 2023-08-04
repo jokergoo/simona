@@ -31,7 +31,7 @@ Foundry](http://obofoundry.org/) or
 format can be found from
 https://owlcollab.github.io/oboformat/doc/GO.format.obo-1_4.html.
 
-In the **simone** package, the function `import_obo()` can be used to import
+In the **simona** package, the function `import_obo()` can be used to import
 an `.obo` file to an `ontology_DAG` object. The input is a path on local
 computer or an URL. In the following example, we use the [Plant
 Ontology](http://obofoundry.org/ontology/po.html) as an example.
@@ -41,7 +41,7 @@ The link of `po.obo` can be found from that web package. You can download it or
 directly provide it as an URL.
 
 ```{r, warning = FALSE}
-library(simone)
+library(simona)
 dag1 = import_obo("https://raw.githubusercontent.com/Planteome/plant-ontology/master/po.obo")
 dag1
 ```
@@ -81,7 +81,7 @@ underlines. So it is the same if you specify `"part of"`.
 
 ## Other ontology formats
 
-For ontologies in other formats, **simone** uses an external tool
+For ontologies in other formats, **simona** uses an external tool
 [**ROBOT**](http://robot.obolibrary.org/) to convert them to `.obo` format and
 internally uses `import_obo()` to import them. The file `robot.jar` is needed and
 it can be downloaded from https://github.com/ontodev/robot/releases (Since
@@ -124,7 +124,7 @@ With the following columns in the metadata data frame:
 More conveniently, the path of `robot.jar` can be set as a global option:
 
 ```r
-simone_opt$robot_jar = "~/Downloads/robot.jar"
+simona_opt$robot_jar = "~/Downloads/robot.jar"
 import_ontology("https://raw.githubusercontent.com/Planteome/plant-ontology/master/po.owl")
 ```
 

@@ -43,3 +43,10 @@ the aim is to test whether \code{S} is over-represented in \code{T}.
 +----------+------+----------+-----+
 }\if{html}{\out{</div>}}
 }
+\examples{
+\dontrun{
+dag = create_ontology_DAG_from_GO_db(org_db = "org.Hs.eg.db") 
+items = random_items(dag, 1000)
+df = dag_enrich_items(dag, items)
+}
+}

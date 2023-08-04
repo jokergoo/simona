@@ -43,3 +43,10 @@ in \code{T}.
 +----------+------+----------+-----+
 }\if{html}{\out{</div>}}
 }
+\examples{
+\dontrun{
+dag = create_ontology_DAG_from_GO_db() 
+terms = random_terms(dag, 100)
+df = dag_enrich_terms(dag, terms)
+}
+}

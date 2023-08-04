@@ -5,7 +5,7 @@
 \alias{partition_by_k}
 \title{Partition the DAG}
 \usage{
-partition_by_level(dag, level = 0, from = NULL)
+partition_by_level(dag, level = 0, from = NULL, term_pos = NULL)
 
 partition_by_k(dag, k)
 }
@@ -15,6 +15,8 @@ partition_by_k(dag, k)
 \item{level}{Depth in the DAG to cut. The DAG is cut below terms (or cut the links to their child terms) with \code{depth == level}.}
 
 \item{from}{A list of terms to cut. If it is set, \code{level} is ignored.}
+
+\item{term_pos}{Internally used.}
 
 \item{k}{Number of terms in a cluster. The splitting stops on a term if all its child-tree are smaller than \code{k}.}
 }

@@ -1,4 +1,4 @@
-# simone: Semantic Similarity in Bio-ontologies
+# simona: Semantic Similarity in Bio-ontologies
 
 
 
@@ -6,13 +6,13 @@
 ## Install
 
 ```r
-devtools::install_github("jokergoo/simone")
+devtools::install_github("jokergoo/simona")
 ```
 
 ## Usage
 
 ```r
-library(simone)
+library(simona)
 parents  = c("a", "a", "b", "b", "c", "d")
 children = c("b", "c", "c", "d", "e", "f")
 dag = create_ontology_DAG(parents, children)
@@ -132,7 +132,7 @@ dag_circular_viz(dag, reorder_level = 3, legend_labels_from = "name")
 ![](https://github.com/jokergoo/simone/assets/449218/9be7c8e6-0061-46a8-93ad-4a92d0a5fe27)
 
 
-The methods of semantic similarity implemented in **simone** are mainly from
+The methods of semantic similarity implemented in **simona** are mainly from
 the [supplementary file](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/bib/18/5/10.1093_bib_bbw067/2/bbw067_supplementary_file.pdf?Expires=1692176766&Signature=Ks4C96x-kinySVP7rzVzMn8cGnQWXOqkB-6gYHhs48Bl9A2Vj~-mcI9pEnvntNBvjBD1hp4ZncMWUNT-y1ArrrQgDJ0dCCEJp5LG0Ag2oPWsC5NFEeUQiYNZCXal8Kwa3Ze1vtDHjIwZpT9-sZhn9ryqKHd3C88RvuGx10jcSYRL1Pec0F~a9CnrbivieCfFELg2OQTf5zpAobxhlqzWqv~sa1b62PunNZ~XkmnTGOJoSMQFnNaBy~bDNEf9Pd6eRYaOc8MUh5Br4xB4y8mivT6Et2vKzLrGJFQjYpvouQpBu0nf03xwHVmNFN5-6LsDnpyQPCy4nQ5DHYltVHkEOA__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA)
 of the paper ["Mazandu et al., Gene Ontology semantic similarity tools: survey
 on features and challenges for biological knowledge discovery. Briefings in

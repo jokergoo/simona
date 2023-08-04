@@ -10,7 +10,7 @@
 
 	group = union(group1, group2)
 	sim = term_sim(dag, group, term_sim_method, control = list(...))
-	sim = sim/max(sim)
+	
 	group1 = intersect(group1, rownames(sim))
 	group2 = intersect(group2, rownames(sim))
 	sim = sim[group1, group2, drop = FALSE]

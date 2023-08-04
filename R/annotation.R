@@ -49,7 +49,7 @@
 #' )
 #' dag = create_ontology_DAG(parents, children, annotation = annotation)
 #' n_annotations(dag)
-n_annotations = function(dag, terms = NULL, uniquify = simone_opt$anno_uniquify, use_cache = simone_opt$use_cache) {
+n_annotations = function(dag, terms = NULL, uniquify = simona_opt$anno_uniquify, use_cache = simona_opt$use_cache) {
 	if(!uniquify && is.null(dag@term_env$n_annotations)) {
 		use_cache = FALSE
 	} else if(uniquify && is.null(dag@term_env$n_annotations_unique)) {

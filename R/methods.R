@@ -255,57 +255,15 @@ group_sim = function(dag, group1, group2, method, control = list()) {
 	if(has_annotation(dag)) {
 		if(!"term_sim_method" %in% names(control)) {
 			control$term_sim_method = "Sim_Lin_1998"
+			control$IC_method = "IC_annotation"
 		}
 	} else {
 		if(!"term_sim_method" %in% names(control)) {
 			control$term_sim_method = "Sim_WP_1994"
+			control$IC_method = "IC_offspring"
 		}
 	}
 	group_sim_fun = get_group_sim_method(method, control)
 
-	if(missing(group2)) {
-		if(is.list(group1)) {
-			if(length(group1) <= 1) {
-				stop("If `group1` is a list, its length should be > 1")
-			}
-			ng = length(group1)
-			m = matrix(NA, nrow = ng, ncol = ng, dimnames = list(names(group1), names(group1)))
-			for(i in 1:(ng-1)) {
-				for(j in (i+1):ng) {
-					m[i, j] = m[j, i] = group_sim_fun(dag, group1[[i]], group1[[j]])
-				}
-			}
-			diag(m) = 1
-			return(m)
-		}
-	}
-	
-	if(is.list(group1) && is.list(group2)) {
-		ng1 = length(group1)
-		ng2 = length(group2)
-		m = matrix(NA, nrow = ng1, ncol = ng2, dimnames = list(names(group1), names(group2)))
-		for(i in 1:ng1) {
-			for(j in 1:ng2) {
-				m[i, j] = group_sim_fun(dag, group1[[i]], group2[[j]])
-			}
-		}
-		return(m)
-	} else if(is.list(group1)) {
-		ng1 = length(group1)
-		v = rep(NA, ng1); names(v) = names(group1)
-		for(i in 1:ng1) {
-			v[i] = group_sim_fun(dag, group1[[i]], group2)
-		}
-		return(v)
-	} else if(is.list(group2)) {
-		ng2 = length(group2)
-		v = rep(NA, ng2); names(v) = names(group2)
-		for(j in 1:ng2) {
-			v[j] = group_sim_fun(dag, group1, group2[[j]])
-		}
-		return(v)
-	} else {
-		v = group_sim_fun(dag, group1, group2)
-		return(v)
-	}
+	group_sim_fun(dag, group1, group2)
 }

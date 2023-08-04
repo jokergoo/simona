@@ -521,7 +521,7 @@ import_owl = function(file, relation_type = "part_of") {
 
 #' @param robot_jar The path of the `robot.jar` file. It can be downloaded from https://github.com/ontodev/robot/releases.
 #'         Internally, the file is converted to the obo format and parsed by `import_obo()`. The value of `robot_jar` can be
-#'         set as a global option `simone_opt$robot_jar = ...`.
+#'         set as a global option `simona_opt$robot_jar = ...`.
 #' @param JAVA_ARGS Options for `java`. For example you can set `-Xmx20G` if you want to increase the memory to 20G for java.
 #' @details
 #' `robot.jar` can automatically recognize the following formats:
@@ -542,7 +542,7 @@ import_owl = function(file, relation_type = "part_of") {
 #' # The plant ontology: http://obofoundry.org/ontology/po.html 
 #' dag = import_ontology("http://purl.obolibrary.org/obo/po.owl", robot_jar = ...)
 #' }
-import_ontology = function(file, robot_jar = simone_opt$robot_jar, JAVA_ARGS = "") {
+import_ontology = function(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "") {
 
 	if(grepl("\\.(obo|obo.gz)$", file, ignore.case = TRUE)) {
 		return(import_obo(file))

@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 
 
-The methods of semantic similarity implemented in **simone** are mainly from
+The methods of group similarity implemented in **simona** are mainly from
 the [supplementary file](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/bib/18/5/10.1093_bib_bbw067/2/bbw067_supplementary_file.pdf?Expires=1692176766&Signature=Ks4C96x-kinySVP7rzVzMn8cGnQWXOqkB-6gYHhs48Bl9A2Vj~-mcI9pEnvntNBvjBD1hp4ZncMWUNT-y1ArrrQgDJ0dCCEJp5LG0Ag2oPWsC5NFEeUQiYNZCXal8Kwa3Ze1vtDHjIwZpT9-sZhn9ryqKHd3C88RvuGx10jcSYRL1Pec0F~a9CnrbivieCfFELg2OQTf5zpAobxhlqzWqv~sa1b62PunNZ~XkmnTGOJoSMQFnNaBy~bDNEf9Pd6eRYaOc8MUh5Br4xB4y8mivT6Et2vKzLrGJFQjYpvouQpBu0nf03xwHVmNFN5-6LsDnpyQPCy4nQ5DHYltVHkEOA__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA)
 of the paper ["Mazandu et al., Gene Ontology semantic similarity tools: survey
 on features and challenges for biological knowledge discovery. Briefings in
@@ -51,12 +51,15 @@ Some of the group similarity methods have no assumption of which similarity
 measure between single terms to use. If there are annotation already provided
 in the DAG object, by default *Sim_Lin_1998* is used, or else *Sim_WP_1994* is
 used. The term similarity method can be set via the `term_sim_method`
-parameter in `control`.
+parameter in `control`. Additionally parameters for a specific `term_sim_method`
+can also be set in `control`.
 
 ```r
 group_sim(dag, group1, group2, method = ..., 
     control = list(term_sim_method = ...))
 ```
+
+# Pairwise term similarity-based methods
 
 ## GroupSim_pairwise_avg
 
@@ -73,54 +76,62 @@ group_sim(dag, group1, group2, method = "GroupSim_pairwise_avg",
 ```
 
 ## GroupSim_pairwise_max
-This is the maximal S(a, b) among all pairs of terms in group1 and group2:
+
+The similarity is defined as the maximal $S(a, b)$ among all pairs of terms in group $p$ and $q$:
 
 $$ \mathrm{GroupSim}(p, q) = \max_{a \in T_p, b \in T_q}S(a, b) $$
 
 
-group_sim = max_{a in group1, b in group2}(S(a, b))
-The term semantic similarity method can be set via control = list(term_sim_method = ...).
+```r
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_max",
+    control = list(term_sim_method = ...))
+```
 
 ## GroupSim_pairwise_BMA
-BMA stands for "best-match average". First define similarity of a term to a group of terms as
+
+BMA stands for "best-match average". First define similarity of a term $x$ to a group of terms $T$ as
 
 $$ S(x, T) = \max_{y \in T} S(x, y) $$
 
-S(x, group) = max_{y in group}(x, y)
-which is the most similar terms in group to x.
-
-Then the BMA similarity is calculated as:
+which corresponds to the most similar term in $T$ to $x$. Then the BMA similarity is calculated as:
 
 $$ \mathrm{GroupSim}(p, q) = \frac{1}{2}\left( \frac{1}{|T_p|}\sum_{a \in T_p} S(a, T_q) + \frac{1}{|T_q|}\sum_{b \in T_q} S(b, T_p) \right) $$
 
-
-So it is the average of the similarity of every term in group1 to the whole group2 and every term in group2 to the whole group1.
-
-The term semantic similarity method can be set via control = list(term_sim_method = ...).
+```r
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_BMA",
+    control = list(term_sim_method = ...))
+```
 
 ## GroupSim_pairwise_BMM
+
 BMM stands for "best-match max". It is defined as:
 
 $$ \mathrm{GroupSim}(p, q) = \max \left \{ \frac{1}{|T_p|}\sum_{a \in T_p} S(a, T_q), \frac{1}{|T_q|}\sum_{b \in T_q} S(b, T_p) \right \} $$
 
 
-The term semantic similarity method can be set via control = list(term_sim_method = ...).
+```r
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_BMM",
+    control = list(term_sim_method = ...))
+```
+
+Paper link: https://doi.org/10.1093/bioinformatics/btq064/.
 
 ## GroupSim_pairwise_ABM
-ABM stands for "average best-match". It is defined as:
 
-group_sim = (sum_{a in group1}(S(a, group2)) + sum_{b in group2}(S(b, group1)))/(n1 + n2)
+ABM stands for "average best-match". It is defined as:
 
 $$ \mathrm{GroupSim}(p, q) = \frac{1}{|T_q| + |T_q|} \left( \sum_{a \in T_p} S(a, T_q) + \sum_{b \in T_q} S(b, T_p) \right)  $$
 
-where n1 and n2 are the number of terms in group1 and group2.
+```r
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_ABM",
+    control = list(term_sim_method = ...))
+```
 
-The term semantic similarity method can be set via control = list(term_sim_method = ...).
+Paper link: https://doi.org/10.1186/1471-2105-14-284.
 
 ## GroupSim_pairwise_HDF
-First define the distance of a term to a group of terms:
 
-D(x, group) = 1 - S(x, group)
+First define the distance of a term $x$ to a group of terms $T$:
 
 $$D(x, T) = 1 - S(x, T)$$
 
@@ -128,82 +139,123 @@ Then the Hausdorff distance between two groups are:
 
 $$ \mathrm{HDF}(p, q) = \max \left\{ \max_{a \in T_p} D(a, T_q), \max_{b \in T_q} D(b, T_q) \right\} $$
 
-HDF = max(max_{a in group1}(D(a, group2)), max_{b in group2}(D(b, group1)))
-This final similarity is:
 
-group_sim = 1 - HDF
+This final similarity is:
 
 $$ \mathrm{GroupSim}(p, q) = 1 - \mathrm{HDF}(p, q) $$
 
-The term semantic similarity method can be set via control = list(term_sim_method = ...).
+
+```r
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_HDF",
+    control = list(term_sim_method = ...))
+```
+
 
 ## GroupSim_pairwise_MHDF
+
 Instead of using the maximal distance from a group to the other group, MHDF uses mean distance:
 
-MHDF = max(mean_{a in group1}(D(a, group2)), mean_{b in group2}(D(b, group1)))
 
 $$ \mathrm{MHDF}(p, q) = \max \left\{ \frac{1}{|T_p|} \sum_{a \in T_p} D(a, T_q), \frac{1}{|T_q|} \sum_{b \in T_q} D(b, T_q) \right\} $$
-
 
 This final similarity is:
 
 $$ \mathrm{GroupSim}(p, q) = 1 - \mathrm{MHDF}(p, q) $$
 
-The term semantic similarity method can be set via control = list(term_sim_method = ...).
+
+```r
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_MHDF",
+    control = list(term_sim_method = ...))
+```
+
+Paper link: https://doi.org/10.1109/ICPR.1994.576361.
 
 ## GroupSim_pairwise_VHDF
+
 It is defined as:
 
-VHDF = 0.5*(sqrt(mean_{a in group1}(D(a, group2)^2)) + sqrt(mean_{b in group2}(D(b, group1)^2)))
+
+$$ \mathrm{VHDF}(p, q) = \frac{1}{2} \left( \sqrt{\frac{1}{|T_p|} \sum_{a \in T_p} D^2(a, T_q)} + \sqrt{\frac{1}{|T_q|} \sum_{b \in T_q} D^2(b, T_q)} \right) $$
 
 
-$$ \mathrm{VHDF}(p, q) = \frac{1}{2} \left\( \sqrt{\frac{1}{|T_p|} \sum_{a \in T_p} D^2(a, T_q)} + \sqrt{\frac{1}{|T_q|} \sum_{b \in T_q} D^2(b, T_q)} \right\) $$
-
+This final similarity is:
 
 $$ \mathrm{GroupSim}(p, q) = 1 - \mathrm{VHDF}(p, q) $$
 
-The term semantic similarity method can be set via control = list(term_sim_method = ...).
+```r
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_VHDF",
+    control = list(term_sim_method = ...))
+```
+
+Paper link: https://doi.org/10.1073/pnas.070296510.
 
 ## GroupSim_pairwise_Froehlich_2007
+
 The similarity is:
 
-group_sim = exp(-HDF(group1, group2))
 
 $$ \mathrm{GroupSim}(p, q) = \exp(-\mathrm{HDF}(p, q)) $$
 
-The term semantic similarity method can be set via control = list(term_sim_method = ...).
+
+```r
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_Froehlich_2007",
+    control = list(term_sim_method = ...))
+```
+
+Paper link: https://doi.org/10.1186/1471-2105-8-166.
+
 
 ## GroupSim_pairwise_Joeng_2014
+
 Similar to VHDF, but it directly uses the similarity:
 
-$$ \mathrm{GroupSim}(p, q) = \frac{1}{2} \left\( \sqrt{\frac{1}{|T_p|} \sum_{a \in T_p} S^2(a, T_q)} + \sqrt{\frac{1}{|T_q|} \sum_{b \in T_q} S^2(b, T_q)} \right\) $$
+$$ \mathrm{GroupSim}(p, q) = \frac{1}{2} \left( \sqrt{\frac{1}{|T_p|} \sum_{a \in T_p} S^2(a, T_q)} + \sqrt{\frac{1}{|T_q|} \sum_{b \in T_q} S^2(b, T_q)} \right) $$
 
 
-The term semantic similarity method can be set via control = list(term_sim_method = ...).
+```r
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_Joeng_2014",
+    control = list(term_sim_method = ...))
+```
+
+Paper link: https://doi.org/10.1109/tcbb.2014.2343963.
+
+# Pairwise edge-based methods
 
 ## GroupSim_SimALN
-It is based on the average distances between every pair of terms in the two groups:
 
-exp(-mean_{a in group1, b in group2}(d(a, b)))
+It is based on the average distance between every pair of terms in the two groups:
 
 $$ \mathrm{GroupSim}(p, q) = \exp\left(-\frac{1}{|T_p|*|T_q|} \sum_{a \in T_p, b \in T_q} D_\mathrm{sp}(a, b)\right) $$
 
+Or use the longest distance between two terms:
 
 $$ \mathrm{GroupSim}(p, q) = \exp\left(-\frac{1}{|T_p|*|T_q|} \sum_{a \in T_p, b \in T_q} \mathrm{len}(a, b)\right) $$
 
-d(a, b) is the distance between a and b, which can be the shortest distance between the two terms or the longest distnace via LCA.
 
-Distance method can be set via control = list(distance = ...).
+There is a parameter distance which takes value of `"longest_distances_via_LCA"`
+(the default) or `"shortest_distances_via_NCA"`:
+
+
+```r
+group_sim(dag, group1, group2, method = "GroupSim_SimALN",
+    control = list(distance = "shortest_distances_via_NCA"))
+```
 
 ## GroupSim_SimINT
+
 To be added.
 
 ## GroupSim_spgk
+
 To be added.
 
-## GroupSim_SimGIC
+# Groupwise IC-based methods
 
-Denote $A$ and $B$ as the two sets of ancestors terms of terms in group1 and group2 respectively, the SimGIC is:
+This category of methods depend on the IC of terms in the two groups as well as their ancestor terms.
+
+## GroupSim_SimGIC, GroupSim_SimDIC, GroupSim_SimUIC, GroupSim_SimUI, GroupSim_SimDB, GroupSim_SimUB and GroupSim_SimNTO
+
+Denote $A$ and $B$ as the two sets of ancestors of terms in group $p$ and $q$ respectively:
 
 
 $$
@@ -213,47 +265,29 @@ $$
 \end{align*}
 $$
 
-
-$$ \mathrm{GroupSim}(p, q) = \frac{\sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q} \mathrm{IC}(x)}{\sum\limits_{x \in \mathcal{A}_p \cup \mathcal{A}_q} \mathrm{IC}(x)}  $$
-
-group_sim = sum_{x in intersect(A, B)}(IC(x))/sum_{x in union(A, B)}(IC(x))
-IC method can be set via control = list(IC_method = ...).
-
-## GroupSim_SimDIC
-Similar as GroupSim_SimGIC, it calculates the Dice coeffcient:
-
-IC method can be set via control = list(IC_method = ...).
-
-$$ \mathrm{GroupSim}(p, q) = \frac{2 * \sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q} \mathrm{IC}(x)}{\sum\limits_{x \in \mathcal{A}_p} \mathrm{IC}(x) + \sum\limits_{x \in \mathcal{A}_q} \mathrm{IC}(x)}  $$
+The _GroupSim_SimGIC_, _GroupSim_SimDIC_, _GroupSim_SimUIC_, _GroupSim_SimUI_,
+_GroupSim_SimDB_,  _GroupSim_SimUB_ and _GroupSim_SimNTO_ are very similar.
+They are defined as:
 
 
-## GroupSim_SimUIC
-Similar as GroupSim_SimGIC, it is calculated as:
+$$
+\begin{align*}
+ \mathrm{GroupSim}_\mathrm{SimGIC}(p, q) &= \frac{\sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q} \mathrm{IC}(x)}{\sum\limits_{x \in \mathcal{A}_p \cup \mathcal{A}_q} \mathrm{IC}(x)} \\
+ \mathrm{GroupSim}_\mathrm{SimDIC}(p, q) &= \frac{2 * \sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q} \mathrm{IC}(x)}{\sum\limits_{x \in \mathcal{A}_p} \mathrm{IC}(x) + \sum\limits_{x \in \mathcal{A}_q} \mathrm{IC}(x)} \\
+ \mathrm{GroupSim}_\mathrm{SimUIC}(p, q) &= \frac{2 * \sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q} \mathrm{IC}(x)}{\max\left\{\sum\limits_{x \in \mathcal{A}_p} \mathrm{IC}(x), \sum\limits_{x \in \mathcal{A}_q} \mathrm{IC}(x) \right\}}  \\
+ \mathrm{GroupSim}_\mathrm{SimUI}(p, q) &= \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{|\mathcal{A}_p \cup \mathcal{A}_q|} \\
+ \mathrm{GroupSim}_\mathrm{SimDB}(p, q) &= \frac{2*|\mathcal{A}_p \cap \mathcal{A}_q|}{|\mathcal{A}_p| +  |\mathcal{A}_q|} \\
+ \mathrm{GroupSim}_\mathrm{SimUB}(p, q) &= \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{\max\{|\mathcal{A}_p|,  |\mathcal{A}_q|\}} \\
+ \mathrm{GroupSim}_\mathrm{SimNTO}(p, q) &= \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{\min\{|\mathcal{A}_p|,  |\mathcal{A}_q|\}}
+\end{align*}
+$$
 
-$$ \mathrm{GroupSim}(p, q) = \frac{2 * \sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q} \mathrm{IC}(x)}{\max\left\{\sum\limits_{x \in \mathcal{A}_p} \mathrm{IC}(x), \sum\limits_{x \in \mathcal{A}_q} \mathrm{IC}(x) \right\}}  $$
+IC method can be set via the `control` argument. By default if there is annotation associated, _IC_annotation_ is used, or else _IC_offspring_ is used.
 
-IC method can be set via control = list(IC_method = ...).
-
-## GroupSim_SimUI
-It is only based on the number of terms. A is the set of all ancestors of group1 terms and B is the set of all ancestors of group2 terms.
-
-
-$$ \mathrm{GroupSim}(p, q) = \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{|\mathcal{A}_p \cup \mathcal{A}_q|} $$
-
-## GroupSim_SimDB
-It is:
-
-$$ \mathrm{GroupSim}(p, q) = \frac{2*|\mathcal{A}_p \cap \mathcal{A}_q|}{|\mathcal{A}_p| +  |\mathcal{A}_q|} $$
-
-## GroupSim_SimUB
-It is:
-
-$$ \mathrm{GroupSim}(p, q) = \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{\max\{|\mathcal{A}_p|,  |\mathcal{A}_q|\}} $$
-
-## GroupSim_SimNTO
-It is:
-
-$$ \mathrm{GroupSim}(p, q) = \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{\min\{|\mathcal{A}_p|,  |\mathcal{A}_q|\}} $$
+```r
+group_sim(dag, group1, group2, method = "GroupSim_SimGIC",
+    control = list(IC_method = ...))
+```
 
 ## GroupSim_SimCOU
 
@@ -278,13 +312,22 @@ group_sim = sum_{x in intersect(A, B)}(IC(x)^2) /
     (sum_{x in A}(IC(x)^2) + sum_{x in B}(IC(x)^2) - sum_{x in intersect(A, B)}(IC(x)^2))
 IC method can be set via control = list(IC_method = ...).
 
+# Groupwise edge-based methods
+
 ## GroupSim_SimLP
 
-It is the longest depth for the terms in intersect(A, B).
+It is the largest depth of terms in $\mathcal{A}_p \cap \mathcal{A}_q$.
 
 $$ \mathrm{GroupSim}(p, q) = \max\{\delta(t): t \in \mathcal{A}_p \cap \mathcal{A}_q\} $$
 
+
+```r
+group_sim(dag, group1, group2, method = "GroupSim_SimLP")
+```
+
+
 ## GroupSim_Ye_2005
+
 It is a normalized version of *GroupSim_SimLP*:
 
 $$
@@ -294,41 +337,72 @@ $$
 \end{align*}
 $$
 
-Since the minimal depth is zero for root.
+Since the minimal depth is zero for root. 
+
+
+```r
+group_sim(dag, group1, group2, method = "GroupSim_Ye_2005")
+```
+
+# Annotated items-based methods
+
+This category of methods consider the items annotated to the two groups of terms. 
+
 
 ## GroupSim_SimCHO
-It is based on the annotated items. Denote sigma(t) as the total annotated items of t. The similarity is calculated as
+
+It is based on the annotated items. Denote $\sigma(t)$ as the total number of
+annotated items of $t$ (after merging all its offspring terms). The similarity
+is calculated as:
 
 $$
-\begin{align*}
-\mathrm{GroupSim}(p, q) &= \frac{\max\limits_{x \in T_p \cup T_q}\mathrm{IC}(x)}{\mathrm{IC}_\mathrm{max}}
-\end{align*}
+\mathrm{GroupSim}(p, q) = \frac{\log(C_{pq})}{\log(C_\mathrm{min}/C_\mathrm{max})}
 $$
 
-group_sim = log(C/sigma_max)/log(sigma_min/sigma_max)
-where C is min(sigma_{x in intersect(A, B)}(x)), i.e., the minimal sigma in the intersection of group1 and group2. Note Now A and B are just two sets of terms in group1 and group2. sigma_max is the total number of items annotated to the DAG, sig_min is the minimal number of items annotated to a term, which is mostly 1.
+where $C_{pq} = \min\{\sigma(t): t \in T_p \cap T_q \}$, $C_\mathrm{min}$ is the minimal number of annotated items in the DAG which in most cases is 1, $C_\mathrm{max}$ is the maximal number of annotated items, which is the total number of items annotated to the complete DAG.
+
+The similarity can also be written in form of $\mathrm{IC}_\mathrm{anno}$:
+
+$$
+\mathrm{GroupSim}(p, q) = \frac{\max\limits_{x \in T_p \cup T_q}\mathrm{IC}(x)}{\mathrm{IC}_\mathrm{max}}
+$$
+
+
+```r
+group_sim(dag, group1, group2, method = "GroupSim_SimCHO")
+```
+
 
 ## GroupSim_SimALD
-A and B are just two sets of terms in group1 and group2. The similarity is calculated as:
 
-$$ \mathrm{GroupSim}(p, q) = \max\left\{ 1 - \frac{n(x)}{N}: x \in T_p \cap T_q \right\} $$
+The similarity is calculated as:
 
-group_sim = max_{t in intersect(A, B)}(1 - sigma(t)/N)
+$$ \mathrm{GroupSim}(p, q) = \max\left\{ 1 - \frac{\sigma(x)}{C_\mathrm{max}}: x \in T_p \cap T_q \right\} $$
 
-## GroupSim_Jaccard
-Say A is the set of items annotated to terms in group1 and B is the set of items annotated to group2. This is the Jaccard coeffcient between two sets.
+```r
+group_sim(dag, group1, group2, method = "GroupSim_SimALD")
+```
 
-The universe/background can be set via control = list(universe = ...).
+# Set-based methods
 
-## GroupSim_Dice
-It is the Dice coeffcient between A and B.
+Since $T_p$ and $T_q$ are two sets, the Kappa coeffcient, Jaccard coeffcient, Dice coeffcient and overlap coeffcient
+can be naturally used.
 
-The universe/background can be set via control = list(universe = ...).
+```r
+group_sim(dag, group1, group2, method = "GroupSim_Jaccard", 
+    control = list(universe = ...))
+group_sim(dag, group1, group2, method = "GroupSim_Dice", 
+    control = list(universe = ...))
+group_sim(dag, group1, group2, method = "GroupSim_Overlap", 
+    control = list(universe = ...))
+group_sim(dag, group1, group2, method = "GroupSim_Kappa", 
+    control = list(universe = ...))
+```
 
-## GroupSim_Overlap
-It is the Overlap coeffcient between A and B.
 
-The universe/background can be set via control = list(universe = ...).
+# Session info
 
-## GroupSim_Kappa
-The universe/background can be set via control = list(universe = ...).
+```{r}
+sessionInfo()
+```
+

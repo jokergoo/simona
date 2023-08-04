@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 
 Gene Ontology is the most widely used bio-ontologies. On Bioconductor, there
 are standard packages for GO (**GO.db**) and organism-specific GO annotations
-(**org.\*.db**). In **simone**, there is a helper function
+(**org.\*.db**). In **simona**, there is a helper function
 `create_ontology_DAG_from_GO_db()` which makes use of the Biocoductor standard
 GO packages and constructs a DAG object automatically.
 
@@ -34,7 +34,7 @@ mutually exclusive, so the first argument of
 `create_ontology_DAG_from_GO_db()` is the GO namespace.
 
 ```{r}
-library(simone)
+library(simona)
 dag = create_ontology_DAG_from_GO_db("BP")
 dag
 ```

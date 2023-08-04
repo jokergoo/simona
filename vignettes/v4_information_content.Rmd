@@ -30,7 +30,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-The methods of information content implemented in **simone** are mainly from
+The methods of information content implemented in **simona** are mainly from
 the [supplementary file](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/bib/18/5/10.1093_bib_bbw067/2/bbw067_supplementary_file.pdf?Expires=1692176766&Signature=Ks4C96x-kinySVP7rzVzMn8cGnQWXOqkB-6gYHhs48Bl9A2Vj~-mcI9pEnvntNBvjBD1hp4ZncMWUNT-y1ArrrQgDJ0dCCEJp5LG0Ag2oPWsC5NFEeUQiYNZCXal8Kwa3Ze1vtDHjIwZpT9-sZhn9ryqKHd3C88RvuGx10jcSYRL1Pec0F~a9CnrbivieCfFELg2OQTf5zpAobxhlqzWqv~sa1b62PunNZ~XkmnTGOJoSMQFnNaBy~bDNEf9Pd6eRYaOc8MUh5Br4xB4y8mivT6Et2vKzLrGJFQjYpvouQpBu0nf03xwHVmNFN5-6LsDnpyQPCy4nQ5DHYltVHkEOA__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA)
 of the paper ["Mazandu et al., Gene Ontology semantic similarity tools: survey
 on features and challenges for biological knowledge discovery. Briefings in
@@ -92,12 +92,12 @@ form $-\log(p(x))$ will have a larger value, thus it is called the
 p-value is gained and the higher information content a term has.
 
 In the following sections, I will use Gene Ontology as an example to
-demonstrate various IC methods supported in the **simone** package. Note
+demonstrate various IC methods supported in the **simona** package. Note
 here I also set the gene annotation because some IC methods depend on 
 the number of annotated genes on GO terms.
 
 ```{r}
-library(simone)
+library(simona)
 dag = create_ontology_DAG_from_GO_db(namespace = "BP", org_db = "org.Hs.eg.db")
 dag
 ```
@@ -464,34 +464,6 @@ The relation types are all printed there.
 
 Paper link: https://doi.org/10.1093/bioinformatics/btm087.
 
-## Comparisons
-
-Let's make a comparison of various IC metrics, using the GO BP ontology.
-
-```r
-dag = create_ontology_DAG_from_GO_db(namespace = "BP", org_db = "org.Hs.eg.db")
-lt = lapply(all_ic_methods(), function(method) {
-    cat("=====", method, "=====\n")
-    term_IC(dag, method)
-})
-names(lt) = all_ic_methods()
-
-df = as.data.frame(lt)
-pairs(df, pch = ".", col = dag_depth(dag), gap = 0)
-```
-
-```{r, echo = FALSE, fig.width = 10, fig.height = 10}
-df = readRDS(system.file("extdata", "go_ic.rds", package = "simone"))
-pairs(df, pch = ".", col = dag_depth(dag), gap = 0)
-```
-
-And the heatmap of the correlations of IC metrics. 
-
-```{r, fig.width = 6, fig.height = 6}
-cor = cor(df, method = "spearman", use = "pairwise.complete.obs")
-library(ComplexHeatmap)
-Heatmap(cor, name = "correlation", column_title = "Spearman correlation")
-```
 
 
 ## Session Info

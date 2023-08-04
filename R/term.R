@@ -12,7 +12,7 @@
 #' ```
 #' 
 #' @rdname temp__IC_offspring
-IC_offspring = function(dag, use_cache = simone_opt$use_cache) {
+IC_offspring = function(dag, use_cache = simona_opt$use_cache) {
 
 	if(is.null(dag@term_env$IC_offspring)) {
 		use_cache = FALSE
@@ -52,7 +52,7 @@ ADD_IC_METHOD("IC_offspring", "use_cache")
 #' ```
 #' 
 #' @rdname temp__IC_height
-IC_height = function(dag, use_cache = simone_opt$use_cache) {
+IC_height = function(dag, use_cache = simona_opt$use_cache) {
 	if(is.null(dag@term_env$IC_height)) {
 		use_cache = FALSE
 	} 
@@ -86,7 +86,7 @@ ADD_IC_METHOD("IC_height", "use_cache")
 #' `NA` is assigned to the terms with no item annotated.
 #' 
 #' @rdname temp__IC_annotation
-IC_annotation = function(dag, uniquify = simone_opt$anno_uniquify, use_cache = simone_opt$use_cache) {
+IC_annotation = function(dag, uniquify = simona_opt$anno_uniquify, use_cache = simona_opt$use_cache) {
 
 	if(!uniquify && is.null(dag@term_env$IC_annotation)) {
 		use_cache = FALSE
@@ -150,7 +150,7 @@ ADD_IC_METHOD("IC_annotation", c("uniquify", "use_cache"))
 #' Paper link: <https://doi.org/10.1155/2012/975783>.
 #' 
 #' @rdname temp__IC_universal
-IC_universal = function(dag, use_cache = simone_opt$use_cache) {
+IC_universal = function(dag, use_cache = simona_opt$use_cache) {
 	if(is.null(dag@term_env$IC_universal) || !use_cache) {
 		lt_parents = dag@lt_parents
 
@@ -189,7 +189,7 @@ ADD_IC_METHOD("IC_universal", "use_cache")
 
 ##############################################
 ### reachability is the number of ways for a node to reach the leaves
-reachability = function(dag, use_cache = simone_opt$use_cache) {
+reachability = function(dag, use_cache = simona_opt$use_cache) {
 	if(is.null(dag@term_env$reachability) || !use_cache) {
 		lt_children = dag@lt_children
 
@@ -250,7 +250,7 @@ reachability = function(dag, use_cache = simone_opt$use_cache) {
 #' Paper link: <https://doi.org/10.1186/1471-2105-7-135>.
 #' 
 #' @rdname temp__IC_Zhang_2006
-IC_Zhang_2006 = function(dag, use_cache = simone_opt$use_cache) {
+IC_Zhang_2006 = function(dag, use_cache = simona_opt$use_cache) {
 	if(is.null(dag@term_env$IC_Zhang_2006) || !use_cache) {
 		re = reachability(dag, use_cache)
 		dag@term_env$IC_Zhang_2006 = -log(re/max(re))
@@ -281,7 +281,7 @@ ADD_IC_METHOD("IC_Zhang_2006", "use_cache")
 #' Paper link: <https://dl.acm.org/doi/10.5555/3000001.3000272>.
 #' 
 #' @rdname temp__IC_Seco_2004
-IC_Seco_2004 = function(dag, use_cache = simone_opt$use_cache) {
+IC_Seco_2004 = function(dag, use_cache = simona_opt$use_cache) {
 	if(is.null(dag@term_env$IC_Seco_2004) || !use_cache) {
 		n = n_offspring(dag, include_self = TRUE)
 		dag@term_env$IC_Seco_2004 = 1 - log(n)/log(dag@n_terms) # dag@n_terms == max(n)
@@ -312,7 +312,7 @@ ADD_IC_METHOD("IC_Seco_2004", "use_cache")
 #' Paper link: <https://doi.org/10.1109/FGCNS.2008.16>.
 #' 
 #' @rdname temp__IC_Zhou_2008
-IC_Zhou_2008 = function(dag, use_cache = simone_opt$use_cache) {
+IC_Zhou_2008 = function(dag, use_cache = simona_opt$use_cache) {
 	if(is.null(dag@term_env$IC_Zhou_2008) || !use_cache) {
 		depth = dag_depth(dag, use_cache = use_cache)
 		ic_seco = IC_Seco_2004(dag, use_cache = use_cache)
@@ -352,7 +352,7 @@ ADD_IC_METHOD("IC_Zhou_2008", "use_cache")
 #' Paper link: <https://dl.acm.org/doi/10.5555/1862330.1862343>.
 #' 
 #' @rdname temp__IC_Seddiqui_2010
-IC_Seddiqui_2010 = function(dag, use_cache = simone_opt$use_cache) {
+IC_Seddiqui_2010 = function(dag, use_cache = simona_opt$use_cache) {
 	if(is.null(dag@term_env$IC_Seddiqui_2010) || !use_cache) {
 		n_relations = dag@term_env$n_parents + dag@term_env$n_children
 		n_edges = sum(dag@term_env$n_parents)
@@ -390,7 +390,7 @@ ADD_IC_METHOD("IC_Seddiqui_2010", "use_cache")
 #' Paper link: <https://doi.org/10.1016/j.knosys.2010.10.001>.
 #' 
 #' @rdname temp__IC_Sanchez_2011
-IC_Sanchez_2011 = function(dag, use_cache = simone_opt$use_cache) {
+IC_Sanchez_2011 = function(dag, use_cache = simona_opt$use_cache) {
 	if(is.null(dag@term_env$IC_Sanchez_2011) || !use_cache) {
 		nl = length(dag@leaves)
 		n_connected_leaves = n_connected_leaves(dag)
@@ -450,7 +450,7 @@ ADD_IC_METHOD("IC_Sanchez_2011", "use_cache")
 #' ```
 #' 
 #' @rdname temp__IC_Meng_2012
-IC_Meng_2012 = function(dag, correct = FALSE, use_cache = simone_opt$use_cache) {
+IC_Meng_2012 = function(dag, correct = FALSE, use_cache = simona_opt$use_cache) {
 	if(is.null(dag@term_env$IC_Meng_2012) || !use_cache) {
 		dag@term_env$IC_Meng_2012 = cpp_ic_meng(dag, correct)
 	}
@@ -462,7 +462,7 @@ ADD_IC_METHOD("IC_Meng_2012", c("correct", "use_cache"))
 
 ###############################
 ### totipotency
-totipotency = function(dag, use_cache = simone_opt$use_cache) {
+totipotency = function(dag, use_cache = simona_opt$use_cache) {
 
 	if(is.null(dag@term_env$totipotency) || !use_cache) {
 		lt_parents = dag@lt_parents
@@ -542,7 +542,7 @@ totipotency = function(dag, use_cache = simone_opt$use_cache) {
 #' ```
 #' 
 #' @rdname temp__IC_Wang_2007
-IC_Wang_2007 = function(dag, contribution_factor = c("is_a" = 0.8, "part_of" = 0.6), use_cache = simone_opt$use_cache) {
+IC_Wang_2007 = function(dag, contribution_factor = c("is_a" = 0.8, "part_of" = 0.6), use_cache = simona_opt$use_cache) {
 	if(is.null(dag@term_env$IC_Wang_2007) || !use_cache) {
 		if(length(dag@lt_children_relations) == 0) {
 			stop("`relations` is not set when creating the ontology_DAG object.")

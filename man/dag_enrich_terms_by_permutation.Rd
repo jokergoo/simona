@@ -47,3 +47,10 @@ where index \code{i} represents the i^th sampling. If we sample \code{k} times, 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{p = sum_\{go over k\}(I(sr > s))/k
 }\if{html}{\out{</div>}}
 }
+\examples{
+\dontrun{
+dag = create_ontology_DAG_from_GO_db() 
+value = runif(dag_n_terms(dag))
+df = dag_enrich_terms_by_permutation(dag, value)
+}
+}

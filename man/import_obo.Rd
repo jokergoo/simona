@@ -10,7 +10,7 @@ import_obo(file, relation_type = "part_of")
 
 import_owl(file, relation_type = "part_of")
 
-import_ontology(file, robot_jar = simone_opt$robot_jar, JAVA_ARGS = "")
+import_ontology(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "")
 }
 \arguments{
 \item{file}{Path of the ontology file or an URL.}
@@ -19,7 +19,7 @@ import_ontology(file, robot_jar = simone_opt$robot_jar, JAVA_ARGS = "")
 
 \item{robot_jar}{The path of the \code{robot.jar} file. It can be downloaded from https://github.com/ontodev/robot/releases.
 Internally, the file is converted to the obo format and parsed by \code{import_obo()}. The value of \code{robot_jar} can be
-set as a global option \code{simone_opt$robot_jar = ...}.}
+set as a global option \code{simona_opt$robot_jar = ...}.}
 
 \item{JAVA_ARGS}{Options for \code{java}. For example you can set \code{-Xmx20G} if you want to increase the memory to 20G for java.}
 }

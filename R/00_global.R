@@ -70,20 +70,20 @@ all_group_sim_methods = function() {
 #' To set an option, you can use the `$`:
 #' 
 #' ```
-#' simone_opt$verbose = FALSE
+#' simona_opt$verbose = FALSE
 #' ```
 #' 
 #' or use it as a function:
 #' 
 #' ```
-#' simone_opt(verbose = FALSE)
+#' simona_opt(verbose = FALSE)
 #' ```
 #' 
 #' @export
 #' @import GlobalOptions
 #' @examples
-#' simone_opt
-simone_opt = GlobalOptions::setGlobalOptions(
+#' simona_opt
+simona_opt = GlobalOptions::setGlobalOptions(
 	use_cache = list(
 		.value = TRUE,
 		.class = "logical",

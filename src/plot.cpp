@@ -30,13 +30,12 @@ NumericVector _get_breaks(double left, double right, int n, NumericVector weight
 }
 
 // [[Rcpp::export]]
-DataFrame cpp_term_pos_on_circle(S4 dag, double start = 0, double end = 360) {
+DataFrame cpp_term_pos_on_circle(S4 dag, IntegerVector n_offspring, double start = 0, double end = 360) {
 
 	int root = dag.slot("root");
 	List lt_children = dag.slot("lt_children");
 	IntegerVector depth = _dag_depth(dag);
 	int max_depth = max(depth);
-	IntegerVector n_offspring = cpp_n_offspring(dag);
 	int n = lt_children.size();
 
 	NumericVector theta(n);  // in degree
@@ -124,5 +123,53 @@ DataFrame cpp_term_pos_on_circle(S4 dag, double start = 0, double end = 360) {
 	return df;
 }
 
+// [[Rcpp::export]]
+IntegerVector cpp_calc_n_neighbours_on_circle(NumericVector theta, double range) { // theta is sorted and in [0, 360]
+	int n = theta.size();
 
+	IntegerVector k(n);
+
+	int prev_i;
+	int next_i;
+	double diff;
+	for(int i = 0; i < n; i ++) {
+		k[i] = 1;
+
+		// forward
+		prev_i = i - 1;
+		while(true) {
+			if(prev_i < 0) {
+				prev_i = n - 1;
+			} else {
+				prev_i --;
+			}
+
+			diff = std::abs(theta[i] - theta[prev_i]);
+			if(diff < range || diff > 360 - range) {
+				k[i] ++;
+			} else {
+				break;
+			}
+		}
+
+		// forward
+		next_i = i + 1;
+		while(true) {
+			if(next_i > n - 1) {
+				next_i = 0;
+			} else {
+				next_i ++;
+			}
+
+			diff = std::abs(theta[i] - theta[next_i]);
+			if(diff < range || diff > 360 - range) {
+				k[i] ++;
+			} else {
+				break;
+			}
+		}
+	}
+
+	return k;
+}
 

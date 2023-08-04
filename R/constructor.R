@@ -65,7 +65,7 @@ ontology_DAG = setClass("ontology_DAG",
 #' @importFrom methods new
 #' @importFrom stats quantile
 #' @import Rcpp
-#' @useDynLib simone, .registration = TRUE
+#' @useDynLib simona, .registration = TRUE
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
 #' children = c("b", "c", "c", "d", "e", "f")

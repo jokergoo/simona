@@ -116,8 +116,16 @@ message_wrap = function (...) {
 }
 
 #' @importFrom grDevices col2rgb rgb
-add_transparency = function (col, transparency = 0) {
-    rgb(t(col2rgb(col)/255), alpha = 1 - transparency)
+add_transparency = function (col, transparency = 0, alpha = TRUE) {
+	if(alpha) {
+    	rgb(t(col2rgb(col)/255), alpha = 1 - transparency)
+    } else {
+
+		m = col2rgb(col)
+		m = 255 - (255-m)*(1-transparency)
+		rgb(t(m), maxColorValue = 255)
+
+    }
 }
 
 

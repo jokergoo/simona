@@ -12,7 +12,7 @@ dag_circular_viz(
   start = 0,
   end = 360,
   reorder_level = NA,
-  partition_level = 0,
+  partition_level = 1,
   node_col = NULL,
   node_transparency = 0.5,
   node_size = NULL,
@@ -101,6 +101,12 @@ uses a hierarchical layout for visualizing small DAGs.
 \code{dag_as_DOT()} generates the DOT code of the DAG.
 
 \code{dag_graphviz()} visualizes the DAG with the \strong{DiagrammeR} package.
+}
+\examples{
+\dontrun{
+dag = create_ontology_DAG_from_GO_db()
+dag_circular_viz(dag)
+}
 }
 \seealso{
 http://magjac.com/graphviz-visual-editor/ is nice place to try the DOT code.

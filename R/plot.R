@@ -8,6 +8,14 @@ polar2Cartesian = function(d) {
     return(cbind(x, y))
 }
 
+calc_n_neighbours_on_circle = function(theta, width = 1) {
+	od = order(order(theta))
+	theta2 = sort(theta)
+
+	k = cpp_calc_n_neighbours_on_circle(theta2, width)
+	k[od]
+}
+
 #' Visualize the DAG
 #' 
 #' @param dag An `ontology_Dag` object.
@@ -37,8 +45,13 @@ polar2Cartesian = function(d) {
 #' @import ComplexHeatmap
 #' @rdname dag_viz
 #' @export
+#' @examples
+#' \dontrun{
+#' dag = create_ontology_DAG_from_GO_db()
+#' dag_circular_viz(dag)
+#' }
 dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
-	reorder_level = NA, partition_level = 0,
+	reorder_level = NA, partition_level = 1,
 	node_col = NULL, node_transparency = 0.5, node_size = NULL, 
 	edge_col = NULL, edge_transparency = 0.98,
 	legend_labels_from = NULL, legend_labels_max_width = 50) {
@@ -59,13 +72,27 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 		l_highlight = dag@terms %in% highlight
 	}
 
-	term_pos = cpp_term_pos_on_circle(dag, start, end) ## in polar coordinate
+	if(dag_is_tree(dag)) {
+		tree = dag
+	} else {
+		tree = dag_treelize(dag)
+	}
+	term_pos = cpp_term_pos_on_circle(tree, n_offspring(dag), start, end) ## in polar coordinate
+
+	term_pos$n_neighbours = 0
+	for(level in unique(term_pos$rho)) {
+		l = term_pos$rho == level
+		term_pos[l, "n_neighbours"] = calc_n_neighbours_on_circle(term_pos$theta[l], width = 0.5)
+	}
 
 	node_col_map = NULL
 	if(is.null(node_col)) {
-		group = partition_by_level(dag, level = partition_level)
+		group = partition_by_level(dag, level = partition_level, term_pos = term_pos)
 		level1 = unique(group); level1 = level1[!is.na(level1)]
 		n_levels = length(level1)
+		
+		ind = which( dag@terms %in% level1)
+		level1 = dag@terms[ind][order(term_pos[ind, "theta"])]
 
 		if(n_levels <= 7) {
 			default_col = c("#DF536B", "#61D04F", "#2297E6", "#28E2E5", "#CD0BBC", "#F5C710", "#9E9E9E")
@@ -76,7 +103,7 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 			node_col_map = rand_color(n_levels)
 		}
 
-		names(node_col_map) = level1[order(n_offspring(dag)[level1], decreasing = TRUE)]
+		names(node_col_map) = level1
 		node_col = node_col_map[as.character(group)]
 		node_col[is.na(node_col)] = "black"
 	}
@@ -94,6 +121,8 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 	if(!length(node_size) %in% c(1, n_terms)) {
 		stop_wrap(qq("Length of `node_size` should be one or @{n_terms} (number of terms in the DAG)."))
 	}
+
+	node_transparency = .scale(term_pos$n_neighbours, c(1, quantile(term_pos$n_neighbours, 0.9)), c(0.9, 0.5))
 
 	node_col = add_transparency(node_col, node_transparency)
 
@@ -142,7 +171,7 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 
 	if(has_highlight) {
 		node_col[!l_highlight] = add_transparency("black", 0.95)
-		node_col[l_highlight] = add_transparency(node_col[l_highlight], 0.6)
+		node_col[l_highlight] = add_transparency(node_col[l_highlight], 0)
 		node_size[!l_highlight] = 2
 	}
 	
@@ -150,6 +179,10 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 	n = dag@n_terms
 	df_edge = data.frame(from = rep(seq_len(n), times = sapply(lt_children, length)),
 		                 to = unlist(lt_children))
+	# adjust rho
+	tb = log(table(term_pos$rho))
+	rho2 = cumsum(tb - tb["0"])/sum(tb - tb["0"])
+	term_pos$rho = rho2[as.character(term_pos$rho)]
 
 	term_pos2 = polar2Cartesian(term_pos) ## xy coordinate
 
@@ -161,18 +194,27 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 	max_depth = max(abs(term_pos$rho))
 
 	grid.newpage()
-	pushViewport(viewport(x = unit(0, "npc"), just = "left", width = unit(1, "snpc") - unit(2, "mm"), height = unit(1, "snpc") - unit(2, "mm"), 
+	pushViewport(viewport(x = unit(0, "npc"), just = "left", width = unit(1, "snpc"), height = unit(1, "snpc"), 
 		xscale = c(-max_depth, max_depth), yscale = c(-max_depth, max_depth)))
+	if(!is.null(node_col_map)) {
+		for(nm in names(node_col_map)) {
+			i = which(dag@terms == nm)
+			draw_sector(term_pos[i, "theta"] - term_pos[i, "width"]/2,
+				        term_pos[i, "theta"] + term_pos[i, "width"]/2,
+				        max_depth, gp = gpar(fill = add_transparency(node_col_map[[nm]], 0.9, FALSE), col = NA))
+		}
+	}
+
 	if(has_highlight) {
+		grid.segments(x1, y1, x2, y2, default.units = "native", gp = gpar(col = edge_col_v))
 		grid.points(term_pos2[!l_highlight, 1], term_pos2[!l_highlight, 2], default.units = "native", pch = 16, 
 			gp = gpar(col = node_col[!l_highlight]), size = unit(node_size[!l_highlight], "pt"))
-		grid.segments(x1, y1, x2, y2, default.units = "native", gp = gpar(col = edge_col_v))
 		grid.points(term_pos2[l_highlight, 1], term_pos2[l_highlight, 2], default.units = "native", pch = 16, 
 			gp = gpar(col = node_col[l_highlight]), size = unit(node_size[l_highlight], "pt"))
 	} else {
+		grid.segments(x1, y1, x2, y2, default.units = "native", gp = gpar(col = edge_col_v))
 		grid.points(term_pos2[, 1], term_pos2[, 2], default.units = "native", pch = 16, 
 			gp = gpar(col = node_col), size = unit(node_size, "pt"))
-		grid.segments(x1, y1, x2, y2, default.units = "native", gp = gpar(col = edge_col_v))
 	}
 
 	lgd_list = list()
@@ -180,6 +222,10 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 
 		if(has_highlight) {
 			node_col_map = node_col_map[intersect(names(node_col_map), group[l_highlight])]
+		} else {
+			sector_width = term_pos[sapply(names(node_col_map), function(x) which(dag@terms == x)), "width"]
+			node_col_map = node_col_map[sector_width > 1]
+
 		}
 		if(length(node_col_map) > 20) {
 			n_offspring = n_offspring(dag)
@@ -197,7 +243,10 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 			}
 			paste(x, collapse = "\n")
 		})
-		lgd_list = c(lgd_list, list(Legend(title = "Top terms", labels = legend_labels, legend_gp = gpar(fill = node_col_map))))
+		lgd_list = c(lgd_list, list(Legend(title = "Top terms", labels = legend_labels,
+			type = "points", pch = 16,
+			background = add_transparency(node_col_map, 0.9, FALSE), 
+			legend_gp = gpar(col = node_col_map))))
 	}
 	if(!is.null(edge_col)) {
 		legend_labels = names(edge_col)
@@ -213,7 +262,7 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 
 	if(length(lgd_list)) {
 		lgd = packLegend(list = lgd_list)
-		draw(lgd, x = unit(1, "snpc"), just = "left")
+		draw(lgd, x = unit(1, "snpc") + unit(2, "mm"), just = "left")
 	}
 
 }
@@ -363,4 +412,17 @@ dag_graphviz = function(dag, color = "black",
 
 	dot = dag_as_DOT(dag, color = color, fontcolor = fontcolor, fontsize = fontsize, shape = shape, edge_color = edge_color, edge_style = edge_style)
 	DiagrammeR::grViz(dot, ...)
+}
+
+# center at (0, 0)
+draw_sector = function(start, end, radius, ...) {
+	if(end < start) {
+		end = end + 360
+	}
+
+	theta = c(0, seq(start, end, by = 0.5), 0)
+	rho = c(0, rep(radius, length(theta)-2), 0)
+	
+	pos = polar2Cartesian(cbind(theta, rho))
+	grid.polygon(pos[, 1], pos[, 2], default.units = "native", ...)	
 }

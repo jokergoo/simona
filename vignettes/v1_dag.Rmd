@@ -43,7 +43,7 @@ The DAG object is constructed via a list of parent-child pairs. The following
 code constructs a DAG in the diagram above.
 
 ```{r}
-library(simone)
+library(simona)
 parents  = c("a", "a", "b", "b", "c", "d")
 children = c("b", "c", "c", "d", "e", "f")
 dag = create_ontology_DAG(parents, children)

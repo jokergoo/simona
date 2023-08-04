@@ -36,6 +36,12 @@
 #' 
 #' @importFrom stats p.adjust phyper
 #' @export
+#' @examples
+#' \dontrun{
+#' dag = create_ontology_DAG_from_GO_db() 
+#' terms = random_terms(dag, 100)
+#' df = dag_enrich_terms(dag, terms)
+#' }
 dag_enrich_terms = function(dag, terms) {
 	n = dag@n_terms
 	ind = which(dag@terms %in% terms)
@@ -90,6 +96,12 @@ dag_enrich_terms = function(dag, terms) {
 #' The number of rows in the data frame is the same as the number of terms in the DAG.
 #' 
 #' @importFrom stats sd
+#' @examples
+#' \dontrun{
+#' dag = create_ontology_DAG_from_GO_db() 
+#' value = runif(dag_n_terms(dag))
+#' df = dag_enrich_terms_by_permutation(dag, value)
+#' }
 dag_enrich_terms_by_permutation = function(dag, value, n = 1000) {
 	n = dag@n_terms
 
@@ -151,6 +163,12 @@ dag_enrich_terms_by_permutation = function(dag, value, n = 1000) {
 #' The number of rows in the data frame is the same as the number of terms in the DAG.
 #' 
 #' @export
+#' @examples
+#' \dontrun{
+#' dag = create_ontology_DAG_from_GO_db(org_db = "org.Hs.eg.db") 
+#' items = random_items(dag, 1000)
+#' df = dag_enrich_items(dag, items)
+#' }
 dag_enrich_items = function(dag, items) {
 	validate_dag_has_annotation(dag)
 

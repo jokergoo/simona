@@ -1,4 +1,4 @@
 library(testthat)
-suppressWarnings(suppressPackageStartupMessages(library(simone)))
+suppressWarnings(suppressPackageStartupMessages(library(simona)))
 
-test_check("simone")
+test_check("simona")

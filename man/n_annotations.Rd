@@ -7,8 +7,8 @@
 n_annotations(
   dag,
   terms = NULL,
-  uniquify = simone_opt$anno_uniquify,
-  use_cache = simone_opt$use_cache
+  uniquify = simona_opt$anno_uniquify,
+  use_cache = simona_opt$use_cache
 )
 }
 \arguments{

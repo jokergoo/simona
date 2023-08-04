@@ -70,7 +70,7 @@ dag_graphviz(dag[, "GO:0010228"],
 Visualizing huge DAGs is not an easy job because a term can have more than one parents. Here
 the `dag_circular_viz()` uses a circular layout to visualize huge DAGs.
 
-```{r, fig.width = 8, fig.height = 5.5}
+```{r, fig.width = 10, fig.height = 7}
 dag_circular_viz(dag)
 ```
 
@@ -84,6 +84,11 @@ is assigned with a different color. A legend of top terms of sub-DAGs is also ad
 The term IDs are not informative in the plot. If there are additional information of terms stored
 in the meta data frame of the DAG object, the column name can be set with the `legend_labels_from` argument.
 
+
+```{r, fig.width = 10, fig.height = 7}
+head(mcols(dag))
+dag_circular_viz(dag, legend_labels_from = "name")
+```
 
 Especially for the GO DAG, we can observe that there are many links connecting
 sub-DAGs. To reduce such disturbance from cross-DAG links, on different levels
@@ -112,7 +117,7 @@ $d_{i,j}$ is a non-negative value and measures the closeness of two terms with
 regards to how close the two sub-DAGs are. Finally, with the distance matrix of all 
 child terms, TSP (travel salesman problem) is applied to reorder the child terms.
 
-```{r, fig.width = 8, fig.height = 5.5}
+```{r, fig.width = 10, fig.height = 7}
 dag_circular_viz(dag, reorder_level = 3, legend_labels_from = "name")
 ```
 
@@ -123,11 +128,19 @@ dag = reorder(dag, reorder_level = 3)
 dag_circular_viz(dag, legend_labels_from = "name")
 ```
 
+`dag_treelize()` can convert a DAG to a tree where a term only has one parent.
+The circular visualization on the reduced tree is as follows:
+
+```{r, fig.width = 10, fig.height = 7}
+tree = dag_treelize(dag)
+dag_circular_viz(tree, legend_labels_from = "name", edge_transparency = 0.95)
+```
+
 One useful application is to map GO terms of interest (e.g. significant GO terms
 from function enrichment analysis) to the DAG. In the following example, `sig_go_ids`
 contains 249 significant GO terms from an enrichment analysis.
 
-```{r, fig.width = 8, fig.height = 5.5}
+```{r, fig.width = 10, fig.height = 7}
 sig_go_ids = readRDS(system.file("extdata", "sig_go_ids.rds", package = "simona"))
 dag_circular_viz(dag, highlight = sig_go_ids, reorder_level = 3, 
   legend_labels_from = "name")

@@ -36,7 +36,7 @@ h1:not(.title) {
 }
 </style>
 
-The methods of semantic similarity implemented in **simone** are mainly from
+The methods of semantic similarity implemented in **simona** are mainly from
 the [supplementary file](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/bib/18/5/10.1093_bib_bbw067/2/bbw067_supplementary_file.pdf?Expires=1692176766&Signature=Ks4C96x-kinySVP7rzVzMn8cGnQWXOqkB-6gYHhs48Bl9A2Vj~-mcI9pEnvntNBvjBD1hp4ZncMWUNT-y1ArrrQgDJ0dCCEJp5LG0Ag2oPWsC5NFEeUQiYNZCXal8Kwa3Ze1vtDHjIwZpT9-sZhn9ryqKHd3C88RvuGx10jcSYRL1Pec0F~a9CnrbivieCfFELg2OQTf5zpAobxhlqzWqv~sa1b62PunNZ~XkmnTGOJoSMQFnNaBy~bDNEf9Pd6eRYaOc8MUh5Br4xB4y8mivT6Et2vKzLrGJFQjYpvouQpBu0nf03xwHVmNFN5-6LsDnpyQPCy4nQ5DHYltVHkEOA__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA)
 of the paper ["Mazandu et al., Gene Ontology semantic similarity tools: survey
 on features and challenges for biological knowledge discovery. Briefings in
@@ -974,47 +974,6 @@ term_sim(dag, terms, method = "Sim_Dice",
 term_sim(dag, terms, method = "Sim_Overlap",
     control = list(anno_universe = ...))
 ```
-
-
-# Comparisons
-
-Let's make a comparison of various similarity methods, using the GO BP ontology.
-
-```r
-dag = create_ontology_DAG_from_GO_db(namespace = "BP", org_db = "org.Hs.eg.db")
-set.seed(123)
-ic = term_IC(dag, method = "IC_annotation")
-ic = ic[!is.na(ic)]
-go_id = sample(names(ic), 100)
-
-lt = lapply(all_term_sim_methods(), function(method) {
-    cat("=====", method, "=====\n")
-    m = term_sim(dag, go_id, method)
-    m[lower.tri(m)]
-})
-names(lt) = all_term_sim_methods()
-df = as.data.frame(lt)
-
-LCA_depth = LCA_depth(dag, go_id)
-LCA_depth = LCA_depth[lower.tri(LCA_depth)]
-
-pairs(df[, 1:29], pch = ".", gap = 0, col = LCA_depth+1)
-```
-
-```{r, echo = FALSE, fig.width = 12, fig.height = 12, out.width = "100%"}
-df = readRDS(system.file("extdata", "go_sim.rds", package = "simone"))
-LCA_depth = readRDS(system.file("extdata", "LCA_depth.rds", package = "simone"))
-pairs(df[, 1:29], pch = ".", gap = 0, col = LCA_depth+1)
-```
-
-And the heatmap of the correlations of IC metrics. 
-
-```{r, fig.width = 8, fig.height = 8}
-cor = cor(df[, 1:29], method = "spearman", use = "pairwise.complete.obs")
-library(ComplexHeatmap)
-Heatmap(cor, name = "correlation", column_title = "Spearman correlation")
-```
-
 
 # Session Info
 

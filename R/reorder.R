@@ -30,7 +30,9 @@ reorder_children = function(dag, node) {
 	fit = solve_TSP(tsp)
 
 	children[as.vector(fit)]
+
 }
+
 
 #' Reorder child terms
 #' 
