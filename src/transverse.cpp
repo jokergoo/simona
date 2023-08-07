@@ -251,7 +251,6 @@ IntegerVector cpp_n_ancestors(S4 dag, bool include_self = false) {
 
 	LogicalVector l_ancestors(n, false);
 	for(int i = 0; i < n; i ++) {
-		IntegerVector parents = lt_parents[i];
 			
 		_find_ancestors(lt_parents, i, l_ancestors, include_self);
 		num[i] = sum(l_ancestors);
@@ -262,6 +261,44 @@ IntegerVector cpp_n_ancestors(S4 dag, bool include_self = false) {
 	return num;
 }
 
+
+// [[Rcpp::export]]
+IntegerVector cpp_n_ancestors_on_tree(S4 dag, bool include_self = false) {
+	List lt_children = dag.slot("lt_children");
+
+	int n = lt_children.size();
+	IntegerVector num(n, 0);
+
+	IntegerVector current = dag.slot("root");
+	LogicalVector l_current = integer_to_logical_vector(current-1, n);
+	bool has_child = true;
+	while(has_child) {
+		LogicalVector l_current2(n);
+		has_child = false;
+		for(int i = 0; i < n; i ++) {
+			if(l_current[i]) {
+				IntegerVector children = lt_children[i];
+				if(children.size()) {
+
+					for(int j = 0; j < children.size(); j ++) {
+						num[ children[j] - 1 ] += num[ i ] + 1;
+						l_current2[ children[j] -1] = true;
+					}
+					has_child = true;
+				}
+			}
+		}
+		l_current = l_current2;
+	}
+
+	if(include_self) {
+		num = num + 1;
+	}
+	
+	return num;
+}
+
+
 // [[Rcpp::export]]
 IntegerVector cpp_n_offspring(S4 dag, bool include_self = false) {
 	List lt_children = dag.slot("lt_children");
@@ -271,14 +308,45 @@ IntegerVector cpp_n_offspring(S4 dag, bool include_self = false) {
 
 	LogicalVector l_offspring(n, false);
 	for(int i = 0; i < n; i ++) {
-		IntegerVector children = lt_children[i];
-			
 		_find_offspring(lt_children, i, l_offspring, include_self);
 		num[i] = sum(l_offspring);
 
 		reset_logical_vector_to_false(l_offspring);
 
 	}
+	return num;
+}
+
+
+// [[Rcpp::export]]
+IntegerVector cpp_n_offspring_on_tree(S4 dag, bool include_self = false) {
+	List lt_children = dag.slot("lt_children");
+	IntegerVector depth = _dag_depth(dag);
+
+	int max_depth = max(depth);
+
+	int n = lt_children.size();
+	IntegerVector num(n, 0);
+
+	for(int i_depth = max_depth-1; i_depth >= 0; i_depth --) {
+
+		for(int i = 0; i < n; i ++) {
+			if(depth[i] == i_depth) {
+				IntegerVector children = lt_children[i];
+				if(children.size()) {
+
+					for(int j = 0; j < children.size(); j ++) {
+						num[ i ] += num[ children[j]-1 ] + 1;
+					}
+				}
+			}
+		}
+	}
+
+	if(include_self) {
+		num = num + 1;
+	}
+	
 	return num;
 }
 
@@ -741,13 +809,13 @@ void _go_child(List lt_children, int node, IntegerVector path, CharacterVector t
 }
 
 // [[Rcpp::export]]
-void cpp_check_cyclic_node(S4 dag) {
+void cpp_check_cyclic_node(S4 dag, int node = -1) {
 	List lt_children = dag.slot("lt_children");
-	int root = dag.slot("root");
+	if(node == -1) {
+		node = dag.slot("root");
+	}
 	CharacterVector terms = dag.slot("terms");
 
 	IntegerVector path(0);
-	_go_child(lt_children, root, path, terms);
+	_go_child(lt_children, node, path, terms);
 }
-
-

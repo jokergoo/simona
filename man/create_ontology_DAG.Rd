@@ -10,7 +10,8 @@ create_ontology_DAG(
   relations = NULL,
   relations_DAG = NULL,
   source = "Ontology",
-  annotation = NULL
+  annotation = NULL,
+  remove_rings = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,9 @@ When the DAG for relation types is provided, in downstream analysis, the ancesto
 \item{annotation}{A list of character vectors which contain items annotated to the terms. Names of the list should be the term names. In the DAG, items
 annotated to a term will also be annotated to its parents. Such merging
 is applied automatically in the package.}
+
+\item{remove_rings}{There might be rings that are isolated to the main DAG where there are no roots on the rings, thus they cannot be attached to the main DAG. If the value
+of \code{remove_rings} is set to \code{TRUE}, such rings are removed.}
 }
 \value{
 An \code{ontology_DAG} object.

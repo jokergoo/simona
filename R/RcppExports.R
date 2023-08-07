@@ -165,8 +165,16 @@ cpp_n_ancestors <- function(dag, include_self = FALSE) {
     .Call(`_simona_cpp_n_ancestors`, dag, include_self)
 }
 
+cpp_n_ancestors_on_tree <- function(dag, include_self = FALSE) {
+    .Call(`_simona_cpp_n_ancestors_on_tree`, dag, include_self)
+}
+
 cpp_n_offspring <- function(dag, include_self = FALSE) {
     .Call(`_simona_cpp_n_offspring`, dag, include_self)
+}
+
+cpp_n_offspring_on_tree <- function(dag, include_self = FALSE) {
+    .Call(`_simona_cpp_n_offspring_on_tree`, dag, include_self)
 }
 
 cpp_n_offspring_with_intersect <- function(dag, nodes, include_self = FALSE) {
@@ -225,8 +233,12 @@ cpp_dag_shortest_dist_from_ancestors <- function(dag, to_node, l_background = lo
     .Call(`_simona_cpp_dag_shortest_dist_from_ancestors`, dag, to_node, l_background)
 }
 
-cpp_check_cyclic_node <- function(dag) {
-    invisible(.Call(`_simona_cpp_check_cyclic_node`, dag))
+cpp_check_cyclic_node <- function(dag, node = -1L) {
+    invisible(.Call(`_simona_cpp_check_cyclic_node`, dag, node))
+}
+
+cpp_mark_tree_links <- function(dag) {
+    .Call(`_simona_cpp_mark_tree_links`, dag)
 }
 
 cpp_match_index <- function(ind1, ind2) {

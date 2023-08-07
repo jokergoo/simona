@@ -4,6 +4,7 @@
 #' 
 #' @param file Path of the ontology file or an URL.
 #' @param relation_type Semantic relation types to include. Note `is_a` relation is always included.
+#' @param ... Pass to [`create_ontology_DAG()`].
 #' 
 #' @details 
 #' 
@@ -18,14 +19,18 @@
 #' # The plant ontology: http://obofoundry.org/ontology/po.html 
 #' dag = import_obo("https://raw.githubusercontent.com/Planteome/plant-ontology/master/po.obo")
 #' }
-import_obo = function(file, relation_type = "part_of") {
+import_obo = function(file, relation_type = "part_of", ...) {
 	
 	if(grepl("^(http|https|ftp)://.*\\.gz$", file)) {
-		ln = readLines(gzcon(url(file)))
+		con = url(file)
+		ln = readLines(gzcon(con))
+		close(con)
 	} else if(grepl("\\.gz$", file)) {
 		ln = readLines(gzfile(file))
 	} else if(grepl("^(http|https|ftp)://", file)) {
-		ln = readLines(url(file))
+		con = url(file)
+		ln = readLines(con)
+		close(con)
 	} else {
 		ln = readLines(file)
 	}
@@ -113,7 +118,7 @@ import_obo = function(file, relation_type = "part_of") {
 	}
 
 	dag = create_ontology_DAG(parents = term_relations$parent, children = term_relations$child, relations = term_relations$relation,
-		source = paste0(ontology, ", ", version), relations_DAG = relations_DAG)
+		source = paste0(ontology, ", ", version), relations_DAG = relations_DAG, ...)
 
 	rownames(term_meta) = term_meta$id
 	term_meta = term_meta[dag@terms, , drop = FALSE]
@@ -316,7 +321,7 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 #' @export
 #' @import xml2
 #' @export
-import_owl = function(file, relation_type = "part_of") {
+import_owl = function(file, relation_type = "part_of", ...) {
 	
 	owl = read_xml(file, options = "HUGE")
 
@@ -495,7 +500,7 @@ import_owl = function(file, relation_type = "part_of") {
 	}
 
 	dag = create_ontology_DAG(parents = term_relations$parent, children = term_relations$child, relations = term_relations$relation,
-		source = paste0(ontology, ", ", version), relations_DAG = relations_DAG)
+		source = paste0(ontology, ", ", version), relations_DAG = relations_DAG, ...)
 
 
 	rownames(term_meta) = term_meta$id
@@ -542,10 +547,10 @@ import_owl = function(file, relation_type = "part_of") {
 #' # The plant ontology: http://obofoundry.org/ontology/po.html 
 #' dag = import_ontology("http://purl.obolibrary.org/obo/po.owl", robot_jar = ...)
 #' }
-import_ontology = function(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "") {
+import_ontology = function(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "", ...) {
 
 	if(grepl("\\.(obo|obo.gz)$", file, ignore.case = TRUE)) {
-		return(import_obo(file))
+		return(import_obo(file, ...))
 	}
 
 	# if(grepl("\\.(owl|owl.gz)$", file, ignore.case = TRUE)) {
@@ -584,7 +589,7 @@ import_ontology = function(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "
 		stop("There is an error when executing robot.jar.")
 	}
 
-	lt = import_obo(output)
+	lt = import_obo(output, ...)
 
 	if(file.exists(output)) {
 		file.remove(output)

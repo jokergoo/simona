@@ -129,7 +129,11 @@ dag_all_offspring = function(dag, in_labels = TRUE, include_self = FALSE) {
 #' n_connected_leaves(dag)
 n_offspring = function(dag, terms = NULL, use_cache = TRUE, include_self = FALSE) {
 	if(is.null(dag@term_env$n_offspring) || !use_cache) {
-		dag@term_env$n_offspring = cpp_n_offspring(dag, FALSE)
+		if(dag_is_tree(dag)) {
+			dag@term_env$n_offspring = cpp_n_offspring_on_tree(dag, FALSE)
+		} else {
+			dag@term_env$n_offspring = cpp_n_offspring(dag, FALSE)
+		}
 	}
 	n = dag@term_env$n_offspring
 	names(n) = dag@terms
@@ -146,11 +150,16 @@ n_offspring = function(dag, terms = NULL, use_cache = TRUE, include_self = FALSE
 	}
 }
 
+
 #' @rdname n_terms
 #' @export
 n_ancestors = function(dag, terms = NULL, use_cache = TRUE, include_self = FALSE) {
 	if(is.null(dag@term_env$n_ancestors) || !use_cache) {
-		dag@term_env$n_ancestors = cpp_n_ancestors(dag, FALSE)
+		if(dag_is_tree(dag)) {
+			dag@term_env$n_ancestors = cpp_n_ancestors_on_tree(dag, FALSE)
+		} else {
+			dag@term_env$n_ancestors = cpp_n_ancestors(dag, FALSE)
+		}
 	}
 	n = dag@term_env$n_ancestors
 	names(n) = dag@terms

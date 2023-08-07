@@ -8,6 +8,7 @@ get_IC_method = function(method, control = list()) {
 		if(length(i) != 1) {
 			stop("method should be in `all_ic_methods()`.")
 		}
+		method = names(.ALL_IC_METHODS)[i]
 		param = .ALL_IC_METHODS[[i]]
 	}
 
@@ -28,6 +29,7 @@ get_term_sim_method = function(method, control = list()) {
 		if(length(i) != 1) {
 			stop("method should be in `all_term_sim_methods()`.")
 		}
+		method = names(.ALL_TERM_SIM_METHODS)[i]
 		param = .ALL_TERM_SIM_METHODS[[i]]
 	}
 
@@ -46,6 +48,7 @@ get_group_sim_method = function(method, control = list()) {
 		if(length(i) != 1) {
 			stop("method should be in `all_group_sim_methods()`.")
 		}
+		method = names(.ALL_GROUP_SIM_METHODS)[i]
 		param = .ALL_GROUP_SIM_METHODS[[i]]
 	}
 

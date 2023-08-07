@@ -525,6 +525,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_n_ancestors_on_tree
+IntegerVector cpp_n_ancestors_on_tree(S4 dag, bool include_self);
+RcppExport SEXP _simona_cpp_n_ancestors_on_tree(SEXP dagSEXP, SEXP include_selfSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
+    Rcpp::traits::input_parameter< bool >::type include_self(include_selfSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_n_ancestors_on_tree(dag, include_self));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_n_offspring
 IntegerVector cpp_n_offspring(S4 dag, bool include_self);
 RcppExport SEXP _simona_cpp_n_offspring(SEXP dagSEXP, SEXP include_selfSEXP) {
@@ -534,6 +546,18 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
     Rcpp::traits::input_parameter< bool >::type include_self(include_selfSEXP);
     rcpp_result_gen = Rcpp::wrap(cpp_n_offspring(dag, include_self));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_n_offspring_on_tree
+IntegerVector cpp_n_offspring_on_tree(S4 dag, bool include_self);
+RcppExport SEXP _simona_cpp_n_offspring_on_tree(SEXP dagSEXP, SEXP include_selfSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
+    Rcpp::traits::input_parameter< bool >::type include_self(include_selfSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_n_offspring_on_tree(dag, include_self));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -713,13 +737,25 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_check_cyclic_node
-void cpp_check_cyclic_node(S4 dag);
-RcppExport SEXP _simona_cpp_check_cyclic_node(SEXP dagSEXP) {
+void cpp_check_cyclic_node(S4 dag, int node);
+RcppExport SEXP _simona_cpp_check_cyclic_node(SEXP dagSEXP, SEXP nodeSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
-    cpp_check_cyclic_node(dag);
+    Rcpp::traits::input_parameter< int >::type node(nodeSEXP);
+    cpp_check_cyclic_node(dag, node);
     return R_NilValue;
+END_RCPP
+}
+// cpp_mark_tree_links
+List cpp_mark_tree_links(S4 dag);
+RcppExport SEXP _simona_cpp_mark_tree_links(SEXP dagSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mark_tree_links(dag));
+    return rcpp_result_gen;
 END_RCPP
 }
 // cpp_match_index
@@ -777,7 +813,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_simona_cpp_offspring_within_background", (DL_FUNC) &_simona_cpp_offspring_within_background, 4},
     {"_simona_cpp_connected_leaves", (DL_FUNC) &_simona_cpp_connected_leaves, 2},
     {"_simona_cpp_n_ancestors", (DL_FUNC) &_simona_cpp_n_ancestors, 2},
+    {"_simona_cpp_n_ancestors_on_tree", (DL_FUNC) &_simona_cpp_n_ancestors_on_tree, 2},
     {"_simona_cpp_n_offspring", (DL_FUNC) &_simona_cpp_n_offspring, 2},
+    {"_simona_cpp_n_offspring_on_tree", (DL_FUNC) &_simona_cpp_n_offspring_on_tree, 2},
     {"_simona_cpp_n_offspring_with_intersect", (DL_FUNC) &_simona_cpp_n_offspring_with_intersect, 3},
     {"_simona_cpp_n_leaves", (DL_FUNC) &_simona_cpp_n_leaves, 1},
     {"_simona_cpp_ancestors_of_a_group", (DL_FUNC) &_simona_cpp_ancestors_of_a_group, 4},
@@ -792,7 +830,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_simona_cpp_dag_dist_to_leaves", (DL_FUNC) &_simona_cpp_dag_dist_to_leaves, 1},
     {"_simona_cpp_dag_longest_dist_from_ancestors", (DL_FUNC) &_simona_cpp_dag_longest_dist_from_ancestors, 3},
     {"_simona_cpp_dag_shortest_dist_from_ancestors", (DL_FUNC) &_simona_cpp_dag_shortest_dist_from_ancestors, 3},
-    {"_simona_cpp_check_cyclic_node", (DL_FUNC) &_simona_cpp_check_cyclic_node, 1},
+    {"_simona_cpp_check_cyclic_node", (DL_FUNC) &_simona_cpp_check_cyclic_node, 2},
+    {"_simona_cpp_mark_tree_links", (DL_FUNC) &_simona_cpp_mark_tree_links, 1},
     {"_simona_cpp_match_index", (DL_FUNC) &_simona_cpp_match_index, 2},
     {NULL, NULL, 0}
 };

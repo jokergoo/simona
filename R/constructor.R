@@ -59,6 +59,8 @@ ontology_DAG = setClass("ontology_DAG",
 #' @param annotation A list of character vectors which contain items annotated to the terms. Names of the list should be the term names. In the DAG, items
 #'                   annotated to a term will also be annotated to its parents. Such merging
 #'                   is applied automatically in the package.
+#' @param remove_rings There might be rings that are isolated to the main DAG where there are no roots on the rings, thus they cannot be attached to the main DAG. If the value
+#'        of `remove_rings` is set to `TRUE`, such rings are removed.
 #' 
 #' @return An `ontology_DAG` object.
 #' @export
@@ -92,7 +94,7 @@ ontology_DAG = setClass("ontology_DAG",
 #'     relations = c("r1", "r2", "r1", "r3", "r1", "r4"),
 #'     relations_DAG = relations_DAG)
 create_ontology_DAG = function(parents, children, relations = NULL, relations_DAG = NULL,
-	source = "Ontology", annotation = NULL) {
+	source = "Ontology", annotation = NULL, remove_rings = FALSE) {
 
 	if(!is.character(parents)) {
 		stop("`parents` should be in character mode.")
@@ -224,6 +226,19 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 
 	dag@aspect_ratio = c(aspect_ratio1, aspect_ratio2)
 
+	iring = which(depth < 0)
+	if(length(iring)) {
+		message_wrap(qq("Removed @{length(iring)} terms in isolated rings."))
+		if(remove_rings) {
+			return(dag[[dag_root(dag)]])
+		} else { # only for printing the messages
+			message_wrap("Found terms in isolated rings. Set `remove_rings = TRUE` to remove them. One example is as follows:")
+			for(i in iring) {
+				cpp_check_cyclic_node(dag, i)
+			}
+		}
+	}
+
 	return(dag)
 }
 
@@ -260,6 +275,7 @@ setMethod("show",
 		if(n_terms == n_relations + 1) {
 			cat("  Aspect ratio: ", object@aspect_ratio[1], ":1\n", sep = "")
 		} else {
+			cat("  Avg number of parents: ", sprintf("%.2f", mean(n_parents(dag)[-dag_root(dag, in_labels = FALSE)])), "\n", sep = "")
 			cat("  Aspect ratio: ", object@aspect_ratio[1], ":1 (based on the longest distance to root)\n", sep = "")
 			cat("                ", object@aspect_ratio[2], ":1 (based on the shortest distance to root)\n", sep = "")
 		}

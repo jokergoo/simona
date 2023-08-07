@@ -31,33 +31,49 @@ dag_treelize = function(dag) {
 		return(dag)
 	}
 
-	n = dag@n_terms
-	lt_children = dag@lt_children
-	lt_children2 = rep(list(integer(0)), n)
+	lt_children2 = cpp_mark_tree_links(dag)
+	lt_children2 = lapply(lt_children2, function(x) {
+		abs(x[x < 0])
+	})
 
-	depth = dag_depth(dag)
+
+	# n = dag@n_terms
+	# lt_children = dag@lt_children
+	# lt_children2 = rep(list(integer(0)), n)
+
+	# depth = dag_depth(dag)
 	
-	current_depth = 0
-	current_term = dag@root
-	l_visited = rep(FALSE, n)
-	while(1) {
-		if(length(current_term) == 0) {
-			break
-		}
-		current_depth = current_depth + 1
-		current_term2 = integer(0)
-		for(t in current_term) {
-			children = lt_children[[t]]
-			for(ch in children) {
-				if(depth[ch] == current_depth && !l_visited[ch]) {
-					lt_children2[[t]] = c(lt_children2[[t]], ch)
-					l_visited[ch] = TRUE
-					current_term2 = c(current_term2, ch)
-				}
-			}
-		}
-		current_term = current_term2
-	}
+	# current_depth = 0
+	# current_term = dag@root
+	# l_visited = rep(FALSE, n)
+	# i_visited = 1L
+	# while(1) {
+	# 	if(length(current_term) == 0) {
+	# 		break
+	# 	}
+	# 	current_depth = current_depth + 1
+	# 	current_term2 = integer(0)
+	# 	for(t in current_term) {
+	# 		children = lt_children[[t]]
+	# 		for(ch in children) {
+	# 			if(depth[ch] == current_depth && !l_visited[ch]) {
+	# 				lt_children2[[t]] = c(lt_children2[[t]], ch)
+	# 				l_visited[ch] = TRUE
+	# 				current_term2 = c(current_term2, ch)
+
+	# 				i_visited = i_visited + 1L
+	# 				if(i_visited %% 1000 == 0) {
+	# 					message(strrep("\b", 100), appendLF = FALSE)
+	# 					message(qq("going through @{i_visited}/@{n} nodes ..."), appendLF = FALSE)
+	# 				}
+	# 			}
+	# 		}
+	# 	}
+	# 	current_term = current_term2
+	# }
+
+	# message(strrep("\b", 100), appendLF = FALSE)
+	# message(qq("going through @{i_visited}/@{n} nodes ... Done."))
 
 	n = length(lt_children2)
 	parents = rep(seq_len(n), times = sapply(lt_children2, length))

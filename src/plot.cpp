@@ -67,6 +67,7 @@ DataFrame cpp_term_pos_on_circle(S4 dag, IntegerVector n_offspring, double start
 		return df;
 	}
 
+	int i_visited = 1;
 	while(1) {
 		current_depth = current_depth + 1;
 		reset_logical_vector_to_false(l_current_parent2);
@@ -74,13 +75,15 @@ DataFrame cpp_term_pos_on_circle(S4 dag, IntegerVector n_offspring, double start
 		for(int i = 0; i < n; i ++) {
 			if(l_current_parent[i]) { // check its children
 				IntegerVector children = lt_children[i];
-				IntegerVector children2;
+				LogicalVector l_children(children.size());
 
 				for(int j = 0; j < children.size(); j ++) {
 					if(depth[ children[j]-1 ] == current_depth) {
-						children2.push_back(children[j]);
+						l_children[j] = true;
 					}
 				}
+
+				IntegerVector children2 = children[l_children];
 
 				// calculate the circular coordinate of #children2 nodes
 				int n_children2 = children2.size();
@@ -101,6 +104,13 @@ DataFrame cpp_term_pos_on_circle(S4 dag, IntegerVector n_offspring, double start
 					parent_range_left[ children2[j]-1 ] = breaks[j];
 					parent_range_right[ children2[j]-1 ] = breaks[j+1];
 
+					i_visited ++;
+
+					if(i_visited % 1000 == 0) {
+						Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+						Rcout << "going through " << i_visited << " / " << n << " nodes ...";
+					}
+
 				}
 
 				for(int j = 0; j < n_children2; j ++) {
@@ -118,13 +128,18 @@ DataFrame cpp_term_pos_on_circle(S4 dag, IntegerVector n_offspring, double start
 		}
 	}
 
+	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+	Rcout << "going through " << n << " / " << n << " nodes ... Done.\n";
+
 	DataFrame df = DataFrame::create(Named("theta") = theta, Named("rho") = rho, Named("width") = width);
 
 	return df;
 }
 
 // [[Rcpp::export]]
-IntegerVector cpp_calc_n_neighbours_on_circle(NumericVector theta, double range) { // theta is sorted and in [0, 360]
+IntegerVector cpp_calc_n_neighbours_on_circle(NumericVector theta, double range) {
+
+	 // theta is sorted and in [0, 360], range is small
 	int n = theta.size();
 
 	IntegerVector k(n);
@@ -132,37 +147,50 @@ IntegerVector cpp_calc_n_neighbours_on_circle(NumericVector theta, double range)
 	int prev_i;
 	int next_i;
 	double diff;
+	bool flag = false;
 	for(int i = 0; i < n; i ++) {
 		k[i] = 1;
 
 		// forward
+		flag = false;
 		prev_i = i - 1;
 		while(true) {
 			if(prev_i < 0) {
 				prev_i = n - 1;
+				flag = true;
 			} else {
 				prev_i --;
 			}
 
-			diff = std::abs(theta[i] - theta[prev_i]);
-			if(diff < range || diff > 360 - range) {
+			if(flag) {
+				diff = theta[i] - theta[prev_i] + 360;
+			} else {
+				diff = theta[i] - theta[prev_i];
+			}
+			if(diff < range) {
 				k[i] ++;
 			} else {
 				break;
 			}
 		}
 
-		// forward
+		// afterword
+		flag = false;
 		next_i = i + 1;
 		while(true) {
 			if(next_i > n - 1) {
 				next_i = 0;
+				flag = true;
 			} else {
 				next_i ++;
 			}
 
-			diff = std::abs(theta[i] - theta[next_i]);
-			if(diff < range || diff > 360 - range) {
+			if(flag) {
+				diff = theta[next_i] - theta[i] + 360;
+			} else {
+				diff = theta[next_i] - theta[i];
+			}
+			if(diff < range) {
 				k[i] ++;
 			} else {
 				break;

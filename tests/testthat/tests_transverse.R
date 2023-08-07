@@ -161,4 +161,14 @@ test_that("test n_children/n_parents/n_connected_leaves", {
 		unname(n_connected_leaves(dag)),
 		c(2, 2, 1, 1, 0, 0)
 	)
+
+	expect_equal(
+		simona:::cpp_n_ancestors(dag_treelize(dag)),
+		simona:::cpp_n_ancestors_on_tree(dag_treelize(dag))
+	)
+
+	expect_equal(
+		simona:::cpp_n_offspring(dag_treelize(dag)),
+		simona:::cpp_n_offspring_on_tree(dag_treelize(dag))
+	)
 })

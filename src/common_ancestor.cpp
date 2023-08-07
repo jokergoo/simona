@@ -122,7 +122,7 @@ NumericMatrix cpp_max_ancestor_v(S4 dag, IntegerVector nodes, NumericVector v) {
 	}
 
 	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ...\ndone.\n";
+	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ... Done.\n";
 
 
 	return score;
@@ -193,7 +193,7 @@ IntegerMatrix cpp_max_ancestor_id(S4 dag, IntegerVector nodes, NumericVector v) 
 	}
 
 	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ...\ndone.\n";
+	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ... Done.\n";
 
 
 	return id;
@@ -274,7 +274,7 @@ IntegerMatrix cpp_distances(S4 dag, IntegerVector nodes, int type = 1) { // 1: l
 	}
 
 	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ...\ndone.\n";
+	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ... Done.\n";
 
 
 	return dd;
@@ -371,7 +371,7 @@ IntegerMatrix cpp_longest_distances_via_LCA(S4 dag, IntegerVector nodes) {
 	}
 
 	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ...\ndone.\n";
+	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ... Done.\n";
 
 	return dd;
 }
@@ -465,7 +465,7 @@ List cpp_longest_distances_from_LCA(S4 dag, IntegerVector nodes) {
 	}
 
 	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ...\ndone.\n";
+	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ... Done.\n";
 
 
 	List lt = List::create(Named("left") = dd1 , Named("right") = dd2);
@@ -533,7 +533,7 @@ IntegerMatrix cpp_distances_directed(S4 dag, IntegerVector nodes, int type = 1) 
 	}
 
 	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << m << " / " << m << " nodes ...\ndone.\n";
+	Rcout << "going through " << m << " / " << m << " nodes ... Done.\n";
 
 
 	return dd;
@@ -627,7 +627,7 @@ IntegerMatrix cpp_nearest_common_ancestor(S4 dag, IntegerVector nodes) {
 	}
 
 	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ...\ndone.\n";
+	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ... Done.\n";
 
 
 	return id;
@@ -703,7 +703,7 @@ IntegerMatrix cpp_shortest_distances_via_NCA(S4 dag, IntegerVector nodes) {
 	}
 
 	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ...\ndone.\n";
+	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ... Done.\n";
 
 
 	return dd;

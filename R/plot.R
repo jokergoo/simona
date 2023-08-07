@@ -63,6 +63,7 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 	n_terms = dag@n_terms
 
 	if(!is.na(reorder_level)) {
+		message(qq("reordering children on depth <= @{reorder_level} in DAG..."))
 		dag = dag_reorder(dag, max_level = reorder_level)
 	}
 
@@ -75,13 +76,16 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 	if(dag_is_tree(dag)) {
 		tree = dag
 	} else {
+		message("converting DAG to a tree...")
 		tree = dag_treelize(dag)
 	}
-	term_pos = cpp_term_pos_on_circle(tree, n_offspring(dag), start, end) ## in polar coordinate
+	message("calculating term positions on the DAG...")
+	term_pos = cpp_term_pos_on_circle(tree, n_offspring(tree), start, end) ## in polar coordinate
 
 	term_pos$n_neighbours = 0
-	for(level in unique(term_pos$rho)) {
+	for(level in sort(unique(term_pos$rho))) {
 		l = term_pos$rho == level
+		message(qq("calculating numbers of neighbours within 1 degree neighbourhood on level @{level}, @{sum(l)} terms..."))
 		term_pos[l, "n_neighbours"] = calc_n_neighbours_on_circle(term_pos$theta[l], width = 0.5)
 	}
 
@@ -109,7 +113,7 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 	}
 	if(is.null(node_size)) {
 		n_children = dag@term_env$n_children
-		node_size = .scale(n_children, c(0, quantile(n_children, 0.99)), c(2, 10))
+		node_size = .scale(n_children, c(0, quantile(n_children, 0.99)+1), c(2, 10))
 	}
 
 	if(!length(node_col) %in% c(1, n_terms)) {
@@ -122,7 +126,7 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 		stop_wrap(qq("Length of `node_size` should be one or @{n_terms} (number of terms in the DAG)."))
 	}
 
-	node_transparency = .scale(term_pos$n_neighbours, c(1, quantile(term_pos$n_neighbours, 0.9)), c(0.9, 0.5))
+	node_transparency = .scale(term_pos$n_neighbours, c(1, quantile(term_pos$n_neighbours, 0.9)+1), c(0.9, 0.5))
 
 	node_col = add_transparency(node_col, node_transparency)
 
@@ -193,6 +197,7 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 
 	max_depth = max(abs(term_pos$rho))
 
+	message("making plot...")
 	grid.newpage()
 	pushViewport(viewport(x = unit(0, "npc"), just = "left", width = unit(1, "snpc"), height = unit(1, "snpc"), 
 		xscale = c(-max_depth, max_depth), yscale = c(-max_depth, max_depth)))
@@ -315,6 +320,7 @@ dag_as_DOT = function(dag, color = "black", style = "solid",
 		if("name" %in% colnames(meta)) {
 			name = meta[, "name"]
 			name = gsub("\"", "\\\\\"", name)
+			name[is.na(name)] = ""
 		}
 	}
 
