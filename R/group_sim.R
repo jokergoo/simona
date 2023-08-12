@@ -3,53 +3,68 @@
 #' @importFrom matrixStats rowMaxs colMaxs
 .GroupSim_pairwise = function(dag, group1, group2, term_sim_method, group_sim_method = "avg", ...) {
 
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-	group1 = dag@terms[id1]
-	group2 = dag@terms[id2]
+	group1 = lapply(group1, function(x) term_to_node_id(dag, x, strict = FALSE))
+	group2 = lapply(group2, function(x) term_to_node_id(dag, x, strict = FALSE))
 
-	group = union(group1, group2)
-	sim = term_sim(dag, group, term_sim_method, control = list(...))
-	
-	group1 = intersect(group1, rownames(sim))
-	group2 = intersect(group2, rownames(sim))
-	sim = sim[group1, group2, drop = FALSE]
+	id = unique(unlist(c(group1, group2)))
+	sim = term_sim(dag, id, term_sim_method, control = list(...))
+	rownames(sim) = colnames(sim) = dag@terms[id]
 
-	group_sim_method = tolower(group_sim_method)
+	.calc = function(g1, g2) {
+		if(length(g1) == 0 || length(g2) == 0) {
+			return(0)
+		}
+		sim = sim[g1, g2, drop = FALSE]
 
-	best_match1 = rowMaxs(sim)
-	best_match2 = colMaxs(sim)
+		group_sim_method = tolower(group_sim_method)
 
-	# avg
-	if(group_sim_method == "avg") {
-		mean(sim)
-	} else if(group_sim_method == "max") {
-		# max
-		max(sim)
-	} else if(group_sim_method == "bma") {
-		#bma
-		(mean(best_match1) + mean(best_match2))/2
-	} else if(group_sim_method == "bmm") {
-		# bmm
-		max(mean(best_match1), mean(best_match2))
-	} else if(group_sim_method == "abm") {
-		# abm
-		(sum(best_match1) + sum(best_match2))/(nrow(sim) + ncol(sim))
-	} else if(group_sim_method == "hdf") {
-		# hdf
-		1 - max(1 - min(best_match1), 1 - min(best_match2))
-	} else if(group_sim_method == "mhdf") {
-		# MHDF
-		1 - max(1 - mean(best_match1), 1 - mean(best_match2))
-	} else if(group_sim_method == "vhdf") {
-		1 - 0.5 * (sqrt( mean((1 - best_match1)^2)) + sqrt( mean((1 - best_match2)^2)))
-	} else if(group_sim_method == "froehlich_2007") {
-		exp(- max(1 - min(best_match1), 1 - min(best_match2)))
-	} else if(group_sim_method == "joeng_2014") {
-		0.5 * (sqrt( mean(best_match1^2)) + sqrt( mean(best_match2^2)))
-	} else {
-		stop("method not supported.")
+		best_match1 = rowMaxs(sim)
+		best_match2 = colMaxs(sim)
+
+		# avg
+		if(group_sim_method == "avg") {
+			mean(sim)
+		} else if(group_sim_method == "max") {
+			# max
+			max(sim)
+		} else if(group_sim_method == "bma") {
+			#bma
+			(mean(best_match1) + mean(best_match2))/2
+		} else if(group_sim_method == "bmm") {
+			# bmm
+			max(mean(best_match1), mean(best_match2))
+		} else if(group_sim_method == "abm") {
+			# abm
+			(sum(best_match1) + sum(best_match2))/(nrow(sim) + ncol(sim))
+		} else if(group_sim_method == "hdf") {
+			# hdf
+			1 - max(1 - min(best_match1), 1 - min(best_match2))
+		} else if(group_sim_method == "mhdf") {
+			# MHDF
+			1 - max(1 - mean(best_match1), 1 - mean(best_match2))
+		} else if(group_sim_method == "vhdf") {
+			1 - 0.5 * (sqrt( mean((1 - best_match1)^2)) + sqrt( mean((1 - best_match2)^2)))
+		} else if(group_sim_method == "froehlich_2007") {
+			exp(- max(1 - min(best_match1), 1 - min(best_match2)))
+		} else if(group_sim_method == "joeng_2014") {
+			0.5 * (sqrt( mean(best_match1^2)) + sqrt( mean(best_match2^2)))
+		} else {
+			stop("method not supported.")
+		}
 	}
+
+	n1 = length(group1)
+	n2 = length(group2)
+	m = matrix(nrow = n1, ncol = n2)
+	rownames(m) = names(group1)
+	colnames(m) = names(group2)
+
+	for(i in seq(1, length(group1))) {
+		for(j in seq(1, length(group2))) {
+			m[i, j] = .calc(dag@terms[ group1[[i]] ], dag@terms[ group2[[j]] ])
+		}
+	}
+	m
 }
 
 #' GroupSim_pairwise_avg

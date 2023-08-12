@@ -268,5 +268,12 @@ group_sim = function(dag, group1, group2, method, control = list()) {
 	}
 	group_sim_fun = get_group_sim_method(method, control)
 
+	if(!is.list(group1)) {
+		group1 = list(group1 = group1)
+	}
+	if(!is.list(group2)) {
+		group2 = list(group2 = group2)
+	}
+
 	group_sim_fun(dag, group1, group2)
 }

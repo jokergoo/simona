@@ -154,6 +154,14 @@ dag3 = import_owl("https://raw.githubusercontent.com/Planteome/plant-ontology/ma
 dag3
 ```
 
+## The .ttl format
+
+Some ontologies may only provide large `.ttl` format files ([the Turtle format](https://www.w3.org/TR/turtle/)).
+**simona** also provides a function `import_ttl()` which can recognize `.ttl` file with `owl:Class` as objects.
+
+```{r}
+dag4 = import_ttl("")
+```
 
 ## Session info
 

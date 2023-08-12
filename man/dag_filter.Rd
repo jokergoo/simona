@@ -4,7 +4,14 @@
 \alias{dag_filter}
 \title{Filter the DAG}
 \usage{
-dag_filter(dag, terms = NULL, relations = NULL, root = NULL, leaves = NULL)
+dag_filter(
+  dag,
+  terms = NULL,
+  relations = NULL,
+  root = NULL,
+  leaves = NULL,
+  mcols_filter = NULL
+)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}

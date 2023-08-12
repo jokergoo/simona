@@ -326,10 +326,6 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 #' @export
 import_owl = function(file, relation_type = "part_of", ...) {
 	
-	if(grepl("^(http|https|ftp)", file)) {
-		stop("Only local file is allowed.")
-	}
-
 	owl = read_xml(file, options = "HUGE")
 
 	####### relation / ObjectProperty ########
@@ -567,10 +563,6 @@ import_ontology = function(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "
 	# 	}
 	# }
 
-	if(grepl("^(http|https|ftp)", file)) {
-		stop("Only local file is allowed.")
-	}
-
 	if(Sys.which("java") == "") {
 		stop("Java is not available.")
 	}
@@ -625,8 +617,12 @@ import_ttl = function(file, ...) {
 		stop("Perl is not available.")
 	}
 
-	if(grepl("^(http|https|ftp)", file)) {
-		stop("Only local file is allowed.")
+	if(grepl("^(http|ftp)", file)) {
+		file2 = tempfile(fileext = paste0("_", basename(file)))
+		download.file(file, destfile = file2, quiet = TRUE)
+		on.exit(file.remove(file2))
+
+		file = file2
 	}
 
 	file = normalizePath(file)

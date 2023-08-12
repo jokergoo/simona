@@ -19,6 +19,7 @@ Description: The package implements a rich set of methods for semantic similarit
     visualizations on DAGs.
 biocViews: Software, Annotation, GO, BiomedicalInformatics
 URL: https://github.com/jokergoo/simona
+SystemRequirements: Perl, Java
 License: MIT + file LICENSE
 RoxygenNote: 7.2.3
 Encoding: UTF-8

@@ -80,3 +80,34 @@ test_that("test DAG filter", {
 		c("b", "c", "e")
 	)
 })
+
+
+parents  = c("a", "b", "c", "d", "e")
+children = c("b", "c", "d", "e", "b")
+
+test_that("test cyclic path", {
+	expect_error(
+		create_ontology_DAG(parents, children), 
+		"Found cyclic nodes"
+	)
+
+	expect_message(
+		create_ontology_DAG(parents, children, remove_cyclic_paths = TRUE), 
+		"Remove"
+	)
+})
+
+parents  = c("a", "b", "c", "d", "f", "g", "h")
+children = c("b", "c", "d", "e", "g", "h", "f")
+
+test_that("test isolated rings", {
+	expect_error(
+		create_ontology_DAG(parents, children),
+		"Found isolated rings"
+	)
+
+	expect_message(
+		create_ontology_DAG(parents, children, remove_rings = TRUE), 
+		"Remove"
+	)
+})

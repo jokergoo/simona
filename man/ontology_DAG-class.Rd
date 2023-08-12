@@ -19,7 +19,7 @@ This class defines the DAG structure of an ontology.
 
 \item{\code{lt_children}}{A list of length \code{n}. Each element in the list is an integer index vector of the child terms of the i^th term.}
 
-\item{\code{lt_children_relations}}{A list of length \code{n}. Each element is a vector of the semantic relations between the i^th term and its child terms.
+\item{\code{lt_children_relations}}{A list of length \code{n}. Each element is a vector of the semantic relations between the i^th term and its child terms, e.g. a child "is_a" parent.
 The relations are represented as integers. The character name of the relations is in \code{attr(dag@lt_children_relations, "levels")}.}
 
 \item{\code{relations_DAG}}{A simple \code{ontology_DAG} object but constructed for relation types.}

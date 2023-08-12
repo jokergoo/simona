@@ -186,7 +186,7 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 
 	if(length(cyclic_paths)) {
 		if(remove_cyclic_paths) {
-			message(qq("Removed @{length(cyclic_paths)} cyclic paths."))
+			message_wrap(qq("Removed @{length(cyclic_paths)} cyclic path@{ifelse(length(cyclic_paths) == 1, '', 's')}."))
 			removed_p = sapply(cyclic_paths, function(x) x[length(x)-1])
 			removed_c = sapply(cyclic_paths, function(x) x[length(x)])
 
@@ -218,7 +218,7 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 			)
 		} else {
 			print_cyclic_paths(cyclic_paths, terms)
-			stop("Found cyclic nodes (paths are listed above).")
+			stop_wrap("Found cyclic nodes (paths are listed above). Set `remove_cyclic_paths = TRUE` to remove them.")
 		}
 	}
 
@@ -269,15 +269,15 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 
 	iring = which(depth < 0)
 	if(length(iring)) {
-		message_wrap(qq("Removed @{length(iring)} terms in isolated rings."))
 		if(remove_rings) {
+			message_wrap(qq("Removed @{length(iring)} terms in isolated rings."))
 			return(dag[[dag_root(dag)]])
-		} else { # only for printing the messages
-			message_wrap("Found terms in isolated rings. Set `remove_rings = TRUE` to remove them. One example is as follows:")
+		} else {
 			for(i in iring) {
 				cyclic_paths = cpp_check_cyclic_node(dag, i)
-				print_cyclic_paths(cyclic_paths, terms)
-			}
+				print_cyclic_paths(cyclic_paths[1], terms)
+				stop_wrap("Found isolated rings (one path is listed above). Set `remove_rings = TRUE` to remove them.")
+			}	
 		}
 	}
 
@@ -286,9 +286,9 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 
 print_cyclic_paths = function(cyclic_paths, terms) {
 	for(i in seq_len(length(cyclic_paths))) {
-		cat("[")
-		cat(terms[cyclic_paths[[i]]], sep = " ~ ")
-		cat("]\n")
+		message("[", appendLF = FALSE)
+		message(paste(terms[cyclic_paths[[i]]], collapse = " ~ "), appendLF = FALSE)
+		message("]", appendLF = TRUE)
 	}
 }
 

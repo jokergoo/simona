@@ -4,20 +4,21 @@
 \alias{import_obo}
 \alias{import_owl}
 \alias{import_ontology}
+\alias{import_ttl}
 \title{Import .obo file to an ontology_DAG object}
 \usage{
-import_obo(file, relation_type = "part_of", remove_relations = NULL, ...)
+import_obo(file, relation_type = "part_of", ...)
 
 import_owl(file, relation_type = "part_of", ...)
 
 import_ontology(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "", ...)
+
+import_ttl(file, ...)
 }
 \arguments{
 \item{file}{Path of the ontology file or an URL.}
 
 \item{relation_type}{Semantic relation types to include. Note \code{is_a} relation is always included.}
-
-\item{remove_relations}{A two-column data frame of parent-child relations that will be removed.}
 
 \item{...}{Pass to \code{\link[=create_ontology_DAG]{create_ontology_DAG()}}.}
 
@@ -48,6 +49,9 @@ The \code{import_obo()} function parses the ontology file in \code{.obo} format.
 \item \code{owx}: OWL/XML
 \item \code{ttl}: Turtle
 }
+
+\code{import_ttl()} is a simple parser for the \code{.ttl} format files. It only recognizes
+terms that have the \code{owl:Class} object.
 }
 \examples{
 \dontrun{

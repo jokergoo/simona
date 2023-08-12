@@ -68,7 +68,7 @@ while(my $line = <FILE>) {
 }
 
 if($i_record == 0) {
-	die "cannot find any object 'owl:Class'.";
+	die "cannot find any object of 'owl:Class'.";
 }
 
 print "\"id\",\"prefLabel\",\"notation\",\"definition\",\"subClassOf\"\n";
