@@ -4,7 +4,7 @@ library(testthat)
 
 ## export all functions
 if(!identical(topenv(), .GlobalEnv)) {
-	pkg_env = asNamespace("simone")
+	pkg_env = asNamespace("simona")
 	all_objs = ls(envir = pkg_env)
 	for(obj in all_objs) {
 		assign(obj, get(obj, envir = pkg_env, inherits = FALSE))

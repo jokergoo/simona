@@ -6,7 +6,7 @@
 \alias{import_ontology}
 \title{Import .obo file to an ontology_DAG object}
 \usage{
-import_obo(file, relation_type = "part_of", ...)
+import_obo(file, relation_type = "part_of", remove_relations = NULL, ...)
 
 import_owl(file, relation_type = "part_of", ...)
 
@@ -16,6 +16,8 @@ import_ontology(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "", ...)
 \item{file}{Path of the ontology file or an URL.}
 
 \item{relation_type}{Semantic relation types to include. Note \code{is_a} relation is always included.}
+
+\item{remove_relations}{A two-column data frame of parent-child relations that will be removed.}
 
 \item{...}{Pass to \code{\link[=create_ontology_DAG]{create_ontology_DAG()}}.}
 

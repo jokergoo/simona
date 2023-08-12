@@ -217,7 +217,9 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 		grid.points(term_pos2[l_highlight, 1], term_pos2[l_highlight, 2], default.units = "native", pch = 16, 
 			gp = gpar(col = node_col[l_highlight]), size = unit(node_size[l_highlight], "pt"))
 	} else {
+		message("adding links...")
 		grid.segments(x1, y1, x2, y2, default.units = "native", gp = gpar(col = edge_col_v))
+		message("adding terms...")
 		grid.points(term_pos2[, 1], term_pos2[, 2], default.units = "native", pch = 16, 
 			gp = gpar(col = node_col), size = unit(node_size, "pt"))
 	}
@@ -229,8 +231,9 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 			node_col_map = node_col_map[intersect(names(node_col_map), group[l_highlight])]
 		} else {
 			sector_width = term_pos[sapply(names(node_col_map), function(x) which(dag@terms == x)), "width"]
-			node_col_map = node_col_map[sector_width > 1]
-
+			if(sum(sector_width > 1) > 0) {
+				node_col_map = node_col_map[sector_width > 1]
+			}
 		}
 		if(length(node_col_map) > 20) {
 			n_offspring = n_offspring(dag)

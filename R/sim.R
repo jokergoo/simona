@@ -12,7 +12,7 @@
 #'     = 2*IC(c)/(IC(a) + IC(b))
 #' ```
 #' 
-#' Paper link: <https://dl.acm.org/doi/10.5555/645527.657297>.
+#' Paper link: \doi{10.5555/645527.657297}.
 #' 
 #' @rdname temp__Sim_Lin_1998
 Sim_Lin_1998 = function(dag, terms, IC_method = "IC_annotation") {
@@ -71,7 +71,7 @@ ADD_TERM_SIM_METHOD("Sim_Lin_1998", "IC_method")
 #' sim = IC(c)/max(IC(a), IC(b))
 #' ```
 #' 
-#' Paper link: <https://doi.org/10.1613/jair.514>, <https://doi.org/10.1186/1471-2105-9-S5-S4>, <https://doi.org/10.1186/1471-2105-11-562>, <https://doi.org/10.1155/2013/292063>.
+#' Paper link: \doi{10.1613/jair.514}, \doi{10.1186/1471-2105-9-S5-S4}, \doi{10.1186/1471-2105-11-562}, \doi{10.1155/2013/292063}.
 #' 
 #' The normalization method can be set with the `norm_method` parameter:
 #' 
@@ -133,7 +133,7 @@ ADD_TERM_SIM_METHOD("Sim_Resnik_1999", c("norm_method"))
 #' sim_FaITH = sim_Lin/(2 - sim_Lin)
 #' ```
 #' 
-#' Paper link: <https://doi.org/10.1007/978-3-642-17746-0_39>.
+#' Paper link: \doi{10.1007/978-3-642-17746-0_39}.
 #' 
 #' @rdname temp__Sim_FaITH_2010
 Sim_FaITH_2010 = function(dag, terms, IC_method = "IC_annotation") {
@@ -173,7 +173,7 @@ ADD_TERM_SIM_METHOD("Sim_FaITH_2010", "IC_method")
 #'     = (1 - p(c)) * 2*IC(c)/(IC(a) + IC(b))
 #' ```
 #' 
-#' Paper link: <https://doi.org/10.1186/1471-2105-7-302>
+#' Paper link: \doi{10.1186/1471-2105-7-302}.
 #' 
 #' @rdname temp__Sim_Relevance_2006
 Sim_Relevance_2006 = function(dag, terms) {
@@ -215,7 +215,7 @@ ADD_TERM_SIM_METHOD("Sim_Relevance_2006")
 #'     = (1 - 1/(1 + IC(c))) * 2*IC(c)/(IC(a) + IC(b))
 #' ```
 #' 
-#' Paper link: <https://doi.org/10.48550/arXiv.1001.0958>.
+#' Paper link: \doi{10.48550/arXiv.1001.0958}.
 #' 
 #' @rdname temp__Sim_SimIC_2010
 Sim_SimIC_2010 = function(dag, terms) {
@@ -256,7 +256,7 @@ ADD_TERM_SIM_METHOD("Sim_SimIC_2010")
 #' sim = IC_mean*2/(IC(a) + IC(b))
 #' ```
 #' 
-#' Paper link: <https://doi.org/10.1186/1471-2105-14-284>
+#' Paper link: \doi{10.1186/1471-2105-14-284}.
 #' 
 #' @rdname temp__Sim_XGraSM_2013
 Sim_XGraSM_2013 = function(dag, terms) {
@@ -297,7 +297,7 @@ ADD_TERM_SIM_METHOD("Sim_XGraSM_2013")
 #' 
 #' Then the mean IC of the subset common ancestors is calculated and normalized by the *Lin_1998* method.
 #' 
-#' Paper link: <https://doi.org/10.1145/1099554.1099658>.
+#' Paper link: \doi{10.1145/1099554.1099658}.
 #' 
 #' @rdname temp__Sim_GraSM_2005
 Sim_GraSM_2005 = function(dag, terms) {
@@ -331,7 +331,7 @@ ADD_TERM_SIM_METHOD("Sim_GraSM_2005")
 #' 
 #' Then the mean IC of the subset common ancestors is calculated and normalized by the *Lin_1998* method.
 #' 
-#' Paper link: <https://doi.org/10.1016/j.gene.2014.12.062>
+#' Paper link: \doi{10.1016/j.gene.2014.12.062}.
 #' 
 #' @rdname temp__Sim_EISI_2015
 Sim_EISI_2015 = function(dag, terms) {
@@ -379,7 +379,7 @@ ADD_TERM_SIM_METHOD("Sim_EISI_2015")
 #' sim = 2*SV_{common_ancestors}/(SV_a + SV_b)
 #' ```
 #' 
-#' Paper link: <https://doi.org/10.1109/tcbb.2013.176>.
+#' Paper link: \doi{10.1109/tcbb.2013.176}.
 #' 
 #' @rdname temp__Sim_AIC_2014
 Sim_AIC_2014 = function(dag, terms, IC_method = "IC_annotation") {
@@ -476,7 +476,7 @@ ADD_TERM_SIM_METHOD("Sim_universal")
 #' sim = SV_{common_ancestors}*2/(SV_a + SV_b)
 #' ```
 #' 
-#' Paper link: <https://doi.org/10.1093/bioinformatics/btm087>.
+#' Paper link: \doi{10.1093/bioinformatics/btm087}.
 #' 
 #' The contribution of different semantic relations can be set with the `contribution_factor` parameter. The value should be a named numeric
 #' vector where names should cover the relations defined in `relations` set in [`create_ontology_DAG()`]. For example, if there are two relations
@@ -542,7 +542,7 @@ ADD_TERM_SIM_METHOD("Sim_Wang_2007", "contribution_factor")
 #' 
 #' The distance can be the shortest distance between `a` and `b` or the longest distance via the LCA term.
 #' 
-#' Paper link: <https://doi.org/10.1109/21.24528>.
+#' Paper link: \doi{10.1109/21.24528}.
 #' 
 #' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
 #' 
@@ -586,7 +586,7 @@ ADD_TERM_SIM_METHOD("Sim_Rada_1989", "distance")
 #' where `max_depth` is the maximal depth (maximal distance from root) in the DAG. Similarly, `d(a, b)` can be the shortest
 #' distance or the longest distance via LCA.
 #' 
-#' Paper link: <https://doi.org/10.1145/1097047.1097051>.
+#' Paper link: \doi{10.1145/1097047.1097051}.
 #' 
 #' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
 #' 
@@ -679,7 +679,7 @@ ADD_TERM_SIM_METHOD("Sim_Leocock_1998", "distance")
 #' 
 #' where `depth_c(a)` is the longest distance from root to `a` passing through `c`.
 #' 
-#' Paper link: <https://doi.org/10.3115/981732.981751>.
+#' Paper link: \doi{10.3115/981732.981751}.
 #' 
 #' @rdname temp__Sim_WP_1994
 Sim_WP_1994 = function(dag, terms) {
@@ -756,7 +756,7 @@ ADD_TERM_SIM_METHOD("Sim_Slimani_2006", "distance")
 #' 
 #' `lambda` takes value of 1 if `a` and `b` are in ancestor-offspring relation, or else it takes 0. `d(a, b)
 #' 
-#' Paper link: <https://doi.org/10.48550/arXiv.1211.4709>.
+#' Paper link: \doi{10.48550/arXiv.1211.4709}.
 #' 
 #' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
 #' 
@@ -839,7 +839,7 @@ ADD_TERM_SIM_METHOD("Sim_Pekar_2002")
 #' 
 #' Since the similarity value might be negative because there is no restrction that the path from root to `a` or `b` must pass `c`.
 #' 
-#' Paper link: <https://doi.org/10.1145/500737.500762>.
+#' Paper link: \doi{10.1145/500737.500762}.
 #' 
 #' @rdname temp__Sim_Stojanovic_2001
 Sim_Stojanovic_2001 = function(dag, terms) {
@@ -877,7 +877,7 @@ ADD_TERM_SIM_METHOD("Sim_Stojanovic_2001")
 #' 
 #' where `depth_c(a)` is the longest distance between root to `a` passing through `c`.
 #' 
-#' Paper link: <https://doi.org/10.1186/1477-5956-10-s1-s18>.
+#' Paper link: \doi{10.1186/1477-5956-10-s1-s18}.
 #' 
 #' @rdname temp__Sim_Wang_edge_2012
 Sim_Wang_edge_2012 = function(dag, terms) {
@@ -932,7 +932,7 @@ ADD_TERM_SIM_METHOD("Sim_Wang_edge_2012")
 #' sim = 1 - 2^-depth(c) * (1 - 2^-(len(c, a) + 1) - 2^-(len(c, b) + 1))
 #' ```
 #' 
-#' Paper link: <https://doi.org/10.1007/3-540-45483-7_8>.
+#' Paper link: \doi{10.1007/3-540-45483-7_8}.
 #' 
 #' There is a parameter `depth_via_LCA` that can be set to `TRUE` or `FALSE`. IF it is set to `TRUE`, `depth(a)` is re-defined
 #' as should pass the LCA term `c`. If it is `FALSE`, it goes to the original similarity definition in the paper and note the 
@@ -982,7 +982,7 @@ ADD_TERM_SIM_METHOD("Sim_Zhong_2002", "depth_via_LCA")
 #' sim = 1 - D(a, b)/D_max
 #' ```
 #' 
-#' Paper link: <https://doi.org/10.1109/IEMBS.2006.259235>.
+#' Paper link: \doi{10.1109/IEMBS.2006.259235}.
 #'
 #' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
 #' 
@@ -1029,7 +1029,7 @@ ADD_TERM_SIM_METHOD("Sim_AlMubaid_2006", "distance")
 #' 
 #' where `d(a, b)` can be the shortest distance or the longest distance via LCA.
 #' 
-#' Paper link: <https://doi.org/10.1109/TKDE.2003.1209005>.
+#' Paper link: \doi{10.1109/TKDE.2003.1209005}.
 #' 
 #' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
 #' 
@@ -1087,7 +1087,7 @@ ADD_TERM_SIM_METHOD("Sim_Li_2003", "distance")
 #' alpha/(alpha + beta) = depth(c)/(depth(c) + min(height(a), height(b)))
 #' ```
 #' 
-#' Paper link: <https://doi.org/10.1371/journal.pone.0066745>.
+#' Paper link: \doi{10.1371/journal.pone.0066745}.
 #' 
 #' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
 #' 
@@ -1160,7 +1160,7 @@ ADD_TERM_SIM_METHOD("Sim_RSS_2013", "distance")
 #' 
 #' where `l_a` is the leaf that `a` can reach with the highest IC (i.e. most informative leaf), and so is `l_b`.
 #' 
-#' Paper link: <https://doi.org/10.1371/journal.pone.0066745>.
+#' Paper link: \doi{10.1371/journal.pone.0066745}.
 #' 
 #' @rdname temp__Sim_HRSS_2013
 Sim_HRSS_2013 = function(dag, terms) {
@@ -1214,7 +1214,7 @@ ADD_TERM_SIM_METHOD("Sim_HRSS_2013")
 #' sim = 1 - atan(sum_{x in the path}(1/IC(x)))/(pi/2)
 #' ``` 
 #' 
-#' Paper link: <https://doi.org/10.1109/BIBM.2010.5706623>.
+#' Paper link: \doi{10.1109/BIBM.2010.5706623}.
 #' 
 #' @rdname temp__Sim_Shen_2010
 Sim_Shen_2010 = function(dag, terms, IC_method = "IC_annotation") {
@@ -1258,7 +1258,7 @@ ADD_TERM_SIM_METHOD("Sim_Shen_2010", "IC_method")
 #' `p1` as an example, it has `n_p` offsprings (including itself) and `t` has `n_t` offsprings (including itself),
 #' this means `n_t/n_p` of information is transmitted from `p1` to downstream via `t`, thus `w1` is defined as `n_t/n_p`.
 #' 
-#' Paper link: <https://doi.org/10.1016/j.ygeno.2013.04.010>.
+#' Paper link: \doi{10.1016/j.ygeno.2013.04.010}.
 #' 
 #' @rdname temp__Sim_SSDD_2013
 Sim_SSDD_2013 = function(dag, terms) {

@@ -86,7 +86,7 @@ information content is:
 \if{html}{\out{<div class="sourceCode">}}\preformatted{IC = -log(p_t)
 }\if{html}{\out{</div>}}
 
-Paper link: \url{https://doi.org/10.1155/2012/975783}.
+Paper link: \doi{10.1155/2012/975783}.
 }
 
 
@@ -110,7 +110,7 @@ should be associated with the root term, the information content is calculated a
    = log(N) - log(k)
 }\if{html}{\out{</div>}}
 
-Paper link: \url{https://doi.org/10.1186/1471-2105-7-135}.
+Paper link: \doi{10.1186/1471-2105-7-135}.
 }
 
 
@@ -125,7 +125,7 @@ The information content is calculated as:
 where \code{k} is the number of offspring terms of \code{t}, or you can think \code{k+1} is the number of \code{t}'s offspring terms plus itself.
 \code{N} is the total number of terms in the DAG.
 
-Paper link: \url{https://dl.acm.org/doi/10.5555/3000001.3000272}.
+Paper link: \doi{10.5555/3000001.3000272}.
 }
 
 
@@ -140,7 +140,7 @@ The information content is calculated as:
 where \code{depth} is the depth of term \code{t} in the DAG, defined as the maximal distance from root. \code{max_depth} is the largest depth in the DAG.
 So IC is composed with two parts: the numbers of offspring terms and positions in the DAG.
 
-Paper link: \url{https://doi.org/10.1109/FGCNS.2008.16}.
+Paper link: \doi{10.1109/FGCNS.2008.16}.
 }
 
 
@@ -160,7 +160,7 @@ where \code{n_parents} and \code{n_children} are the numbers of parents and chil
 where \code{total_edges} is the number of all relations (all parent-child relations)
 and \code{total_terms} is the number of all terms in the DAG.
 
-Paper link: \url{https://dl.acm.org/doi/10.5555/1862330.1862343}.
+Paper link: \doi{10.5555/1862330.1862343}.
 }
 
 
@@ -175,7 +175,7 @@ The complete definition of information content is:
 \if{html}{\out{<div class="sourceCode">}}\preformatted{IC = -log( (zeta/n_ancestor) / n_all_leaves)
 }\if{html}{\out{</div>}}
 
-Paper link: \url{https://doi.org/10.1016/j.knosys.2010.10.001}.
+Paper link: \doi{10.1016/j.knosys.2010.10.001}.
 }
 
 
@@ -240,7 +240,7 @@ as the sum from all \code{t}'s ancestors (including \code{t} itself):
 \if{html}{\out{<div class="sourceCode">}}\preformatted{IC = sum_\{a => t's ancestors + t\}(S(a->t))
 }\if{html}{\out{</div>}}
 
-Paper link: \url{https://doi.org/10.1093/bioinformatics/btm087}.
+Paper link: \doi{10.1093/bioinformatics/btm087}.
 
 The contribution of different semantic relations can be set with the \code{contribution_factor} parameter. The value should be a named numeric
 vector where names should cover the relations defined in \code{relations} set in \code{\link[=create_ontology_DAG]{create_ontology_DAG()}}. For example, if there are two relations

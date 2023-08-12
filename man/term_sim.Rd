@@ -31,7 +31,7 @@ The similarity between two terms \code{a} and \code{b} is calculated as the IC o
     = 2*IC(c)/(IC(a) + IC(b))
 }\if{html}{\out{</div>}}
 
-Paper link: \url{https://dl.acm.org/doi/10.5555/645527.657297}.
+Paper link: \doi{10.5555/645527.657297}.
 }
 
 
@@ -66,7 +66,7 @@ The IC is normalized by the maximal IC of term \code{a} and \code{b}.
 \if{html}{\out{<div class="sourceCode">}}\preformatted{sim = IC(c)/max(IC(a), IC(b))
 }\if{html}{\out{</div>}}
 
-Paper link: \url{https://doi.org/10.1613/jair.514}, \url{https://doi.org/10.1186/1471-2105-9-S5-S4}, \url{https://doi.org/10.1186/1471-2105-11-562}, \url{https://doi.org/10.1155/2013/292063}.
+Paper link: \doi{10.1613/jair.514}, \doi{10.1186/1471-2105-9-S5-S4}, \doi{10.1186/1471-2105-11-562}, \doi{10.1155/2013/292063}.
 
 The normalization method can be set with the \code{norm_method} parameter:
 
@@ -89,7 +89,7 @@ The relation between \emph{FaITH_2010} similarity and \emph{Lin_1998} similarity
 \if{html}{\out{<div class="sourceCode">}}\preformatted{sim_FaITH = sim_Lin/(2 - sim_Lin)
 }\if{html}{\out{</div>}}
 
-Paper link: \url{https://doi.org/10.1007/978-3-642-17746-0_39}.
+Paper link: \doi{10.1007/978-3-642-17746-0_39}.
 }
 
 
@@ -106,7 +106,7 @@ the Relevance semantic similarity is calculated as:
     = (1 - p(c)) * 2*IC(c)/(IC(a) + IC(b))
 }\if{html}{\out{</div>}}
 
-Paper link: \url{https://doi.org/10.1186/1471-2105-7-302}
+Paper link: \doi{10.1186/1471-2105-7-302}.
 }
 
 
@@ -126,7 +126,7 @@ Then the similarity is:
     = (1 - 1/(1 + IC(c))) * 2*IC(c)/(IC(a) + IC(b))
 }\if{html}{\out{</div>}}
 
-Paper link: \url{https://doi.org/10.48550/arXiv.1001.0958}.
+Paper link: \doi{10.48550/arXiv.1001.0958}.
 }
 
 
@@ -145,7 +145,7 @@ then similar to the \emph{Lin_1998} method, normalize to the average IC of \code
 \if{html}{\out{<div class="sourceCode">}}\preformatted{sim = IC_mean*2/(IC(a) + IC(b))
 }\if{html}{\out{</div>}}
 
-Paper link: \url{https://doi.org/10.1186/1471-2105-14-284}
+Paper link: \doi{10.1186/1471-2105-14-284}.
 }
 
 
@@ -165,7 +165,7 @@ either \code{a} or \code{b}.
 
 Then the mean IC of the subset common ancestors is calculated and normalized by the \emph{Lin_1998} method.
 
-Paper link: \url{https://doi.org/10.1145/1099554.1099658}.
+Paper link: \doi{10.1145/1099554.1099658}.
 }
 
 
@@ -178,7 +178,7 @@ that does not belong to the common ancestors (mutual exclusively in \code{a}'s a
 
 Then the mean IC of the subset common ancestors is calculated and normalized by the \emph{Lin_1998} method.
 
-Paper link: \url{https://doi.org/10.1016/j.gene.2014.12.062}
+Paper link: \doi{10.1016/j.gene.2014.12.062}.
 }
 
 
@@ -202,7 +202,7 @@ The similarity is calculated as the ratio between the aggregation on the common 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{sim = 2*SV_\{common_ancestors\}/(SV_a + SV_b)
 }\if{html}{\out{</div>}}
 
-Paper link: \url{https://doi.org/10.1109/tcbb.2013.176}.
+Paper link: \doi{10.1109/tcbb.2013.176}.
 }
 
 
@@ -239,7 +239,7 @@ Then the similarity is calculated as:
 \if{html}{\out{<div class="sourceCode">}}\preformatted{sim = SV_\{common_ancestors\}*2/(SV_a + SV_b)
 }\if{html}{\out{</div>}}
 
-Paper link: \url{https://doi.org/10.1093/bioinformatics/btm087}.
+Paper link: \doi{10.1093/bioinformatics/btm087}.
 
 The contribution of different semantic relations can be set with the \code{contribution_factor} parameter. The value should be a named numeric
 vector where names should cover the relations defined in \code{relations} set in \code{\link[=create_ontology_DAG]{create_ontology_DAG()}}. For example, if there are two relations
@@ -260,7 +260,7 @@ It is based on the distance between term \code{a} and \code{b}. It is defined as
 
 The distance can be the shortest distance between \code{a} and \code{b} or the longest distance via the LCA term.
 
-Paper link: \url{https://doi.org/10.1109/21.24528}.
+Paper link: \doi{10.1109/21.24528}.
 
 There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
 
@@ -280,7 +280,7 @@ It is also based on the distance between term \code{a} and \code{b}:
 where \code{max_depth} is the maximal depth (maximal distance from root) in the DAG. Similarly, \code{d(a, b)} can be the shortest
 distance or the longest distance via LCA.
 
-Paper link: \url{https://doi.org/10.1145/1097047.1097051}.
+Paper link: \doi{10.1145/1097047.1097051}.
 
 There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
 
@@ -322,7 +322,7 @@ where \code{len_c(a, b)} is the longest distance between \code{a} and \code{b} v
 
 where \code{depth_c(a)} is the longest distance from root to \code{a} passing through \code{c}.
 
-Paper link: \url{https://doi.org/10.3115/981732.981751}.
+Paper link: \doi{10.3115/981732.981751}.
 }
 
 
@@ -349,7 +349,7 @@ It is a correction of the \emph{Sim_WP_1994} method. The correction factor for t
 
 \code{lambda} takes value of 1 if \code{a} and \code{b} are in ancestor-offspring relation, or else it takes 0. `d(a, b)
 
-Paper link: \url{https://doi.org/10.48550/arXiv.1211.4709}.
+Paper link: \doi{10.48550/arXiv.1211.4709}.
 
 There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
 
@@ -382,7 +382,7 @@ It is purely based on the depth of term \code{a}, \code{b} and their LCA \code{c
 
 Since the similarity value might be negative because there is no restrction that the path from root to \code{a} or \code{b} must pass \code{c}.
 
-Paper link: \url{https://doi.org/10.1145/500737.500762}.
+Paper link: \doi{10.1145/500737.500762}.
 }
 
 
@@ -395,7 +395,7 @@ It is calculated as:
 
 where \code{depth_c(a)} is the longest distance between root to \code{a} passing through \code{c}.
 
-Paper link: \url{https://doi.org/10.1186/1477-5956-10-s1-s18}.
+Paper link: \doi{10.1186/1477-5956-10-s1-s18}.
 }
 
 
@@ -426,7 +426,7 @@ And the final similarity is \code{1 - distance}:
 \if{html}{\out{<div class="sourceCode">}}\preformatted{sim = 1 - 2^-depth(c) * (1 - 2^-(len(c, a) + 1) - 2^-(len(c, b) + 1))
 }\if{html}{\out{</div>}}
 
-Paper link: \url{https://doi.org/10.1007/3-540-45483-7_8}.
+Paper link: \doi{10.1007/3-540-45483-7_8}.
 
 There is a parameter \code{depth_via_LCA} that can be set to \code{TRUE} or \code{FALSE}. IF it is set to \code{TRUE}, \code{depth(a)} is re-defined
 as should pass the LCA term \code{c}. If it is \code{FALSE}, it goes to the original similarity definition in the paper and note the
@@ -458,7 +458,7 @@ And the minimal value of \code{D(a, b)} is zero when \code{a} is identical to \c
 \if{html}{\out{<div class="sourceCode">}}\preformatted{sim = 1 - D(a, b)/D_max
 }\if{html}{\out{</div>}}
 
-Paper link: \url{https://doi.org/10.1109/IEMBS.2006.259235}.
+Paper link: \doi{10.1109/IEMBS.2006.259235}.
 
 There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
 
@@ -477,7 +477,7 @@ It is similar to the \emph{Sim_AlMubaid_2006} method, but uses a non-linear form
 
 where \code{d(a, b)} can be the shortest distance or the longest distance via LCA.
 
-Paper link: \url{https://doi.org/10.1109/TKDE.2003.1209005}.
+Paper link: \doi{10.1109/TKDE.2003.1209005}.
 
 There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
 
@@ -502,7 +502,7 @@ is the minimal distance (or the minimal height) of term \code{a} and \code{b}:
 \if{html}{\out{<div class="sourceCode">}}\preformatted{alpha/(alpha + beta) = depth(c)/(depth(c) + min(height(a), height(b)))
 }\if{html}{\out{</div>}}
 
-Paper link: \url{https://doi.org/10.1371/journal.pone.0066745}.
+Paper link: \doi{10.1371/journal.pone.0066745}.
 
 There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
 
@@ -544,7 +544,7 @@ And \code{beta} is the average of the maximal semantic distance of \code{a} and 
 
 where \code{l_a} is the leaf that \code{a} can reach with the highest IC (i.e. most informative leaf), and so is \code{l_b}.
 
-Paper link: \url{https://doi.org/10.1371/journal.pone.0066745}.
+Paper link: \doi{10.1371/journal.pone.0066745}.
 }
 
 
@@ -568,7 +568,7 @@ And finally the similarity is:
 \if{html}{\out{<div class="sourceCode">}}\preformatted{sim = 1 - atan(sum_\{x in the path\}(1/IC(x)))/(pi/2)
 }\if{html}{\out{</div>}}
 
-Paper link: \url{https://doi.org/10.1109/BIBM.2010.5706623}.
+Paper link: \doi{10.1109/BIBM.2010.5706623}.
 }
 
 
@@ -591,7 +591,7 @@ Since the parent may have other child terms, a factor \code{w1} or \code{w2} is 
 \code{p1} as an example, it has \code{n_p} offsprings (including itself) and \code{t} has \code{n_t} offsprings (including itself),
 this means \code{n_t/n_p} of information is transmitted from \code{p1} to downstream via \code{t}, thus \code{w1} is defined as \code{n_t/n_p}.
 
-Paper link: \url{https://doi.org/10.1016/j.ygeno.2013.04.010}.
+Paper link: \doi{10.1016/j.ygeno.2013.04.010}.
 }
 
 

@@ -9,7 +9,7 @@
 #' @slot n_terms An integer scalar of the total number of terms in the DAG.
 #' @slot lt_parents A list of length `n`. Each element in the list is an integer index vector of the parent terms of the i^th term.
 #' @slot lt_children A list of length `n`. Each element in the list is an integer index vector of the child terms of the i^th term.
-#' @slot lt_children_relations A list of length `n`. Each element is a vector of the semantic relations between the i^th term and its child terms.
+#' @slot lt_children_relations A list of length `n`. Each element is a vector of the semantic relations between the i^th term and its child terms, e.g. a child "is_a" parent.
 #'       The relations are represented as integers. The character name of the relations is in `attr(dag@lt_children_relations, "levels")`.
 #' @slot relations_DAG A simple `ontology_DAG` object but constructed for relation types.
 #' @slot source The source of the ontology. A character scalar only used as a mark of the returned object.
@@ -59,6 +59,9 @@ ontology_DAG = setClass("ontology_DAG",
 #' @param annotation A list of character vectors which contain items annotated to the terms. Names of the list should be the term names. In the DAG, items
 #'                   annotated to a term will also be annotated to its parents. Such merging
 #'                   is applied automatically in the package.
+#' @param remove_cyclic_paths Whether to remove cyclic paths If a cyclic path is represented as `[a, b, ..., z, a]`,
+#'       the last link (i.e. `z->a`) is simply removed. If the value is set to `FALSE` and if there are cyclic paths, there
+#'       will be an error that lists all cyclic paths.
 #' @param remove_rings There might be rings that are isolated to the main DAG where there are no roots on the rings, thus they cannot be attached to the main DAG. If the value
 #'        of `remove_rings` is set to `TRUE`, such rings are removed.
 #' 
@@ -94,7 +97,7 @@ ontology_DAG = setClass("ontology_DAG",
 #'     relations = c("r1", "r2", "r1", "r3", "r1", "r4"),
 #'     relations_DAG = relations_DAG)
 create_ontology_DAG = function(parents, children, relations = NULL, relations_DAG = NULL,
-	source = "Ontology", annotation = NULL, remove_rings = FALSE) {
+	source = "Ontology", annotation = NULL, remove_cyclic_paths = FALSE, remove_rings = FALSE) {
 
 	if(!is.character(parents)) {
 		stop("`parents` should be in character mode.")
@@ -143,7 +146,7 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 	}
 	
 	if(length(root) > 1) {
-		txt = strwrap(paste(terms[root], collapse = ", "), width = 60)
+		txt = strwrap(paste(terms[root], collapse = ", "), width = 80)
 		txt = paste(paste0("  ", txt), collapse = "\n")
 		message("There are more than one root:\n", txt, "\n  A super root (_all_) is added.")
 		
@@ -179,7 +182,45 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 		term_env = new.env(parent = emptyenv())
 	)
 
-	cpp_check_cyclic_node(dag)
+	cyclic_paths = cpp_check_cyclic_node(dag)
+
+	if(length(cyclic_paths)) {
+		if(remove_cyclic_paths) {
+			message(qq("Removed @{length(cyclic_paths)} cyclic paths."))
+			removed_p = sapply(cyclic_paths, function(x) x[length(x)-1])
+			removed_c = sapply(cyclic_paths, function(x) x[length(x)])
+
+			for(ir in seq_along(cyclic_paths)) {
+				ip = removed_p[ir]
+				ic = removed_c[ir]
+
+				lt_parents[[ic]] = setdiff(lt_parents[[ic]], ip)
+				ind = lt_children[[ip]] != ic
+				lt_children[[ip]] = lt_children[[ip]][ind]
+				if(length(lt_relations)) {
+					lt_relations[[ip]] = lt_relations[[ip]][ind]
+				}
+			}
+			root = which(sapply(lt_parents, length) == 0)
+			leaves = which(sapply(lt_children, length) == 0)
+
+			dag = ontology_DAG(
+				terms = terms,
+				n_terms = length(terms),
+				lt_parents = lt_parents,
+				lt_children = lt_children,
+				lt_children_relations = lt_relations, 
+				relations_DAG = relations_DAG,
+				source = source,
+				root = root,
+				leaves = leaves,
+				term_env = new.env(parent = emptyenv())
+			)
+		} else {
+			print_cyclic_paths(cyclic_paths, terms)
+			stop("Found cyclic nodes (paths are listed above).")
+		}
+	}
 
 	dag@term_env$n_parents = sapply(lt_parents, length)
 	dag@term_env$n_children = sapply(lt_children, length)
@@ -234,12 +275,21 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 		} else { # only for printing the messages
 			message_wrap("Found terms in isolated rings. Set `remove_rings = TRUE` to remove them. One example is as follows:")
 			for(i in iring) {
-				cpp_check_cyclic_node(dag, i)
+				cyclic_paths = cpp_check_cyclic_node(dag, i)
+				print_cyclic_paths(cyclic_paths, terms)
 			}
 		}
 	}
 
 	return(dag)
+}
+
+print_cyclic_paths = function(cyclic_paths, terms) {
+	for(i in seq_len(length(cyclic_paths))) {
+		cat("[")
+		cat(terms[cyclic_paths[[i]]], sep = " ~ ")
+		cat("]\n")
+	}
 }
 
 #' Print the ontology_DAG object
@@ -275,7 +325,7 @@ setMethod("show",
 		if(n_terms == n_relations + 1) {
 			cat("  Aspect ratio: ", object@aspect_ratio[1], ":1\n", sep = "")
 		} else {
-			cat("  Avg number of parents: ", sprintf("%.2f", mean(n_parents(dag)[-dag_root(dag, in_labels = FALSE)])), "\n", sep = "")
+			cat("  Avg number of parents: ", sprintf("%.2f", mean(n_parents(object)[-dag_root(object, in_labels = FALSE)])), "\n", sep = "")
 			cat("  Aspect ratio: ", object@aspect_ratio[1], ":1 (based on the longest distance to root)\n", sep = "")
 			cat("                ", object@aspect_ratio[2], ":1 (based on the shortest distance to root)\n", sep = "")
 		}
@@ -586,7 +636,8 @@ dag_as_igraph = function(dag) {
 #' dag = create_ontology_DAG_from_GO_db()
 #' dag_filter(dag, relations = "isa")
 #' }
-dag_filter = function(dag, terms = NULL, relations = NULL, root = NULL, leaves = NULL) {
+dag_filter = function(dag, terms = NULL, relations = NULL, root = NULL, leaves = NULL,
+	mcols_filter = NULL) {
 
 	lt_children = dag@lt_children
 	children = unlist(lt_children)
@@ -644,6 +695,16 @@ dag_filter = function(dag, terms = NULL, relations = NULL, root = NULL, leaves =
 		ancestors = dag_ancestors(dag, leaves, FALSE)
 		ancestors = c(ancestors, which(dag@terms %in% leaves))
 		l = l & (parents %in% ancestors & children %in% ancestors)
+	}
+
+	## filter in mcols
+	df = mcols(dag)
+	if(!is.null(df)) {
+		l2 = eval(substitute(mcols_filter), envir = df)
+		l2[is.na(l2)] = FALSE
+		if(!is.null(l2)) {
+			l = l & l2
+		}
 	}
 
 	parents = parents[l]
@@ -723,4 +784,19 @@ setMethod("mcols<-",
 	x@elementMetadata = value
 	invisible(x)
 })
+
+
+dag_namespaces = function(dag) {
+	df = mcols(dag)
+	if(is.null(df)) {
+		return(NULL)
+	}
+
+	if(!"namespace" %in% colnames(df)) {
+		return(NULL)
+	}
+
+	unique(df$namespace)
+}
+
 

@@ -1,6 +1,6 @@
 Package: simona
 Type: Package
-Title: Semantic Similarity in Bio-ontologies
+Title: Semantic Similarity in Bio-Ontologies
 Version: 0.99.0
 Date: 2023-08-02
 Authors@R: person("Zuguang", "Gu", email = "z.gu@dkfz.de", role = c("aut", "cre"),
@@ -18,7 +18,7 @@ Description: The package implements a rich set of methods for semantic similarit
     two terms as well as similarities between two groups of terms. It also implements
     visualizations on DAGs.
 biocViews: Software, Annotation, GO, BiomedicalInformatics
-URL: https://github.com/jokergoo/simone
+URL: https://github.com/jokergoo/simona
 License: MIT + file LICENSE
 RoxygenNote: 7.2.3
 Encoding: UTF-8

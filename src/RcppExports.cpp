@@ -737,14 +737,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_check_cyclic_node
-void cpp_check_cyclic_node(S4 dag, int node);
+List cpp_check_cyclic_node(S4 dag, int node);
 RcppExport SEXP _simona_cpp_check_cyclic_node(SEXP dagSEXP, SEXP nodeSEXP) {
 BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
     Rcpp::traits::input_parameter< int >::type node(nodeSEXP);
-    cpp_check_cyclic_node(dag, node);
-    return R_NilValue;
+    rcpp_result_gen = Rcpp::wrap(cpp_check_cyclic_node(dag, node));
+    return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mark_tree_links

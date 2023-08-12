@@ -234,7 +234,7 @@ cpp_dag_shortest_dist_from_ancestors <- function(dag, to_node, l_background = lo
 }
 
 cpp_check_cyclic_node <- function(dag, node = -1L) {
-    invisible(.Call(`_simona_cpp_check_cyclic_node`, dag, node))
+    .Call(`_simona_cpp_check_cyclic_node`, dag, node)
 }
 
 cpp_mark_tree_links <- function(dag) {

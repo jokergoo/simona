@@ -23,10 +23,14 @@ import_obo = function(file, relation_type = "part_of", ...) {
 	
 	if(grepl("^(http|https|ftp)://.*\\.gz$", file)) {
 		con = url(file)
-		ln = readLines(gzcon(con))
+		con2 = gzcon(con)
+		ln = readLines(con2)
 		close(con)
+		close(con2)
 	} else if(grepl("\\.gz$", file)) {
-		ln = readLines(gzfile(file))
+		con2 = gzfile(file)
+		ln = readLines(con2)
+		close(con2)
 	} else if(grepl("^(http|https|ftp)://", file)) {
 		con = url(file)
 		ln = readLines(con)
@@ -124,9 +128,8 @@ import_obo = function(file, relation_type = "part_of", ...) {
 	term_meta = term_meta[dag@terms, , drop = FALSE]
 	
 	if(dag_root(dag) == "_all_") {
-		nr = nrow(term_meta)
-		term_meta$id[nr] = "_all_"
-		term_meta$short_id[nr] = "_all_"
+		term_meta$id[dag@root] = "_all_"
+		term_meta$short_id[dag@root] = "_all_"
 	}
 
 	mcols(dag) = term_meta
@@ -323,6 +326,10 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 #' @export
 import_owl = function(file, relation_type = "part_of", ...) {
 	
+	if(grepl("^(http|https|ftp)", file)) {
+		stop("Only local file is allowed.")
+	}
+
 	owl = read_xml(file, options = "HUGE")
 
 	####### relation / ObjectProperty ########
@@ -560,8 +567,16 @@ import_ontology = function(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "
 	# 	}
 	# }
 
+	if(grepl("^(http|https|ftp)", file)) {
+		stop("Only local file is allowed.")
+	}
+
 	if(Sys.which("java") == "") {
 		stop("Java is not available.")
+	}
+
+	if(is.null(robot_jar)) {
+		stop("robot.jar has not been set. It can be downloaded from https://github.com/ontodev/robot/releases.")
 	}
 
 	if(!file.exists(robot_jar)) {
@@ -569,7 +584,7 @@ import_ontology = function(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "
 	}
 	robot_jar = normalizePath(robot_jar)
 
-	if(grep("^(http|ftp)", file)) {
+	if(grepl("^(http|ftp)", file)) {
 		file2 = tempfile(fileext = paste0("_", basename(file)))
 		download.file(file, destfile = file2, quiet = TRUE)
 		on.exit(file.remove(file2))
@@ -596,4 +611,56 @@ import_ontology = function(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "
 	}
 
 	lt
+}
+
+
+#' @details
+#' `import_ttl()` is a simple parser for the `.ttl` format files. It only recognizes
+#' terms that have the `owl:Class` object.
+#' @rdname import_obo
+#' @export
+import_ttl = function(file, ...) {
+
+	if(Sys.which("perl") == "") {
+		stop("Perl is not available.")
+	}
+
+	if(grepl("^(http|https|ftp)", file)) {
+		stop("Only local file is allowed.")
+	}
+
+	file = normalizePath(file)
+
+	perl_script = system.file("scripts", "parse_ttl.pl", package = "simona")
+	cmd = qq("perl '@{perl_script}' '@{file}'")
+	df = read.csv(pipe(cmd))
+	
+	lt_parents = strsplit(df$subClassOf, ",")
+	lt_parents = lapply(lt_parents, unique)
+	children = rep(df$id, times = sapply(lt_parents, length))
+	parents = unlist(lt_parents)
+
+	dag = create_ontology_DAG(parents = parents, children = children, relations = rep("is_a", length(parents)),
+		source = basename(file), ...)
+
+	term_meta = df[, 1:4]
+	colnames(term_meta) = c("id", "name", "short_id", "definition")
+
+	rownames(term_meta) = term_meta$id
+	term_meta = term_meta[dag@terms, , drop = FALSE]
+	
+	if(dag_root(dag) == "_all_") {
+		nr = nrow(term_meta)
+		term_meta$id[nr] = "_all_"
+		term_meta$short_id[nr] = "_all_"
+	}
+
+	mcols(dag) = term_meta
+
+	if(!any(duplicated(term_meta$short_id))) {
+		dag@terms = term_meta$short_id
+		rownames(dag@elementMetadata) = dag@terms
+	}
+
+	dag
 }

@@ -147,7 +147,7 @@ ADD_IC_METHOD("IC_annotation", c("uniquify", "use_cache"))
 #' IC = -log(p_t)
 #' ```
 #' 
-#' Paper link: <https://doi.org/10.1155/2012/975783>.
+#' Paper link: \doi{10.1155/2012/975783}.
 #' 
 #' @rdname temp__IC_universal
 IC_universal = function(dag, use_cache = simona_opt$use_cache) {
@@ -247,7 +247,7 @@ reachability = function(dag, use_cache = simona_opt$use_cache) {
 #'    = log(N) - log(k)
 #' ``` 
 #' 
-#' Paper link: <https://doi.org/10.1186/1471-2105-7-135>.
+#' Paper link: \doi{10.1186/1471-2105-7-135}.
 #' 
 #' @rdname temp__IC_Zhang_2006
 IC_Zhang_2006 = function(dag, use_cache = simona_opt$use_cache) {
@@ -278,7 +278,7 @@ ADD_IC_METHOD("IC_Zhang_2006", "use_cache")
 #' where `k` is the number of offspring terms of `t`, or you can think `k+1` is the number of `t`'s offspring terms plus itself.
 #' `N` is the total number of terms in the DAG.
 #' 
-#' Paper link: <https://dl.acm.org/doi/10.5555/3000001.3000272>.
+#' Paper link: \doi{10.5555/3000001.3000272}.
 #' 
 #' @rdname temp__IC_Seco_2004
 IC_Seco_2004 = function(dag, use_cache = simona_opt$use_cache) {
@@ -309,7 +309,7 @@ ADD_IC_METHOD("IC_Seco_2004", "use_cache")
 #' where `depth` is the depth of term `t` in the DAG, defined as the maximal distance from root. `max_depth` is the largest depth in the DAG.
 #' So IC is composed with two parts: the numbers of offspring terms and positions in the DAG.
 #' 
-#' Paper link: <https://doi.org/10.1109/FGCNS.2008.16>.
+#' Paper link: \doi{10.1109/FGCNS.2008.16}.
 #' 
 #' @rdname temp__IC_Zhou_2008
 IC_Zhou_2008 = function(dag, use_cache = simona_opt$use_cache) {
@@ -349,7 +349,7 @@ ADD_IC_METHOD("IC_Zhou_2008", "use_cache")
 #' where `total_edges` is the number of all relations (all parent-child relations)
 #' and `total_terms` is the number of all terms in the DAG. 
 #' 
-#' Paper link: <https://dl.acm.org/doi/10.5555/1862330.1862343>.
+#' Paper link: \doi{10.5555/1862330.1862343}.
 #' 
 #' @rdname temp__IC_Seddiqui_2010
 IC_Seddiqui_2010 = function(dag, use_cache = simona_opt$use_cache) {
@@ -387,7 +387,7 @@ ADD_IC_METHOD("IC_Seddiqui_2010", "use_cache")
 #' IC = -log( (zeta/n_ancestor) / n_all_leaves)
 #' ```
 #' 
-#' Paper link: <https://doi.org/10.1016/j.knosys.2010.10.001>.
+#' Paper link: \doi{10.1016/j.knosys.2010.10.001}.
 #' 
 #' @rdname temp__IC_Sanchez_2011
 IC_Sanchez_2011 = function(dag, use_cache = simona_opt$use_cache) {
@@ -530,7 +530,7 @@ totipotency = function(dag, use_cache = simona_opt$use_cache) {
 #' IC = sum_{a => t's ancestors + t}(S(a->t))
 #' ```
 #' 
-#' Paper link: <https://doi.org/10.1093/bioinformatics/btm087>.
+#' Paper link: \doi{10.1093/bioinformatics/btm087}.
 #' 
 #' The contribution of different semantic relations can be set with the `contribution_factor` parameter. The value should be a named numeric
 #' vector where names should cover the relations defined in `relations` set in [`create_ontology_DAG()`]. For example, if there are two relations
