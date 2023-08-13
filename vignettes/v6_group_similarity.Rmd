@@ -114,7 +114,7 @@ group_sim(dag, group1, group2, method = "GroupSim_pairwise_BMM",
     control = list(term_sim_method = ...))
 </pre>
 
-Paper link: https://doi.org/10.1093/bioinformatics/btq064/.
+Paper link: https://doi.org/10.1093/bioinformatics/btq064.
 
 ## GroupSim_pairwise_ABM
 
@@ -187,7 +187,7 @@ group_sim(dag, group1, group2, method = "GroupSim_pairwise_VHDF",
     control = list(term_sim_method = ...))
 </pre>
 
-Paper link: https://doi.org/10.1073/pnas.070296510.
+Paper link: https://doi.org/10.1073/pnas.0702965104.
 
 ## GroupSim_pairwise_Froehlich_2007
 
@@ -241,13 +241,19 @@ group_sim(dag, group1, group2, method = "GroupSim_SimALN",
     control = list(distance = "shortest_distances_via_NCA"))
 </pre>
 
+Paper link: https://doi.org/10.1109/CBMS.2008.27.
+
 ## GroupSim_SimINT
 
 To be added.
 
+Paper link: https://doi.org/10.1186/1471-2105-11-588.
+
 ## GroupSim_spgk
 
 To be added.
+
+Paper link: https://doi.org/10.1093/bioinformatics/bti1007.
 
 # Groupwise IC-based methods
 
@@ -291,26 +297,14 @@ group_sim(dag, group1, group2, method = "GroupSim_SimGIC",
 
 ## GroupSim_SimCOU
 
-It is based on the dot product of two vectors p and q which correspond to terms in group1 and group2. p and q have the same length as the total number of terms. Value of position i in p or q corresponds to term t. The value takes IC(t) if t is an ancestor of any term in p or q, and the value takes zero if t is not. The similarity betweem group1 terms and group2 terms is calculated as:
+To be added.
 
-<p,q>/||p||/||q||
-where <p,q> is the dot product between the two, and ||p|| or ||q|| is the norm of the vector. The equation can be written as:
 
-group_sim = sum_{x in intersect(A, B)}(IC(x)^2) / 
-              sqrt(sum_{x in A}(IC(x)^2)) / 
-              sqrt(sum_{x in B}(IC(x)^2))
-IC method can be set via control = list(IC_method = ...).
 
 ## GroupSim_SimCOT
 
-Similar as GroupSim_SimCOU, the similarity is:
+To be added.
 
-<p,q>/(||p||^2 + ||q||^2 - <p,q>)
-And it can be rewritten as:
-
-group_sim = sum_{x in intersect(A, B)}(IC(x)^2) /
-    (sum_{x in A}(IC(x)^2) + sum_{x in B}(IC(x)^2) - sum_{x in intersect(A, B)}(IC(x)^2))
-IC method can be set via control = list(IC_method = ...).
 
 # Groupwise edge-based methods
 
@@ -324,6 +318,9 @@ $$ \mathrm{GroupSim}(p, q) = \max\{\delta(t): t \in \mathcal{A}_p \cap \mathcal{
 <pre class="r">
 group_sim(dag, group1, group2, method = "GroupSim_SimLP")
 </pre>
+
+
+Link: https://bioconductor.org/packages/release/bioc/vignettes/GOstats/inst/doc/GOvis.html#go-induced-distances.
 
 
 ## GroupSim_Ye_2005
@@ -343,6 +340,8 @@ Since the minimal depth is zero for root.
 <pre class="r">
 group_sim(dag, group1, group2, method = "GroupSim_Ye_2005")
 </pre>
+
+Paper link: https://doi.org/10.1038/msb4100034.
 
 # Annotated items-based methods
 

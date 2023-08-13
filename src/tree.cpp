@@ -39,8 +39,8 @@ List cpp_mark_tree_links(S4 dag) {
 
 							i_visited ++;
 							if(i_visited % 1000 == 0) {
-								Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-								Rcout << "going through " << i_visited << " / " << n << " nodes ...";
+								// Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+								// Rcout << "going through " << i_visited << " / " << n << " nodes ...";
 							}
 						}
 					}
@@ -51,8 +51,8 @@ List cpp_mark_tree_links(S4 dag) {
 		l_current = l_current2;
 	}
 
-	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << n << " / " << n << " nodes ... Done.\n";
+	// Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+	// Rcout << "going through " << n << " / " << n << " nodes ... Done.\n";
 
 	return lt_children2;
 }

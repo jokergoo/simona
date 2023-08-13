@@ -134,6 +134,7 @@ dag_as_dendrogram = function(dag) {
 }
 
 
+#' @param x An `ontology_DAG` object.
 #' @param ... Ignored.
 #' @rdname dag_treelize
 #' @export

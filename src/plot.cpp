@@ -107,8 +107,8 @@ DataFrame cpp_term_pos_on_circle(S4 dag, IntegerVector n_offspring, double start
 					i_visited ++;
 
 					if(i_visited % 1000 == 0) {
-						Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-						Rcout << "going through " << i_visited << " / " << n << " nodes ...";
+						// Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+						// Rcout << "going through " << i_visited << " / " << n << " nodes ...";
 					}
 
 				}
@@ -128,8 +128,8 @@ DataFrame cpp_term_pos_on_circle(S4 dag, IntegerVector n_offspring, double start
 		}
 	}
 
-	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << n << " / " << n << " nodes ... Done.\n";
+	// Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+	// Rcout << "going through " << n << " / " << n << " nodes ... Done.\n";
 
 	DataFrame df = DataFrame::create(Named("theta") = theta, Named("rho") = rho, Named("width") = width);
 

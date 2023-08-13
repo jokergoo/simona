@@ -15,6 +15,8 @@ dag_as_dendrogram(dag)
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
 
+\item{x}{An \code{ontology_DAG} object.}
+
 \item{...}{Ignored.}
 }
 \value{

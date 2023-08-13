@@ -1,4 +1,4 @@
-# simona: Semantic Similarity in Bio-ontologies
+# simona: Semantic Similarity in Bio-Ontologies
 
 
 ## Install
@@ -123,11 +123,12 @@ The following group similarity methods are provided:
 There is also a visualization on the complete huge DAG:
 
 ```r
-dag_circular_viz(dag, reorder_level = 3, legend_labels_from = "name")
+sig_go_ids = readRDS(system.file("extdata", "sig_go_ids.rds", package = "simona"))
+dag_circular_viz(dag, highlight = sig_go_ids, reorder_level = 3, 
+  legend_labels_from = "name")
 ```
 
-
-![](https://github.com/jokergoo/simone/assets/449218/9be7c8e6-0061-46a8-93ad-4a92d0a5fe27)
+![image](https://github.com/jokergoo/simona/assets/449218/ada30534-182e-4513-93bf-9819e84b8604)
 
 
 The methods of semantic similarity implemented in **simona** are mainly from

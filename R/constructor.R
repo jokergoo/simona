@@ -381,6 +381,7 @@ setMethod("show",
 #' 
 #' @return An `ontology_DAG` object.
 #' @export
+#' @importFrom utils getFromNamespace
 #' @examples
 #' dag = create_ontology_DAG_from_GO_db()
 #' dag

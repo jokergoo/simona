@@ -321,7 +321,7 @@ child terms that does not belong to the common ancestors (mutual exclusively
 in $a$'s ancestors or in $b$'s ancestors). The set of the selected common
 ancestors is called the exclusively inherited common ancestors (EICA).
 
-$$ \mathrm{EICA}(a, b) = \{c \in \mathcal{A}_a \cap \mathcal{A}_b: \mathcal{C}_c \cap \left( (\mathcal{A}_a \cup \mathcal{A}_b) - (\mathcal{A}_a \cap \mathcal{A}_b) \neq \O \right) \}  $$
+$$ \mathrm{EICA}(a, b) = \{c \in \mathcal{A}_a \cap \mathcal{A}_b: \mathcal{C}_c \cap \left( (\mathcal{A}_a \cup \mathcal{A}_b) - (\mathcal{A}_a \cap \mathcal{A}_b) \neq \emptyset \right) \}  $$
 
 And mean IC among all EICA terms:
 
@@ -893,7 +893,7 @@ into a contigency table:
 table.contigency-table {
     border-collapse: collapse;
 }
-table.contigency-table th td {
+table.contigency-table td {
     border: 1px solid black;
     padding: 2px 5px;
 }
