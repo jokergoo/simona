@@ -16,7 +16,9 @@
 #' @returns An `ontology_DAG` object.
 #' @export
 #' @examples
-#' dag = create_ontology_DAG_from_GO_db()
+#' parents  = c("a", "a", "b", "b", "c", "d")
+#' children = c("b", "c", "c", "d", "e", "f")
+#' dag = create_ontology_DAG(parents, children)
 #' tree = dag_treelize(dag)
 #' d1 = dag_depth(dag)
 #' d2 = dag_depth(tree)
@@ -132,6 +134,9 @@ dag_as_dendrogram = function(dag) {
 }
 
 
+#' @param ... Ignored.
+#' @rdname dag_treelize
+#' @export
 print.ontology_tree = function(x, ...) {
 	cat("This is a normal `dendrogram` object, but with several more attributes attached to each node:\n")
 	cat("  - label: term name\n")

@@ -12,7 +12,8 @@ dag_circular_viz(
   start = 0,
   end = 360,
   reorder_level = NA,
-  partition_level = 1,
+  partition_by_level = 1,
+  partition_by_size = NULL,
   node_col = NULL,
   node_transparency = 0.5,
   node_size = NULL,
@@ -55,7 +56,9 @@ dag_graphviz(
 
 \item{reorder_level}{Whether to reorder child terms. See \code{\link[=dag_reorder]{dag_reorder()}}.}
 
-\item{partition_level}{If \code{node_col} is not set, users can cut the DAG into clusters with different node colors.}
+\item{partition_by_level}{If \code{node_col} is not set, users can cut the DAG into clusters with different node colors. The partitioning is applied by \code{\link[=partition_by_level]{partition_by_level()}}.}
+
+\item{partition_by_size}{Similar as \code{partition_by_level}, but the partitioning is applied by \code{\link[=partition_by_size]{partition_by_size()}}.}
 
 \item{node_col}{Colors of nodes. If the value is a vector, the order should correspond to terms in \code{\link[=dag_all_terms]{dag_all_terms()}}.}
 
@@ -113,5 +116,5 @@ dag_circular_viz(dag)
 1
 }
 \seealso{
-http://magjac.com/graphviz-visual-editor/ is nice place to try the DOT code.
+\url{http://magjac.com/graphviz-visual-editor/} is nice place to try the DOT code.
 }

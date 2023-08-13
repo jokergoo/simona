@@ -31,10 +31,10 @@ There are the following global options:
 \item \code{anno_uniquify}: In the annotation-based IC method, the union of items annotated to the term as well as all its offspring terms is used, which means
 the set of annotated items for the term is uniquified. If \code{anno_uniquify} is set to \code{FALSE}, the uniquification is not applied, we simply add the number
 of items annotated to the term and the numbers of items annotated to each of its offspring terms.
-\item \code{robot_jar}: Path of the \code{robot.jar} file. The file can be found from https://github.com/ontodev/robot/releases.
+\item \code{robot_jar}: Path of the \code{robot.jar} file. The file can be found from \url{https://github.com/ontodev/robot/releases}.
 }
 
-To set an option, you can use the \code{$}:
+To set an option, you can use \code{$}:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{simona_opt$verbose = FALSE
 }\if{html}{\out{</div>}}

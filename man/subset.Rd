@@ -12,9 +12,9 @@
 \arguments{
 \item{x}{An \code{ontology_DAG} object.}
 
-\item{i}{A single term name. The value should be a character vector. This corresponds to the roots.}
+\item{i}{A single term name. The value should be a character vector. It corresponds to the roots.}
 
-\item{j}{A single term name. The value should be a character vector. This corresponds to the leaves.}
+\item{j}{A single term name. The value should be a character vector. It corresponds to the leaves.}
 
 \item{...}{Ignored.}
 
@@ -27,7 +27,7 @@ An \code{ontology_DAG} object.
 Create sub-DAGs
 }
 \details{
-It returns a sub-DAG taking node \code{i} as the root and \code{j} as the leaves.
+It returns a sub-DAG taking node \code{i} as the root and \code{j} as the leaves. If \code{i} is a vector, a super root will be added.
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")

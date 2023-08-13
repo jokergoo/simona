@@ -65,9 +65,9 @@ all_group_sim_methods = function() {
 #' - `anno_uniquify`: In the annotation-based IC method, the union of items annotated to the term as well as all its offspring terms is used, which means
 #'      the set of annotated items for the term is uniquified. If `anno_uniquify` is set to `FALSE`, the uniquification is not applied, we simply add the number
 #'      of items annotated to the term and the numbers of items annotated to each of its offspring terms.
-#' - `robot_jar`: Path of the `robot.jar` file. The file can be found from https://github.com/ontodev/robot/releases.
+#' - `robot_jar`: Path of the `robot.jar` file. The file can be found from \url{https://github.com/ontodev/robot/releases}.
 #' 
-#' To set an option, you can use the `$`:
+#' To set an option, you can use `$`:
 #' 
 #' ```
 #' simona_opt$verbose = FALSE

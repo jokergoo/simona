@@ -91,7 +91,7 @@ $$
 The wrapper function `term_sim()` calculates semantic similarities between terms in
 the DAG with a specific method. Note the method name can be partially matched.
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = ..., control = list(...))
 </pre>
 
@@ -117,7 +117,7 @@ average of the IC of the two terms:
 $$ \mathrm{Sim}(a, b) = \frac{\mathrm{IC}(c)}{(\mathrm{IC}(a) + \mathrm{IC}(b))/2} = \frac{2 * \mathrm{IC}(c)}{\mathrm{IC}(a) + \mathrm{IC}(b)} $$
 
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_Lin_1998")
 </pre>
 
@@ -161,7 +161,7 @@ Paper link: https://doi.org/10.1613/jair.514, https://doi.org/10.1186/1471-2105-
 
 The normalization method can be set with the `norm_method` parameter:
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_Resnik_1999", control = list(norm_method = "Nunif"))
 term_sim(dag, terms, method = "Sim_Resnik_1999", control = list(norm_method = "Nmax"))
 term_sim(dag, terms, method = "Sim_Resnik_1999", control = list(norm_method = "Nunivers"))
@@ -179,7 +179,7 @@ The relation between the _FaITH_2010_ similarity and _Lin_1998_ similarity is:
 $$ \mathrm{Sim}_\mathrm{FaITH} = \frac{\mathrm{Sim}_\mathrm{Lin}}{2 - \mathrm{Sim}_\mathrm{Lin}} $$
 
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_FaITH_2010")
 </pre>
 
@@ -211,7 +211,7 @@ $$
 \end{align*} $$
 
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_Relevance_2006")
 </pre>
 
@@ -237,7 +237,7 @@ Then the similarity (if using _Lin_1998_ as the original similarity method) is:
 $$ \mathrm{Sim}(a, b) = \frac{\log(p(c))}{1 - \log(p(c))} * \mathrm{Sim}_\mathrm{Lin}(a, b) $$
 
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_SimIC_2010")
 </pre>
 
@@ -268,7 +268,7 @@ And applying _Lin_1998_ method, the semantic similarity is:
 
 $$ \mathrm{Sim}(a, b) = 2 * \frac{\mathrm{IC}_\mathrm{mean}}{\mathrm{IC}(a) + \mathrm{IC}(b)} $$
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_XGraSM_2013")
 </pre>
 
@@ -304,7 +304,7 @@ And applying _Lin_1998_ method, the semantic similarity is:
 
 $$ \mathrm{Sim}(a, b) = 2 * \frac{\mathrm{IC}_\mathrm{mean}}{\mathrm{IC}(a) + \mathrm{IC}(b)} $$
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_GraSM_2005")
 </pre>
 
@@ -331,7 +331,7 @@ And applying _Lin_1998_ method, the semantic similarit is:
 
 $$ \mathrm{Sim}(a, b) = 2 * \frac{\mathrm{IC}_\mathrm{mean}}{\mathrm{IC}(a) + \mathrm{IC}(b)} $$
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_EISI_2015")
 </pre>
 
@@ -350,7 +350,7 @@ ancestors and the average aggregation from ancestors of $a$ and $b$ separately.
 
 $$ \mathrm{Sim}(a, b) = \frac{2*\sum\limits_{t \in \mathcal{A}_a^+ \cap \mathcal{A}_b^+} S_w(t) }{ \sum\limits_{t \in \mathcal{A}_a^+} S_w(t) + \sum\limits_{t \in \mathcal{A}_b^+} S_w(t) }  $$
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_AIC_2014")
 </pre>
 
@@ -362,7 +362,7 @@ It uses the _IC_Zhang_2006_ IC method and uses _Lin_1998_ similarity method to c
 
 $$ \mathrm{Sim}(a, b) = \frac{2*\mathrm{IC}_\mathrm{Zhang}(c)}{\mathrm{IC}_\mathrm{Zhang}(a) + \mathrm{IC}_\mathrm{Zhang}(b)} $$
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_Zhang_2006")
 </pre>
 
@@ -373,7 +373,7 @@ It uses the _IC_universal_ IC method and uses the _Nunivers_ method to calculate
 
 $$ \mathrm{Sim}(a, b) = \frac{2*\mathrm{IC}_\mathrm{Univers}(c)}{\max \{ \mathrm{IC}_\mathrm{Univers}(a), \mathrm{IC}_\mathrm{Univers}(b) \}} $$
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_universal")
 </pre>
 
@@ -393,7 +393,7 @@ where names should cover the relations defined in relations set in
 and "relation_b" set in the DAG, the value for contribution_factor can be set
 as:
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_Wang_2007", 
     control = list(contribution_factor = c("relation_a" = 0.8, "relation_b" = 0.6)))
 </pre>
@@ -427,7 +427,7 @@ $$ \mathrm{Sim}(a, b) = \frac{1}{1 + \mathrm{len}_c(a, b)} = \frac{1}{1 + \mathr
 There is a parameter distance which takes value of `"longest_distances_via_LCA"`
 (the default) or `"shortest_distances_via_NCA"`:
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_Rada_1989",
     control = list(distance = "shortest_distances_via_NCA"))
 </pre>
@@ -454,7 +454,7 @@ $$ \mathrm{Sim}(a, b) = 1 - \frac{\mathrm{len}_c(a, b)}{2*\delta_\mathrm{max}} $
 There is a parameter distance which takes value of `"longest_distances_via_LCA"`
 (the default) or `"shortest_distances_via_NCA"`:
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_Resnik_edge_2005",
     control = list(distance = "shortest_distances_via_NCA"))
 </pre>
@@ -482,7 +482,7 @@ $$ \mathrm{Sim}(a, b) = 1 - \frac{\log(\mathrm{len}_c(a, b))}{\log(2*\delta_\mat
 There is a parameter distance which takes value of `"longest_distances_via_LCA"`
 (the default) or `"shortest_distances_via_NCA"`:
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_Leocock_1998",
     control = list(distance = "shortest_distances_via_NCA"))
 </pre>
@@ -513,7 +513,7 @@ $$
 
 where in the denominator are the depths of $a$ and $b$ via $c$.
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_WP_1994")
 </pre>
 
@@ -534,7 +534,7 @@ $$ \mathrm{CF}(a, b) = \left\{ \begin{array}{ll}
 \end{array} \right. 
 $$
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_Slimani_2006")
 </pre>
 
@@ -555,7 +555,7 @@ $D_\mathrm{sp}$ can be replaced with $\mathrm{len}(a, b)$ if the longest distanc
 There is a parameter distance which takes value of
 `"longest_distances_via_LCA"` (the default) or `"shortest_distances_via_NCA"`:
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_Shenoy_2012",
     control = list(distance = "shortest_distances_via_NCA"))
 </pre>
@@ -581,7 +581,7 @@ And the relationship to $\mathrm{Sim}_\mathrm{WP}$ is:
 $$ \mathrm{Sim}_\mathrm{Pekar}(a, b) = \frac{\mathrm{Sim}_\mathrm{WP}(a, b)}{2 - \mathrm{Sim}_\mathrm{WP}(a, b)} $$
 
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_Pekar_2002")
 </pre>
 
@@ -598,7 +598,7 @@ The similarity value might be negative because there is no restrction that the
 path from root to $a$ or $b$ must pass $c$.
 
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_Stojanovic_2001")
 </pre>
 
@@ -619,7 +619,7 @@ $$
 where $r$ is the root term.
 
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_Wang_edge_2012")
 </pre>
 
@@ -662,7 +662,7 @@ $$ \mathrm{Sim}(a, b) = 1 - D(a, b)$$
 ranges between 0 and 1.
 
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_Zhong_2002")
 </pre>
 
@@ -689,7 +689,7 @@ $$ \mathrm{Sim}(a, b) = 1 - D(a, b)/D_\mathrm{max} $$
 There is a parameter distance which takes value of
 `"longest_distances_via_LCA"` (the default) or `"shortest_distances_via_CA"`:
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_AlMubaid_2006",
     control = list(distance = "shortest_distances_via_CA"))
 </pre>
@@ -707,7 +707,7 @@ $$ \mathrm{Sim}(a, b) = \exp(-0.2*D_\mathrm{sp}(a, b)) * \tanh(0.6*\delta(c)) $$
 There is a parameter distance which takes value of `"longest_distances_via_LCA"`
 (the default) or `"shortest_distances_via_CA"`:
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_Li_2003",
     control = list(distance = "shortest_distances_via_CA"))
 </pre>
@@ -741,7 +741,7 @@ leaves, which is the smaller height of $a$ and $b$ in the DAG.
 There is a parameter distance which takes value of
 `"longest_distances_via_LCA"` (the default) or `"shortest_distances_via_CA"`:
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_RSS_2013",
     control = list(distance = "shortest_distances_via_CA"))
 </pre>
@@ -786,7 +786,7 @@ informative leaf)
 $$ \mathrm{IC}(l_a) = \max_{z \in \mathcal{L}(a)} \mathrm{IC}(z) $$
 
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_HRSS_2013")
 </pre>
 
@@ -806,7 +806,7 @@ $b$ via the MICA term $c$, the similarity is:
 $$ \mathrm{Sim}(a, b) = 1 - \frac{\tanh \left( \sum\limits_{x \in L_c(a, b)} \frac{1}{\mathrm{IC}(x)} \right)}{\pi/2} $$
 
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_Shen_2010")
 </pre>
 
@@ -843,7 +843,7 @@ $$ w = \frac{|D_x^+|}{|D_t^+|} $$
 $w \leq 1$ as all offsprings of $x$ are also offspring of its parent $t$.
 
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_SSDD_2013")
 </pre>
 
@@ -867,7 +867,7 @@ Then there are several normalization methods to change the distance to similarit
 
 The normalization methods can be set via the parameter `norm_method`:
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_Jiang_1997", control = list(norm_method = "max"))
 term_sim(dag, terms, method = "Sim_Jiang_1997", control = list(norm_method = "Couto"))
 term_sim(dag, terms, method = "Sim_Jiang_1997", control = list(norm_method = "Lin"))
@@ -938,7 +938,7 @@ Note the Kappa coeffcient is possible to be negative.
 The universe set can be set via the parameter `anno_universe`. By default it
 is the total items annotated to the whole DAG.
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_kappa",
     control = list(anno_universe = ...))
 </pre>
@@ -966,7 +966,7 @@ $$ \mathrm{Jaccard} = \frac{\mathrm{Dice}}{2 - \mathrm{Dice}} $$
 The universe set can be set via the parameter `anno_universe`. By default it
 is the total items annotated to the whole DAG.
 
-<pre>
+<pre class="r">
 term_sim(dag, terms, method = "Sim_Jaccard",
     control = list(anno_universe = ...))
 term_sim(dag, terms, method = "Sim_Dice",

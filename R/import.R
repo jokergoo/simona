@@ -1,6 +1,6 @@
 
 	      
-#' Import .obo file to an ontology_DAG object
+#' Import ontology file to an ontology_DAG object
 #' 
 #' @param file Path of the ontology file or an URL.
 #' @param relation_type Semantic relation types to include. Note `is_a` relation is always included.

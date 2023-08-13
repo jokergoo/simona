@@ -1,8 +1,6 @@
 # simona: Semantic Similarity in Bio-ontologies
 
 
-
-
 ## Install
 
 ```r

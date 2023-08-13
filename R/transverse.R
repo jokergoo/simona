@@ -177,7 +177,7 @@ n_ancestors = function(dag, terms = NULL, use_cache = TRUE, include_self = FALSE
 }
 
 #' @rdname n_terms
-#' @details Leaf nodes have value of zero, so you can identify leaf terms based on the values.
+#' @details For `n_connected_leaves()`, leaf nodes have value of zero, so you can identify leaf terms based on the values.
 #' @export
 n_connected_leaves = function(dag, terms = NULL, use_cache = TRUE) {
 	if(is.null(dag@term_env$n_leaves) || !use_cache) {

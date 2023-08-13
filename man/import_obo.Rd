@@ -5,7 +5,7 @@
 \alias{import_owl}
 \alias{import_ontology}
 \alias{import_ttl}
-\title{Import .obo file to an ontology_DAG object}
+\title{Import ontology file to an ontology_DAG object}
 \usage{
 import_obo(file, relation_type = "part_of", ...)
 
@@ -32,7 +32,7 @@ set as a global option \code{simona_opt$robot_jar = ...}.}
 An \code{ontology_DAG} object.
 }
 \description{
-Import .obo file to an ontology_DAG object
+Import ontology file to an ontology_DAG object
 }
 \details{
 Public bio-ontologies can be obtained from \href{http://obofoundry.org/}{Ontology Foundry} or \href{https://bioportal.bioontology.org/}{BioPortal}.

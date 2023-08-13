@@ -377,7 +377,7 @@ setMethod("show",
 #'               are also selected. Note "is_a" is always included.
 #' @param org_db The name of the organism package or the corresponding database object, e.g. `"org.Hs.eg.db"` or 
 #'            directly the [`org.Hs.eg.db::org.Hs.eg.db`] object for human, then the gene annotation to GO terms will be added
-#'            to the object.
+#'            to the object. For other non-model organisms, consider to use the **AnnotationHub** package to find one.
 #' 
 #' @return An `ontology_DAG` object.
 #' @export
@@ -453,12 +453,12 @@ create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = "part of
 #' Create sub-DAGs
 #' 
 #' @param x An `ontology_DAG` object.
-#' @param i A single term name. The value should be a character vector. This corresponds to the roots.
-#' @param j A single term name. The value should be a character vector. This corresponds to the leaves.
+#' @param i A single term name. The value should be a character vector. It corresponds to the roots.
+#' @param j A single term name. The value should be a character vector. It corresponds to the leaves.
 #' @param ... Ignored.
 #' @param drop Ignored.
 #' 
-#' @details It returns a sub-DAG taking node `i` as the root and `j` as the leaves.
+#' @details It returns a sub-DAG taking node `i` as the root and `j` as the leaves. If `i` is a vector, a super root will be added.
 #' @return An `ontology_DAG` object.
 #' 
 #' @rdname subset

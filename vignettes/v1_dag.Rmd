@@ -357,7 +357,7 @@ dag["b"]
 Two indicies can be provided in the brackets where the first one corresponds
 to root terms and the second one corresponds to leaf terms:
 
-<pre>
+<pre class="r">
 # the same as dag["b"], a sub-DAG where b is the root
 dag["b", ]
 
@@ -372,9 +372,9 @@ With the more general function `dag_filter()`, you can obtain a sub-DAG by provi
 a group of terms, a subset of relations, a group of root terms or a leaf terms. Note
 if there are multiple root after the fitlering, a pseudo node will be automatically added.
 
-```
+<pre class="r">
 dag_filter(dag, terms, relations, root, leaves)
-```
+</pre>
 
 ## Meta data frame
 

@@ -2,12 +2,12 @@
 % Please edit documentation in R/partition.R
 \name{partition_by_level}
 \alias{partition_by_level}
-\alias{partition_by_k}
+\alias{partition_by_size}
 \title{Partition the DAG}
 \usage{
 partition_by_level(dag, level = 0, from = NULL, term_pos = NULL)
 
-partition_by_k(dag, k)
+partition_by_size(dag, size = ceiling(dag_n_terms(dag)/10))
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
@@ -18,7 +18,7 @@ partition_by_k(dag, k)
 
 \item{term_pos}{Internally used.}
 
-\item{k}{Number of terms in a cluster. The splitting stops on a term if all its child-tree are smaller than \code{k}.}
+\item{size}{Number of terms in a cluster. The splitting stops on a term if all its child-tree are smaller than \code{size}.}
 }
 \value{
 A character vector of top terms in each partition.
@@ -32,9 +32,9 @@ It is possible that a term in the middle of the DAG can be traced back to more t
 To partition all terms exclusively, a term partitioned to the sub-DAG from the top term with the largest distance to the term.
 If a term has the same largest distances to several top terms, a random top term is selected.
 
-In \code{partition_by_k()}, the DAG is first reduced to a tree where a child term only has one parent.
+In \code{partition_by_size()}, the DAG is first reduced to a tree where a child term only has one parent.
 The partition is done recursively by cutting into its child-trees.
-The splitting stops when all the child-trees have size less than \code{k}.
+The splitting stops when all the child-trees have size less than \code{size}.
 
 \code{NA} is assigned to the \code{from} terms, their ancestor terms, and terms having infinite directed distance to \code{from} terms.
 }
@@ -43,7 +43,7 @@ The splitting stops when all the child-trees have size less than \code{k}.
 dag = create_ontology_DAG_from_GO_db()
 pa = partition_by_level(dag)
 table(pa)
-pa = partition_by_k(dag, k = 1000)
+pa = partition_by_size(dag, size = 1000)
 table(pa)
 }
 1

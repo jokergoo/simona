@@ -12,9 +12,9 @@
 #' To partition all terms exclusively, a term partitioned to the sub-DAG from the top term with the largest distance to the term.
 #' If a term has the same largest distances to several top terms, a random top term is selected.
 #' 
-#' In `partition_by_k()`, the DAG is first reduced to a tree where a child term only has one parent. 
+#' In `partition_by_size()`, the DAG is first reduced to a tree where a child term only has one parent. 
 #' The partition is done recursively by cutting into its child-trees. 
-#' The splitting stops when all the child-trees have size less than `k`.
+#' The splitting stops when all the child-trees have size less than `size`.
 #' 
 #' `NA` is assigned to the `from` terms, their ancestor terms, and terms having infinite directed distance to `from` terms.
 #' 
@@ -25,7 +25,7 @@
 #' dag = create_ontology_DAG_from_GO_db()
 #' pa = partition_by_level(dag)
 #' table(pa)
-#' pa = partition_by_k(dag, k = 1000)
+#' pa = partition_by_size(dag, size = 1000)
 #' table(pa)
 #' }
 #' 1
@@ -67,10 +67,10 @@ partition_by_level = function(dag, level = 0, from = NULL, term_pos = NULL) {
 	partition
 }
 
-#' @param k Number of terms in a cluster. The splitting stops on a term if all its child-tree are smaller than `k`.
+#' @param size Number of terms in a cluster. The splitting stops on a term if all its child-tree are smaller than `size`.
 #' @rdname partition_by_level
 #' @importFrom stats dendrapply
-partition_by_k = function(dag, k) {
+partition_by_size = function(dag, size = ceiling(dag_n_terms(dag)/10)) {
 	
 	tree = dag_treelize(dag)
 	dend = dag_as_dendrogram(tree)
@@ -81,7 +81,7 @@ partition_by_k = function(dag, k) {
 		v = vector("list", attr(dend, "n_nodes"))
 		i = 1
 		dendrapply(dend, function(d) {
-			v[[i]] <<- attr(d, "attr")
+			v[[i]] <<- attr(d, attr)
 			i <<- i + 1
 		})
 
@@ -98,7 +98,7 @@ partition_by_k = function(dag, k) {
 
 		nn = sapply(dend, function(x) attr(x, "n_nodes"))
 		for(i in seq_along(nn)) {
-			if(nn[i] > k) {
+			if(nn[i] > size) {
 				scan_downstream(dend[[i]])
 			} else {
 				pa[get_nodes_attr(dend[[i]], "term_id")] <<- group

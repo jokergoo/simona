@@ -105,7 +105,7 @@ dag
 The wrapper function `term_IC()` calculates information contents of terms in
 the DAG with a specific method. Note the method name can be partially matched.
 
-<pre>
+<pre class="r">
 term_IC(dag, method = ..., control = list(...))
 </pre>
 
@@ -118,7 +118,7 @@ $$ \mathrm{IC}(x) = -\log \left(  \frac{|\mathcal{D}_x^+|}{|\mathcal{D}_r^+|} \r
 In the bracket is the fraction of number of offspring terms to the total number
 of terms in the DAG.
 
-<pre>
+<pre class="r">
 term_IC(dag, method = "IC_offspring")
 </pre>
 
@@ -132,7 +132,7 @@ $$ \mathrm{IC}(x) = -\log \left( \frac{\eta(x) + 1}{\delta(x) + \eta(x) + 1} \ri
 where $\eta(x)$ is the height of a term and $\delta(x)$ is the depth of the term.
 1 is added in the formula to get rid of $\log(0)$ for leaf terms.
 
-<pre>
+<pre class="r">
 term_IC(dag, method = "IC_height")
 </pre>
 
@@ -156,7 +156,7 @@ $$ \mathrm{IC}(x) = -\log \left( \frac{|G_x|}{|G_r|} \right) $$
 where $G_r$ is the set of all items annotated to the DAG (i.e. to the root).
 
 
-<pre>
+<pre class="r">
 term_IC(dag, method = "IC_annotation")
 </pre>
 
@@ -239,7 +239,7 @@ is:
 
 $$ \mathrm{IC}(x) = -\log(p(x)) $$
 
-<pre>
+<pre class="r">
 term_IC(dag, method = "IC_universal")
 </pre>
 
@@ -282,7 +282,7 @@ $$ \mathrm{IC}(x) = -\log \left( \frac{f(x)}{f(r)} \right) $$
 
 where $f(r)$ is the number of ways to reach all leaf terms from root.
 
-<pre>
+<pre class="r">
 term_IC(dag, method = "IC_Zhang_2006")
 </pre>
 
@@ -331,7 +331,7 @@ $$ \mathrm{IC}(x) = 0.5 * \mathrm{IC}_\mathrm{Seco}(x) + 0.5*\frac{\log(\delta(x
 
 And IC is set to 0 for root term.
 
-<pre>
+<pre class="r">
 term_IC(dag, method = "IC_Zhou_2008")
 </pre>
 
@@ -358,7 +358,7 @@ $$ \lambda_\mathrm{node} = \lambda_\mathrm{edge} + 1$$
 
 In this case, $\sigma \approx 0.5$.
 
-<pre>
+<pre class="r">
 term_IC(dag, method = "IC_Seddiqui_2010")
 </pre>
 
@@ -376,7 +376,7 @@ $$ \mathrm{IC}(x) = -\log \left( \frac{\zeta_x}{|\mathcal{A}_x^+| * \zeta_\mathr
 
 where $\zeta_\mathrm{max}$ is the total number of leaves in the DAG.
 
-<pre>
+<pre class="r">
 term_IC(dag, method = "IC_Sanchez_2011")
 </pre>
 
@@ -402,7 +402,7 @@ $$ \mathrm{IC}(x) = r_1 * r_2 $$
 
 IC for root is set to 0.
 
-<pre>
+<pre class="r">
 term_IC(dag, method = "IC_Meng_2012")
 </pre>
 
@@ -452,7 +452,7 @@ where names should cover the relations defined in relations set in
 and "relation_b" set in the DAG, the value for contribution_factor can be set
 as:
 
-<pre>
+<pre class="r">
 term_IC(dag, method = "IC_Wang_2007", 
     control = list(contribution_factor = c("relation_a" = 0.8, "relation_b" = 0.6)))
 </pre>

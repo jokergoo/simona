@@ -23,7 +23,8 @@ calc_n_neighbours_on_circle = function(theta, width = 1) {
 #' @param start Start of the circle, measured in degree.
 #' @param end End of the circle, measured in degree.
 #' @param reorder_level Whether to reorder child terms. See [`dag_reorder()`].
-#' @param partition_level If `node_col` is not set, users can cut the DAG into clusters with different node colors.
+#' @param partition_by_level If `node_col` is not set, users can cut the DAG into clusters with different node colors. The partitioning is applied by [`partition_by_level()`].
+#' @param partition_by_size Similar as `partition_by_level`, but the partitioning is applied by [`partition_by_size()`].
 #' @param node_col Colors of nodes. If the value is a vector, the order should correspond to terms in [`dag_all_terms()`].
 #' @param node_transparency Transparency of nodes. The same format as `node_col`.
 #' @param node_size Size of nodes. The same format as `node_col`.
@@ -52,7 +53,7 @@ calc_n_neighbours_on_circle = function(theta, width = 1) {
 #' }
 #' 1
 dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
-	reorder_level = NA, partition_level = 1,
+	reorder_level = NA, partition_by_level = 1, partition_by_size = NULL,
 	node_col = NULL, node_transparency = 0.5, node_size = NULL, 
 	edge_col = NULL, edge_transparency = 0.98,
 	legend_labels_from = NULL, legend_labels_max_width = 50) {
@@ -84,15 +85,23 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 	term_pos = cpp_term_pos_on_circle(tree, n_offspring(tree), start, end) ## in polar coordinate
 
 	term_pos$n_neighbours = 0
-	for(level in sort(unique(term_pos$rho))) {
+	all_levels = sort(unique(term_pos$rho))
+	all_levels = all_levels[!is.na(all_levels)]
+	for(level in all_levels) {
 		l = term_pos$rho == level
-		message(qq("calculating numbers of neighbours within 1 degree neighbourhood on level @{level}, @{sum(l)} terms..."))
+		message(strrep("\b", 100), appendLF = FALSE)
+		message(qq("calculating numbers of neighbours within 1 degree neighbourhood on level @{level}/@{max(all_levels)}, @{sum(l)} terms..."), appendLF = FALSE)
 		term_pos[l, "n_neighbours"] = calc_n_neighbours_on_circle(term_pos$theta[l], width = 0.5)
 	}
+	message("")
 
 	node_col_map = NULL
 	if(is.null(node_col)) {
-		group = partition_by_level(dag, level = partition_level, term_pos = term_pos)
+		if(is.null(partition_by_size)) {
+			group = partition_by_level(dag, level = partition_by_level, term_pos = term_pos)
+		} else {
+			group = partition_by_size(dag, size = partition_by_size)
+		}
 		level1 = unique(group); level1 = level1[!is.na(level1)]
 		n_levels = length(level1)
 		
@@ -291,7 +300,7 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 #' @param edge_color A named vector where names correspond to relation types.
 #' @param edge_style A named vector where names correspond to relation types. See https://graphviz.org/docs/attr-types/style/ for possible values for edges.
 #'
-#' @seealso http://magjac.com/graphviz-visual-editor/ is nice place to try the DOT code.
+#' @seealso \url{http://magjac.com/graphviz-visual-editor/} is nice place to try the DOT code.
 #' @details `dag_as_DOT()` generates the DOT code of the DAG.
 #' @importFrom circlize rand_color
 #' @export

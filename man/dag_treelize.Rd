@@ -3,14 +3,19 @@
 \name{dag_treelize}
 \alias{dag_treelize}
 \alias{dag_as_dendrogram}
+\alias{print.ontology_tree}
 \title{Reduce the DAG to a tree}
 \usage{
 dag_treelize(dag)
 
 dag_as_dendrogram(dag)
+
+\method{print}{ontology_tree}(x, ...)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
+
+\item{...}{Ignored.}
 }
 \value{
 An \code{ontology_DAG} object.
@@ -30,7 +35,9 @@ In this way, depths of all terms in the orignal DAG are still identical to the d
 \code{dag_as_dendrogram()} coverts the tree to a \code{dendrogram} object.
 }
 \examples{
-dag = create_ontology_DAG_from_GO_db()
+parents  = c("a", "a", "b", "b", "c", "d")
+children = c("b", "c", "c", "d", "e", "f")
+dag = create_ontology_DAG(parents, children)
 tree = dag_treelize(dag)
 d1 = dag_depth(dag)
 d2 = dag_depth(tree)
