@@ -13,7 +13,7 @@ import_owl(file, relation_type = "part_of", ...)
 
 import_ontology(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "", ...)
 
-import_ttl(file, ...)
+import_ttl(file, relation_type = "part_of", ...)
 }
 \arguments{
 \item{file}{Path of the ontology file or an URL.}
@@ -51,15 +51,25 @@ The \code{import_obo()} function parses the ontology file in \code{.obo} format.
 }
 
 \code{import_ttl()} is a simple parser for the \code{.ttl} format files. It only recognizes
-terms that have the \code{owl:Class} object.
+terms that have the \code{owl:Class} object. The "is_a" relation is recognized by the predicate \code{rdfs:subClassOf}
+or an ontology-specific predicate that contains \verb{.*/isa}. Other relation types are defined with
+the predicate \code{owl:ObjectProperty}.
 }
 \examples{
-\dontrun{
+1
+\donttest{
 # The plant ontology: http://obofoundry.org/ontology/po.html 
-dag = import_obo("https://raw.githubusercontent.com/Planteome/plant-ontology/master/po.obo")
+import_obo("https://raw.githubusercontent.com/Planteome/plant-ontology/master/po.obo")
+}
+\donttest{
+import_owl("http://purl.obolibrary.org/obo/po.owl") 
 }
 \dontrun{
 # The plant ontology: http://obofoundry.org/ontology/po.html 
 dag = import_ontology("http://purl.obolibrary.org/obo/po.owl", robot_jar = ...)
+}
+\donttest{
+# file is from https://bioportal.bioontology.org/ontologies/MSTDE
+import_ttl("https://jokergoo.github.io/simona/MSTDE.ttl")
 }
 }

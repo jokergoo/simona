@@ -16,6 +16,7 @@
 #' - `longest_distances_directed()`: It calculates `d(a, b)` where `d()` calculates the longest distance between two terms. The distance is only calculated when `a` is an ancestor of `b`, otherwise the distance value is -1.
 #' @rdname distance
 #' @export
+#' @returns A numeric distance matrix.
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
 #' children = c("b", "c", "c", "d", "e", "f")

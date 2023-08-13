@@ -81,6 +81,7 @@ all_group_sim_methods = function() {
 #' 
 #' @export
 #' @import GlobalOptions
+#' @returns A single option value.
 #' @examples
 #' simona_opt
 simona_opt = GlobalOptions::setGlobalOptions(

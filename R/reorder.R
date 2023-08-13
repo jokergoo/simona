@@ -18,8 +18,8 @@ reorder_children = function(dag, node) {
 	})
 
 	m = matrix(nrow = n_children, ncol = n_children)
-	for(i in 1:(n_children-1)) {
-		for(j in (i+1):n_children) {
+	for(i in seq(1, n_children-1)) {
+		for(j in seq(i+1, n_children)) {
 			m[i, j] = m[j, i] = n_links_from_two_groups_of_nodes(dag, xl[[i]], xl[[j]])
 		}
 	}
@@ -55,12 +55,18 @@ reorder_children = function(dag, node) {
 #' @return An `ontology_Dag` object.
 #' @export
 #' @importFrom GetoptLong qqcat
+#' @examples
+#' \donttest{
+#' dag = create_ontology_DAG_from_GO_db()
+#' dag_reorder(dag)
+#' }
+#' 1
 dag_reorder = function(dag, max_level = 2) {
 	max_adjust_level = max_level
 	current_terms = dag_root(dag, in_labels = FALSE)
 	current_level = 0
 	while(current_level < max_adjust_level) {
-		qqcat("adjust child terms on level @{current_level}, @{length(current_terms)} terms\n")
+		message(qq("adjust child terms on level @{current_level}, @{length(current_terms)} terms"))
 		current_terms2 = integer(0)
 		for(t in current_terms) {
 			dag@lt_children[[t]] = reorder_children(dag, t)

@@ -30,3 +30,10 @@ in the DAG, n - k is the distance bewteen c1 and c2 regarding how close the offs
 
 With the distances from the set of child terms, \code{\link[TSP:TSP]{TSP::TSP()}} is applied to reorder child terms.
 }
+\examples{
+\donttest{
+dag = create_ontology_DAG_from_GO_db()
+dag_reorder(dag)
+}
+1
+}

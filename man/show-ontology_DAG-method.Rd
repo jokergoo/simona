@@ -9,6 +9,9 @@
 \arguments{
 \item{object}{An \code{ontology_DAG} object.}
 }
+\value{
+No value is returned.
+}
 \description{
 Print the ontology_DAG object
 }

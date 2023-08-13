@@ -12,6 +12,9 @@ dag_as_dendrogram(dag)
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
 }
+\value{
+An \code{ontology_DAG} object.
+}
 \description{
 Reduce the DAG to a tree
 }
@@ -27,7 +30,6 @@ In this way, depths of all terms in the orignal DAG are still identical to the d
 \code{dag_as_dendrogram()} coverts the tree to a \code{dendrogram} object.
 }
 \examples{
-\dontrun{
 dag = create_ontology_DAG_from_GO_db()
 tree = dag_treelize(dag)
 d1 = dag_depth(dag)
@@ -36,5 +38,4 @@ identical(d1, d2)
 
 dend = dag_as_dendrogram(tree)
 dend
-}
 }

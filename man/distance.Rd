@@ -20,6 +20,9 @@ longest_distances_directed(dag, terms)
 
 \item{terms}{A vector of term names.}
 }
+\value{
+A numeric distance matrix.
+}
 \description{
 Distance on the DAG
 }

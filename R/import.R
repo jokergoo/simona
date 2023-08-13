@@ -14,10 +14,12 @@
 #' 
 #' @return An `ontology_DAG` object.
 #' @export
+#' @importFrom utils read.csv
 #' @examples
-#' \dontrun{
+#' 1
+#' \donttest{
 #' # The plant ontology: http://obofoundry.org/ontology/po.html 
-#' dag = import_obo("https://raw.githubusercontent.com/Planteome/plant-ontology/master/po.obo")
+#' import_obo("https://raw.githubusercontent.com/Planteome/plant-ontology/master/po.obo")
 #' }
 import_obo = function(file, relation_type = "part_of", ...) {
 	
@@ -51,11 +53,11 @@ import_obo = function(file, relation_type = "part_of", ...) {
 		lt_relations = vector("list", n)
 		for(i in seq_len(n)) {
 			if(i %% 1000 == 0) {
-				message(strrep("\b", 100), "parsing [Typedef] sections in the obo file [", i, "/", n, "]", appendLF = FALSE)
+				message(strrep("\b", 100), "Parsing [Typedef] sections in the obo file [", i, "/", n, "]", appendLF = FALSE)
 			}
 			lt_relations[[i]] = process_obo_stanza(ln[seq(ind1[i], ind2[i])])
 		}
-		message(strrep("\b", 100), "parsing [Typedef] sections in the obo file [", n, "/", n, "]", appendLF = TRUE)
+		message(strrep("\b", 100), "Parsing [Typedef] sections in the obo file [", n, "/", n, "]", appendLF = TRUE)
 
 		## relations
 		lt = .wrap_relations(lt_relations, type = "relation")
@@ -94,11 +96,11 @@ import_obo = function(file, relation_type = "part_of", ...) {
 	lt_terms = vector("list", n)
 	for(i in seq_len(n)) {
 		if(i %% 1000 == 0) {
-			message(strrep("\b", 100), "parsing [Term] sections in the obo file [", i, "/", n, "]", appendLF = FALSE)
+			message(strrep("\b", 100), "Parsing [Term] sections in the obo file [", i, "/", n, "]", appendLF = FALSE)
 		}
 		lt_terms[[i]] = process_obo_stanza(ln[seq(ind1[i], ind2[i])], relation_type)
 	}
-	message(strrep("\b", 100), "parsing [Term] sections in the obo file [", n, "/", n, "]", appendLF = TRUE)
+	message(strrep("\b", 100), "Parsing [Term] sections in the obo file [", n, "/", n, "]", appendLF = TRUE)
 
 	lt = .wrap_relations(lt_terms, type = "term")
 	term_meta = lt$meta
@@ -113,9 +115,9 @@ import_obo = function(file, relation_type = "part_of", ...) {
 			break
 		}
 	}
-	version = gsub("data-version: ", "", grep("^data-version:", ln[1:(i-1)], value = TRUE))
-	ontology = gsub("ontology: ", "", grep("^ontology:", ln[1:(i-1)], value = TRUE))
-	default_namespace = gsub("default-namespace: ", "", grep("^default-namespace:", ln[1:(i-1)], value = TRUE))
+	version = gsub("data-version: ", "", grep("^data-version:", ln[seq_len(i-1)], value = TRUE))
+	ontology = gsub("ontology: ", "", grep("^ontology:", ln[seq_len(i-1)], value = TRUE))
+	default_namespace = gsub("default-namespace: ", "", grep("^default-namespace:", ln[seq_len(i-1)], value = TRUE))
 
 	if(length(default_namespace)) {
 		term_meta$namespace[is.na(term_meta$namespace)] = default_namespace
@@ -324,12 +326,16 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 #' @export
 #' @import xml2
 #' @export
+#' @examples
+#' \donttest{
+#' import_owl("http://purl.obolibrary.org/obo/po.owl") 
+#' }
 import_owl = function(file, relation_type = "part_of", ...) {
 	
 	owl = read_xml(file, options = "HUGE")
 
 	####### relation / ObjectProperty ########
-	message("parsing <owl:ObjectProperty> ...")
+	message("Parsing <owl:ObjectProperty> ...")
 	ObjectProperty = xml_find_all(owl, ".//owl:ObjectProperty")
 	
 	id = xml_attr(ObjectProperty, "about")
@@ -395,7 +401,7 @@ import_owl = function(file, relation_type = "part_of", ...) {
 		stop("Cannot find any owl:Class.")
 	}
 
-	message("parsing <owl:Class> ...")
+	message("Parsing <owl:Class> ...")
 	id = xml_attr(Class, "about")
 	short_id = .owl_get_text(Class, ".//*[local-name()='id']", NA)
 	short_id = ifelse(is.na(short_id), gsub("^.*#", "", basename(id)), short_id)
@@ -436,7 +442,7 @@ import_owl = function(file, relation_type = "part_of", ...) {
 	Description = xml_find_all(owl, ".//rdf:Description")
 
 	if(length(Description)) {
-		message("parsing <rdf:Description> ...")
+		message("Parsing <rdf:Description> ...")
 		id = xml_attr(Description, "about")
 		name = .owl_get_text(Description, ".//*[local-name()='prefLabel']", NA)
 		def = .owl_get_text(Description, ".//*[local-name()='definition']", NA)
@@ -577,6 +583,7 @@ import_ontology = function(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "
 	robot_jar = normalizePath(robot_jar)
 
 	if(grepl("^(http|ftp)", file)) {
+		message(qq("Downloading @{file}..."))
 		file2 = tempfile(fileext = paste0("_", basename(file)))
 		download.file(file, destfile = file2, quiet = TRUE)
 		on.exit(file.remove(file2))
@@ -584,7 +591,7 @@ import_ontology = function(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "
 		file = file2
 	}
 
-	message("converting ", basename(file), " to the obo format.")
+	message("Converting ", basename(file), " to the obo format.")
 	output = tempfile(fileext = ".obo.gz")
 
 	file = normalizePath(file)
@@ -608,16 +615,25 @@ import_ontology = function(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "
 
 #' @details
 #' `import_ttl()` is a simple parser for the `.ttl` format files. It only recognizes
-#' terms that have the `owl:Class` object.
+#' terms that have the `owl:Class` object. The "is_a" relation is recognized by the predicate `rdfs:subClassOf`
+#' or an ontology-specific predicate that contains `.*/isa`. Other relation types are defined with
+#' the predicate `owl:ObjectProperty`.
 #' @rdname import_obo
 #' @export
-import_ttl = function(file, ...) {
+#' @examples
+#' \donttest{
+#' # file is from https://bioportal.bioontology.org/ontologies/MSTDE
+#' import_ttl("https://jokergoo.github.io/simona/MSTDE.ttl")
+#' }
+import_ttl = function(file, relation_type = "part_of", ...) {
 
 	if(Sys.which("perl") == "") {
 		stop("Perl is not available.")
 	}
 
 	if(grepl("^(http|ftp)", file)) {
+
+		message(qq("Downloading @{file}..."))
 		file2 = tempfile(fileext = paste0("_", basename(file)))
 		download.file(file, destfile = file2, quiet = TRUE)
 		on.exit(file.remove(file2))
@@ -627,16 +643,23 @@ import_ttl = function(file, ...) {
 
 	file = normalizePath(file)
 
+	message("Parsing .ttl file...")
 	perl_script = system.file("scripts", "parse_ttl.pl", package = "simona")
 	cmd = qq("perl '@{perl_script}' '@{file}'")
+	if(length(relation_type)) {
+		cmd = paste0(cmd, " ", paste("'", relation_type, "'", sep = "", collapse = " "))
+	}
 	df = read.csv(pipe(cmd))
-	
-	lt_parents = strsplit(df$subClassOf, ",")
-	lt_parents = lapply(lt_parents, unique)
+		
+	message("Constructing the DAG_ontology object...")
+	lt_parents = strsplit(df$parent, ",")
 	children = rep(df$id, times = sapply(lt_parents, length))
 	parents = unlist(lt_parents)
 
-	dag = create_ontology_DAG(parents = parents, children = children, relations = rep("is_a", length(parents)),
+	lt_relations = strsplit(df$relation_type, ",")
+	relations = unlist(lt_relations)
+
+	dag = create_ontology_DAG(parents = parents, children = children, relations = relations,
 		source = basename(file), ...)
 
 	term_meta = df[, 1:4]

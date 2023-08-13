@@ -20,6 +20,9 @@ partition_by_k(dag, k)
 
 \item{k}{Number of terms in a cluster. The splitting stops on a term if all its child-tree are smaller than \code{k}.}
 }
+\value{
+A character vector of top terms in each partition.
+}
 \description{
 Partition the DAG
 }
@@ -36,11 +39,12 @@ The splitting stops when all the child-trees have size less than \code{k}.
 \code{NA} is assigned to the \code{from} terms, their ancestor terms, and terms having infinite directed distance to \code{from} terms.
 }
 \examples{
-\dontrun{
+\donttest{
 dag = create_ontology_DAG_from_GO_db()
 pa = partition_by_level(dag)
 table(pa)
 pa = partition_by_k(dag, k = 1000)
 table(pa)
 }
+1
 }

@@ -105,9 +105,9 @@ dag
 The wrapper function `term_IC()` calculates information contents of terms in
 the DAG with a specific method. Note the method name can be partially matched.
 
-```r
+<pre>
 term_IC(dag, method = ..., control = list(...))
-```
+</pre>
 
 ## IC_offspring
 
@@ -118,9 +118,9 @@ $$ \mathrm{IC}(x) = -\log \left(  \frac{|\mathcal{D}_x^+|}{|\mathcal{D}_r^+|} \r
 In the bracket is the fraction of number of offspring terms to the total number
 of terms in the DAG.
 
-```r
+<pre>
 term_IC(dag, method = "IC_offspring")
-```
+</pre>
 
 
 ## IC_height
@@ -132,9 +132,9 @@ $$ \mathrm{IC}(x) = -\log \left( \frac{\eta(x) + 1}{\delta(x) + \eta(x) + 1} \ri
 where $\eta(x)$ is the height of a term and $\delta(x)$ is the depth of the term.
 1 is added in the formula to get rid of $\log(0)$ for leaf terms.
 
-```r
+<pre>
 term_IC(dag, method = "IC_height")
-```
+</pre>
 
 ## IC_annotation
 
@@ -156,9 +156,9 @@ $$ \mathrm{IC}(x) = -\log \left( \frac{|G_x|}{|G_r|} \right) $$
 where $G_r$ is the set of all items annotated to the DAG (i.e. to the root).
 
 
-```r
+<pre>
 term_IC(dag, method = "IC_annotation")
-```
+</pre>
 
 `NA` is assigned to the terms with no item annotated.
 
@@ -239,9 +239,9 @@ is:
 
 $$ \mathrm{IC}(x) = -\log(p(x)) $$
 
-```r
+<pre>
 term_IC(dag, method = "IC_universal")
-```
+</pre>
 
 The formal definition is:
 
@@ -282,9 +282,9 @@ $$ \mathrm{IC}(x) = -\log \left( \frac{f(x)}{f(r)} \right) $$
 
 where $f(r)$ is the number of ways to reach all leaf terms from root.
 
-```r
+<pre>
 term_IC(dag, method = "IC_Zhang_2006")
-```
+</pre>
 
 Paper link: https://doi.org/10.1186/1471-2105-7-135.
 
@@ -303,7 +303,7 @@ $$
 
 where $\|\mathcal{D}_r^+\|$ is the total number of terms in the DAG.
 
-```r
+```
 term_IC(dag, method = "IC_Seco_2004")
 ```
 
@@ -331,9 +331,9 @@ $$ \mathrm{IC}(x) = 0.5 * \mathrm{IC}_\mathrm{Seco}(x) + 0.5*\frac{\log(\delta(x
 
 And IC is set to 0 for root term.
 
-```r
+<pre>
 term_IC(dag, method = "IC_Zhou_2008")
-```
+</pre>
 
 Paper link: https://doi.org/10.1109/FGCNS.2008.16.
 
@@ -358,9 +358,9 @@ $$ \lambda_\mathrm{node} = \lambda_\mathrm{edge} + 1$$
 
 In this case, $\sigma \approx 0.5$.
 
-```r
+<pre>
 term_IC(dag, method = "IC_Seddiqui_2010")
-```
+</pre>
 
 Paper link: https://dl.acm.org/doi/10.5555/1862330.1862343.
 
@@ -376,9 +376,9 @@ $$ \mathrm{IC}(x) = -\log \left( \frac{\zeta_x}{|\mathcal{A}_x^+| * \zeta_\mathr
 
 where $\zeta_\mathrm{max}$ is the total number of leaves in the DAG.
 
-```r
+<pre>
 term_IC(dag, method = "IC_Sanchez_2011")
-```
+</pre>
 
 Paper link: https://doi.org/10.1016/j.knosys.2010.10.001.
 
@@ -402,9 +402,9 @@ $$ \mathrm{IC}(x) = r_1 * r_2 $$
 
 IC for root is set to 0.
 
-```r
+<pre>
 term_IC(dag, method = "IC_Meng_2012")
-```
+</pre>
 
 Paper link: http://article.nadiapub.com/IJGDC/vol5_no3/6.pdf.
 
@@ -452,10 +452,10 @@ where names should cover the relations defined in relations set in
 and "relation_b" set in the DAG, the value for contribution_factor can be set
 as:
 
-```r
+<pre>
 term_IC(dag, method = "IC_Wang_2007", 
     control = list(contribution_factor = c("relation_a" = 0.8, "relation_b" = 0.6)))
-```
+</pre>
 
 By default 0.8 is set for "is_a" and 0.6 for "part_of".
 

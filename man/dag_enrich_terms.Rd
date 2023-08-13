@@ -13,14 +13,15 @@ dag_enrich_terms(dag, terms)
 }
 \value{
 A data frame with the following columns:
-
--\code{term}: Term names.
--\code{n_hits}: Number of terms in \code{terms} intersecting to \code{t}'s offspring terms.
--\code{n_offspring}: Number of offspring terms of \code{t} (including \code{t} itself).
--\code{n_terms}: Number of terms in \code{term} intersecting to all terms in the DAG.
--\code{n_all}: Number of all terms in the DAG.
--\code{p_value}: P-values from hypergeometric test.
--\code{p_adjust}: Adjusted p-values from the BH method.
+\itemize{
+\item \code{term}: Term names.
+\item \code{n_hits}: Number of terms in \code{terms} intersecting to \code{t}'s offspring terms.
+\item \code{n_offspring}: Number of offspring terms of \code{t} (including \code{t} itself).
+\item \code{n_terms}: Number of terms in \code{term} intersecting to all terms in the DAG.
+\item \code{n_all}: Number of all terms in the DAG.
+\item \code{p_value}: P-values from hypergeometric test.
+\item \code{p_adjust}: Adjusted p-values from the BH method.
+}
 
 The number of rows in the data frame is the same as the number of terms in the DAG.
 }
@@ -49,4 +50,5 @@ dag = create_ontology_DAG_from_GO_db()
 terms = random_terms(dag, 100)
 df = dag_enrich_terms(dag, terms)
 }
+1
 }

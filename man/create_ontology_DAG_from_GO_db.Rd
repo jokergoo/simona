@@ -29,9 +29,6 @@ An \code{ontology_DAG} object.
 Create the ontology_DAG object from the GO.db package
 }
 \examples{
-\dontrun{
 dag = create_ontology_DAG_from_GO_db()
-dag = create_ontology_DAG_from_GO_db("BP", 
-    relations = NULL, org_db = "org.Hs.eg.db")
-}
+dag
 }

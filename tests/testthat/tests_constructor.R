@@ -6,7 +6,7 @@ test_that("test cyclic_node", {
 	children = c("b", "c", "d", "b")
 	expect_error(
 		create_ontology_DAG(parents, children),
-		"find a cyclic"
+		"Found cyclic nodes"
 	)
 
 	parents = c("a", "b", "c", "g", "h")

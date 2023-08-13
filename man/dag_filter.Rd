@@ -29,6 +29,8 @@ these with their offspring terms will be kept. If there are multiple root terms,
 a super root will be automatically added.}
 
 \item{leaves}{A vector of leaf terms. Only these with their ancestor terms will be kept.}
+
+\item{mcols_filter}{Filtering on columns in the meta data frame.}
 }
 \value{
 An \code{ontology_DAG} object.
@@ -49,7 +51,7 @@ dag_filter(dag, root = "b")
 dag_filter(dag, leaves = c("c", "b"))
 dag_filter(dag, root = "b", leaves = "e")
 
-\dontrun{
+\donttest{
 dag = create_ontology_DAG_from_GO_db()
 dag_filter(dag, relations = "isa")
 }

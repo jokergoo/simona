@@ -31,7 +31,6 @@ term_to_node_id = function(dag, term, strict = TRUE) {
 }
 
 
-#' @importFrom utils getFromNamespace install.packages
 #' @importFrom GetoptLong qq
 check_pkg = function(pkg, bioc = FALSE, github = NULL) {
 	if(requireNamespace(pkg, quietly = TRUE)) {
@@ -41,54 +40,6 @@ check_pkg = function(pkg, bioc = FALSE, github = NULL) {
 		if(!interactive()) {
 			if(bioc) {
 				stop_wrap(qq("You need to manually install package '@{pkg}' from Bioconductor."))
-			} else {
-				stop_wrap(qq("You need to manually install package '@{pkg}' from CRAN."))
-			}
-		}
-
-		if(bioc) {
-			answer = readline(qq("Package '@{pkg}' is required but not installed. Do you want to install it from Bioconductor? [y|n] "))
-		} else {
-			answer = readline(qq("Package '@{pkg}' is required but not installed. Do you want to install it from CRAN? [y|n] "))
-		}
-
-		if(bioc) {
-			if(tolower(answer) %in% c("y", "yes")) {
-				if(!requireNamespace("BiocManager", quietly = TRUE)) {
-					install.packages("BiocManager")
-				}
-				suppressWarnings(BiocManager::install(pkg, update = FALSE))
-
-				if(!requireNamespace(pkg, quietly = TRUE)) {
-					if(is.null(github)) {
-						stop_wrap(qq("Cannot find '@{pkg}' from Bioconductor."))
-					} else {
-						answer = readline(qq("Not on Bioconductor. Install '@{pkg}' from GitHub: '@{github}/@{pkg}'? [y|n] "))
-						if(tolower(answer) %in% c("y", "yes")) {
-							BiocManager::install(paste0(github, "/", pkg), update = FALSE)
-						} else {
-							stop_wrap(qq("You need to manually install package '@{pkg}' from CRAN."))
-						}
-					}
-				}
-			} else {
-				stop_wrap(qq("You need to manually install package '@{pkg}' from Bioconductor."))
-			}
-		} else {
-			if(tolower(answer) %in% c("y", "yes")) {
-				suppressWarnings(install.packages(pkg))
-				if(!requireNamespace(pkg, quietly = TRUE)) {
-					if(is.null(github)) {
-						stop_wrap(qq("Cannot find '@{pkg}' from CRAN"))
-					} else {
-						answer = readline(qq("Not on CRAN. Install '@{pkg}' from GitHub: '@{github}/@{pkg}'? [y|n] "))
-						if(tolower(answer) %in% c("y", "yes")) {
-							BiocManager::install(paste0(github, "/", pkg), update = FALSE)
-						} else {
-							stop_wrap(qq("You need to manually install package '@{pkg}' from CRAN."))
-						}
-					}
-				}
 			} else {
 				stop_wrap(qq("You need to manually install package '@{pkg}' from CRAN."))
 			}

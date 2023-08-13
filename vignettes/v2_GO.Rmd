@@ -54,13 +54,13 @@ create_ontology_DAG_from_GO_db("BP", relations = c("part of", "regulates"))  # "
 if you only want to include "is_a" relation, you can assign an empty vector to
 `relations`:
 
-```r
+```
 create_ontology_DAG_from_GO_db("BP", relations = character(0)) # or NULL, NA
 ```
 
 Or you can apply `dag_filter()` after DAG is generated.
 
-```r
+```
 dag = create_ontology_DAG_from_GO_db("BP")
 dag_filter(dag, relations = "is_a")
 ```
@@ -80,7 +80,7 @@ For standard organism packages on Biocoductor, the `OrgDb` object always has
 the same name as the package, so the name of the organism package can also be
 set to `org_db`:
 
-```r
+```
 create_ontology_DAG_from_GO_db("BP", org_db = "org.Hs.eg.db")
 ```
 
@@ -88,7 +88,7 @@ Similarly, if the analysis is applied on mouse, the mouse organism package can
 be set to `org_db`. If the mouse organism package is not installed yet, it
 will be installed automatically.
 
-```r
+```
 create_ontology_DAG_from_GO_db("BP", org_db = "org.Mm.eg.db")
 ```
 

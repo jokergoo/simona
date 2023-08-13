@@ -29,6 +29,10 @@
 #' 
 #' @export ontology_DAG
 #' @exportClass ontology_DAG
+#' @returns An `ontology_DAG` object.
+#' @examples
+#' 1
+#' # This function should not be used directly.
 ontology_DAG = setClass("ontology_DAG",
 	slots = c("terms" = "character",
 		      "n_terms" = "integer",
@@ -146,7 +150,13 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 	}
 	
 	if(length(root) > 1) {
-		txt = strwrap(paste(terms[root], collapse = ", "), width = 80)
+		if(length(root) > 5) {
+			txt = strwrap(paste(terms[root][1:5], collapse = ", "), width = 80)
+			txt[length(txt)] = paste0(txt[length(txt)], ",")
+			txt = c(txt, qq("  and other @{length(root)-5} terms ..."))
+		} else {
+			txt = strwrap(paste(terms[root], collapse = ", "), width = 80)
+		}
 		txt = paste(paste0("  ", txt), collapse = "\n")
 		message("There are more than one root:\n", txt, "\n  A super root (_all_) is added.")
 		
@@ -295,6 +305,7 @@ print_cyclic_paths = function(cyclic_paths, terms) {
 #' Print the ontology_DAG object
 #' 
 #' @param object An `ontology_DAG` object.
+#' @returns No value is returned.
 #' @exportMethod show
 setMethod("show",
 	signature = "ontology_DAG",
@@ -371,11 +382,8 @@ setMethod("show",
 #' @return An `ontology_DAG` object.
 #' @export
 #' @examples
-#' \dontrun{
 #' dag = create_ontology_DAG_from_GO_db()
-#' dag = create_ontology_DAG_from_GO_db("BP", 
-#'     relations = NULL, org_db = "org.Hs.eg.db")
-#' }
+#' dag
 create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = "part of", org_db = NULL) {
 
 	check_pkg("GO.db", bioc = TRUE)
@@ -617,6 +625,7 @@ dag_as_igraph = function(dag) {
 #'             these with their offspring terms will be kept. If there are multiple root terms, 
 #'             a super root will be automatically added.
 #' @param leaves A vector of leaf terms. Only these with their ancestor terms will be kept.
+#' @param mcols_filter Filtering on columns in the meta data frame.
 #' 
 #' @details If the DAG is reduced into several disconnected parts after the filtering, a
 #'          super root is automatically added.
@@ -632,7 +641,7 @@ dag_as_igraph = function(dag) {
 #' dag_filter(dag, leaves = c("c", "b"))
 #' dag_filter(dag, root = "b", leaves = "e")
 #' 
-#' \dontrun{
+#' \donttest{
 #' dag = create_ontology_DAG_from_GO_db()
 #' dag_filter(dag, relations = "isa")
 #' }
@@ -701,9 +710,11 @@ dag_filter = function(dag, terms = NULL, relations = NULL, root = NULL, leaves =
 	df = mcols(dag)
 	if(!is.null(df)) {
 		l2 = eval(substitute(mcols_filter), envir = df)
-		l2[is.na(l2)] = FALSE
 		if(!is.null(l2)) {
-			l = l & l2
+			l2[is.na(l2)] = FALSE
+			if(!is.null(l2)) {
+				l = l & l2
+			}
 		}
 	}
 
@@ -734,13 +745,15 @@ dag_filter = function(dag, terms = NULL, relations = NULL, root = NULL, leaves =
 }
 
 
-#' Get meta columns on DAG
+#' Get or set meta columns on DAG
 #' 
 #' @param x An `ontology_DAG` object.
 #' @param use.names Please ignore.
 #' @param ... Other argument. For `mcols()`, it can be a vector of column names in the meta data frame.
 #' @exportMethod mcols
 #' @importMethodsFrom S4Vectors mcols
+#' @rdname mcols_ontology_DAG
+#' @returns A data frame.
 setMethod("mcols", 
 	signature = "ontology_DAG",
 	definition = function(x, use.names = TRUE, ...) {
@@ -753,13 +766,12 @@ setMethod("mcols",
 })
 
 
-#' Set meta columns on DAG
-#' 
 #' @param x An `ontology_DAG` object.
 #' @param ... Other argument. For `mcols()`, it can be a vector of column names in the meta data frame.
 #' @param value A data frame or a matrix where rows should correspond to terms in `x@terms`.
 #' @exportMethod 'mcols<-'
 #' @importMethodsFrom S4Vectors 'mcols<-'
+#' @rdname mcols_ontology_DAG
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
 #' children = c("b", "c", "c", "d", "e", "f")

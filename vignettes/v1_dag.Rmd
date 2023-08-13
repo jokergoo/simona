@@ -145,7 +145,7 @@ of terms.
 where `root` is a single root term and `leaves` is a vector of all leaf terms
 in the DAG.
 
-```r
+```
 dag_longest_dist_to_offspring(dag, from)
 dag_shortest_dist_to_offspring(dag, from)
 dag_longest_dist_from_ancestors(dag, to)
@@ -166,7 +166,7 @@ $D_{sp}(x, y)$ is the shortest distance between $x$ and $y$. In this way,
 common ancestor $t$ which returns the minimal distance between $a$ and $b$ is
 called the "nearest common ancestor (NCA)" of $a$ and $b$.
 
-```r
+```
 shortest_distances_via_NCA(dag, terms)
 ```
 
@@ -182,14 +182,14 @@ $$ t = \operatorname*{argmin}_{t \in \mathrm{CA}(a, b)} \delta(t)$$
 
 where $\delta(t)$ is the depth (maximal distance from root) of term $t$.
 
-```r
+```
 longest_distances_via_LCA(dag, terms)
 ```
 
 The next two functions treat the DAG relations as directional. There is a
 positive distance value only if a term is an ancestor of the other.
 
-```r
+```
 shortest_distances_directed(dag, terms)
 longest_distances_directed(dag, terms)
 ```
@@ -357,7 +357,7 @@ dag["b"]
 Two indicies can be provided in the brackets where the first one corresponds
 to root terms and the second one corresponds to leaf terms:
 
-```r
+<pre>
 # the same as dag["b"], a sub-DAG where b is the root
 dag["b", ]
 
@@ -366,13 +366,13 @@ dag["b", "e"]
 
 # a sub-DAG that contains all e's ancestors and e itself
 dag[, "e"]  
-```
+</pre>
 
 With the more general function `dag_filter()`, you can obtain a sub-DAG by providing
 a group of terms, a subset of relations, a group of root terms or a leaf terms. Note
 if there are multiple root after the fitlering, a pseudo node will be automatically added.
 
-```r
+```
 dag_filter(dag, terms, relations, root, leaves)
 ```
 

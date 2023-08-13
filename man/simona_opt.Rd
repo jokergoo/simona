@@ -17,6 +17,9 @@ simona_opt(..., RESET = FALSE, READ.ONLY = NULL, LOCAL = FALSE, ADD = FALSE)
 
 \item{ADD}{Add new options.}
 }
+\value{
+A single option value.
+}
 \description{
 Global options
 }

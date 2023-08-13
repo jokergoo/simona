@@ -13,9 +13,9 @@
 #' 
 #' In this way, depths of all terms in the orignal DAG are still identical to the depths in the tree (see the Examples section).
 #' 
+#' @returns An `ontology_DAG` object.
 #' @export
 #' @examples
-#' \dontrun{
 #' dag = create_ontology_DAG_from_GO_db()
 #' tree = dag_treelize(dag)
 #' d1 = dag_depth(dag)
@@ -24,7 +24,6 @@
 #' 
 #' dend = dag_as_dendrogram(tree)
 #' dend
-#' }
 dag_treelize = function(dag) {
 
 	if(dag_is_tree(dag)) {

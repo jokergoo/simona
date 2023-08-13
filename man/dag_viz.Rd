@@ -91,6 +91,9 @@ multiple lines if the widths exceed it.}
 
 \item{...}{Pass to \code{\link[DiagrammeR:grViz]{DiagrammeR::grViz()}}.}
 }
+\value{
+\code{dag_as_DOT()} returns a vector of DOT code.
+}
 \description{
 Visualize the DAG
 }
@@ -103,10 +106,11 @@ uses a hierarchical layout for visualizing small DAGs.
 \code{dag_graphviz()} visualizes the DAG with the \strong{DiagrammeR} package.
 }
 \examples{
-\dontrun{
+\donttest{
 dag = create_ontology_DAG_from_GO_db()
 dag_circular_viz(dag)
 }
+1
 }
 \seealso{
 http://magjac.com/graphviz-visual-editor/ is nice place to try the DOT code.

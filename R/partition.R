@@ -19,14 +19,16 @@
 #' `NA` is assigned to the `from` terms, their ancestor terms, and terms having infinite directed distance to `from` terms.
 #' 
 #' @export
+#' @returns A character vector of top terms in each partition.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' dag = create_ontology_DAG_from_GO_db()
 #' pa = partition_by_level(dag)
 #' table(pa)
 #' pa = partition_by_k(dag, k = 1000)
 #' table(pa)
 #' }
+#' 1
 partition_by_level = function(dag, level = 0, from = NULL, term_pos = NULL) {
 
 	if(is.null(from)) {
@@ -54,7 +56,7 @@ partition_by_level = function(dag, level = 0, from = NULL, term_pos = NULL) {
 		               right = term_pos[from, "theta"] + term_pos[from, "width"]/2)
 
 	partition = rep(NA_character_, dag@n_terms)
-	all_offspring = setdiff(1:dag@n_terms, dag_ancestors(dag, from, in_labels = FALSE))
+	all_offspring = setdiff(seq_len(dag@n_terms), dag_ancestors(dag, from, in_labels = FALSE))
 	l_offspring = rep(FALSE, dag@n_terms)
 	l_offspring[all_offspring] =  TRUE
 	for(i in seq_along(from)) {

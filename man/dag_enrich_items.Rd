@@ -13,14 +13,15 @@ dag_enrich_items(dag, items)
 }
 \value{
 A data frame with the following columns:
-
--\code{term}: Term names.
--\code{n_hits}: Number of items in \code{items} intersecting to \code{t}'s annotated items.
--\code{n_anno}: Number of annotated items of \code{t}.
--\code{n_items}: Number of items in \code{items} intersecting to all annotated items in the DAG.
--\code{n_all}: Number of all annotated items in the DAG.
--\code{p_value}: P-values from hypergeometric test.
--\code{p_adjust}: Adjusted p-values from the BH method.
+\itemize{
+\item \code{term}: Term names.
+\item \code{n_hits}: Number of items in \code{items} intersecting to \code{t}'s annotated items.
+\item \code{n_anno}: Number of annotated items of \code{t}.
+\item \code{n_items}: Number of items in \code{items} intersecting to all annotated items in the DAG.
+\item \code{n_all}: Number of all annotated items in the DAG.
+\item \code{p_value}: P-values from hypergeometric test.
+\item \code{p_adjust}: Adjusted p-values from the BH method.
+}
 
 The number of rows in the data frame is the same as the number of terms in the DAG.
 }
@@ -49,4 +50,5 @@ dag = create_ontology_DAG_from_GO_db(org_db = "org.Hs.eg.db")
 items = random_items(dag, 1000)
 df = dag_enrich_items(dag, items)
 }
+1
 }

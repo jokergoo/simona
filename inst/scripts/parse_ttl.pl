@@ -1,6 +1,7 @@
 use strict;
 
-my $file = $ARGV[0];
+my $file = shift(@ARGV);
+my @relation_types = @ARGV;
 if($file =~/\.gz$/) {
 	open FILE, "gzip -d -c $file |" or die "cannot open $file.";
 } else {
@@ -19,7 +20,7 @@ while(my $line = <FILE>) {
 	if($line =~/^\s*$/) {
 		next;
 	} else {
-		if($line =~/owl:Class/) {
+		if($line =~/owl:Class/ and $line !~/\/STY\//) {
 			$line =~/<(.*?)>/;
 			$id = $1;
 			$section->{$id} = {};
@@ -44,12 +45,31 @@ while(my $line = <FILE>) {
 					$section->{$id}->{definition} = $1;
 					$section->{$id}->{definition} =~s/"/``/g;
 				}
-				if($line =~/rdfs:subClassOf/) {
-					$line =~/<(.*?)>/;
-					if(!defined($section->{$id}->{subClassOf})) {
-						$section->{$id}->{subClassOf} = $1;
+				if($line =~/rdfs:subClassOf/ or $line =~/\/is_?a/i) {
+					$line =~/<([^<]*?)> ;/;
+					if(!defined($section->{$id}->{parent})) {
+						$section->{$id}->{parent} = {};
+						$section->{$id}->{parent}->{$1} = 1;
+						$section->{$id}->{relation_type} = {};
+						$section->{$id}->{relation_type}->{$1} = "is_a";
+
 					} else {
-						$section->{$id}->{subClassOf} .= ",$1";
+						$section->{$id}->{parent}->{$1} = 1;
+						$section->{$id}->{relation_type}->{$1} = "is_a";
+					}
+				}
+				foreach my $type (@relation_types) {
+					if($line =~/\/$type/i) {
+						$line =~/<([^<]*?)> ;/;
+						if(!defined($section->{$id}->{parent})) {
+							$section->{$id}->{parent} = {};
+							$section->{$id}->{parent}->{$1} = 1;
+							$section->{$id}->{relation_type} = {};
+							$section->{$id}->{relation_type}->{$1} = $type;
+						} else {
+							$section->{$id}->{parent}->{$1} = 1;
+							$section->{$id}->{relation_type}->{$1} = $type;
+						}
 					}
 				}
 
@@ -71,9 +91,9 @@ if($i_record == 0) {
 	die "cannot find any object of 'owl:Class'.";
 }
 
-print "\"id\",\"prefLabel\",\"notation\",\"definition\",\"subClassOf\"\n";
+print "\"id\",\"prefLabel\",\"notation\",\"definition\",\"parent\",\"relation_type\"\n";
 
-foreach $id (keys %$section) {
+foreach $id (sort keys %$section) {
 	print "\"$id\"";
 	if(!defined($section->{$id}->{prefLabel})) {
 		print ",\"\"";
@@ -90,10 +110,15 @@ foreach $id (keys %$section) {
 	} else {
 		print ",\"$section->{$id}->{definition}\"";
 	}
-	if(!defined($section->{$id}->{subClassOf})) {
+	if(!defined($section->{$id}->{parent})) {
 		print ",\"\"";
 	} else {
-		print ",\"$section->{$id}->{subClassOf}\"";
+		print ",\"".join(",", keys %{$section->{$id}->{relation_type}})."\"";
+	}
+	if(!defined($section->{$id}->{relation_type})) {
+		print ",\"\"";
+	} else {
+		print ",\"".join(",", values %{$section->{$id}->{relation_type}})."\"";
 	}
 	print "\n";
 }

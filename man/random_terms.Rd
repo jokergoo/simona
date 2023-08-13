@@ -14,6 +14,9 @@ random_items(dag, n)
 
 \item{n}{Number of terms or items.}
 }
+\value{
+A character vector of terms or items.
+}
 \description{
 Randomly sample terms/items
 }

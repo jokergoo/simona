@@ -15,14 +15,15 @@ dag_enrich_terms_by_permutation(dag, value, n = 1000)
 }
 \value{
 A data frame with the following columns:
-
--\code{term}: Term names.
--\code{stats}: The statistics of terms.
--\code{n_offspring}: Number of offspring terms of \code{t} (including \code{t} itself).
--\code{z_score}: Defined as \code{(s - mean)/sd} where \code{mean} and \code{sd} are calculated from random permutation.
--\code{log2_fold_enrichment}: defined as \code{log2(s/mean)} where \code{mean} is calculated from random permutation.
--\code{p_value}: P-values from permutation test.
--\code{p_adjust}: Adjusted p-values from the BH method.
+\itemize{
+\item \code{term}: Term names.
+\item \code{stats}: The statistics of terms.
+\item \code{n_offspring}: Number of offspring terms of \code{t} (including \code{t} itself).
+\item \code{z_score}: Defined as \code{(s - mean)/sd} where \code{mean} and \code{sd} are calculated from random permutation.
+\item \code{log2_fold_enrichment}: defined as \code{log2(s/mean)} where \code{mean} is calculated from random permutation.
+\item \code{p_value}: P-values from permutation test.
+\item \code{p_adjust}: Adjusted p-values from the BH method.
+}
 
 The number of rows in the data frame is the same as the number of terms in the DAG.
 }
@@ -53,4 +54,5 @@ dag = create_ontology_DAG_from_GO_db()
 value = runif(dag_n_terms(dag))
 df = dag_enrich_terms_by_permutation(dag, value)
 }
+1
 }

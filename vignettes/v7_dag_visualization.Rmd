@@ -13,9 +13,10 @@ vignette: >
 knitr::knit_hooks$set(pngquant = knitr::hook_pngquant)
 
 knitr::opts_chunk$set(
+  message = FALSE,
   dev = "ragg_png",
   fig.align = "center",
-  pngquant = "--speed=10 --quality=30"
+  pngquant = "--speed=10 --quality=20"
 )
 ```
 

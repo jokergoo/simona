@@ -46,10 +46,11 @@ calc_n_neighbours_on_circle = function(theta, width = 1) {
 #' @rdname dag_viz
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' dag = create_ontology_DAG_from_GO_db()
 #' dag_circular_viz(dag)
 #' }
+#' 1
 dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 	reorder_level = NA, partition_level = 1,
 	node_col = NULL, node_transparency = 0.5, node_size = NULL, 
@@ -294,6 +295,8 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 #' @details `dag_as_DOT()` generates the DOT code of the DAG.
 #' @importFrom circlize rand_color
 #' @export
+#' @returns
+#' `dag_as_DOT()` returns a vector of DOT code.
 #' @rdname dag_viz
 dag_as_DOT = function(dag, color = "black", style = "solid",
 	fontcolor = "black", fontsize = 10, shape = "box",
