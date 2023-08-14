@@ -75,7 +75,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -96,9 +96,9 @@
       <h1 data-toc-skip>Similarity between two groups of terms</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2023-08-04</h4>
+            <h4 data-toc-skip class="date">2023-08-14</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/vignettes/v6_group_similarity.Rmd" class="external-link"><code>vignettes/v6_group_similarity.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/vignettes/v6_group_similarity.Rmd" class="external-link"><code>vignettes/v6_group_similarity.Rmd</code></a></small>
       <div class="hidden name"><code>v6_group_similarity.Rmd</code></div>
 
     </div>
@@ -111,12 +111,14 @@
    T_q = \{ b_1, b_2, ... \} \]</span></p>
 <p>where <span class="math inline">\(a_i\)</span> is a term in set <span class="math inline">\(T_p\)</span> and <span class="math inline">\(b_j\)</span> is a term in set <span class="math inline">\(T_q\)</span>.</p>
 <p>The wrapper function <code><a href="../reference/group_sim.html">group_sim()</a></code> calculates semantic similarities between two groups of terms with a specific method. Note the method name can be partially matched.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="va">...</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+group_sim(dag, group1, group2, method = ..., control = list(...))
+</pre>
 <p>Some of the group similarity methods have no assumption of which similarity measure between single terms to use. If there are annotation already provided in the DAG object, by default <em>Sim_Lin_1998</em> is used, or else <em>Sim_WP_1994</em> is used. The term similarity method can be set via the <code>term_sim_method</code> parameter in <code>control</code>. Additionally parameters for a specific <code>term_sim_method</code> can also be set in <code>control</code>.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="va">...</span>, </span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>term_sim_method <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+group_sim(dag, group1, group2, method = ..., 
+    control = list(term_sim_method = ...))
+</pre>
 <div class="section level2">
 <h2 id="pairwise-term-similarity-based-methods">Pairwise term similarity-based methods<a class="anchor" aria-label="anchor" href="#pairwise-term-similarity-based-methods"></a>
 </h2>
@@ -125,18 +127,20 @@
 </h3>
 <p>Denote <span class="math inline">\(S(a, b)\)</span> as the semantic similarity between term <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> where <span class="math inline">\(a\)</span> is from group <span class="math inline">\(p\)</span> and <span class="math inline">\(b\)</span> is from group <span class="math inline">\(q\)</span>, The similarity between group <span class="math inline">\(p\)</span> and group <span class="math inline">\(q\)</span> is the average similarity of every pair of individual terms in the two groups:</p>
 <p><span class="math display">\[ \mathrm{GroupSim}(p, q) = \frac{1}{|T_p|*|T_q|} \sum_{a \in T_p, b \in T_q}S(a, b) \]</span></p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_pairwise_avg"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>term_sim_method <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_avg",
+    control = list(term_sim_method = ...))
+</pre>
 </div>
 <div class="section level3">
 <h3 id="groupsim_pairwise_max">GroupSim_pairwise_max<a class="anchor" aria-label="anchor" href="#groupsim_pairwise_max"></a>
 </h3>
 <p>The similarity is defined as the maximal <span class="math inline">\(S(a, b)\)</span> among all pairs of terms in group <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span>:</p>
 <p><span class="math display">\[ \mathrm{GroupSim}(p, q) = \max_{a \in T_p, b \in T_q}S(a, b) \]</span></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_pairwise_max"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>term_sim_method <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_max",
+    control = list(term_sim_method = ...))
+</pre>
 </div>
 <div class="section level3">
 <h3 id="groupsim_pairwise_bma">GroupSim_pairwise_BMA<a class="anchor" aria-label="anchor" href="#groupsim_pairwise_bma"></a>
@@ -145,28 +149,31 @@
 <p><span class="math display">\[ S(x, T) = \max_{y \in T} S(x, y) \]</span></p>
 <p>which corresponds to the most similar term in <span class="math inline">\(T\)</span> to <span class="math inline">\(x\)</span>. Then the BMA similarity is calculated as:</p>
 <p><span class="math display">\[ \mathrm{GroupSim}(p, q) = \frac{1}{2}\left( \frac{1}{|T_p|}\sum_{a \in T_p} S(a, T_q) + \frac{1}{|T_q|}\sum_{b \in T_q} S(b, T_p) \right) \]</span></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_pairwise_BMA"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>term_sim_method <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_BMA",
+    control = list(term_sim_method = ...))
+</pre>
 </div>
 <div class="section level3">
 <h3 id="groupsim_pairwise_bmm">GroupSim_pairwise_BMM<a class="anchor" aria-label="anchor" href="#groupsim_pairwise_bmm"></a>
 </h3>
 <p>BMM stands for “best-match max”. It is defined as:</p>
 <p><span class="math display">\[ \mathrm{GroupSim}(p, q) = \max \left \{ \frac{1}{|T_p|}\sum_{a \in T_p} S(a, T_q), \frac{1}{|T_q|}\sum_{b \in T_q} S(b, T_p) \right \} \]</span></p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_pairwise_BMM"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>term_sim_method <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Paper link: <a href="https://doi.org/10.1093/bioinformatics/btq064/" class="external-link uri">https://doi.org/10.1093/bioinformatics/btq064/</a>.</p>
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_BMM",
+    control = list(term_sim_method = ...))
+</pre>
+<p>Paper link: <a href="https://doi.org/10.1093/bioinformatics/btq064" class="external-link uri">https://doi.org/10.1093/bioinformatics/btq064</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="groupsim_pairwise_abm">GroupSim_pairwise_ABM<a class="anchor" aria-label="anchor" href="#groupsim_pairwise_abm"></a>
 </h3>
 <p>ABM stands for “average best-match”. It is defined as:</p>
 <p><span class="math display">\[ \mathrm{GroupSim}(p, q) = \frac{1}{|T_q| + |T_q|} \left( \sum_{a \in T_p} S(a, T_q) + \sum_{b \in T_q} S(b, T_p) \right)  \]</span></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_pairwise_ABM"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>term_sim_method <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_ABM",
+    control = list(term_sim_method = ...))
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1186/1471-2105-14-284" class="external-link uri">https://doi.org/10.1186/1471-2105-14-284</a>.</p>
 </div>
 <div class="section level3">
@@ -178,9 +185,10 @@
 <p><span class="math display">\[ \mathrm{HDF}(p, q) = \max \left\{ \max_{a \in T_p} D(a, T_q), \max_{b \in T_q} D(b, T_q) \right\} \]</span></p>
 <p>This final similarity is:</p>
 <p><span class="math display">\[ \mathrm{GroupSim}(p, q) = 1 - \mathrm{HDF}(p, q) \]</span></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_pairwise_HDF"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>term_sim_method <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_HDF",
+    control = list(term_sim_method = ...))
+</pre>
 </div>
 <div class="section level3">
 <h3 id="groupsim_pairwise_mhdf">GroupSim_pairwise_MHDF<a class="anchor" aria-label="anchor" href="#groupsim_pairwise_mhdf"></a>
@@ -189,9 +197,10 @@
 <p><span class="math display">\[ \mathrm{MHDF}(p, q) = \max \left\{ \frac{1}{|T_p|} \sum_{a \in T_p} D(a, T_q), \frac{1}{|T_q|} \sum_{b \in T_q} D(b, T_q) \right\} \]</span></p>
 <p>This final similarity is:</p>
 <p><span class="math display">\[ \mathrm{GroupSim}(p, q) = 1 - \mathrm{MHDF}(p, q) \]</span></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_pairwise_MHDF"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>term_sim_method <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_MHDF",
+    control = list(term_sim_method = ...))
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1109/ICPR.1994.576361" class="external-link uri">https://doi.org/10.1109/ICPR.1994.576361</a>.</p>
 </div>
 <div class="section level3">
@@ -201,19 +210,21 @@
 <p><span class="math display">\[ \mathrm{VHDF}(p, q) = \frac{1}{2} \left( \sqrt{\frac{1}{|T_p|} \sum_{a \in T_p} D^2(a, T_q)} + \sqrt{\frac{1}{|T_q|} \sum_{b \in T_q} D^2(b, T_q)} \right) \]</span></p>
 <p>This final similarity is:</p>
 <p><span class="math display">\[ \mathrm{GroupSim}(p, q) = 1 - \mathrm{VHDF}(p, q) \]</span></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_pairwise_VHDF"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>term_sim_method <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Paper link: <a href="https://doi.org/10.1073/pnas.070296510" class="external-link uri">https://doi.org/10.1073/pnas.070296510</a>.</p>
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_VHDF",
+    control = list(term_sim_method = ...))
+</pre>
+<p>Paper link: <a href="https://doi.org/10.1073/pnas.0702965104" class="external-link uri">https://doi.org/10.1073/pnas.0702965104</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="groupsim_pairwise_froehlich_2007">GroupSim_pairwise_Froehlich_2007<a class="anchor" aria-label="anchor" href="#groupsim_pairwise_froehlich_2007"></a>
 </h3>
 <p>The similarity is:</p>
 <p><span class="math display">\[ \mathrm{GroupSim}(p, q) = \exp(-\mathrm{HDF}(p, q)) \]</span></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_pairwise_Froehlich_2007"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>term_sim_method <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_Froehlich_2007",
+    control = list(term_sim_method = ...))
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1186/1471-2105-8-166" class="external-link uri">https://doi.org/10.1186/1471-2105-8-166</a>.</p>
 </div>
 <div class="section level3">
@@ -221,9 +232,10 @@
 </h3>
 <p>Similar to VHDF, but it directly uses the similarity:</p>
 <p><span class="math display">\[ \mathrm{GroupSim}(p, q) = \frac{1}{2} \left( \sqrt{\frac{1}{|T_p|} \sum_{a \in T_p} S^2(a, T_q)} + \sqrt{\frac{1}{|T_q|} \sum_{b \in T_q} S^2(b, T_q)} \right) \]</span></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_pairwise_Joeng_2014"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>term_sim_method <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_Joeng_2014",
+    control = list(term_sim_method = ...))
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1109/tcbb.2014.2343963" class="external-link uri">https://doi.org/10.1109/tcbb.2014.2343963</a>.</p>
 </div>
 </div>
@@ -238,19 +250,23 @@
 <p>Or use the longest distance between two terms:</p>
 <p><span class="math display">\[ \mathrm{GroupSim}(p, q) = \exp\left(-\frac{1}{|T_p|*|T_q|} \sum_{a \in T_p, b \in T_q} \mathrm{len}(a, b)\right) \]</span></p>
 <p>There is a parameter distance which takes value of <code>"longest_distances_via_LCA"</code> (the default) or <code>"shortest_distances_via_NCA"</code>:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_SimALN"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>distance <span class="op">=</span> <span class="st">"shortest_distances_via_NCA"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_SimALN",
+    control = list(distance = "shortest_distances_via_NCA"))
+</pre>
+<p>Paper link: <a href="https://doi.org/10.1109/CBMS.2008.27" class="external-link uri">https://doi.org/10.1109/CBMS.2008.27</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="groupsim_simint">GroupSim_SimINT<a class="anchor" aria-label="anchor" href="#groupsim_simint"></a>
 </h3>
 <p>To be added.</p>
+<p>Paper link: <a href="https://doi.org/10.1186/1471-2105-11-588" class="external-link uri">https://doi.org/10.1186/1471-2105-11-588</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="groupsim_spgk">GroupSim_spgk<a class="anchor" aria-label="anchor" href="#groupsim_spgk"></a>
 </h3>
 <p>To be added.</p>
+<p>Paper link: <a href="https://doi.org/10.1093/bioinformatics/bti1007" class="external-link uri">https://doi.org/10.1093/bioinformatics/bti1007</a>.</p>
 </div>
 </div>
 <div class="section level2">
@@ -280,23 +296,20 @@
 \end{align*}
 \]</span></p>
 <p>IC method can be set via the <code>control</code> argument. By default if there is annotation associated, <em>IC_annotation</em> is used, or else <em>IC_offspring</em> is used.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_SimGIC"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>IC_method <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_SimGIC",
+    control = list(IC_method = ...))
+</pre>
 </div>
 <div class="section level3">
 <h3 id="groupsim_simcou">GroupSim_SimCOU<a class="anchor" aria-label="anchor" href="#groupsim_simcou"></a>
 </h3>
-<p>It is based on the dot product of two vectors p and q which correspond to terms in group1 and group2. p and q have the same length as the total number of terms. Value of position i in p or q corresponds to term t. The value takes IC(t) if t is an ancestor of any term in p or q, and the value takes zero if t is not. The similarity betweem group1 terms and group2 terms is calculated as:</p>
-<p>&lt;p,q&gt;/||p||/||q|| where &lt;p,q&gt; is the dot product between the two, and ||p|| or ||q|| is the norm of the vector. The equation can be written as:</p>
-<p>group_sim = sum_{x in intersect(A, B)}(IC(x)^2) / sqrt(sum_{x in A}(IC(x)^2)) / sqrt(sum_{x in B}(IC(x)^2)) IC method can be set via control = list(IC_method = …).</p>
+<p>To be added.</p>
 </div>
 <div class="section level3">
 <h3 id="groupsim_simcot">GroupSim_SimCOT<a class="anchor" aria-label="anchor" href="#groupsim_simcot"></a>
 </h3>
-<p>Similar as GroupSim_SimCOU, the similarity is:</p>
-<p>&lt;p,q&gt;/(||p||^2 + ||q||^2 - &lt;p,q&gt;) And it can be rewritten as:</p>
-<p>group_sim = sum_{x in intersect(A, B)}(IC(x)^2) / (sum_{x in A}(IC(x)^2) + sum_{x in B}(IC(x)^2) - sum_{x in intersect(A, B)}(IC(x)^2)) IC method can be set via control = list(IC_method = …).</p>
+<p>To be added.</p>
 </div>
 </div>
 <div class="section level2">
@@ -307,8 +320,10 @@
 </h3>
 <p>It is the largest depth of terms in <span class="math inline">\(\mathcal{A}_p \cap \mathcal{A}_q\)</span>.</p>
 <p><span class="math display">\[ \mathrm{GroupSim}(p, q) = \max\{\delta(t): t \in \mathcal{A}_p \cap \mathcal{A}_q\} \]</span></p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_SimLP"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_SimLP")
+</pre>
+<p>Link: <a href="https://bioconductor.org/packages/release/bioc/vignettes/GOstats/inst/doc/GOvis.html#go-induced-distances" class="external-link uri">https://bioconductor.org/packages/release/bioc/vignettes/GOstats/inst/doc/GOvis.html#go-induced-distances</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="groupsim_ye_2005">GroupSim_Ye_2005<a class="anchor" aria-label="anchor" href="#groupsim_ye_2005"></a>
@@ -321,8 +336,10 @@
 \end{align*}
 \]</span></p>
 <p>Since the minimal depth is zero for root.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_Ye_2005"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_Ye_2005")
+</pre>
+<p>Paper link: <a href="https://doi.org/10.1038/msb4100034" class="external-link uri">https://doi.org/10.1038/msb4100034</a>.</p>
 </div>
 </div>
 <div class="section level2">
@@ -341,36 +358,39 @@
 <p><span class="math display">\[
 \mathrm{GroupSim}(p, q) = \frac{\max\limits_{x \in T_p \cup T_q}\mathrm{IC}(x)}{\mathrm{IC}_\mathrm{max}}
 \]</span></p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_SimCHO"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_SimCHO")
+</pre>
 </div>
 <div class="section level3">
 <h3 id="groupsim_simald">GroupSim_SimALD<a class="anchor" aria-label="anchor" href="#groupsim_simald"></a>
 </h3>
 <p>The similarity is calculated as:</p>
 <p><span class="math display">\[ \mathrm{GroupSim}(p, q) = \max\left\{ 1 - \frac{\sigma(x)}{C_\mathrm{max}}: x \in T_p \cap T_q \right\} \]</span></p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_SimALD"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_SimALD")
+</pre>
 </div>
 </div>
 <div class="section level2">
 <h2 id="set-based-methods">Set-based methods<a class="anchor" aria-label="anchor" href="#set-based-methods"></a>
 </h2>
 <p>Since <span class="math inline">\(T_p\)</span> and <span class="math inline">\(T_q\)</span> are two sets, the Kappa coeffcient, Jaccard coeffcient, Dice coeffcient and overlap coeffcient can be naturally used.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_Jaccard"</span>, </span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>universe <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_Dice"</span>, </span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>universe <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_Overlap"</span>, </span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>universe <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/group_sim.html">group_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, method <span class="op">=</span> <span class="st">"GroupSim_Kappa"</span>, </span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>universe <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_Jaccard", 
+    control = list(universe = ...))
+group_sim(dag, group1, group2, method = "GroupSim_Dice", 
+    control = list(universe = ...))
+group_sim(dag, group1, group2, method = "GroupSim_Overlap", 
+    control = list(universe = ...))
+group_sim(dag, group1, group2, method = "GroupSim_Kappa", 
+    control = list(universe = ...))
+</pre>
 </div>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.2.0 (2022-04-22)</span></span>
 <span><span class="co">## Platform: x86_64-apple-darwin17.0 (64-bit)</span></span>

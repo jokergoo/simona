@@ -54,7 +54,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -69,7 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>The ontology_DAG class</h1>
-    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/R/constructor.R" class="external-link"><code>R/constructor.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/R/constructor.R" class="external-link"><code>R/constructor.R</code></a></small>
     <div class="hidden name"><code>ontology_DAG-class.Rd</code></div>
     </div>
 
@@ -78,6 +78,12 @@
     </div>
 
 
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>An <code>ontology_DAG</code> object.</p>
+    </div>
     <div id="slots">
     <h2>Slots</h2>
     
@@ -99,7 +105,7 @@
 
 
 <dt><code>lt_children_relations</code></dt>
-<dd><p>A list of length <code>n</code>. Each element is a vector of the semantic relations between the i^th term and its child terms.
+<dd><p>A list of length <code>n</code>. Each element is a vector of the semantic relations between the i^th term and its child terms, e.g. a child "is_a" parent.
 The relations are represented as integers. The character name of the relations is in <code>attr(dag@lt_children_relations, "levels")</code>.</p></dd>
 
 
@@ -150,6 +156,13 @@ use maximal distance to root (the height) and the shortest distance to root as t
 
 </dl></div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fl">1</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-in"><span><span class="co"># This function should not be used directly.</span></span></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

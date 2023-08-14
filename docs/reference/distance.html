@@ -54,7 +54,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -69,7 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Distance on the DAG</h1>
-    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/R/dist.R" class="external-link"><code>R/dist.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/R/dist.R" class="external-link"><code>R/dist.R</code></a></small>
     <div class="hidden name"><code>distance.Rd</code></div>
     </div>
 
@@ -97,6 +97,12 @@
 <dd><p>A vector of term names.</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>A numeric distance matrix.</p>
+    </div>
     <div id="details">
     <h2>Details</h2>
     <p>Denote two terms as <code>a</code> and <code>b</code>, a common ancestor as <code>c</code>, and the distance function <code>d()</code> calculates the longest
@@ -115,8 +121,7 @@ distance or the shortest distance depending on the function.</p><ul><li><p><code
 <span class="r-in"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="create_ontology_DAG.html">create_ontology_DAG</a></span><span class="op">(</span><span class="va">parents</span>, <span class="va">children</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">shortest_distances_via_NCA</span><span class="op">(</span><span class="va">dag</span>, <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> collecting all ancestors of input terms ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 ancestors ...going through 6 / 6 ancestors ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> done.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 ancestors ...going through 6 / 6 ancestors ... Done.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   a b c d e f</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> a 0 1 1 2 2 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> b 1 0 1 1 2 2</span>
@@ -126,8 +131,7 @@ distance or the shortest distance depending on the function.</p><ul><li><p><code
 <span class="r-out co"><span class="r-pr">#&gt;</span> f 3 2 3 1 4 0</span>
 <span class="r-in"><span><span class="fu">longest_distances_via_LCA</span><span class="op">(</span><span class="va">dag</span>, <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> collecting all ancestors of input terms ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 ancestors ...going through 6 / 6 ancestors ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> done.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 ancestors ...going through 6 / 6 ancestors ... Done.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   a b c d e f</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> a 0 1 2 2 3 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> b 1 0 1 1 2 2</span>
@@ -137,8 +141,7 @@ distance or the shortest distance depending on the function.</p><ul><li><p><code
 <span class="r-out co"><span class="r-pr">#&gt;</span> f 3 2 3 1 4 0</span>
 <span class="r-in"><span><span class="fu">shortest_distances_directed</span><span class="op">(</span><span class="va">dag</span>, <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> collecting all ancestors of input terms ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 nodes ...going through 6 / 6 nodes ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> done.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 nodes ...going through 6 / 6 nodes ... Done.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    a  b  c  d  e  f</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> a  0  1  1  2  2  3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> b -1  0  1  1  2  2</span>
@@ -148,8 +151,7 @@ distance or the shortest distance depending on the function.</p><ul><li><p><code
 <span class="r-out co"><span class="r-pr">#&gt;</span> f -1 -1 -1 -1 -1  0</span>
 <span class="r-in"><span><span class="fu">longest_distances_directed</span><span class="op">(</span><span class="va">dag</span>, <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> collecting all ancestors of input terms ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 nodes ...going through 6 / 6 nodes ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> done.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 nodes ...going through 6 / 6 nodes ... Done.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    a  b  c  d  e  f</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> a  0  1  2  2  3  3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> b -1  0  1  1  2  2</span>

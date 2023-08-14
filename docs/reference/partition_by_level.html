@@ -54,7 +54,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -69,7 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Partition the DAG</h1>
-    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/R/partition.R" class="external-link"><code>R/partition.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/R/partition.R" class="external-link"><code>R/partition.R</code></a></small>
     <div class="hidden name"><code>partition_by_level.Rd</code></div>
     </div>
 
@@ -80,7 +80,7 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">partition_by_level</span><span class="op">(</span><span class="va">dag</span>, level <span class="op">=</span> <span class="fl">0</span>, from <span class="op">=</span> <span class="cn">NULL</span>, term_pos <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">partition_by_k</span><span class="op">(</span><span class="va">dag</span>, <span class="va">k</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">partition_by_size</span><span class="op">(</span><span class="va">dag</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">ceiling</a></span><span class="op">(</span><span class="fu"><a href="dag_all_terms.html">dag_n_terms</a></span><span class="op">(</span><span class="va">dag</span><span class="op">)</span><span class="op">/</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -101,31 +101,46 @@
 <dd><p>Internally used.</p></dd>
 
 
-<dt>k</dt>
-<dd><p>Number of terms in a cluster. The splitting stops on a term if all its child-tree are smaller than <code>k</code>.</p></dd>
+<dt>size</dt>
+<dd><p>Number of terms in a cluster. The splitting stops on a term if all its child-tree are smaller than <code>size</code>.</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>A character vector of top terms in each partition.</p>
+    </div>
     <div id="details">
     <h2>Details</h2>
     <p>Let's call the terms below the <code>from</code> term as "top terms" because they will be on top of the sub-DAGs after the partitioning.
 It is possible that a term in the middle of the DAG can be traced back to more than one top terms.
 To partition all terms exclusively, a term partitioned to the sub-DAG from the top term with the largest distance to the term.
 If a term has the same largest distances to several top terms, a random top term is selected.</p>
-<p>In <code>partition_by_k()</code>, the DAG is first reduced to a tree where a child term only has one parent.
+<p>In <code>partition_by_size()</code>, the DAG is first reduced to a tree where a child term only has one parent.
 The partition is done recursively by cutting into its child-trees.
-The splitting stops when all the child-trees have size less than <code>k</code>.</p>
+The splitting stops when all the child-trees have size less than <code>size</code>.</p>
 <p><code>NA</code> is assigned to the <code>from</code> terms, their ancestor terms, and terms having infinite directed distance to <code>from</code> terms.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="create_ontology_DAG_from_GO_db.html">create_ontology_DAG_from_GO_db</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">pa</span> <span class="op">=</span> <span class="fu">partition_by_level</span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">pa</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">pa</span> <span class="op">=</span> <span class="fu">partition_by_k</span><span class="op">(</span><span class="va">dag</span>, k <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pa</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GO:0008150 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      28140 </span>
+<span class="r-in"><span><span class="va">pa</span> <span class="op">=</span> <span class="fu">partition_by_size</span><span class="op">(</span><span class="va">dag</span>, size <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in partition_by_size(dag, size = 1000):</span> could not find function "partition_by_size"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">pa</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pa</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GO:0008150 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      28140 </span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span><span class="fl">1</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 </code></pre></div>
     </div>
   </div>

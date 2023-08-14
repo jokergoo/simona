@@ -54,7 +54,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -69,7 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Global options</h1>
-    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/R/00_global.R" class="external-link"><code>R/00_global.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/R/00_global.R" class="external-link"><code>R/00_global.R</code></a></small>
     <div class="hidden name"><code>simona_opt.Rd</code></div>
     </div>
 
@@ -103,6 +103,12 @@
 <dd><p>Add new options.</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>A single option value.</p>
+    </div>
     <div id="details">
     <h2>Details</h2>
     <p>There are the following global options:</p><ul><li><p><code>use_cache</code>: By default, information content of all terms is cached and reused. If <code>use_cache</code> is set to <code>FALSE</code>, IC will be re-calculated.</p></li>
@@ -110,8 +116,8 @@
 <li><p><code>anno_uniquify</code>: In the annotation-based IC method, the union of items annotated to the term as well as all its offspring terms is used, which means
 the set of annotated items for the term is uniquified. If <code>anno_uniquify</code> is set to <code>FALSE</code>, the uniquification is not applied, we simply add the number
 of items annotated to the term and the numbers of items annotated to each of its offspring terms.</p></li>
-<li><p><code>robot_jar</code>: Path of the <code>robot.jar</code> file. The file can be found from https://github.com/ontodev/robot/releases.</p></li>
-</ul><p>To set an option, you can use the <code>$</code>:</p>
+<li><p><code>robot_jar</code>: Path of the <code>robot.jar</code> file. The file can be found from <a href="https://github.com/ontodev/robot/releases" class="external-link">https://github.com/ontodev/robot/releases</a>.</p></li>
+</ul><p>To set an option, you can use <code>$</code>:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>simona_opt<span class="sc">$</span>verbose <span class="ot">=</span> <span class="cn">FALSE</span></span></code></pre><p></p></div>
 <p>or use it as a function:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">simona_opt</span>(<span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre><p></p></div>

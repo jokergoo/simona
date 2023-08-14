@@ -54,7 +54,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -69,7 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Sim_Wang_2007</h1>
-    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/R/sim.R" class="external-link"><code>R/sim.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/R/sim.R" class="external-link"><code>R/sim.R</code></a></small>
     <div class="hidden name"><code>temp__Sim_Wang_2007.Rd</code></div>
     </div>
 
@@ -96,7 +96,8 @@ Similar to the <em>Sim_AIC_2014</em>, aggregation only to common ancestors, to <
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="st">SV_b = sum{b'</span> <span class="cf">in</span> b<span class="st">'s ancestors}(S(b'</span><span class="ot">-&gt;</span>b))</span></code></pre><p></p></div>
 <p>Then the similarity is calculated as:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> SV_{common_ancestors}<span class="sc">*</span><span class="dv">2</span><span class="sc">/</span>(SV_a <span class="sc">+</span> SV_b)</span></code></pre><p></p></div>
-<p>Paper link: <a href="https://doi.org/10.1093/bioinformatics/btm087" class="external-link">https://doi.org/10.1093/bioinformatics/btm087</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1093/bioinformatics/btm087" class="external-link">doi:10.1093/bioinformatics/btm087</a>
+.</p>
 <p>The contribution of different semantic relations can be set with the <code>contribution_factor</code> parameter. The value should be a named numeric
 vector where names should cover the relations defined in <code>relations</code> set in <code><a href="create_ontology_DAG.html">create_ontology_DAG()</a></code>. For example, if there are two relations
 "relation_a" and "relation_b" set in the DAG, the value for <code>contribution_factor</code> can be set as:</p>

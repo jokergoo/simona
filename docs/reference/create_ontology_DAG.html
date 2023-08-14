@@ -54,7 +54,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -69,7 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create the ontology_DAG object</h1>
-    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/R/constructor.R" class="external-link"><code>R/constructor.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/R/constructor.R" class="external-link"><code>R/constructor.R</code></a></small>
     <div class="hidden name"><code>create_ontology_DAG.Rd</code></div>
     </div>
 
@@ -84,7 +84,9 @@
 <span>  relations <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  relations_DAG <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  source <span class="op">=</span> <span class="st">"Ontology"</span>,</span>
-<span>  annotation <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  annotation <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  remove_cyclic_paths <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  remove_rings <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -115,6 +117,17 @@ When the DAG for relation types is provided, in downstream analysis, the ancesto
 <dd><p>A list of character vectors which contain items annotated to the terms. Names of the list should be the term names. In the DAG, items
 annotated to a term will also be annotated to its parents. Such merging
 is applied automatically in the package.</p></dd>
+
+
+<dt>remove_cyclic_paths</dt>
+<dd><p>Whether to remove cyclic paths If a cyclic path is represented as <code>[a, b, ..., z, a]</code>,
+the last link (i.e. <code>z-&gt;a</code>) is simply removed. If the value is set to <code>FALSE</code> and if there are cyclic paths, there
+will be an error that lists all cyclic paths.</p></dd>
+
+
+<dt>remove_rings</dt>
+<dd><p>There might be rings that are isolated to the main DAG where there are no roots on the rings, thus they cannot be attached to the main DAG. If the value
+of <code>remove_rings</code> is set to <code>TRUE</code>, such rings are removed.</p></dd>
 
 </dl></div>
     <div id="value">

@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Semantic Similarity in Bio-ontologies • simona</title>
+<title>Semantic Similarity in Bio-Ontologies • simona</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Semantic Similarity in Bio-ontologies">
+<script src="pkgdown.js"></script><meta property="og:title" content="Semantic Similarity in Bio-Ontologies">
 <meta property="og:description" content="The package implements a rich set of methods for semantic similarity 
     analysis on bio-ontologies. They include methods for information contents, similarities between 
     two terms as well as similarities between two groups of terms. It also implements
@@ -78,7 +78,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -96,7 +96,7 @@
       </header><div class="row">
   <div class="contents col-md-9">
 <div class="section level1">
-<div class="page-header"><h1 id="simona-semantic-similarity-in-bio-ontologies">simona: Semantic Similarity in Bio-ontologies<a class="anchor" aria-label="anchor" href="#simona-semantic-similarity-in-bio-ontologies"></a>
+<div class="page-header"><h1 id="simona-semantic-similarity-in-bio-ontologies">simona: Semantic Similarity in Bio-Ontologies<a class="anchor" aria-label="anchor" href="#simona-semantic-similarity-in-bio-ontologies"></a>
 </h1></div>
 <div class="section level2">
 <h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
@@ -108,7 +108,7 @@
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jokergoo/simone" class="external-link">simona</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jokergoo/simona" class="external-link">simona</a></span><span class="op">)</span></span>
 <span><span class="va">parents</span>  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"d"</span><span class="op">)</span></span>
 <span><span class="va">children</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"c"</span>, <span class="st">"d"</span>, <span class="st">"e"</span>, <span class="st">"f"</span><span class="op">)</span></span>
 <span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="reference/create_ontology_DAG.html">create_ontology_DAG</a></span><span class="op">(</span><span class="va">parents</span>, <span class="va">children</span><span class="op">)</span></span>
@@ -191,8 +191,12 @@ With the following columns in the metadata data frame:
 [29] "GroupSim_Overlap"                 "GroupSim_Kappa"</code></pre>
 <p>There is also a visualization on the complete huge DAG:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/dag_viz.html">dag_circular_viz</a></span><span class="op">(</span><span class="va">dag</span>, reorder_level <span class="op">=</span> <span class="fl">3</span>, legend_labels_from <span class="op">=</span> <span class="st">"name"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="https://github.com/jokergoo/simone/assets/449218/9be7c8e6-0061-46a8-93ad-4a92d0a5fe27"></p>
+<code class="sourceCode R"><span><span class="va">sig_go_ids</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sig_go_ids.rds"</span>, package <span class="op">=</span> <span class="st">"simona"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/dag_viz.html">dag_circular_viz</a></span><span class="op">(</span><span class="va">dag</span>, highlight <span class="op">=</span> <span class="va">sig_go_ids</span>, reorder_level <span class="op">=</span> <span class="fl">3</span>, </span>
+<span>  legend_labels_from <span class="op">=</span> <span class="st">"name"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="https://github.com/jokergoo/simona/assets/449218/ada30534-182e-4513-93bf-9819e84b8604" alt=""><p class="caption">image</p>
+</div>
 <p>The methods of semantic similarity implemented in <strong>simona</strong> are mainly from the <a href="https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/bib/18/5/10.1093_bib_bbw067/2/bbw067_supplementary_file.pdf?Expires=1692176766&amp;Signature=Ks4C96x-kinySVP7rzVzMn8cGnQWXOqkB-6gYHhs48Bl9A2Vj~-mcI9pEnvntNBvjBD1hp4ZncMWUNT-y1ArrrQgDJ0dCCEJp5LG0Ag2oPWsC5NFEeUQiYNZCXal8Kwa3Ze1vtDHjIwZpT9-sZhn9ryqKHd3C88RvuGx10jcSYRL1Pec0F~a9CnrbivieCfFELg2OQTf5zpAobxhlqzWqv~sa1b62PunNZ~XkmnTGOJoSMQFnNaBy~bDNEf9Pd6eRYaOc8MUh5Br4xB4y8mivT6Et2vKzLrGJFQjYpvouQpBu0nf03xwHVmNFN5-6LsDnpyQPCy4nQ5DHYltVHkEOA__&amp;Key-Pair-Id=APKAIE5G5CRDK6RD3PGA" class="external-link">supplementary file</a> of the paper <a href="https://doi.org/10.1093/bib/bbw067" class="external-link">“Mazandu et al., Gene Ontology semantic similarity tools: survey on features and challenges for biological knowledge discovery. Briefings in Bioinformatics 2017”</a>. Credits go to the original paper.</p>
 </div>
 <div class="section level2">
@@ -207,7 +211,7 @@ With the following columns in the metadata data frame:
     <div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/jokergoo/simone/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/jokergoo/simona/" class="external-link">Browse source code</a></li>
 </ul>
 </div>
 

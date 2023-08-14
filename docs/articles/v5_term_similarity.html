@@ -75,7 +75,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -96,9 +96,9 @@
       <h1 data-toc-skip>Term similarity</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2023-08-04</h4>
+            <h4 data-toc-skip class="date">2023-08-14</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/vignettes/v5_term_similarity.Rmd" class="external-link"><code>vignettes/v5_term_similarity.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/vignettes/v5_term_similarity.Rmd" class="external-link"><code>vignettes/v5_term_similarity.Rmd</code></a></small>
       <div class="hidden name"><code>v5_term_similarity.Rmd</code></div>
 
     </div>
@@ -222,8 +222,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 \end{align*}
 \]</span></p>
 <p>The wrapper function <code><a href="../reference/term_sim.html">term_sim()</a></code> calculates semantic similarities between terms in the DAG with a specific method. Note the method name can be partially matched.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="va">...</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = ..., control = list(...))
+</pre>
 </div>
 <div class="section level2">
 <h2 id="ic-based-or-node-based-methods">IC-based or node-based methods<a class="anchor" aria-label="anchor" href="#ic-based-or-node-based-methods"></a>
@@ -237,8 +238,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 </h3>
 <p>The similarity is calculated as the IC of the MICA term <span class="math inline">\(c\)</span> normalized by the average of the IC of the two terms:</p>
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = \frac{\mathrm{IC}(c)}{(\mathrm{IC}(a) + \mathrm{IC}(b))/2} = \frac{2 * \mathrm{IC}(c)}{\mathrm{IC}(a) + \mathrm{IC}(b)} \]</span></p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Lin_1998"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Lin_1998")
+</pre>
 <p>Paper link: <a href="https://dl.acm.org/doi/10.5555/645527.657297" class="external-link uri">https://dl.acm.org/doi/10.5555/645527.657297</a>.</p>
 </div>
 <div class="section level3">
@@ -265,10 +267,11 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = \frac{\mathrm{IC}(c)}{\max \{ \mathrm{IC}(a), \mathrm{IC}(b) \}} \]</span></p>
 <p>Paper link: <a href="https://doi.org/10.1613/jair.514" class="external-link uri">https://doi.org/10.1613/jair.514</a>, <a href="https://doi.org/10.1186/1471-2105-9-S5-S4" class="external-link uri">https://doi.org/10.1186/1471-2105-9-S5-S4</a>, <a href="https://doi.org/10.1186/1471-2105-11-562" class="external-link uri">https://doi.org/10.1186/1471-2105-11-562</a>, <a href="https://doi.org/10.1155/2013/292063" class="external-link uri">https://doi.org/10.1155/2013/292063</a>.</p>
 <p>The normalization method can be set with the <code>norm_method</code> parameter:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Resnik_1999"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>norm_method <span class="op">=</span> <span class="st">"Nunif"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Resnik_1999"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>norm_method <span class="op">=</span> <span class="st">"Nmax"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Resnik_1999"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>norm_method <span class="op">=</span> <span class="st">"Nunivers"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Resnik_1999", control = list(norm_method = "Nunif"))
+term_sim(dag, terms, method = "Sim_Resnik_1999", control = list(norm_method = "Nmax"))
+term_sim(dag, terms, method = "Sim_Resnik_1999", control = list(norm_method = "Nunivers"))
+</pre>
 </div>
 </div>
 <div class="section level3">
@@ -278,8 +281,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = \frac{\mathrm{IC}(c)}{\mathrm{IC}(a) + \mathrm{IC}(b) - \mathrm{IC}(c)} \]</span></p>
 <p>The relation between the <em>FaITH_2010</em> similarity and <em>Lin_1998</em> similarity is:</p>
 <p><span class="math display">\[ \mathrm{Sim}_\mathrm{FaITH} = \frac{\mathrm{Sim}_\mathrm{Lin}}{2 - \mathrm{Sim}_\mathrm{Lin}} \]</span></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_FaITH_2010"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_FaITH_2010")
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1007/978-3-642-17746-0_39" class="external-link uri">https://doi.org/10.1007/978-3-642-17746-0_39</a>.</p>
 </div>
 <div class="section level3">
@@ -295,8 +299,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
                    &amp; = (1-p(c)) * \frac{2 * \mathrm{IC}(c)}{\mathrm{IC}(a) + \mathrm{IC}(b)} \\
                    &amp; = (1-p(c)) * \mathrm{Sim}_\mathrm{Lin}(a, b)
 \end{align*} \]</span></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Relevance_2006"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Relevance_2006")
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1186/1471-2105-7-302" class="external-link uri">https://doi.org/10.1186/1471-2105-7-302</a></p>
 </div>
 <div class="section level3">
@@ -308,8 +313,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p><span class="math display">\[ \mathrm{IC}_\mathrm{corrected}(c) = \frac{\log(p(c))}{1 - \log(p(c))} * \mathrm{IC}(c) \]</span></p>
 <p>Then the similarity (if using <em>Lin_1998</em> as the original similarity method) is:</p>
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = \frac{\log(p(c))}{1 - \log(p(c))} * \mathrm{Sim}_\mathrm{Lin}(a, b) \]</span></p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_SimIC_2010"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_SimIC_2010")
+</pre>
 <p>Paper link: <a href="https://doi.org/10.48550/arXiv.1001.0958" class="external-link uri">https://doi.org/10.48550/arXiv.1001.0958</a>.</p>
 </div>
 <div class="section level3">
@@ -323,8 +329,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p><span class="math display">\[ \mathrm{IC}_\mathrm{mean} = \frac{1}{|\mathrm{ICA}(a, b)|} \sum_{\mathrm{t \in \mathrm{ICA}(a, b)}} \mathrm{IC}(t) \]</span></p>
 <p>And applying <em>Lin_1998</em> method, the semantic similarity is:</p>
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = 2 * \frac{\mathrm{IC}_\mathrm{mean}}{\mathrm{IC}(a) + \mathrm{IC}(b)} \]</span></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_XGraSM_2013"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_XGraSM_2013")
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1186/1471-2105-14-284" class="external-link uri">https://doi.org/10.1186/1471-2105-14-284</a></p>
 </div>
 <div class="section level3">
@@ -338,8 +345,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p><span class="math display">\[ \mathrm{IC}_\mathrm{mean} = \frac{1}{|\mathrm{DCA}(a, b)|} \sum_{\mathrm{t \in \mathrm{DCA}(a, b)}} \mathrm{IC}(t) \]</span></p>
 <p>And applying <em>Lin_1998</em> method, the semantic similarity is:</p>
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = 2 * \frac{\mathrm{IC}_\mathrm{mean}}{\mathrm{IC}(a) + \mathrm{IC}(b)} \]</span></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_GraSM_2005"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_GraSM_2005")
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1145/1099554.1099658" class="external-link uri">https://doi.org/10.1145/1099554.1099658</a>.</p>
 </div>
 <div class="section level3">
@@ -347,13 +355,14 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 </h3>
 <p>Note this is an annotation-based methods and the IC method is only restricted to <em>IC_annotation</em>.</p>
 <p>It also selects a specific subset of common ancestors of terms <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>. It only selects a common ancestor <span class="math inline">\(c\)</span> which can reach <span class="math inline">\(a\)</span> or <span class="math inline">\(b\)</span> via one of its child terms that does not belong to the common ancestors (mutual exclusively in <span class="math inline">\(a\)</span>’s ancestors or in <span class="math inline">\(b\)</span>’s ancestors). The set of the selected common ancestors is called the exclusively inherited common ancestors (EICA).</p>
-<p><span class="math display">\[ \mathrm{EICA}(a, b) = \{c \in \mathcal{A}_a \cap \mathcal{A}_b: \mathcal{C}_c \cap \left( (\mathcal{A}_a \cup \mathcal{A}_b) - (\mathcal{A}_a \cap \mathcal{A}_b) \neq \O \right) \}  \]</span></p>
+<p><span class="math display">\[ \mathrm{EICA}(a, b) = \{c \in \mathcal{A}_a \cap \mathcal{A}_b: \mathcal{C}_c \cap \left( (\mathcal{A}_a \cup \mathcal{A}_b) - (\mathcal{A}_a \cap \mathcal{A}_b) \neq \emptyset \right) \}  \]</span></p>
 <p>And mean IC among all EICA terms:</p>
 <p><span class="math display">\[ \mathrm{IC}_\mathrm{mean} = \frac{1}{|\mathrm{EICA}(a, b)|} \sum_{\mathrm{t \in \mathrm{EICA}(a, b)}} \mathrm{IC}(t) \]</span></p>
 <p>And applying <em>Lin_1998</em> method, the semantic similarit is:</p>
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = 2 * \frac{\mathrm{IC}_\mathrm{mean}}{\mathrm{IC}(a) + \mathrm{IC}(b)} \]</span></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_EISI_2015"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_EISI_2015")
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1016/j.gene.2014.12.062" class="external-link uri">https://doi.org/10.1016/j.gene.2014.12.062</a></p>
 </div>
 <div class="section level3">
@@ -363,8 +372,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p><span class="math display">\[ S_w(t) = \frac{1}{1 + \exp \left(-\frac{1}{\mathrm{IC}(t)} \right)} \]</span></p>
 <p>Then the similarity is calculated as the fraction of aggegation from common ancestors and the average aggregation from ancestors of <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> separately.</p>
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = \frac{2*\sum\limits_{t \in \mathcal{A}_a^+ \cap \mathcal{A}_b^+} S_w(t) }{ \sum\limits_{t \in \mathcal{A}_a^+} S_w(t) + \sum\limits_{t \in \mathcal{A}_b^+} S_w(t) }  \]</span></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_AIC_2014"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_AIC_2014")
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1109/tcbb.2013.176" class="external-link uri">https://doi.org/10.1109/tcbb.2013.176</a>.</p>
 </div>
 <div class="section level3">
@@ -372,16 +382,18 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 </h3>
 <p>It uses the <em>IC_Zhang_2006</em> IC method and uses <em>Lin_1998</em> similarity method to calculate similarities:</p>
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = \frac{2*\mathrm{IC}_\mathrm{Zhang}(c)}{\mathrm{IC}_\mathrm{Zhang}(a) + \mathrm{IC}_\mathrm{Zhang}(b)} \]</span></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Zhang_2006"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Zhang_2006")
+</pre>
 </div>
 <div class="section level3">
 <h3 id="sim_universal">Sim_universal<a class="anchor" aria-label="anchor" href="#sim_universal"></a>
 </h3>
 <p>It uses the <em>IC_universal</em> IC method and uses the <em>Nunivers</em> method to calculate similarities:</p>
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = \frac{2*\mathrm{IC}_\mathrm{Univers}(c)}{\max \{ \mathrm{IC}_\mathrm{Univers}(a), \mathrm{IC}_\mathrm{Univers}(b) \}} \]</span></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_universal"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_universal")
+</pre>
 </div>
 <div class="section level3">
 <h3 id="sim_wang_2007">Sim_Wang_2007<a class="anchor" aria-label="anchor" href="#sim_wang_2007"></a>
@@ -389,9 +401,10 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p>Similar as the <em>Sim_AIC_2014</em> method, it is also aggregation from ancestors, but it uses the “S-value” introduced in the <em>IC_Wang_2007</em> sectionn in <a href="v4_information_content.html">4. Information content</a>.</p>
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = \frac{\sum\limits_{t \in \mathcal{A}_a^+ \cap \mathcal{A}_b^+} (S_a(t) + S_b(t)) }{ \sum\limits_{t \in \mathcal{A}_a^+} S_a(t) + \sum\limits_{t \in \mathcal{A}_b^+} S_b(t) }  \]</span></p>
 <p>The contribution of different semantic relations can be set with the <code>contribution_factor</code> parameter. The value should be a named numeric vector where names should cover the relations defined in relations set in <code><a href="../reference/create_ontology_DAG.html">create_ontology_DAG()</a></code>. For example, if there are two relations “relation_a” and “relation_b” set in the DAG, the value for contribution_factor can be set as:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Wang_2007"</span>, </span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>contribution_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"relation_a"</span> <span class="op">=</span> <span class="fl">0.8</span>, <span class="st">"relation_b"</span> <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Wang_2007", 
+    control = list(contribution_factor = c("relation_a" = 0.8, "relation_b" = 0.6)))
+</pre>
 <p>By default 0.8 is set for “is_a” and 0.6 for “part_of”.</p>
 <p>If you are not sure what types of relations have been set, simply type the <code>dag</code> object. The relation types will be printed there.</p>
 <p>Paper link: <a href="https://doi.org/10.1093/bioinformatics/btm087" class="external-link uri">https://doi.org/10.1093/bioinformatics/btm087</a>.</p>
@@ -409,9 +422,10 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p>which is based on the shortest distance between <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>. Optionally, the distance can also be the longest distance via the LCA term <span class="math inline">\(c\)</span>.</p>
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = \frac{1}{1 + \mathrm{len}_c(a, b)} = \frac{1}{1 + \mathrm{len}(c, a) + \mathrm{len}(c, b)} \]</span></p>
 <p>There is a parameter distance which takes value of <code>"longest_distances_via_LCA"</code> (the default) or <code>"shortest_distances_via_NCA"</code>:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Rada_1989"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>distance <span class="op">=</span> <span class="st">"shortest_distances_via_NCA"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Rada_1989",
+    control = list(distance = "shortest_distances_via_NCA"))
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1109/21.24528" class="external-link uri">https://doi.org/10.1109/21.24528</a>.</p>
 </div>
 <div class="section level3">
@@ -423,9 +437,10 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p>Similarly, the distance can also be the longest distance via LCA, then it is consistent with the definition of <span class="math inline">\(\delta_\mathrm{max}\)</span> which are both based on the longest distance.</p>
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = 1 - \frac{\mathrm{len}_c(a, b)}{2*\delta_\mathrm{max}} \]</span></p>
 <p>There is a parameter distance which takes value of <code>"longest_distances_via_LCA"</code> (the default) or <code>"shortest_distances_via_NCA"</code>:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Resnik_edge_2005"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>distance <span class="op">=</span> <span class="st">"shortest_distances_via_NCA"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Resnik_edge_2005",
+    control = list(distance = "shortest_distances_via_NCA"))
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1145/1097047.1097051" class="external-link uri">https://doi.org/10.1145/1097047.1097051</a>.</p>
 </div>
 <div class="section level3">
@@ -437,9 +452,10 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p>Similarly, the distance can also be the longest distance via LCA, then it is consistent with the definition of <span class="math inline">\(\delta_\mathrm{max}\)</span> which are both based on the longest distance.</p>
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = 1 - \frac{\log(\mathrm{len}_c(a, b))}{\log(2*\delta_\mathrm{max})} \]</span></p>
 <p>There is a parameter distance which takes value of <code>"longest_distances_via_LCA"</code> (the default) or <code>"shortest_distances_via_NCA"</code>:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Leocock_1998"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>distance <span class="op">=</span> <span class="st">"shortest_distances_via_NCA"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Leocock_1998",
+    control = list(distance = "shortest_distances_via_NCA"))
+</pre>
 <p>Paper link: <a href="https://ieeexplore.ieee.org/document/6287675" class="external-link uri">https://ieeexplore.ieee.org/document/6287675</a>.</p>
 </div>
 <div class="section level3">
@@ -460,8 +476,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 \end{align*}
 \]</span></p>
 <p>where in the denominator are the depths of <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> via <span class="math inline">\(c\)</span>.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_WP_1994"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_WP_1994")
+</pre>
 <p>Paper link: <a href="https://doi.org/10.3115/981732.981751" class="external-link uri">https://doi.org/10.3115/981732.981751</a>.</p>
 </div>
 <div class="section level3">
@@ -475,8 +492,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 \frac{1}{1 + |\delta(a) - \delta(b)|} = \frac{1}{1 + \mathrm{len}(a,b)} &amp; \textit{a} \text{ and } \textit{b} \text{ are ancestor-offspring}
 \end{array} \right. 
 \]</span></p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Slimani_2006"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Slimani_2006")
+</pre>
 <p>Paper link: <a href="https://zenodo.org/record/1075130" class="external-link uri">https://zenodo.org/record/1075130</a>.</p>
 </div>
 <div class="section level3">
@@ -489,9 +507,10 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 \end{array} \right. \]</span></p>
 <p><span class="math inline">\(D_\mathrm{sp}\)</span> can be replaced with <span class="math inline">\(\mathrm{len}(a, b)\)</span> if the longest distance is used.</p>
 <p>There is a parameter distance which takes value of <code>"longest_distances_via_LCA"</code> (the default) or <code>"shortest_distances_via_NCA"</code>:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Shenoy_2012"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>distance <span class="op">=</span> <span class="st">"shortest_distances_via_NCA"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Shenoy_2012",
+    control = list(distance = "shortest_distances_via_NCA"))
+</pre>
 <p>Paper link: <a href="https://doi.org/10.48550/arXiv.1211.4709" class="external-link uri">https://doi.org/10.48550/arXiv.1211.4709</a>.</p>
 </div>
 <div class="section level3">
@@ -507,8 +526,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 \]</span></p>
 <p>And the relationship to <span class="math inline">\(\mathrm{Sim}_\mathrm{WP}\)</span> is:</p>
 <p><span class="math display">\[ \mathrm{Sim}_\mathrm{Pekar}(a, b) = \frac{\mathrm{Sim}_\mathrm{WP}(a, b)}{2 - \mathrm{Sim}_\mathrm{WP}(a, b)} \]</span></p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Pekar_2002"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Pekar_2002")
+</pre>
 <p>Paper link: <a href="https://aclanthology.org/C02-1090/" class="external-link uri">https://aclanthology.org/C02-1090/</a>.</p>
 </div>
 <div class="section level3">
@@ -517,8 +537,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p>It is purely based on the depth of term <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span> and their LCA term <span class="math inline">\(c\)</span>.</p>
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = \frac{\delta(c)}{\delta(a) + \delta(b) - \delta(c)} \]</span></p>
 <p>The similarity value might be negative because there is no restrction that the path from root to <span class="math inline">\(a\)</span> or <span class="math inline">\(b\)</span> must pass <span class="math inline">\(c\)</span>.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Stojanovic_2001"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Stojanovic_2001")
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1145/500737.500762" class="external-link uri">https://doi.org/10.1145/500737.500762</a>.</p>
 </div>
 <div class="section level3">
@@ -532,8 +553,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 \end{align*}
 \]</span></p>
 <p>where <span class="math inline">\(r\)</span> is the root term.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Wang_edge_2012"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Wang_edge_2012")
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1186/1477-5956-10-s1-s18" class="external-link uri">https://doi.org/10.1186/1477-5956-10-s1-s18</a>.</p>
 </div>
 <div class="section level3">
@@ -560,8 +582,9 @@ D(a, b) &amp; = 2^{-\delta(c)} - 2^{-\delta_c(a) - 1} - 2^{-\delta_c(b) - 1} \\
 <p>Then when <span class="math inline">\(a = b\)</span> (the two terms are identical), <span class="math inline">\(D(a, b) = 0\)</span> and when <span class="math inline">\(c = r\)</span> (common ancestor only includes root) and <span class="math inline">\(\mathrm{len}(r, a) \to \infty\)</span>, <span class="math inline">\(\mathrm{len}(r, b) \to \infty\)</span> (root has infinite distance to the terms), <span class="math inline">\(D(a, b)\)</span> reaches maximal of 1. So the similarity</p>
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = 1 - D(a, b)\]</span></p>
 <p>ranges between 0 and 1.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Zhong_2002"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Zhong_2002")
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1007/3-540-45483-7_8" class="external-link uri">https://doi.org/10.1007/3-540-45483-7_8</a>.</p>
 </div>
 <div class="section level3">
@@ -574,9 +597,10 @@ D(a, b) &amp; = 2^{-\delta(c)} - 2^{-\delta_c(a) - 1} - 2^{-\delta_c(b) - 1} \\
 <p>And the similarity is:</p>
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = 1 - D(a, b)/D_\mathrm{max} \]</span></p>
 <p>There is a parameter distance which takes value of <code>"longest_distances_via_LCA"</code> (the default) or <code>"shortest_distances_via_CA"</code>:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_AlMubaid_2006"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>distance <span class="op">=</span> <span class="st">"shortest_distances_via_CA"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_AlMubaid_2006",
+    control = list(distance = "shortest_distances_via_CA"))
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1109/IEMBS.2006.259235" class="external-link uri">https://doi.org/10.1109/IEMBS.2006.259235</a>.</p>
 </div>
 <div class="section level3">
@@ -585,9 +609,10 @@ D(a, b) &amp; = 2^{-\delta(c)} - 2^{-\delta_c(a) - 1} - 2^{-\delta_c(b) - 1} \\
 <p>It is similar to the <em>Sim_AlMubaid_2006</em> method, but uses a non-linear form:</p>
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = \exp(-0.2*D_\mathrm{sp}(a, b)) * \tanh(0.6*\delta(c)) \]</span></p>
 <p>There is a parameter distance which takes value of <code>"longest_distances_via_LCA"</code> (the default) or <code>"shortest_distances_via_CA"</code>:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Li_2003"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>distance <span class="op">=</span> <span class="st">"shortest_distances_via_CA"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Li_2003",
+    control = list(distance = "shortest_distances_via_CA"))
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1109/TKDE.2003.1209005" class="external-link uri">https://doi.org/10.1109/TKDE.2003.1209005</a>.</p>
 </div>
 </div>
@@ -609,9 +634,10 @@ D(a, b) &amp; = 2^{-\delta(c)} - 2^{-\delta_c(a) - 1} - 2^{-\delta_c(b) - 1} \\
 \]</span></p>
 <p>where <span class="math inline">\(\alpha\)</span> is the depth of LCA, <span class="math inline">\(\beta\)</span> corresponds to the distance to leaves, which is the smaller height of <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> in the DAG.</p>
 <p>There is a parameter distance which takes value of <code>"longest_distances_via_LCA"</code> (the default) or <code>"shortest_distances_via_CA"</code>:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_RSS_2013"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>distance <span class="op">=</span> <span class="st">"shortest_distances_via_CA"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_RSS_2013",
+    control = list(distance = "shortest_distances_via_CA"))
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1371/journal.pone.0066745" class="external-link uri">https://doi.org/10.1371/journal.pone.0066745</a>.</p>
 </div>
 <div class="section level3">
@@ -635,8 +661,9 @@ D(a, b) &amp; = D(c, a) + D(c, b) = \mathrm{IC}(a) + \mathrm{IC}(b) - 2*\mathrm{
 <p><span class="math display">\[ \beta = \frac{D(a, l_a) + D(b, l_b)}{2} = \frac{\mathrm{IC}(l_a) - \mathrm{IC}(a) + \mathrm{IC}(l_b) - \mathrm{IC}(b)}{2} \]</span></p>
 <p>where <span class="math inline">\(l_a\)</span> or <span class="math inline">\(l_b\)</span> is the leaf with the highest IC that <span class="math inline">\(a\)</span> or <span class="math inline">\(b\)</span> can reach (i.e. the most informative leaf)</p>
 <p><span class="math display">\[ \mathrm{IC}(l_a) = \max_{z \in \mathcal{L}(a)} \mathrm{IC}(z) \]</span></p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_HRSS_2013"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_HRSS_2013")
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1371/journal.pone.0066745" class="external-link uri">https://doi.org/10.1371/journal.pone.0066745</a>.</p>
 </div>
 <div class="section level3">
@@ -645,8 +672,9 @@ D(a, b) &amp; = D(c, a) + D(c, b) = \mathrm{IC}(a) + \mathrm{IC}(b) - 2*\mathrm{
 <p>It is based on the information content of terms on the path connecting term <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> via their MICA term <span class="math inline">\(c\)</span>.</p>
 <p>Denote a list of terms <code>a, ..., c, ..., b</code> which are composed by the shortest path from <span class="math inline">\(c\)</span> to <span class="math inline">\(a\)</span> and from <span class="math inline">\(c\)</span> to <span class="math inline">\(b\)</span>, the distance between <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> is the sum of <span class="math inline">\(1/\mathrm{IC}\)</span> of the terms on the path. Denote <span class="math inline">\(L_c(a, b)\)</span> as the set of terms on the shortest path connecting <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> via the MICA term <span class="math inline">\(c\)</span>, the similarity is:</p>
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = 1 - \frac{\tanh \left( \sum\limits_{x \in L_c(a, b)} \frac{1}{\mathrm{IC}(x)} \right)}{\pi/2} \]</span></p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Shen_2010"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Shen_2010")
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1109/BIBM.2010.5706623" class="external-link uri">https://doi.org/10.1109/BIBM.2010.5706623</a>.</p>
 </div>
 <div class="section level3">
@@ -665,8 +693,9 @@ T(x) = \left\{ \begin{array}{ll}
 <p>which means T-value of a term is an average of the weighted T-values of its parents. The weight <span class="math inline">\(w\)</span> measures the fraction of information a parent <span class="math inline">\(t\)</span> transmitting to downstream of the DAG via <span class="math inline">\(x\)</span>, defined as:</p>
 <p><span class="math display">\[ w = \frac{|D_x^+|}{|D_t^+|} \]</span></p>
 <p><span class="math inline">\(w \leq 1\)</span> as all offsprings of <span class="math inline">\(x\)</span> are also offspring of its parent <span class="math inline">\(t\)</span>.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_SSDD_2013"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_SSDD_2013")
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1016/j.ygeno.2013.04.010" class="external-link uri">https://doi.org/10.1016/j.ygeno.2013.04.010</a>.</p>
 </div>
 <div class="section level3">
@@ -695,13 +724,14 @@ T(x) = \left\{ \begin{array}{ll}
 </li>
 </ul>
 <p>The normalization methods can be set via the parameter <code>norm_method</code>:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Jiang_1997"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>norm_method <span class="op">=</span> <span class="st">"max"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Jiang_1997"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>norm_method <span class="op">=</span> <span class="st">"Couto"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Jiang_1997"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>norm_method <span class="op">=</span> <span class="st">"Lin"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Jiang_1997"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>norm_method <span class="op">=</span> <span class="st">"Garla"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Jiang_1997"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>norm_method <span class="op">=</span> <span class="st">"log-Lin"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Jiang_1997"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>norm_method <span class="op">=</span> <span class="st">"Rada"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Jiang_1997", control = list(norm_method = "max"))
+term_sim(dag, terms, method = "Sim_Jiang_1997", control = list(norm_method = "Couto"))
+term_sim(dag, terms, method = "Sim_Jiang_1997", control = list(norm_method = "Lin"))
+term_sim(dag, terms, method = "Sim_Jiang_1997", control = list(norm_method = "Garla"))
+term_sim(dag, terms, method = "Sim_Jiang_1997", control = list(norm_method = "log-Lin"))
+term_sim(dag, terms, method = "Sim_Jiang_1997", control = list(norm_method = "Rada"))
+</pre>
 <p>Paper link: <a href="https://aclanthology.org/O97-1002/" class="external-link uri">https://aclanthology.org/O97-1002/</a>.</p>
 </div>
 </div>
@@ -717,7 +747,7 @@ T(x) = \left\{ \begin{array}{ll}
 table.contigency-table {
     border-collapse: collapse;
 }
-table.contigency-table th td {
+table.contigency-table td {
     border: 1px solid black;
     padding: 2px 5px;
 }
@@ -785,9 +815,10 @@ p_\mathrm{exp} &amp; = p_\mathrm{Yes} + p_\mathrm{No}
 <p><span class="math display">\[ \mathrm{Sim}(a, b) = \mathrm{Kappa}(a, b) = \frac{p_\mathrm{obs} - p_\mathrm{exp}}{1 - p_\mathrm{exp}}\]</span></p>
 <p>Note the Kappa coeffcient is possible to be negative.</p>
 <p>The universe set can be set via the parameter <code>anno_universe</code>. By default it is the total items annotated to the whole DAG.</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_kappa"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>anno_universe <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_kappa",
+    control = list(anno_universe = ...))
+</pre>
 </div>
 <div class="section level3">
 <h3 id="sim_jaccard-sim_dice-and-sim_overlap">Sim_Jaccard, Sim_Dice and Sim_Overlap<a class="anchor" aria-label="anchor" href="#sim_jaccard-sim_dice-and-sim_overlap"></a>
@@ -801,19 +832,20 @@ p_\mathrm{exp} &amp; = p_\mathrm{Yes} + p_\mathrm{No}
 <p>Dice and Jaccard coeffcients have a relation of:</p>
 <p><span class="math display">\[ \mathrm{Jaccard} = \frac{\mathrm{Dice}}{2 - \mathrm{Dice}} \]</span></p>
 <p>The universe set can be set via the parameter <code>anno_universe</code>. By default it is the total items annotated to the whole DAG.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Jaccard"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>anno_universe <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Dice"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>anno_universe <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/term_sim.html">term_sim</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, method <span class="op">=</span> <span class="st">"Sim_Overlap"</span>,</span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>anno_universe <span class="op">=</span> <span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Jaccard",
+    control = list(anno_universe = ...))
+term_sim(dag, terms, method = "Sim_Dice",
+    control = list(anno_universe = ...))
+term_sim(dag, terms, method = "Sim_Overlap",
+    control = list(anno_universe = ...))
+</pre>
 </div>
 </div>
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.2.0 (2022-04-22)</span></span>
 <span><span class="co">## Platform: x86_64-apple-darwin17.0 (64-bit)</span></span>

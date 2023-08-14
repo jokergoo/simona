@@ -54,7 +54,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -69,7 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Various types of common ancestors</h1>
-    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/R/common_ancestor.R" class="external-link"><code>R/common_ancestor.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/R/common_ancestor.R" class="external-link"><code>R/common_ancestor.R</code></a></small>
     <div class="hidden name"><code>common_ancestor.Rd</code></div>
     </div>
 
@@ -145,8 +145,7 @@ the highest value in <code>value</code>.</p>
 <span class="r-in"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="create_ontology_DAG.html">create_ontology_DAG</a></span><span class="op">(</span><span class="va">parents</span>, <span class="va">children</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">MICA_term</span><span class="op">(</span><span class="va">dag</span>, <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span>, <span class="st">"IC_universal"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> collecting all ancestors of input terms ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 ancestors ...going through 6 / 6 ancestors ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> done.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 ancestors ...going through 6 / 6 ancestors ... Done.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   a   b   c   d   e   f  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> a "a" "a" "a" "a" "a" "a"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> b "a" "b" "b" "b" "b" "b"</span>
@@ -156,8 +155,7 @@ the highest value in <code>value</code>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> f "a" "b" "b" "d" "b" "f"</span>
 <span class="r-in"><span><span class="fu">MICA_IC</span><span class="op">(</span><span class="va">dag</span>, <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span>, <span class="st">"IC_universal"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> collecting all ancestors of input terms ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 ancestors ...going through 6 / 6 ancestors ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> done.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 ancestors ...going through 6 / 6 ancestors ... Done.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   a         b         c         d         e         f</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> a 0 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> b 0 0.6931472 0.6931472 0.6931472 0.6931472 0.6931472</span>
@@ -167,8 +165,7 @@ the highest value in <code>value</code>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> f 0 0.6931472 0.6931472 1.3862944 0.6931472 1.3862944</span>
 <span class="r-in"><span><span class="fu">LCA_term</span><span class="op">(</span><span class="va">dag</span>, <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> collecting all ancestors of input terms ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 ancestors ...going through 6 / 6 ancestors ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> done.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 ancestors ...going through 6 / 6 ancestors ... Done.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   a   b   c   d   e   f  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> a "a" "a" "a" "a" "a" "a"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> b "a" "b" "b" "b" "b" "b"</span>
@@ -178,8 +175,7 @@ the highest value in <code>value</code>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> f "a" "b" "b" "d" "b" "f"</span>
 <span class="r-in"><span><span class="fu">LCA_depth</span><span class="op">(</span><span class="va">dag</span>, <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> collecting all ancestors of input terms ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 ancestors ...going through 6 / 6 ancestors ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> done.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 ancestors ...going through 6 / 6 ancestors ... Done.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   a b c d e f</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> a 0 0 0 0 0 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> b 0 1 1 1 1 1</span>
@@ -189,8 +185,7 @@ the highest value in <code>value</code>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> f 0 1 1 2 1 3</span>
 <span class="r-in"><span><span class="fu">NCA_term</span><span class="op">(</span><span class="va">dag</span>, <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> collecting all ancestors of input terms ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 ancestors ...going through 6 / 6 ancestors ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> done.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 ancestors ...going through 6 / 6 ancestors ... Done.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   a   b   c   d   e   f  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> a "a" "a" "a" "a" "a" "a"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> b "a" "b" "b" "b" "b" "b"</span>

@@ -54,7 +54,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -69,7 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Sim_Li_2003</h1>
-    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/R/sim.R" class="external-link"><code>R/sim.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/R/sim.R" class="external-link"><code>R/sim.R</code></a></small>
     <div class="hidden name"><code>temp__Sim_Li_2003.Rd</code></div>
     </div>
 
@@ -92,7 +92,8 @@
 <p>It is similar to the <em>Sim_AlMubaid_2006</em> method, but uses a non-linear form:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="fu">exp</span>(<span class="fl">0.2</span><span class="sc">*</span><span class="fu">d</span>(a, b)) <span class="sc">*</span> <span class="fu">atan</span>(<span class="fl">0.6</span><span class="sc">*</span><span class="fu">depth</span>(c))</span></code></pre><p></p></div>
 <p>where <code>d(a, b)</code> can be the shortest distance or the longest distance via LCA.</p>
-<p>Paper link: <a href="https://doi.org/10.1109/TKDE.2003.1209005" class="external-link">https://doi.org/10.1109/TKDE.2003.1209005</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1109/TKDE.2003.1209005" class="external-link">doi:10.1109/TKDE.2003.1209005</a>
+.</p>
 <p>There is a parameter <code>distance</code> which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">term_sim</span>(dag, terms, <span class="at">method =</span> <span class="st">"Sim_Li_2003"</span>,</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">list</span>(<span class="at">distance =</span> <span class="st">"shortest_distances_via_CA"</span>))</span></code></pre><p></p></div>

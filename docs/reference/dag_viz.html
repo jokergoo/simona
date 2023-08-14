@@ -54,7 +54,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -69,7 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Visualize the DAG</h1>
-    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/R/plot.R" class="external-link"><code>R/plot.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/R/plot.R" class="external-link"><code>R/plot.R</code></a></small>
     <div class="hidden name"><code>dag_viz.Rd</code></div>
     </div>
 
@@ -84,7 +84,8 @@
 <span>  start <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  end <span class="op">=</span> <span class="fl">360</span>,</span>
 <span>  reorder_level <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  partition_level <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  partition_by_level <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  partition_by_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  node_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  node_transparency <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  node_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -139,8 +140,12 @@
 <dd><p>Whether to reorder child terms. See <code><a href="dag_reorder.html">dag_reorder()</a></code>.</p></dd>
 
 
-<dt>partition_level</dt>
-<dd><p>If <code>node_col</code> is not set, users can cut the DAG into clusters with different node colors.</p></dd>
+<dt>partition_by_level</dt>
+<dd><p>If <code>node_col</code> is not set, users can cut the DAG into clusters with different node colors. The partitioning is applied by <code><a href="partition_by_level.html">partition_by_level()</a></code>.</p></dd>
+
+
+<dt>partition_by_size</dt>
+<dd><p>Similar as <code>partition_by_level</code>, but the partitioning is applied by <code><a href="partition_by_level.html">partition_by_size()</a></code>.</p></dd>
 
 
 <dt>node_col</dt>
@@ -207,6 +212,12 @@ multiple lines if the widths exceed it.</p></dd>
 <dd><p>Pass to <code><a href="https://rdrr.io/pkg/DiagrammeR/man/grViz.html" class="external-link">DiagrammeR::grViz()</a></code>.</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p><code>dag_as_DOT()</code> returns a vector of DOT code.</p>
+    </div>
     <div id="details">
     <h2>Details</h2>
     <p><code>dag_circular_viz()</code> uses a circular layout for visualizing large DAGs. <code>dag_graphviz()</code>
@@ -216,15 +227,62 @@ uses a hierarchical layout for visualizing small DAGs.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p>http://magjac.com/graphviz-visual-editor/ is nice place to try the DOT code.</p></div>
+    <div class="dont-index"><p><a href="http://magjac.com/graphviz-visual-editor/" class="external-link">http://magjac.com/graphviz-visual-editor/</a> is nice place to try the DOT code.</p></div>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="create_ontology_DAG_from_GO_db.html">create_ontology_DAG_from_GO_db</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">dag_circular_viz</span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> converting DAG to a tree...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating term positions on the DAG...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 0/18, 1 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 1/18, 19 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 2/18, 154 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 3/18, 528 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 4/18, 1256 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 5/18, 2642 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 6/18, 4091 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 7/18, 4794 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 8/18, 4713 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 9/18, 3903 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 10/18, 2723 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 11/18, 1636 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 12/18, 927 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 13/18, 424 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 14/18, 187 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 15/18, 88 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 16/18, 28 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 17/18, 23 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 18/18, 3 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> making plot...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> adding links...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> adding terms...</span>
+<span class="r-plt img"><img src="dag_viz-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span><span class="fl">1</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 </code></pre></div>
     </div>
   </div>

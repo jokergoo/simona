@@ -54,7 +54,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -69,7 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>IC_Wang_2007</h1>
-    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/R/term.R" class="external-link"><code>R/term.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/R/term.R" class="external-link"><code>R/term.R</code></a></small>
     <div class="hidden name"><code>temp__IC_Wang_2007.Rd</code></div>
     </div>
 
@@ -107,7 +107,8 @@ the accumulated multiplication of weights along the path reaches maximal:</p>
 <p>If <code>S(a-&gt;t)</code> can be thought as the maximal semantic contribution from <code>a</code> to <code>t</code>, the information content is calculated
 as the sum from all <code>t</code>'s ancestors (including <code>t</code> itself):</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>IC <span class="ot">=</span> sum_{a <span class="ot">=</span><span class="er">&gt;</span> t<span class="st">'s ancestors + t}(S(a-&gt;t))</span></span></code></pre><p></p></div>
-<p>Paper link: <a href="https://doi.org/10.1093/bioinformatics/btm087" class="external-link">https://doi.org/10.1093/bioinformatics/btm087</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1093/bioinformatics/btm087" class="external-link">doi:10.1093/bioinformatics/btm087</a>
+.</p>
 <p>The contribution of different semantic relations can be set with the <code>contribution_factor</code> parameter. The value should be a named numeric
 vector where names should cover the relations defined in <code>relations</code> set in <code><a href="create_ontology_DAG.html">create_ontology_DAG()</a></code>. For example, if there are two relations
 "relation_a" and "relation_b" set in the DAG, the value for <code>contribution_factor</code> can be set as:</p>

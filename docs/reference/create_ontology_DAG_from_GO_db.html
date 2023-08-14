@@ -54,7 +54,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -69,7 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create the ontology_DAG object from the GO.db package</h1>
-    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/R/constructor.R" class="external-link"><code>R/constructor.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/R/constructor.R" class="external-link"><code>R/constructor.R</code></a></small>
     <div class="hidden name"><code>create_ontology_DAG_from_GO_db.Rd</code></div>
     </div>
 
@@ -101,7 +101,7 @@ are also selected. Note "is_a" is always included.</p></dd>
 <dt>org_db</dt>
 <dd><p>The name of the organism package or the corresponding database object, e.g. <code>"org.Hs.eg.db"</code> or
 directly the <code><a href="https://rdrr.io/pkg/org.Hs.eg.db/man/org.Hs.egBASE.html" class="external-link">org.Hs.eg.db::org.Hs.eg.db</a></code> object for human, then the gene annotation to GO terms will be added
-to the object.</p></dd>
+to the object. For other non-model organisms, consider to use the <strong>AnnotationHub</strong> package to find one.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -113,11 +113,22 @@ to the object.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu">create_ontology_DAG_from_GO_db</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu">create_ontology_DAG_from_GO_db</span><span class="op">(</span><span class="st">"BP"</span>, </span></span>
-<span class="r-in"><span>    relations <span class="op">=</span> <span class="cn">NULL</span>, org_db <span class="op">=</span> <span class="st">"org.Hs.eg.db"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu">create_ontology_DAG_from_GO_db</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="va">dag</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> An ontology_DAG object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Source: GO BP / GO.db package </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   28140 terms / 56449 relations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Root: GO:0008150 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Terms: GO:0000001, GO:0000002, GO:0000003, GO:0000011, ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Max depth: 18 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Avg number of parents: 2.01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Aspect ratio: 342.43:1 (based on the longest distance to root)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 780.22:1 (based on the shortest distance to root)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Relations: is_a, part_of</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> With the following columns in the metadata data frame:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   id, name, definition</span>
 </code></pre></div>
     </div>
   </div>

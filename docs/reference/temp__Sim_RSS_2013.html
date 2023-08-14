@@ -54,7 +54,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -69,7 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Sim_RSS_2013</h1>
-    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/R/sim.R" class="external-link"><code>R/sim.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/R/sim.R" class="external-link"><code>R/sim.R</code></a></small>
     <div class="hidden name"><code>temp__Sim_RSS_2013.Rd</code></div>
     </div>
 
@@ -95,7 +95,8 @@
 <p>In the tuning factor, <code>alpha</code> is the distance of LCA to root, which is <code>depth(c)</code>. <code>beta</code> is the distance to leaves, which
 is the minimal distance (or the minimal height) of term <code>a</code> and <code>b</code>:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>alpha<span class="sc">/</span>(alpha <span class="sc">+</span> beta) <span class="ot">=</span> <span class="fu">depth</span>(c)<span class="sc">/</span>(<span class="fu">depth</span>(c) <span class="sc">+</span> <span class="fu">min</span>(<span class="fu">height</span>(a), <span class="fu">height</span>(b)))</span></code></pre><p></p></div>
-<p>Paper link: <a href="https://doi.org/10.1371/journal.pone.0066745" class="external-link">https://doi.org/10.1371/journal.pone.0066745</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1371/journal.pone.0066745" class="external-link">doi:10.1371/journal.pone.0066745</a>
+.</p>
 <p>There is a parameter <code>distance</code> which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">term_sim</span>(dag, terms, <span class="at">method =</span> <span class="st">"Sim_RSS_2013"</span>,</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">list</span>(<span class="at">distance =</span> <span class="st">"shortest_distances_via_CA"</span>))</span></code></pre><p></p></div>

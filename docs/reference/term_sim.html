@@ -54,7 +54,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -69,7 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Semantic similarity</h1>
-    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/R/methods.R" class="external-link"><code>R/methods.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/R/methods.R" class="external-link"><code>R/methods.R</code></a></small>
     <div class="hidden name"><code>term_sim.Rd</code></div>
     </div>
 
@@ -116,7 +116,8 @@
 <p>The similarity between two terms <code>a</code> and <code>b</code> is calculated as the IC of their MICA term <code>c</code> normalized by the average of the IC of the two terms:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="fu">IC</span>(c)<span class="sc">/</span>((<span class="fu">IC</span>(a) <span class="sc">+</span> <span class="fu">IC</span>(b))<span class="sc">/</span><span class="dv">2</span>) </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">IC</span>(c)<span class="sc">/</span>(<span class="fu">IC</span>(a) <span class="sc">+</span> <span class="fu">IC</span>(b))</span></code></pre><p></p></div>
-<p>Paper link: <a href="https://dl.acm.org/doi/10.5555/645527.657297" class="external-link">https://dl.acm.org/doi/10.5555/645527.657297</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.5555/645527.657297" class="external-link">doi:10.5555/645527.657297</a>
+.</p>
 </div>
 
 
@@ -133,7 +134,11 @@ of a term with only one item annotated is <code>-log(1/N)</code> = log(N)`. So t
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="fu">IC</span>(c)<span class="sc">/</span>IC_max</span></code></pre><p></p></div><ol><li><p><em>Nunivers</em></p></li>
 </ol><p>The IC is normalized by the maximal IC of term <code>a</code> and <code>b</code>.</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="fu">IC</span>(c)<span class="sc">/</span><span class="fu">max</span>(<span class="fu">IC</span>(a), <span class="fu">IC</span>(b))</span></code></pre><p></p></div>
-<p>Paper link: <a href="https://doi.org/10.1613/jair.514" class="external-link">https://doi.org/10.1613/jair.514</a>, <a href="https://doi.org/10.1186/1471-2105-9-S5-S4" class="external-link">https://doi.org/10.1186/1471-2105-9-S5-S4</a>, <a href="https://doi.org/10.1186/1471-2105-11-562" class="external-link">https://doi.org/10.1186/1471-2105-11-562</a>, <a href="https://doi.org/10.1155/2013/292063" class="external-link">https://doi.org/10.1155/2013/292063</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1613/jair.514" class="external-link">doi:10.1613/jair.514</a>
+, <a href="https://doi.org/10.1186/1471-2105-9-S5-S4" class="external-link">doi:10.1186/1471-2105-9-S5-S4</a>
+, <a href="https://doi.org/10.1186/1471-2105-11-562" class="external-link">doi:10.1186/1471-2105-11-562</a>
+, <a href="https://doi.org/10.1155/2013/292063" class="external-link">doi:10.1155/2013/292063</a>
+.</p>
 <p>The normalization method can be set with the <code>norm_method</code> parameter:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">term_sim</span>(dag, terms, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">norm_method =</span> <span class="st">"Nmax"</span>))</span></code></pre><p></p></div>
 <p>Possible values for the <code>norm_method</code> parameter are "Nunif", "Nmax", "Nunivers" and "none".</p>
@@ -148,7 +153,8 @@ of a term with only one item annotated is <code>-log(1/N)</code> = log(N)`. So t
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="fu">IC</span>(c)<span class="sc">/</span>(<span class="fu">IC</span>(a) <span class="sc">+</span> <span class="fu">IC</span>(b) <span class="sc">-</span> <span class="fu">IC</span>(c))</span></code></pre><p></p></div>
 <p>The relation between <em>FaITH_2010</em> similarity and <em>Lin_1998</em> similarity is:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim_FaITH <span class="ot">=</span> sim_Lin<span class="sc">/</span>(<span class="dv">2</span> <span class="sc">-</span> sim_Lin)</span></code></pre><p></p></div>
-<p>Paper link: <a href="https://doi.org/10.1007/978-3-642-17746-0_39" class="external-link">https://doi.org/10.1007/978-3-642-17746-0_39</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1007/978-3-642-17746-0_39" class="external-link">doi:10.1007/978-3-642-17746-0_39</a>
+.</p>
 </div>
 
 
@@ -163,7 +169,8 @@ probability <code>p(c) = k/N</code> where <code>k</code> is the number of items 
 the Relevance semantic similarity is calculated as:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">p</span>(c)) <span class="sc">*</span> IC_Lin </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="ot">=</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">p</span>(c)) <span class="sc">*</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">IC</span>(c)<span class="sc">/</span>(<span class="fu">IC</span>(a) <span class="sc">+</span> <span class="fu">IC</span>(b))</span></code></pre><p></p></div>
-<p>Paper link: <a href="https://doi.org/10.1186/1471-2105-7-302" class="external-link">https://doi.org/10.1186/1471-2105-7-302</a></p>
+<p>Paper link: <a href="https://doi.org/10.1186/1471-2105-7-302" class="external-link">doi:10.1186/1471-2105-7-302</a>
+.</p>
 </div>
 
 
@@ -178,7 +185,8 @@ correction factor for MICA term <code>c</code> is:</p>
 <p>Then the similarity is:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">IC</span>(c))) <span class="sc">*</span> IC_Lin </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="ot">=</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">IC</span>(c))) <span class="sc">*</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">IC</span>(c)<span class="sc">/</span>(<span class="fu">IC</span>(a) <span class="sc">+</span> <span class="fu">IC</span>(b))</span></code></pre><p></p></div>
-<p>Paper link: <a href="https://doi.org/10.48550/arXiv.1001.0958" class="external-link">https://doi.org/10.48550/arXiv.1001.0958</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.48550/arXiv.1001.0958" class="external-link">doi:10.48550/arXiv.1001.0958</a>
+.</p>
 </div>
 
 
@@ -192,7 +200,8 @@ First it calculates the mean IC of all common ancestor terms with positive IC va
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>IC_mean <span class="ot">=</span> <span class="fu">mean_t</span>(<span class="fu">IC</span>(t)) where t is an ancestor of both a and b, and <span class="fu">IC</span>(t) <span class="sc">&gt;</span> <span class="dv">0</span></span></code></pre><p></p></div>
 <p>then similar to the <em>Lin_1998</em> method, normalize to the average IC of <code>a</code> and <code>b</code>:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> IC_mean<span class="sc">*</span><span class="dv">2</span><span class="sc">/</span>(<span class="fu">IC</span>(a) <span class="sc">+</span> <span class="fu">IC</span>(b))</span></code></pre><p></p></div>
-<p>Paper link: <a href="https://doi.org/10.1186/1471-2105-14-284" class="external-link">https://doi.org/10.1186/1471-2105-14-284</a></p>
+<p>Paper link: <a href="https://doi.org/10.1186/1471-2105-14-284" class="external-link">doi:10.1186/1471-2105-14-284</a>
+.</p>
 </div>
 
 
@@ -209,7 +218,8 @@ DA(x) terms can transmit exclusive contents to <code>x</code>.</p>
 <p>Next, for every common ancestor <code>c</code> of term <code>a</code> and <code>b</code>, <code>c</code> is only selected if there is another common ancestor <code>c'</code> which have smaller IC than <code>c</code> (<code>IC(c) &gt; IC(c')</code>), <code>(c, c')</code> is DA of
 either <code>a</code> or <code>b</code>.</p>
 <p>Then the mean IC of the subset common ancestors is calculated and normalized by the <em>Lin_1998</em> method.</p>
-<p>Paper link: <a href="https://doi.org/10.1145/1099554.1099658" class="external-link">https://doi.org/10.1145/1099554.1099658</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1145/1099554.1099658" class="external-link">doi:10.1145/1099554.1099658</a>
+.</p>
 </div>
 
 
@@ -221,7 +231,8 @@ either <code>a</code> or <code>b</code>.</p>
 <p>It also selects a subset of common ancestors of terms <code>a</code> and <code>b</code>. It only selects common ancestors which can reach <code>a</code> or <code>b</code> via one of its child terms
 that does not belong to the common ancestors (mutual exclusively in <code>a</code>'s ancestors or in <code>b</code>'s ancestors).</p>
 <p>Then the mean IC of the subset common ancestors is calculated and normalized by the <em>Lin_1998</em> method.</p>
-<p>Paper link: <a href="https://doi.org/10.1016/j.gene.2014.12.062" class="external-link">https://doi.org/10.1016/j.gene.2014.12.062</a></p>
+<p>Paper link: <a href="https://doi.org/10.1016/j.gene.2014.12.062" class="external-link">doi:10.1016/j.gene.2014.12.062</a>
+.</p>
 </div>
 
 
@@ -238,7 +249,8 @@ in the ancestors of the two terms <code>a</code> and <code>b</code> separatedly:
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="st">SV_b = sum{b'</span> <span class="cf">in</span> b<span class="st">'s ancestors}(Sw(b'</span>))</span></code></pre><p></p></div>
 <p>The similarity is calculated as the ratio between the aggregation on the common ancestors and the average on <code>a</code>'s ancestors and <code>b</code>'s ancestors separatedly.</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span>SV_{common_ancestors}<span class="sc">/</span>(SV_a <span class="sc">+</span> SV_b)</span></code></pre><p></p></div>
-<p>Paper link: <a href="https://doi.org/10.1109/tcbb.2013.176" class="external-link">https://doi.org/10.1109/tcbb.2013.176</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1109/tcbb.2013.176" class="external-link">doi:10.1109/tcbb.2013.176</a>
+.</p>
 </div>
 
 
@@ -271,7 +283,8 @@ Similar to the <em>Sim_AIC_2014</em>, aggregation only to common ancestors, to <
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="st">SV_b = sum{b'</span> <span class="cf">in</span> b<span class="st">'s ancestors}(S(b'</span><span class="ot">-&gt;</span>b))</span></code></pre><p></p></div>
 <p>Then the similarity is calculated as:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> SV_{common_ancestors}<span class="sc">*</span><span class="dv">2</span><span class="sc">/</span>(SV_a <span class="sc">+</span> SV_b)</span></code></pre><p></p></div>
-<p>Paper link: <a href="https://doi.org/10.1093/bioinformatics/btm087" class="external-link">https://doi.org/10.1093/bioinformatics/btm087</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1093/bioinformatics/btm087" class="external-link">doi:10.1093/bioinformatics/btm087</a>
+.</p>
 <p>The contribution of different semantic relations can be set with the <code>contribution_factor</code> parameter. The value should be a named numeric
 vector where names should cover the relations defined in <code>relations</code> set in <code><a href="create_ontology_DAG.html">create_ontology_DAG()</a></code>. For example, if there are two relations
 "relation_a" and "relation_b" set in the DAG, the value for <code>contribution_factor</code> can be set as:</p>
@@ -287,7 +300,8 @@ vector where names should cover the relations defined in <code>relations</code> 
 <p>It is based on the distance between term <code>a</code> and <code>b</code>. It is defined as:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">d</span>(a, b))</span></code></pre><p></p></div>
 <p>The distance can be the shortest distance between <code>a</code> and <code>b</code> or the longest distance via the LCA term.</p>
-<p>Paper link: <a href="https://doi.org/10.1109/21.24528" class="external-link">https://doi.org/10.1109/21.24528</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1109/21.24528" class="external-link">doi:10.1109/21.24528</a>
+.</p>
 <p>There is a parameter <code>distance</code> which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">term_sim</span>(dag, terms, <span class="at">method =</span> <span class="st">"Sim_Rada_1989"</span>,</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">list</span>(<span class="at">distance =</span> <span class="st">"shortest_distances_via_NCA"</span>))</span></code></pre><p></p></div>
@@ -302,7 +316,8 @@ vector where names should cover the relations defined in <code>relations</code> 
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">d</span>(a, b)<span class="sc">/</span><span class="dv">2</span><span class="sc">/</span>max_depth</span></code></pre><p></p></div>
 <p>where <code>max_depth</code> is the maximal depth (maximal distance from root) in the DAG. Similarly, <code>d(a, b)</code> can be the shortest
 distance or the longest distance via LCA.</p>
-<p>Paper link: <a href="https://doi.org/10.1145/1097047.1097051" class="external-link">https://doi.org/10.1145/1097047.1097051</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1145/1097047.1097051" class="external-link">doi:10.1145/1097047.1097051</a>
+.</p>
 <p>There is a parameter <code>distance</code> which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">term_sim</span>(dag, terms, <span class="at">method =</span> <span class="st">"Sim_Resnik_edge_2005"</span>,</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">list</span>(<span class="at">distance =</span> <span class="st">"shortest_distances_via_NCA"</span>))</span></code></pre><p></p></div>
@@ -332,7 +347,8 @@ distance or the longest distance via LCA.</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">len_c</span>(a, b) <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">depth</span>(c) <span class="ot">=</span> <span class="fu">depth</span>(c) <span class="sc">+</span> <span class="fu">len</span>(c, a) <span class="sc">+</span> <span class="fu">depth</span>(c) <span class="sc">+</span> <span class="fu">len</span>(c, b)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                         <span class="ot">=</span> <span class="fu">depth_c</span>(a) <span class="sc">+</span> <span class="fu">depth_c</span>(b)</span></code></pre><p></p></div>
 <p>where <code>depth_c(a)</code> is the longest distance from root to <code>a</code> passing through <code>c</code>.</p>
-<p>Paper link: <a href="https://doi.org/10.3115/981732.981751" class="external-link">https://doi.org/10.3115/981732.981751</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.3115/981732.981751" class="external-link">doi:10.3115/981732.981751</a>
+.</p>
 </div>
 
 
@@ -355,7 +371,8 @@ distance or the longest distance via LCA.</p>
 <p>It is a correction of the <em>Sim_WP_1994</em> method. The correction factor for term <code>a</code> and <code>b</code> is:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CF</span>(a, b) <span class="ot">=</span> <span class="fu">exp</span>(<span class="sc">-</span>lambda<span class="sc">*</span><span class="fu">d</span>(a, b)<span class="sc">/</span>max_depth)</span></code></pre><p></p></div>
 <p><code>lambda</code> takes value of 1 if <code>a</code> and <code>b</code> are in ancestor-offspring relation, or else it takes 0. `d(a, b)</p>
-<p>Paper link: <a href="https://doi.org/10.48550/arXiv.1211.4709" class="external-link">https://doi.org/10.48550/arXiv.1211.4709</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.48550/arXiv.1211.4709" class="external-link">doi:10.48550/arXiv.1211.4709</a>
+.</p>
 <p>There is a parameter <code>distance</code> which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">term_sim</span>(dag, terms, <span class="at">method =</span> <span class="st">"Sim_Leocock_1998"</span>,</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">list</span>(<span class="at">distance =</span> <span class="st">"shortest_distances_via_NCA"</span>))</span></code></pre><p></p></div>
@@ -381,7 +398,8 @@ distance or the longest distance via LCA.</p>
 <p>It is purely based on the depth of term <code>a</code>, <code>b</code> and their LCA <code>c</code>.</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="fu">depth</span>(c)<span class="sc">/</span>(<span class="fu">depth</span>(a) <span class="sc">+</span> <span class="fu">depth</span>(b) <span class="sc">-</span> <span class="fu">depth</span>(c))</span></code></pre><p></p></div>
 <p>Since the similarity value might be negative because there is no restrction that the path from root to <code>a</code> or <code>b</code> must pass <code>c</code>.</p>
-<p>Paper link: <a href="https://doi.org/10.1145/500737.500762" class="external-link">https://doi.org/10.1145/500737.500762</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1145/500737.500762" class="external-link">doi:10.1145/500737.500762</a>
+.</p>
 </div>
 
 
@@ -392,7 +410,8 @@ distance or the longest distance via LCA.</p>
 <p>It is calculated as:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="fu">depth</span>(c)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="fu">depth_c</span>(a)<span class="sc">/</span><span class="fu">depth_c</span>(b)</span></code></pre><p></p></div>
 <p>where <code>depth_c(a)</code> is the longest distance between root to <code>a</code> passing through <code>c</code>.</p>
-<p>Paper link: <a href="https://doi.org/10.1186/1477-5956-10-s1-s18" class="external-link">https://doi.org/10.1186/1477-5956-10-s1-s18</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1186/1477-5956-10-s1-s18" class="external-link">doi:10.1186/1477-5956-10-s1-s18</a>
+.</p>
 </div>
 
 
@@ -413,7 +432,8 @@ distance or the longest distance via LCA.</p>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="ot">=</span> <span class="dv">2</span><span class="sc">^-</span><span class="fu">depth</span>(c) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="dv">2</span><span class="sc">^-</span>(<span class="fu">len</span>(c, a) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">-</span> <span class="dv">2</span><span class="sc">^-</span>(<span class="fu">len</span>(c, b) <span class="sc">+</span> <span class="dv">1</span>))</span></code></pre><p></p></div>
 <p>And the final similarity is <code>1 - distance</code>:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> <span class="dv">2</span><span class="sc">^-</span><span class="fu">depth</span>(c) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="dv">2</span><span class="sc">^-</span>(<span class="fu">len</span>(c, a) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">-</span> <span class="dv">2</span><span class="sc">^-</span>(<span class="fu">len</span>(c, b) <span class="sc">+</span> <span class="dv">1</span>))</span></code></pre><p></p></div>
-<p>Paper link: <a href="https://doi.org/10.1007/3-540-45483-7_8" class="external-link">https://doi.org/10.1007/3-540-45483-7_8</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1007/3-540-45483-7_8" class="external-link">doi:10.1007/3-540-45483-7_8</a>
+.</p>
 <p>There is a parameter <code>depth_via_LCA</code> that can be set to <code>TRUE</code> or <code>FALSE</code>. IF it is set to <code>TRUE</code>, <code>depth(a)</code> is re-defined
 as should pass the LCA term <code>c</code>. If it is <code>FALSE</code>, it goes to the original similarity definition in the paper and note the
 similarity might be negative.</p>
@@ -434,7 +454,8 @@ The distance is calculated as:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>D_max <span class="ot">=</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>max_depth <span class="sc">*</span> max_depth)</span></code></pre><p></p></div>
 <p>And the minimal value of <code>D(a, b)</code> is zero when <code>a</code> is identical to <code>b</code>. Then the similarity value is scaled as:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">D</span>(a, b)<span class="sc">/</span>D_max</span></code></pre><p></p></div>
-<p>Paper link: <a href="https://doi.org/10.1109/IEMBS.2006.259235" class="external-link">https://doi.org/10.1109/IEMBS.2006.259235</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1109/IEMBS.2006.259235" class="external-link">doi:10.1109/IEMBS.2006.259235</a>
+.</p>
 <p>There is a parameter <code>distance</code> which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">term_sim</span>(dag, terms, <span class="at">method =</span> <span class="st">"Sim_AlMubaid_2006"</span>,</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">list</span>(<span class="at">distance =</span> <span class="st">"shortest_distances_via_CA"</span>))</span></code></pre><p></p></div>
@@ -448,7 +469,8 @@ The distance is calculated as:</p>
 <p>It is similar to the <em>Sim_AlMubaid_2006</em> method, but uses a non-linear form:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="fu">exp</span>(<span class="fl">0.2</span><span class="sc">*</span><span class="fu">d</span>(a, b)) <span class="sc">*</span> <span class="fu">atan</span>(<span class="fl">0.6</span><span class="sc">*</span><span class="fu">depth</span>(c))</span></code></pre><p></p></div>
 <p>where <code>d(a, b)</code> can be the shortest distance or the longest distance via LCA.</p>
-<p>Paper link: <a href="https://doi.org/10.1109/TKDE.2003.1209005" class="external-link">https://doi.org/10.1109/TKDE.2003.1209005</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1109/TKDE.2003.1209005" class="external-link">doi:10.1109/TKDE.2003.1209005</a>
+.</p>
 <p>There is a parameter <code>distance</code> which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">term_sim</span>(dag, terms, <span class="at">method =</span> <span class="st">"Sim_Li_2003"</span>,</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">list</span>(<span class="at">distance =</span> <span class="st">"shortest_distances_via_CA"</span>))</span></code></pre><p></p></div>
@@ -465,7 +487,8 @@ The distance is calculated as:</p>
 <p>In the tuning factor, <code>alpha</code> is the distance of LCA to root, which is <code>depth(c)</code>. <code>beta</code> is the distance to leaves, which
 is the minimal distance (or the minimal height) of term <code>a</code> and <code>b</code>:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>alpha<span class="sc">/</span>(alpha <span class="sc">+</span> beta) <span class="ot">=</span> <span class="fu">depth</span>(c)<span class="sc">/</span>(<span class="fu">depth</span>(c) <span class="sc">+</span> <span class="fu">min</span>(<span class="fu">height</span>(a), <span class="fu">height</span>(b)))</span></code></pre><p></p></div>
-<p>Paper link: <a href="https://doi.org/10.1371/journal.pone.0066745" class="external-link">https://doi.org/10.1371/journal.pone.0066745</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1371/journal.pone.0066745" class="external-link">doi:10.1371/journal.pone.0066745</a>
+.</p>
 <p>There is a parameter <code>distance</code> which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">term_sim</span>(dag, terms, <span class="at">method =</span> <span class="st">"Sim_RSS_2013"</span>,</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">list</span>(<span class="at">distance =</span> <span class="st">"shortest_distances_via_CA"</span>))</span></code></pre><p></p></div>
@@ -489,7 +512,8 @@ is the minimal distance (or the minimal height) of term <code>a</code> and <code
 <p>And <code>beta</code> is the average of the maximal semantic distance of <code>a</code> and <code>b</code> to leaves.</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="fl">0.5</span><span class="sc">*</span>(<span class="fu">IC</span>(l_a) <span class="sc">-</span> <span class="fu">IC</span>(a) <span class="sc">+</span> <span class="fu">IC</span>(l_b) <span class="sc">-</span> <span class="fu">IC</span>(b))</span></code></pre><p></p></div>
 <p>where <code>l_a</code> is the leaf that <code>a</code> can reach with the highest IC (i.e. most informative leaf), and so is <code>l_b</code>.</p>
-<p>Paper link: <a href="https://doi.org/10.1371/journal.pone.0066745" class="external-link">https://doi.org/10.1371/journal.pone.0066745</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1371/journal.pone.0066745" class="external-link">doi:10.1371/journal.pone.0066745</a>
+.</p>
 </div>
 
 
@@ -505,7 +529,8 @@ between <code>a</code> and <code>b</code> is the sum of <code>1/IC</code> of the
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">atan</span>(sum_{x <span class="cf">in</span> the path}(<span class="dv">1</span><span class="sc">/</span><span class="fu">IC</span>(x)))<span class="sc">/</span>(pi<span class="sc">/</span><span class="dv">2</span>)</span></code></pre><p></p></div>
 <p>And finally the similarity is:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">atan</span>(sum_{x <span class="cf">in</span> the path}(<span class="dv">1</span><span class="sc">/</span><span class="fu">IC</span>(x)))<span class="sc">/</span>(pi<span class="sc">/</span><span class="dv">2</span>)</span></code></pre><p></p></div>
-<p>Paper link: <a href="https://doi.org/10.1109/BIBM.2010.5706623" class="external-link">https://doi.org/10.1109/BIBM.2010.5706623</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1109/BIBM.2010.5706623" class="external-link">doi:10.1109/BIBM.2010.5706623</a>
+.</p>
 </div>
 
 
@@ -523,7 +548,8 @@ The T-value for term <code>t</code> is averaged from its</p>
 <p>Since the parent may have other child terms, a factor <code>w1</code> or <code>w2</code> is multiplied to <code>T(p1)</code> and <code>T(p2)</code>. Taking
 <code>p1</code> as an example, it has <code>n_p</code> offsprings (including itself) and <code>t</code> has <code>n_t</code> offsprings (including itself),
 this means <code>n_t/n_p</code> of information is transmitted from <code>p1</code> to downstream via <code>t</code>, thus <code>w1</code> is defined as <code>n_t/n_p</code>.</p>
-<p>Paper link: <a href="https://doi.org/10.1016/j.ygeno.2013.04.010" class="external-link">https://doi.org/10.1016/j.ygeno.2013.04.010</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1016/j.ygeno.2013.04.010" class="external-link">doi:10.1016/j.ygeno.2013.04.010</a>
+.</p>
 </div>
 
 
@@ -611,8 +637,7 @@ of the two sets, defined as <code>length(intersect(A, B))/min(length(A), length(
 <span class="r-in"><span><span class="fu">term_sim</span><span class="op">(</span><span class="va">dag</span>, <span class="fu"><a href="dag_all_terms.html">dag_all_terms</a></span><span class="op">(</span><span class="va">dag</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">"Sim_Lin_1998"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> remove root term.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> collecting all ancestors of input terms ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 ancestors ...going through 6 / 6 ancestors ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> done.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> going through 0 / 6 ancestors ...going through 6 / 6 ancestors ... Done.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           b         c         d         e         f</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> b 1.0000000 0.5866099 0.3437110 0.5866099 0.2430647</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> c 0.5866099 1.0000000 0.2766917 1.0000000 0.2075187</span>

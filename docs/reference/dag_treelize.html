@@ -54,7 +54,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -69,7 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Reduce the DAG to a tree</h1>
-    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/R/tree.R" class="external-link"><code>R/tree.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/R/tree.R" class="external-link"><code>R/tree.R</code></a></small>
     <div class="hidden name"><code>dag_treelize.Rd</code></div>
     </div>
 
@@ -80,7 +80,10 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dag_treelize</span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">dag_as_dendrogram</span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">dag_as_dendrogram</span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for ontology_tree</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -88,7 +91,21 @@
     <dl><dt>dag</dt>
 <dd><p>An <code>ontology_DAG</code> object.</p></dd>
 
+
+<dt>x</dt>
+<dd><p>An <code>ontology_DAG</code> object.</p></dd>
+
+
+<dt>...</dt>
+<dd><p>Ignored.</p></dd>
+
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>An <code>ontology_DAG</code> object.</p>
+    </div>
     <div id="details">
     <h2>Details</h2>
     <p>A tree is a reduced DAG where a child only has one parent. The reducing is applied by a breadth-first searching</p>
@@ -101,16 +118,25 @@ marked as visited and will not be checked again.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="create_ontology_DAG_from_GO_db.html">create_ontology_DAG_from_GO_db</a></span><span class="op">(</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">parents</span>  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"d"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">children</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"c"</span>, <span class="st">"d"</span>, <span class="st">"e"</span>, <span class="st">"f"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="create_ontology_DAG.html">create_ontology_DAG</a></span><span class="op">(</span><span class="va">parents</span>, <span class="va">children</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">tree</span> <span class="op">=</span> <span class="fu">dag_treelize</span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">d1</span> <span class="op">=</span> <span class="fu"><a href="dag_depth.html">dag_depth</a></span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">d2</span> <span class="op">=</span> <span class="fu"><a href="dag_depth.html">dag_depth</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">d1</span>, <span class="va">d2</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">dend</span> <span class="op">=</span> <span class="fu">dag_as_dendrogram</span><span class="op">(</span><span class="va">tree</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dend</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> This is a normal `dendrogram` object, but with several more attributes attached to each node:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - label: term name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - term_id: the integer index of the term</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - n_nodes: number of offspring terms, including itself</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - members: this is the standard attribute, which is the number of leaves the term can reach to</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - max_dist_to_leaf: max distance to the term's leaves</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'dendrogram' with 1 branches and 2 members total, at height 3 </span>
 </code></pre></div>
     </div>
   </div>

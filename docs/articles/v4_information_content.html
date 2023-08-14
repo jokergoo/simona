@@ -75,7 +75,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -96,9 +96,9 @@
       <h1 data-toc-skip>Information content</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2023-08-04</h4>
+            <h4 data-toc-skip class="date">2023-08-14</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/vignettes/v4_information_content.Rmd" class="external-link"><code>vignettes/v4_information_content.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/vignettes/v4_information_content.Rmd" class="external-link"><code>vignettes/v4_information_content.Rmd</code></a></small>
       <div class="hidden name"><code>v4_information_content.Rmd</code></div>
 
     </div>
@@ -220,7 +220,7 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p>where <span class="math inline">\(p(x)\)</span> is the probability of term <span class="math inline">\(x\)</span> under a certain measure in the DAG. If a term has a smaller probability, it means it is more specific, the form <span class="math inline">\(-\log(p(x))\)</span> will have a larger value, thus it is called the “information content”. Basically the more to the leaves in the DAG, a smaller p-value is gained and the higher information content a term has.</p>
 <p>In the following sections, I will use Gene Ontology as an example to demonstrate various IC methods supported in the <strong>simona</strong> package. Note here I also set the gene annotation because some IC methods depend on the number of annotated genes on GO terms.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jokergoo/simone" class="external-link">simona</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jokergoo/simona" class="external-link">simona</a></span><span class="op">)</span></span>
 <span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="../reference/create_ontology_DAG_from_GO_db.html">create_ontology_DAG_from_GO_db</a></span><span class="op">(</span>namespace <span class="op">=</span> <span class="st">"BP"</span>, org_db <span class="op">=</span> <span class="st">"org.Hs.eg.db"</span><span class="op">)</span></span>
 <span><span class="va">dag</span></span></code></pre></div>
 <pre><code><span><span class="co">## An ontology_DAG object:</span></span>
@@ -229,6 +229,7 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <span><span class="co">##   Root: GO:0008150 </span></span>
 <span><span class="co">##   Terms: GO:0000001, GO:0000002, GO:0000003, GO:0000011, ...</span></span>
 <span><span class="co">##   Max depth: 18 </span></span>
+<span><span class="co">##   Avg number of parents: 2.01</span></span>
 <span><span class="co">##   Aspect ratio: 342.43:1 (based on the longest distance to root)</span></span>
 <span><span class="co">##                 780.22:1 (based on the shortest distance to root)</span></span>
 <span><span class="co">##   Relations: is_a, part_of</span></span>
@@ -237,8 +238,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <span><span class="co">## With the following columns in the metadata data frame:</span></span>
 <span><span class="co">##   id, name, definition</span></span></code></pre>
 <p>The wrapper function <code><a href="../reference/term_IC.html">term_IC()</a></code> calculates information contents of terms in the DAG with a specific method. Note the method name can be partially matched.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_IC.html">term_IC</a></span><span class="op">(</span><span class="va">dag</span>, method <span class="op">=</span> <span class="va">...</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_IC(dag, method = ..., control = list(...))
+</pre>
 </div>
 <div class="section level2">
 <h2 id="ic_offspring">IC_offspring<a class="anchor" aria-label="anchor" href="#ic_offspring"></a>
@@ -246,8 +248,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p>The information content is calculated as:</p>
 <p><span class="math display">\[ \mathrm{IC}(x) = -\log \left(  \frac{|\mathcal{D}_x^+|}{|\mathcal{D}_r^+|} \right) \]</span></p>
 <p>In the bracket is the fraction of number of offspring terms to the total number of terms in the DAG.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_IC.html">term_IC</a></span><span class="op">(</span><span class="va">dag</span>, method <span class="op">=</span> <span class="st">"IC_offspring"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_IC(dag, method = "IC_offspring")
+</pre>
 </div>
 <div class="section level2">
 <h2 id="ic_height">IC_height<a class="anchor" aria-label="anchor" href="#ic_height"></a>
@@ -255,8 +258,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p>It measures the relative position of a term in the DAG:</p>
 <p><span class="math display">\[ \mathrm{IC}(x) = -\log \left( \frac{\eta(x) + 1}{\delta(x) + \eta(x) + 1} \right) \]</span></p>
 <p>where <span class="math inline">\(\eta(x)\)</span> is the height of a term and <span class="math inline">\(\delta(x)\)</span> is the depth of the term. 1 is added in the formula to get rid of <span class="math inline">\(\log(0)\)</span> for leaf terms.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_IC.html">term_IC</a></span><span class="op">(</span><span class="va">dag</span>, method <span class="op">=</span> <span class="st">"IC_height"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_IC(dag, method = "IC_height")
+</pre>
 </div>
 <div class="section level2">
 <h2 id="ic_annotation">IC_annotation<a class="anchor" aria-label="anchor" href="#ic_annotation"></a>
@@ -267,8 +271,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p>And the information content is:</p>
 <p><span class="math display">\[ \mathrm{IC}(x) = -\log \left( \frac{|G_x|}{|G_r|} \right) \]</span></p>
 <p>where <span class="math inline">\(G_r\)</span> is the set of all items annotated to the DAG (i.e. to the root).</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_IC.html">term_IC</a></span><span class="op">(</span><span class="va">dag</span>, method <span class="op">=</span> <span class="st">"IC_annotation"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_IC(dag, method = "IC_annotation")
+</pre>
 <p><code>NA</code> is assigned to the terms with no item annotated.</p>
 <p>In some implementation of current tools, number of annotated items on a term is calculated by simply adding such numbers from all its child terms, as shown in the following equation:</p>
 <p><span class="math display">\[ f(x) = \left\{ \begin{array}{lr}
@@ -278,7 +283,7 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p>where <span class="math inline">\(\beta(x)\)</span> is the number of items directly annotated to term <span class="math inline">\(x\)</span>. It should be noted that this way over-estimates the number of annotated items because an item can be annotated to multiple terms. For example, a gene can be annotated to multiple GO terms (you can check the object <code><a href="https://rdrr.io/pkg/org.Hs.eg.db/man/org.Hs.egGO.html" class="external-link">org.Hs.eg.db::org.Hs.egGO</a></code>. And even for the same term, it may have duplicated annotated genes with multiple evidence codes (e.g. the gene with Entrez ID <code>"994"</code> is annotated to a GO term <code>"GO:0000086"</code> twice with evidence code <code>"IBA"</code> and <code>"TAS"</code>).</p>
 <p>Since annotated-based <span class="math inline">\(p(x)\)</span> is the probability of a term being annotated when randomly selecting an item, the second way might not be proper. The two methods are identical only if an item is uniquely annotated to a term in the DAG.</p>
 <p>We can compare the two different implementations with or without uniquifying annotations. We can specify an additional parameter for the <em>IC_annotation</em> method: <code>control = list(uniquify = FALSE)</code> to use the second method.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ic1</span> <span class="op">=</span> <span class="fu"><a href="../reference/term_IC.html">term_IC</a></span><span class="op">(</span><span class="va">dag</span>, method <span class="op">=</span> <span class="st">"IC_annotation"</span><span class="op">)</span></span>
 <span><span class="va">ic2</span> <span class="op">=</span> <span class="fu"><a href="../reference/term_IC.html">term_IC</a></span><span class="op">(</span><span class="va">dag</span>, method <span class="op">=</span> <span class="st">"IC_annotation"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>uniquify <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># ranges on both x- and y-axes</span></span>
@@ -299,8 +304,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p><span class="math display">\[ p(x) = \frac{p(t_1)}{k_1} * \frac{p(t_2)}{k_2} \]</span></p>
 <p>Since the two parents are the full set of <span class="math inline">\(x\)</span>’s parents, <span class="math inline">\(p(x)\)</span> is the probability of <span class="math inline">\(x\)</span> getting full transmission from root. And the final information content is:</p>
 <p><span class="math display">\[ \mathrm{IC}(x) = -\log(p(x)) \]</span></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_IC.html">term_IC</a></span><span class="op">(</span><span class="va">dag</span>, method <span class="op">=</span> <span class="st">"IC_universal"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_IC(dag, method = "IC_universal")
+</pre>
 <p>The formal definition is:</p>
 <p><span class="math display">\[ p(x) = \left\{ \begin{array}{cl}
 1 &amp; \text{if } \textit{x} \text{ is a root} \\
@@ -326,8 +332,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p>And the information content:</p>
 <p><span class="math display">\[ \mathrm{IC}(x) = -\log \left( \frac{f(x)}{f(r)} \right) \]</span></p>
 <p>where <span class="math inline">\(f(r)\)</span> is the number of ways to reach all leaf terms from root.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_IC.html">term_IC</a></span><span class="op">(</span><span class="va">dag</span>, method <span class="op">=</span> <span class="st">"IC_Zhang_2006"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_IC(dag, method = "IC_Zhang_2006")
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1186/1471-2105-7-135" class="external-link uri">https://doi.org/10.1186/1471-2105-7-135</a>.</p>
 </div>
 <div class="section level2">
@@ -341,8 +348,7 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 \end{align*} 
 \]</span></p>
 <p>where <span class="math inline">\(\|\mathcal{D}_r^+\|\)</span> is the total number of terms in the DAG.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_IC.html">term_IC</a></span><span class="op">(</span><span class="va">dag</span>, method <span class="op">=</span> <span class="st">"IC_Seco_2004"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="fu"><a href="../reference/term_IC.html">term_IC</a></span><span class="op">(</span><span class="va">dag</span>, method <span class="op">=</span> <span class="st">"IC_Seco_2004"</span><span class="op">)</span></span></code></pre>
 <p><em>IC_Seco_2004</em> is actually a normalized version of <em>IC_offspring</em>:</p>
 <p><span class="math display">\[
 \begin{align*}
@@ -360,8 +366,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p>It is a correction of <em>IC_Seco_2004</em> which also considers the depth of a term in the DAG. The information content is calculated as:</p>
 <p><span class="math display">\[ \mathrm{IC}(x) = 0.5 * \mathrm{IC}_\mathrm{Seco}(x) + 0.5*\frac{\log(\delta(x))}{\log(\delta_\mathrm{max})} \]</span></p>
 <p>And IC is set to 0 for root term.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_IC.html">term_IC</a></span><span class="op">(</span><span class="va">dag</span>, method <span class="op">=</span> <span class="st">"IC_Zhou_2008"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_IC(dag, method = "IC_Zhou_2008")
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1109/FGCNS.2008.16" class="external-link uri">https://doi.org/10.1109/FGCNS.2008.16</a>.</p>
 </div>
 <div class="section level2">
@@ -374,8 +381,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p>where <span class="math inline">\(\lambda_\mathrm{node}\)</span> is the total number of nodes in the DAG. When the DAG has a tree structure, i.e. a term only has one parent and root has no parent, there is the following relation:</p>
 <p><span class="math display">\[ \lambda_\mathrm{node} = \lambda_\mathrm{edge} + 1\]</span></p>
 <p>In this case, <span class="math inline">\(\sigma \approx 0.5\)</span>.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_IC.html">term_IC</a></span><span class="op">(</span><span class="va">dag</span>, method <span class="op">=</span> <span class="st">"IC_Seddiqui_2010"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_IC(dag, method = "IC_Seddiqui_2010")
+</pre>
 <p>Paper link: <a href="https://dl.acm.org/doi/10.5555/1862330.1862343" class="external-link uri">https://dl.acm.org/doi/10.5555/1862330.1862343</a>.</p>
 </div>
 <div class="section level2">
@@ -384,8 +392,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p>It measures the average contribution of term <span class="math inline">\(x\)</span> on leaf terms. First denote <span class="math inline">\(\zeta_x\)</span> as the number of leaf terms that can be reached from term <span class="math inline">\(x\)</span>. Since all <span class="math inline">\(x\)</span>’s ancestors can also reach <span class="math inline">\(x\)</span>’s leaves, the contribution of <span class="math inline">\(x\)</span> on leaf terms is scaled by the number of its ancestors. The final information content is normalized by the total number of leaves in the DAG.</p>
 <p><span class="math display">\[ \mathrm{IC}(x) = -\log \left( \frac{\zeta_x}{|\mathcal{A}_x^+| * \zeta_\mathrm{leaf}} \right) \]</span></p>
 <p>where <span class="math inline">\(\zeta_\mathrm{max}\)</span> is the total number of leaves in the DAG.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_IC.html">term_IC</a></span><span class="op">(</span><span class="va">dag</span>, method <span class="op">=</span> <span class="st">"IC_Sanchez_2011"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_IC(dag, method = "IC_Sanchez_2011")
+</pre>
 <p>Paper link: <a href="https://doi.org/10.1016/j.knosys.2010.10.001" class="external-link uri">https://doi.org/10.1016/j.knosys.2010.10.001</a>.</p>
 </div>
 <div class="section level2">
@@ -399,8 +408,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p>The final information content is the multiplication of <span class="math inline">\(r_1\)</span> and <span class="math inline">\(r_2\)</span>:</p>
 <p><span class="math display">\[ \mathrm{IC}(x) = r_1 * r_2 \]</span></p>
 <p>IC for root is set to 0.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_IC.html">term_IC</a></span><span class="op">(</span><span class="va">dag</span>, method <span class="op">=</span> <span class="st">"IC_Meng_2012"</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_IC(dag, method = "IC_Meng_2012")
+</pre>
 <p>Paper link: <a href="http://article.nadiapub.com/IJGDC/vol5_no3/6.pdf" class="external-link uri">http://article.nadiapub.com/IJGDC/vol5_no3/6.pdf</a>.</p>
 </div>
 <div class="section level2">
@@ -424,9 +434,10 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <p><span class="math display">\[ \mathrm{IC}(x) = \sum\limits_{t \in \mathcal{A}_x^+} S_x(t) \]</span></p>
 <p>Normally <em>IC_Wang_2007</em> is only used for calculating the semantic similarity using <em>Sim_Wang_2007</em> method.</p>
 <p>The contribution of different semantic relations can be set with the <code>contribution_factor</code> parameter. The value should be a named numeric vector where names should cover the relations defined in relations set in <code><a href="../reference/create_ontology_DAG.html">create_ontology_DAG()</a></code>. For example, if there are two relations “relation_a” and “relation_b” set in the DAG, the value for contribution_factor can be set as:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/term_IC.html">term_IC</a></span><span class="op">(</span><span class="va">dag</span>, method <span class="op">=</span> <span class="st">"IC_Wang_2007"</span>, </span>
-<span>    control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>contribution_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"relation_a"</span> <span class="op">=</span> <span class="fl">0.8</span>, <span class="st">"relation_b"</span> <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre class="r">
+term_IC(dag, method = "IC_Wang_2007", 
+    control = list(contribution_factor = c("relation_a" = 0.8, "relation_b" = 0.6)))
+</pre>
 <p>By default 0.8 is set for “is_a” and 0.6 for “part_of”.</p>
 <p>If you are not sure what types of relations have been set, simply type the <code>dag</code> object. The relation types are all printed there.</p>
 <p>Paper link: <a href="https://doi.org/10.1093/bioinformatics/btm087" class="external-link uri">https://doi.org/10.1093/bioinformatics/btm087</a>.</p>
@@ -434,7 +445,7 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.2.0 (2022-04-22)</span></span>
 <span><span class="co">## Platform: x86_64-apple-darwin17.0 (64-bit)</span></span>

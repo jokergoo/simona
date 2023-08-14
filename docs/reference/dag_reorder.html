@@ -54,7 +54,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -69,7 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Reorder child terms</h1>
-    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/R/reorder.R" class="external-link"><code>R/reorder.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/R/reorder.R" class="external-link"><code>R/reorder.R</code></a></small>
     <div class="hidden name"><code>dag_reorder.Rd</code></div>
     </div>
 
@@ -110,6 +110,31 @@ in the DAG, n - k is the distance bewteen c1 and c2 regarding how close the offs
 <p>With the distances from the set of child terms, <code><a href="https://rdrr.io/pkg/TSP/man/TSP.html" class="external-link">TSP::TSP()</a></code> is applied to reorder child terms.</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="create_ontology_DAG_from_GO_db.html">create_ontology_DAG_from_GO_db</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">dag_reorder</span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> adjust child terms on level 0, 1 terms</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> adjust child terms on level 1, 21 terms</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> An ontology_DAG object:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Source: GO BP / GO.db package </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   28140 terms / 56449 relations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Root: GO:0008150 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Terms: GO:0000001, GO:0000002, GO:0000003, GO:0000011, ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Max depth: 18 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Avg number of parents: 2.01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Aspect ratio: 342.43:1 (based on the longest distance to root)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 780.22:1 (based on the shortest distance to root)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Relations: is_a, part_of</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> With the following columns in the metadata data frame:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   id, name, definition</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span><span class="fl">1</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

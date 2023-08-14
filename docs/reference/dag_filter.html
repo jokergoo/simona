@@ -54,7 +54,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -69,7 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Filter the DAG</h1>
-    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/R/constructor.R" class="external-link"><code>R/constructor.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/R/constructor.R" class="external-link"><code>R/constructor.R</code></a></small>
     <div class="hidden name"><code>dag_filter.Rd</code></div>
     </div>
 
@@ -78,7 +78,14 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dag_filter</span><span class="op">(</span><span class="va">dag</span>, terms <span class="op">=</span> <span class="cn">NULL</span>, relations <span class="op">=</span> <span class="cn">NULL</span>, root <span class="op">=</span> <span class="cn">NULL</span>, leaves <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dag_filter</span><span class="op">(</span></span>
+<span>  <span class="va">dag</span>,</span>
+<span>  terms <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  relations <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  root <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  leaves <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mcols_filter <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -107,6 +114,10 @@ a super root will be automatically added.</p></dd>
 
 <dt>leaves</dt>
 <dd><p>A vector of leaf terms. Only these with their ancestor terms will be kept.</p></dd>
+
+
+<dt>mcols_filter</dt>
+<dd><p>Filtering on columns in the meta data frame.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -149,6 +160,7 @@ super root is automatically added.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Root: a </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Terms: a, b, c, ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Max depth: 2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Avg number of parents: 1.50</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Aspect ratio: 0.51:1 (based on the longest distance to root)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                 2:1 (based on the shortest distance to root)</span>
 <span class="r-in"><span><span class="fu">dag_filter</span><span class="op">(</span><span class="va">dag</span>, root <span class="op">=</span> <span class="st">"b"</span>, leaves <span class="op">=</span> <span class="st">"e"</span><span class="op">)</span></span></span>
@@ -160,10 +172,11 @@ super root is automatically added.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Max depth: 2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Aspect ratio: 0.51:1</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="create_ontology_DAG_from_GO_db.html">create_ontology_DAG_from_GO_db</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">dag_filter</span><span class="op">(</span><span class="va">dag</span>, relations <span class="op">=</span> <span class="st">"isa"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in dag_filter(dag, relations = "isa"):</span> Cannot find any relation.</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>

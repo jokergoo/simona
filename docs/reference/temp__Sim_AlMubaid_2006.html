@@ -54,7 +54,7 @@
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/jokergoo/simone/" class="external-link">
+  <a href="https://github.com/jokergoo/simona/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -69,7 +69,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Sim_AlMubaid_2006</h1>
-    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simone/blob/HEAD/R/sim.R" class="external-link"><code>R/sim.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/R/sim.R" class="external-link"><code>R/sim.R</code></a></small>
     <div class="hidden name"><code>temp__Sim_AlMubaid_2006.Rd</code></div>
     </div>
 
@@ -97,7 +97,8 @@ The distance is calculated as:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>D_max <span class="ot">=</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>max_depth <span class="sc">*</span> max_depth)</span></code></pre><p></p></div>
 <p>And the minimal value of <code>D(a, b)</code> is zero when <code>a</code> is identical to <code>b</code>. Then the similarity value is scaled as:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">D</span>(a, b)<span class="sc">/</span>D_max</span></code></pre><p></p></div>
-<p>Paper link: <a href="https://doi.org/10.1109/IEMBS.2006.259235" class="external-link">https://doi.org/10.1109/IEMBS.2006.259235</a>.</p>
+<p>Paper link: <a href="https://doi.org/10.1109/IEMBS.2006.259235" class="external-link">doi:10.1109/IEMBS.2006.259235</a>
+.</p>
 <p>There is a parameter <code>distance</code> which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">term_sim</span>(dag, terms, <span class="at">method =</span> <span class="st">"Sim_AlMubaid_2006"</span>,</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">list</span>(<span class="at">distance =</span> <span class="st">"shortest_distances_via_CA"</span>))</span></code></pre><p></p></div>
