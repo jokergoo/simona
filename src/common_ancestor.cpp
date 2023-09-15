@@ -89,8 +89,8 @@ NumericMatrix cpp_max_ancestor_v(S4 dag, IntegerVector nodes, NumericVector v) {
 	for(int k = 0; k < all_ancestors.size(); k ++) {
 
 		if(k % 1000 == 0) {
-			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-			Rcout << "going through " << k << " / " << all_ancestors.size() << " ancestors ...";
+			message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+			message("going through " + std::to_string(k) + " / " + std::to_string(all_ancestors.size()) + " ancestors ...", false);
 		}
 
 		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
@@ -121,9 +121,8 @@ NumericMatrix cpp_max_ancestor_v(S4 dag, IntegerVector nodes, NumericVector v) {
 		}
 	}
 
-	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ... Done.\n";
-
+	message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+	message("going through " + std::to_string(all_ancestors.size()) + " / " + std::to_string(all_ancestors.size()) + " ancestors ... Done.", true);
 
 	return score;
 }
@@ -149,7 +148,7 @@ IntegerMatrix cpp_max_ancestor_id(S4 dag, IntegerVector nodes, NumericVector v) 
 		return id;
 	}
 
-	Rcout << "collecting all ancestors of input terms ...\n";
+	message("collecting all ancestors of input terms ...", true);
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
@@ -157,8 +156,8 @@ IntegerMatrix cpp_max_ancestor_id(S4 dag, IntegerVector nodes, NumericVector v) 
 	for(int k = 0; k < all_ancestors.size(); k ++) {
 
 		if(k % 1000 == 0) {
-			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-			Rcout << "going through " << k << " / " << all_ancestors.size() << " ancestors ...";
+			message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+			message("going through " + std::to_string(k) + " / " + std::to_string(all_ancestors.size()) + " ancestors ...", false);
 		}
 
 		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
@@ -192,9 +191,8 @@ IntegerMatrix cpp_max_ancestor_id(S4 dag, IntegerVector nodes, NumericVector v) 
 		}
 	}
 
-	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ... Done.\n";
-
+	message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+	message("going through " + std::to_string(all_ancestors.size()) + " / " + std::to_string(all_ancestors.size()) + " ancestors ... Done.", true);
 
 	return id;
 }
@@ -221,7 +219,7 @@ IntegerMatrix cpp_distances(S4 dag, IntegerVector nodes, int type = 1) { // 1: l
 		return dd;
 	}
 
-	Rcout << "collecting all ancestors of input terms ...\n";
+	message("collecting all ancestors of input terms ...", true);
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
@@ -229,8 +227,8 @@ IntegerMatrix cpp_distances(S4 dag, IntegerVector nodes, int type = 1) { // 1: l
 	for(int k = 0; k < all_ancestors.size(); k ++) {
 
 		if(k % 100 == 0) {
-			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-			Rcout << "going through " << k << " / " << all_ancestors.size() << " ancestors ...";
+			message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+			message("going through " + std::to_string(k) + " / " + std::to_string(all_ancestors.size()) + " ancestors ...", false);
 		}
 
 		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
@@ -273,9 +271,8 @@ IntegerMatrix cpp_distances(S4 dag, IntegerVector nodes, int type = 1) { // 1: l
 		}
 	}
 
-	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ... Done.\n";
-
+	message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+	message("going through " + std::to_string(all_ancestors.size()) + " / " + std::to_string(all_ancestors.size()) + " ancestors ... Done.", true);
 
 	return dd;
 }
@@ -312,7 +309,7 @@ IntegerMatrix cpp_longest_distances_via_LCA(S4 dag, IntegerVector nodes) {
 		return dd;
 	}
 
-	Rcout << "collecting all ancestors of input terms ...\n";
+	message("collecting all ancestors of input terms ...", true);
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
@@ -323,8 +320,8 @@ IntegerMatrix cpp_longest_distances_via_LCA(S4 dag, IntegerVector nodes) {
 	for(int k = 0; k < all_ancestors.size(); k ++) {
 
 		if(k % 1000 == 0) {
-			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-			Rcout << "going through " << k << " / " << all_ancestors.size() << " ancestors ...";
+			message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+			message("going through " + std::to_string(k) + " / " + std::to_string(all_ancestors.size()) + " ancestors ...", false);
 		}
 
 		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
@@ -370,8 +367,8 @@ IntegerMatrix cpp_longest_distances_via_LCA(S4 dag, IntegerVector nodes) {
 		}
 	}
 
-	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ... Done.\n";
+	message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+	message("going through " + std::to_string(all_ancestors.size()) + " / " + std::to_string(all_ancestors.size()) + " ancestors ... Done.", true);
 
 	return dd;
 }
@@ -402,7 +399,7 @@ List cpp_longest_distances_from_LCA(S4 dag, IntegerVector nodes) {
 		return lt;
 	}
 
-	Rcout << "collecting all ancestors of input terms ...\n";
+	message("collecting all ancestors of input terms ...", true);
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
@@ -413,8 +410,8 @@ List cpp_longest_distances_from_LCA(S4 dag, IntegerVector nodes) {
 	for(int k = 0; k < all_ancestors.size(); k ++) {
 
 		if(k % 1000 == 0) {
-			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-			Rcout << "going through " << k << " / " << all_ancestors.size() << " ancestors ...";
+			message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+			message("going through " + std::to_string(k) + " / " + std::to_string(all_ancestors.size()) + " ancestors ...", false);
 		}
 
 		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
@@ -464,9 +461,8 @@ List cpp_longest_distances_from_LCA(S4 dag, IntegerVector nodes) {
 		}
 	}
 
-	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ... Done.\n";
-
+	message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+	message("going through " + std::to_string(all_ancestors.size()) + " / " + std::to_string(all_ancestors.size()) + " ancestors ... Done.", true);
 
 	List lt = List::create(Named("left") = dd1 , Named("right") = dd2);
 
@@ -491,7 +487,7 @@ IntegerMatrix cpp_distances_directed(S4 dag, IntegerVector nodes, int type = 1) 
 		nodes_ind[ nodes[i]-1 ] = i;
 	}
 
-	Rcout << "collecting all ancestors of input terms ...\n";
+	message("collecting all ancestors of input terms ...", true);
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
@@ -499,8 +495,8 @@ IntegerMatrix cpp_distances_directed(S4 dag, IntegerVector nodes, int type = 1) 
 	for(int k = 0; k < m; k ++) {
 
 		if(k % 1000 == 0) {
-			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-			Rcout << "going through " << k << " / " << m << " nodes ...";
+			message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+			message("going through " + std::to_string(k) + " / " + std::to_string(m) + " nodes ...", false);
 		}
 
 		_find_offspring_within_background(lt_children, nodes[k]-1, l_offspring, l_all_ancestors, true);
@@ -532,8 +528,8 @@ IntegerMatrix cpp_distances_directed(S4 dag, IntegerVector nodes, int type = 1) 
 		}
 	}
 
-	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << m << " / " << m << " nodes ... Done.\n";
+	message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+	message("going through " + std::to_string(m) + " / " + std::to_string(m) + " nodes ... Done.", true);
 
 
 	return dd;
@@ -572,7 +568,7 @@ IntegerMatrix cpp_nearest_common_ancestor(S4 dag, IntegerVector nodes) {
 		return id;
 	}
 
-	Rcout << "collecting all ancestors of input terms ...\n";
+	message("collecting all ancestors of input terms ...", true);
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
@@ -582,8 +578,8 @@ IntegerMatrix cpp_nearest_common_ancestor(S4 dag, IntegerVector nodes) {
 	for(int k = 0; k < all_ancestors.size(); k ++) {
 
 		if(k % 1000 == 0) {
-			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-			Rcout << "going through " << k << " / " << all_ancestors.size() << " ancestors ...";
+			message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+			message("going through " + std::to_string(k) + " / " + std::to_string(all_ancestors.size()) + " ancestors ...", false);
 		}
 
 		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
@@ -626,8 +622,8 @@ IntegerMatrix cpp_nearest_common_ancestor(S4 dag, IntegerVector nodes) {
 		}
 	}
 
-	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ... Done.\n";
+	message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+	message("going through " + std::to_string(all_ancestors.size()) + " / " + std::to_string(all_ancestors.size()) + " ancestors ... Done.", true);
 
 
 	return id;
@@ -654,7 +650,7 @@ IntegerMatrix cpp_shortest_distances_via_NCA(S4 dag, IntegerVector nodes) {
 		return dd;
 	}
 
-	Rcout << "collecting all ancestors of input terms ...\n";
+	message("collecting all ancestors of input terms ...", true);
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);
@@ -664,8 +660,8 @@ IntegerMatrix cpp_shortest_distances_via_NCA(S4 dag, IntegerVector nodes) {
 	for(int k = 0; k < all_ancestors.size(); k ++) {
 
 		if(k % 1000 == 0) {
-			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-			Rcout << "going through " << k << " / " << all_ancestors.size() << " ancestors ...";
+			message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+			message("going through " + std::to_string(k) + " / " + std::to_string(all_ancestors.size()) + " ancestors ...", false);
 		}
 
 		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
@@ -702,8 +698,8 @@ IntegerMatrix cpp_shortest_distances_via_NCA(S4 dag, IntegerVector nodes) {
 		}
 	}
 
-	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ... Done.\n";
+	message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+	message("going through " + std::to_string(all_ancestors.size()) + " / " + std::to_string(all_ancestors.size()) + " ancestors ... Done.", true);
 
 
 	return dd;

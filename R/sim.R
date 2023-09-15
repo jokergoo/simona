@@ -34,7 +34,7 @@ Sim_Lin_1998 = function(dag, terms, IC_method = "IC_annotation") {
 	
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_Lin_1998", "IC_method")
+ADD_TERM_SIM_METHOD("Sim_Lin_1998", "IC_method", require_anno = TRUE)
 
 
 #' Sim_Resnik_1999
@@ -113,7 +113,7 @@ Sim_Resnik_1999 = function(dag, terms,  norm_method = "Nmax") {
 	sim[is.na(sim)] = 1
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_Resnik_1999", c("norm_method"))
+ADD_TERM_SIM_METHOD("Sim_Resnik_1999", c("norm_method"), require_anno = TRUE)
 
 
 #' Sim_FaITH_2010
@@ -153,7 +153,7 @@ Sim_FaITH_2010 = function(dag, terms, IC_method = "IC_annotation") {
 	sim[is.na(sim)] = 1
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_FaITH_2010", "IC_method")
+ADD_TERM_SIM_METHOD("Sim_FaITH_2010", "IC_method", require_anno = TRUE)
 
 
 #' Sim_Relevance_2006
@@ -191,7 +191,7 @@ Sim_Relevance_2006 = function(dag, terms) {
 	eps = 1 - exp(-ic_mica)
 	eps*sim
 }
-ADD_TERM_SIM_METHOD("Sim_Relevance_2006")
+ADD_TERM_SIM_METHOD("Sim_Relevance_2006", require_anno = TRUE)
 
 
 #' Sim_SimIC_2010
@@ -233,7 +233,7 @@ Sim_SimIC_2010 = function(dag, terms) {
 	eps = 1 - 1/(1 + ic_mica)
 	eps*sim
 }
-ADD_TERM_SIM_METHOD("Sim_SimIC_2010")
+ADD_TERM_SIM_METHOD("Sim_SimIC_2010", require_anno = TRUE)
 
 
 #' Sim_XGraSM_2013
@@ -275,7 +275,7 @@ Sim_XGraSM_2013 = function(dag, terms) {
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_XGraSM_2013")
+ADD_TERM_SIM_METHOD("Sim_XGraSM_2013", require_anno = TRUE)
 
 
 #' Sim_GraSM_2005
@@ -316,7 +316,7 @@ Sim_GraSM_2005 = function(dag, terms) {
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_GraSM_2005")
+ADD_TERM_SIM_METHOD("Sim_GraSM_2005", require_anno = TRUE)
 
 
 #' Sim_EISI_2015
@@ -350,7 +350,7 @@ Sim_EISI_2015 = function(dag, terms) {
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_EISI_2015")
+ADD_TERM_SIM_METHOD("Sim_EISI_2015", require_anno = TRUE)
 
 
 #' Sim_AIC_2014
@@ -396,7 +396,7 @@ Sim_AIC_2014 = function(dag, terms, IC_method = "IC_annotation") {
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_AIC_2014", "IC_method")
+ADD_TERM_SIM_METHOD("Sim_AIC_2014", "IC_method", require_anno = TRUE)
 
 
 #' Sim_Zhang_2006
@@ -425,7 +425,7 @@ Sim_Zhang_2006 = function(dag, terms) {
 	
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_Zhang_2006")
+ADD_TERM_SIM_METHOD("Sim_Zhang_2006", require_anno = TRUE)
 
 
 #' Sim_universal
@@ -1185,7 +1185,7 @@ Sim_HRSS_2013 = function(dag, terms) {
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_HRSS_2013")
+ADD_TERM_SIM_METHOD("Sim_HRSS_2013", require_anno = TRUE)
 
 
 #' Sim_Shen_2010
@@ -1231,7 +1231,7 @@ Sim_Shen_2010 = function(dag, terms, IC_method = "IC_annotation") {
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_Shen_2010", "IC_method")
+ADD_TERM_SIM_METHOD("Sim_Shen_2010", "IC_method", require_anno = TRUE)
 
 
 #' Sim_SSDD_2013
@@ -1366,7 +1366,7 @@ Sim_Kappa = function(dag, terms, anno_universe = NULL) {
 	id = id[l]
 	.sim_overlap(dag, id, anno_universe, method = "kappa")
 }
-ADD_TERM_SIM_METHOD("Sim_Kappa", "anno_universe")
+ADD_TERM_SIM_METHOD("Sim_Kappa", "anno_universe", require_anno = TRUE)
 
 
 #' Sim_Jaccard
@@ -1392,7 +1392,7 @@ Sim_Jaccard = function(dag, terms, anno_universe = NULL) {
 	id = id[l]
 	.sim_overlap(dag, id, anno_universe, method = "jaccard")
 }
-ADD_TERM_SIM_METHOD("Sim_Jaccard")
+ADD_TERM_SIM_METHOD("Sim_Jaccard", require_anno = TRUE)
 
 
 #' Sim_Dice
@@ -1418,7 +1418,7 @@ Sim_Dice = function(dag, terms, anno_universe = NULL) {
 	id = id[l]
 	.sim_overlap(dag, id, anno_universe, method = "dice")
 }
-ADD_TERM_SIM_METHOD("Sim_Dice", "anno_universe")
+ADD_TERM_SIM_METHOD("Sim_Dice", "anno_universe", require_anno = TRUE)
 
 
 #' Sim_Overlap
@@ -1444,7 +1444,7 @@ Sim_Overlap = function(dag, terms, anno_universe = NULL) {
 	id = id[l]
 	.sim_overlap(dag, id, anno_universe, method = "overlap")
 }
-ADD_TERM_SIM_METHOD("Sim_Overlap", "anno_universe")
+ADD_TERM_SIM_METHOD("Sim_Overlap", "anno_universe", require_anno = TRUE)
 
 
 #' @importFrom methods as

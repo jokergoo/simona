@@ -122,8 +122,8 @@ NumericVector cpp_sim_wang(S4 dag, IntegerVector nodes, NumericVector contributi
 	for(int k = 0; k < all_ancestors.size(); k ++) {
 
 		if(k % 100 == 0) {
-			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-			Rcout << "going through " << k << " / " << all_ancestors.size() << " ancestors ...";
+			message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+			message("going through " + std::to_string(k) + " / " + std::to_string(all_ancestors.size()) + " ancestors ...", false);
 		}
 
 		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
@@ -166,8 +166,8 @@ NumericVector cpp_sim_wang(S4 dag, IntegerVector nodes, NumericVector contributi
 		}
 	}
 
-	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << all_ancestors.size() << " / " << all_ancestors.size() << " ancestors ...\ndone.\n";
+	message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+	message("going through " + std::to_string(all_ancestors.size()) + " / " + std::to_string(all_ancestors.size()) + " ancestors ... Done.", true);
 
 	for(int i = 0; i < m - 1; i ++) {
 		for(int j = i+1; j < m; j ++) {
@@ -419,8 +419,8 @@ NumericMatrix cpp_sim_shen(S4 dag, IntegerVector nodes, NumericVector ic) {
 
 			i_pair ++;
 			if(i_pair % 1000 == 0) {
-				Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-				Rcout << "going through " << i_pair << " / " << n_pairs << " pairs ...";
+				message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+				message("going through " + std::to_string(i_pair) + " / " + std::to_string(n_pairs) + " pairs ...", false);
 			}
 
 			if(std::abs(ic[ mica_nodes(i, j)-1 ]) < 1e-10) {
@@ -446,8 +446,8 @@ NumericMatrix cpp_sim_shen(S4 dag, IntegerVector nodes, NumericVector ic) {
 		}
 	}
 
-	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << n_pairs << " / " << n_pairs << " pairs ...\ndone.\n";
+	message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+	message("going through " + std::to_string(n_pairs) + " / " + std::to_string(n_pairs) + " pairs ... Done.", true);
 
 	return sim;
 }
@@ -479,8 +479,8 @@ NumericMatrix cpp_sim_SSDD(S4 dag, IntegerVector nodes, NumericVector t) {
 
 			i_pair ++;
 			if(i_pair % 1000 == 0) {
-				Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-				Rcout << "going through " << i_pair << " / " << n_pairs << " pairs ...";
+				message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+				message("going through " + std::to_string(i_pair) + " / " + std::to_string(n_pairs) + " pairs ...", false);
 			}
 
 			IntegerVector path1 = cpp_tpl_shortest_path(dag, lca_nodes(i, j), nodes[i]);	
@@ -501,8 +501,8 @@ NumericMatrix cpp_sim_SSDD(S4 dag, IntegerVector nodes, NumericVector t) {
 		}
 	}
 
-	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << n_pairs << " / " << n_pairs << " pairs ...\ndone.\n";
+	message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+	message("going through " + std::to_string(n_pairs) + " / " + std::to_string(n_pairs) + " pairs ... Done.", true);
 
 
 	return sim;
@@ -713,8 +713,8 @@ NumericMatrix cpp_common_ancestor_mean_IC_GraSM(S4 dag, IntegerVector nodes, Num
 
 			i_pair ++;
 			if(i_pair % 1000 == 0) {
-				Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-				Rcout << "going through " << i_pair << " / " << n_pairs << " pairs ...";
+				message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+				message("going through " + std::to_string(i_pair) + " / " + std::to_string(n_pairs) + " pairs ...", false);
 			}
 
 			l_DCA = _disjunctive_common_ancestors_single(lt_parents, nodes[i] - 1, nodes[j] - 1, ic);
@@ -736,8 +736,8 @@ NumericMatrix cpp_common_ancestor_mean_IC_GraSM(S4 dag, IntegerVector nodes, Num
 		}
 	}
 
-	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << n_pairs << " / " << n_pairs << " pairs ...\ndone.\n";
+	message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+	message("going through " + std::to_string(n_pairs) + " / " + std::to_string(n_pairs) + " pairs ... Done.", true);
 
 	return mean_ic;
 }

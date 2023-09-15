@@ -85,8 +85,8 @@ NumericVector cpp_ic_wang(S4 dag, NumericVector contribution) {
 	for(int i = 0; i < n; i ++) {
 
 		if(i % 1000 == 0) {
-			Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-			Rcout << "going through " << i << " / " << n << " nodes ...";
+			message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+			message("going through " + std::to_string(i) + " / " + std::to_string(n) + " nodes ...", false);
 		}
 
 		LogicalVector l_ancestors(n);
@@ -101,8 +101,8 @@ NumericVector cpp_ic_wang(S4 dag, NumericVector contribution) {
 		reset_logical_vector_to_false(l_ancestors);
 	}
 
-	Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	Rcout << "going through " << n << " / " << n << " nodes ...\ndone.\n";
+	message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+	message("going through " + std::to_string(n) + " / " + std::to_string(n) + " nodes ... Done.", true);
 
 	return ic;
 }

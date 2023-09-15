@@ -9,6 +9,7 @@ IntegerVector _dag_depth(S4 dag);
 IntegerVector _which(LogicalVector l);
 LogicalVector integer_to_logical_vector(IntegerVector i, int n);
 IntegerVector cpp_match_index(IntegerVector ind1, IntegerVector ind2);
+void message(String s, bool appendLF = true);
 
 #endif
 

@@ -113,7 +113,7 @@ IC_annotation = function(dag, uniquify = simona_opt$anno_uniquify, use_cache = s
 		dag@term_env$IC_annotation
 	}
 }
-ADD_IC_METHOD("IC_annotation", c("uniquify", "use_cache"))
+ADD_IC_METHOD("IC_annotation", c("uniquify", "use_cache"), require_anno = TRUE)
 
 
 

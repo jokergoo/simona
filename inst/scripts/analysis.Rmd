@@ -21,7 +21,22 @@ And the heatmap of the correlations of IC metrics.
 ```{r, fig.width = 6, fig.height = 6}
 cor = cor(df, method = "spearman", use = "pairwise.complete.obs")
 library(ComplexHeatmap)
-Heatmap(cor, name = "correlation", column_title = "Spearman correlation")
+Heatmap(cor, name = "correlation", 
+    column_title = "IC Spearman correlation, GO BP", 
+    rect_gp = gpar(type = "none"),
+    col = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red")),
+    cell_fun = function(j, i, x, y, w, h, fill) {
+        if(1 - as.numeric(x) - 0.01 > as.numeric(y)) {
+            grid.rect(x, y, w, h, gp = gpar(fill = fill, col = "black"))
+        } else if(1 - as.numeric(x) + 0.01 < as.numeric(y)) {
+            vx = lt[[i]]
+            vy = lt[[j]]
+            pushViewport(viewport(x = x, y = y, width = w, height = h, xscale = range(vx, na.rm = TRUE), yscale = range(vy, na.rm = TRUE)))
+            grid.points(vx, vy, default.units = "native", gp = gpar(col = dag_depth(dag)), pch = ".")
+            grid.rect(gp = gpar(fill = NA))
+            popViewport()
+        }
+    }, column_names_rot = 45, row_dend_width = unit(1.8, "cm"))
 ```
 
 
@@ -51,7 +66,7 @@ pairs(df[, 1:29], pch = ".", gap = 0, col = LCA_depth+1)
 ```
 
 
-And the heatmap of the correlations of IC metrics. 
+And the heatmap of the correlations of semantic similarities. 
 
 ```{r, fig.width = 8, fig.height = 8}
 cor = cor(df[, 1:29], method = "spearman", use = "pairwise.complete.obs")
@@ -61,7 +76,7 @@ Heatmap(cor, name = "correlation", column_title = "Spearman correlation")
 
 ## Visualize DAG
 
-```{r}
+```{r, fig.width = 8, fig.heigt = 6}
 dag_circular_viz(dag, reorder_level = 2)
 ```
 

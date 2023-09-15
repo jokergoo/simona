@@ -91,3 +91,9 @@ IntegerVector cpp_match_index(IntegerVector ind1, IntegerVector ind2) {
 	return ind;
 }
 
+
+void message(String s, bool appendLF = true) {
+	Function _message("message");
+	_message(s, Named("appendLF", appendLF));
+	return;
+}

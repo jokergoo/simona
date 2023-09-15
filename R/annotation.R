@@ -84,6 +84,8 @@ n_annotations = function(dag, terms = NULL, uniquify = simona_opt$anno_uniquify,
 
 }
 
+#' @rdname n_annotations
+#' @returns `has_annotation()` returns a logical scalar.
 has_annotation = function(dag) {
 	length(dag@annotation$list) > 0
 }

@@ -67,6 +67,7 @@ DataFrame cpp_term_pos_on_circle(S4 dag, IntegerVector n_offspring, double start
 		return df;
 	}
 
+	String msg;
 	int i_visited = 1;
 	while(1) {
 		current_depth = current_depth + 1;
@@ -107,8 +108,8 @@ DataFrame cpp_term_pos_on_circle(S4 dag, IntegerVector n_offspring, double start
 					i_visited ++;
 
 					if(i_visited % 1000 == 0) {
-						// Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-						// Rcout << "going through " << i_visited << " / " << n << " nodes ...";
+						message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+						message("going through " + std::to_string(i_visited) + " / " + std::to_string(n) + " nodes ...", false);
 					}
 
 				}
@@ -128,8 +129,8 @@ DataFrame cpp_term_pos_on_circle(S4 dag, IntegerVector n_offspring, double start
 		}
 	}
 
-	// Rcout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-	// Rcout << "going through " << n << " / " << n << " nodes ... Done.\n";
+	message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+	message("going through " + std::to_string(n) + " / " + std::to_string(n) + " nodes ... Done.", true);
 
 	DataFrame df = DataFrame::create(Named("theta") = theta, Named("rho") = rho, Named("width") = width);
 

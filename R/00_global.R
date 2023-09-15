@@ -5,20 +5,25 @@
 .ALL_GROUP_SIM_METHODS = NULL
 
 
-ADD_IC_METHOD = function(method, param = character(0)) {
+ADD_IC_METHOD = function(method, param = character(0), require_anno = FALSE) {
+	attr(param, "require_anno") = require_anno
 	.ALL_IC_METHODS[[method]] <<- param
 }
 
-ADD_TERM_SIM_METHOD = function(method, param = character(0)) {
+ADD_TERM_SIM_METHOD = function(method, param = character(0), require_anno = FALSE) {
+	attr(param, "require_anno") = require_anno
 	.ALL_TERM_SIM_METHODS[[method]] <<- param
 }
 
-ADD_GROUP_SIM_METHOD = function(method, param = character(0)) {
+ADD_GROUP_SIM_METHOD = function(method, param = character(0), require_anno = FALSE) {
+	attr(param, "require_anno") = require_anno
 	.ALL_GROUP_SIM_METHODS[[method]] <<- param
 }
 
 
 #' Supported methods
+#' 
+#' @param require_anno Whether to only return methods that require external annotations. A value of `NULL` means both.
 #' 
 #' @details
 #' - `all_ic_methods()`: A vector of all supported IC methods.
@@ -32,20 +37,38 @@ ADD_GROUP_SIM_METHOD = function(method, param = character(0)) {
 #' all_ic_methods()
 #' all_term_sim_methods()
 #' all_group_sim_methods()
-all_ic_methods = function() {
-	names(.ALL_IC_METHODS)
+all_ic_methods = function(require_anno = NULL) {
+	if(is.null(require_anno)) {
+		names(.ALL_IC_METHODS)
+	} else if(require_anno) {
+		names(.ALL_IC_METHODS)[sapply(.ALL_IC_METHODS, function(x) attr(x, "use_anno"))]
+	} else {
+		names(.ALL_IC_METHODS)[!sapply(.ALL_IC_METHODS, function(x) attr(x, "use_anno"))]
+	}
 }
 
 #' @export
 #' @rdname all_methods
-all_term_sim_methods = function() {
-	names(.ALL_TERM_SIM_METHODS)
+all_term_sim_methods = function(require_anno = NULL) {
+	if(is.null(require_anno)) {
+		names(.ALL_TERM_SIM_METHODS)
+	} else if(require_anno) {
+		names(.ALL_TERM_SIM_METHODS)[sapply(.ALL_TERM_SIM_METHODS, function(x) attr(x, "use_anno"))]
+	} else {
+		names(.ALL_TERM_SIM_METHODS)[!sapply(.ALL_TERM_SIM_METHODS, function(x) attr(x, "use_anno"))]
+	}
 }
 
 #' @export
 #' @rdname all_methods
-all_group_sim_methods = function() {
-	names(.ALL_GROUP_SIM_METHODS)
+all_group_sim_methods = function(require_anno = NULL) {
+	if(is.null(require_anno)) {
+		names(.ALL_GROUP_SIM_METHODS)
+	} else if(require_anno) {
+		names(.ALL_GROUP_SIM_METHODS)[sapply(.ALL_GROUP_SIM_METHODS, function(x) attr(x, "use_anno"))]
+	} else {
+		names(.ALL_GROUP_SIM_METHODS)[!sapply(.ALL_GROUP_SIM_METHODS, function(x) attr(x, "use_anno"))]
+	}
 }
 
 
