@@ -5,7 +5,7 @@ Version: 0.99.1
 Date: 2023-09-15
 Authors@R: person("Zuguang", "Gu", email = "z.gu@dkfz.de", role = c("aut", "cre"),
                   comment = c('ORCID'="0000-0002-7395-8709"))
-Depends: R (>= 4.2.0)
+Depends: R (>= 4.3.0)
 Imports: methods, Rcpp, matrixStats, GetoptLong, grid, GlobalOptions,
          igraph, Polychrome, S4Vectors, xml2, circlize, TSP, ComplexHeatmap,
          grDevices, stats, utils
@@ -19,6 +19,7 @@ Description: The package implements a rich set of methods for semantic similarit
     visualizations on DAGs.
 biocViews: Software, Annotation, GO, BiomedicalInformatics
 URL: https://github.com/jokergoo/simona
+BugReports: https://github.com/jokergoo/simona/issues
 SystemRequirements: Perl, Java
 License: MIT + file LICENSE
 RoxygenNote: 7.2.3
