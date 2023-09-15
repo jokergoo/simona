@@ -71,7 +71,11 @@ dag_graphviz(dag[, "GO:0010228"],
 Visualizing huge DAGs is not an easy job because a term can have more than one parents. Here
 the `dag_circular_viz()` uses a circular layout to visualize huge DAGs.
 
-```{r, fig.width = 8, fig.height = 5.5}
+```{r, echo = FALSE}
+factor = 0.8
+```
+
+```{r, fig.width = 8*factor, fig.height = 5.5*factor}
 dag_circular_viz(dag)
 ```
 
@@ -113,7 +117,7 @@ $d_{i,j}$ is a non-negative value and measures the closeness of two terms with
 regards to how close the two sub-DAGs are. Finally, with the distance matrix of all 
 child terms, TSP (travel salesman problem) is applied to reorder the child terms.
 
-```{r, fig.width = 8, fig.height = 5.5}
+```{r, fig.width = 8*factor, fig.height = 5.5*factor}
 dag_circular_viz(dag, reorder_level = 3, legend_labels_from = "name")
 ```
 
@@ -128,7 +132,7 @@ One useful application is to map GO terms of interest (e.g. significant GO terms
 from function enrichment analysis) to the DAG. In the following example, `sig_go_ids`
 contains 249 significant GO terms from an enrichment analysis.
 
-```{r, fig.width = 8, fig.height = 5.5}
+```{r, fig.width = 8*factor, fig.height = 5.5*factor}
 sig_go_ids = readRDS(system.file("extdata", "sig_go_ids.rds", package = "simona"))
 dag_circular_viz(dag, highlight = sig_go_ids, reorder_level = 3, 
   legend_labels_from = "name")

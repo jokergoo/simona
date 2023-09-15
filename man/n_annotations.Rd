@@ -2,6 +2,7 @@
 % Please edit documentation in R/annotation.R
 \name{n_annotations}
 \alias{n_annotations}
+\alias{has_annotation}
 \title{Number of annotated items}
 \usage{
 n_annotations(
@@ -10,6 +11,8 @@ n_annotations(
   uniquify = simona_opt$anno_uniquify,
   use_cache = simona_opt$use_cache
 )
+
+has_annotation(dag)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
@@ -22,6 +25,8 @@ n_annotations(
 }
 \value{
 An integer vector.
+
+\code{has_annotation()} returns a logical scalar.
 }
 \description{
 Number of annotated items

@@ -6,11 +6,14 @@
 \alias{all_group_sim_methods}
 \title{Supported methods}
 \usage{
-all_ic_methods()
+all_ic_methods(require_anno = NULL)
 
-all_term_sim_methods()
+all_term_sim_methods(require_anno = NULL)
 
-all_group_sim_methods()
+all_group_sim_methods(require_anno = NULL)
+}
+\arguments{
+\item{require_anno}{Whether to only return methods that require external annotations. A value of \code{NULL} means both.}
 }
 \value{
 A vector of all supported methods.
