@@ -146,13 +146,13 @@ import_obo = function(file, relation_type = "part_of", ...) {
 
 # validate relations
 .validate_relations = function(lt_data) {
-	is_obsolete = sapply(lt_data, "[[", "is_obsolete") == "true"
+	is_obsolete = vapply(lt_data, "[[", "is_obsolete", FUN.VALUE = character(1)) == "true"
 	if(any(is_obsolete)) {
 		message("remove ", sum(is_obsolete), " obsolete terms")
 	}
 	lt_data = lt_data[!is_obsolete]
 
-	all_terms = sapply(lt_data, "[[", "id")
+	all_terms = vapply(lt_data, "[[", "id", FUN.VALUE = character(1))
 	n_terms = length(all_terms)
 	
 	lt = lapply(lt_data, "[[", "relationship")
@@ -172,28 +172,28 @@ import_obo = function(file, relation_type = "part_of", ...) {
 .wrap_relations = function(lt_data, type = "term") {
 	## terms
 	lt_data = .validate_relations(lt_data)
-	all_elements = sapply(lt_data, "[[", "id")
+	all_elements = vapply(lt_data, "[[", "id", FUN.VALUE = character(1))
 
 	if(type == "term") {
 		meta = data.frame(
 			id = all_elements,
-			short_id = sapply(lt_data, "[[", "short_id"),
-			name = sapply(lt_data, "[[", "name"),
-			namespace = sapply(lt_data, "[[", "namespace"),
-			definition = sapply(lt_data, "[[", "def")
+			short_id = vapply(lt_data, "[[", "short_id", FUN.VALUE = character(1)),
+			name = vapply(lt_data, "[[", "name", FUN.VALUE = character(1)),
+			namespace = vapply(lt_data, "[[", "namespace", FUN.VALUE = character(1)),
+			definition = vapply(lt_data, "[[", "def", FUN.VALUE = character(1))
 		)
 	} else {
 		meta = data.frame(
 			id = all_elements,
-			short_id = sapply(lt_data, "[[", "short_id"),
-			name = sapply(lt_data, "[[", "name"),
-			namespace = sapply(lt_data, "[[", "namespace"),
-			definition = sapply(lt_data, "[[", "def")
+			short_id = vapply(lt_data, "[[", "short_id", FUN.VALUE = character(1)),
+			name = vapply(lt_data, "[[", "name", FUN.VALUE = character(1)),
+			namespace = vapply(lt_data, "[[", "namespace", FUN.VALUE = character(1)),
+			definition = vapply(lt_data, "[[", "def", FUN.VALUE = character(1))
 		)
 	}
 	
 	rl = lapply(lt_data, "[[", "relationship")
-	nr = sapply(rl, length)
+	nr = vapply(rl, length, FUN.VALUE = integer(1))
 	child = rep(all_elements, times = nr)
 	parent = unlist(rl)
 	
@@ -218,7 +218,7 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 		if(length(i)) {
 			lt$name = gsub('^property_value: prefLabel "(.*)".*$', "\\1", ln[i])[1]
 		} else {
-			lt$name = NA
+			lt$name = NA_character_
 		}
 	}
 
@@ -226,7 +226,7 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 	if(length(i)) {
 		lt$namespace = gsub("^namespace: (.*)$", "\\1", ln[i])[1]
 	} else {
-		lt$namespace = NA
+		lt$namespace = NA_character_
 	}
 
 	i = grep("^def:", ln)
@@ -237,7 +237,7 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 		if(length(i)) {
 			lt$def = gsub('^property_value: definition "(.*)" ?\\[.*\\].*$', "\\1", ln[i])[1]
 		} else {
-			lt$def = NA
+			lt$def = NA_character_
 		}
 	}
 
@@ -258,10 +258,10 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 
 		rl = strsplit(ln[i], " ")
 		rl = lapply(rl, function(x) c(x, ""))
-		rl_type = sapply(rl, "[[", 2)
-		rl_term = sapply(rl, "[[", 3)
+		rl_type = vapply(rl, "[[", 2, FUN.VALUE = character(1))
+		rl_term = vapply(rl, "[[", 3, FUN.VALUE = character(1))
 
-		l1 = !grepl("^\\{", sapply(rl, "[[", 4))
+		l1 = !grepl("^\\{", vapply(rl, "[[", 4, FUN.VALUE = character(1)))
 		l2 = rl_type %in% relation_type
 		l = l1 & l2
 		rl_type = rl_type[l]
@@ -296,7 +296,7 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 }
 
 
-.owl_get_text = function(nodes, xpath, default = NA, return_list = FALSE) {
+.owl_get_text = function(nodes, xpath, default = NA_character_, return_list = FALSE) {
 	if(return_list) {
 		lapply(xml_find_all(nodes, xpath, flatten = FALSE), function(x) {
 			if(length(x) == 0) {
@@ -306,17 +306,17 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 			}
 		})
 	} else {
-		sapply(xml_find_all(nodes, xpath, flatten = FALSE), function(x) {
+		vapply(xml_find_all(nodes, xpath, flatten = FALSE), function(x) {
 			if(length(x) == 0) {
 				default
 			} else {
 				xml_text(x)[1]
 			}
-		})
+		}, FUN.VALUE = character(1))
 	}
 }
 
-.owl_get_attr = function(nodes, xpath, attr, default = NA) {
+.owl_get_attr = function(nodes, xpath, attr, default = NA_character_) {
 	lapply(xml_find_all(nodes, xpath, flatten = FALSE), function(x) {
 		xml_attr(x, attr)
 	})
@@ -324,7 +324,7 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 
 #' @rdname import_obo
 #' @export
-#' @import xml2
+#' @importFrom xml2 read_xml xml_find_all xml_attr xml_text
 #' @export
 #' @examples
 #' \donttest{
@@ -339,11 +339,11 @@ import_owl = function(file, relation_type = "part_of", ...) {
 	ObjectProperty = xml_find_all(owl, ".//owl:ObjectProperty")
 	
 	id = xml_attr(ObjectProperty, "about")
-	short_id = .owl_get_text(ObjectProperty, ".//*[local-name()='id']", NA)
+	short_id = .owl_get_text(ObjectProperty, ".//*[local-name()='id']", NA_character_)
 	short_id = ifelse(is.na(short_id), gsub("^.*#", "", basename(id)), short_id)
-	name = .owl_get_text(ObjectProperty, ".//rdfs:label[@xml:lang='en'] | .//rdfs:label[not(@xml:lang)]", NA); name = gsub(" ", "_", name);
-	def = .owl_get_text(ObjectProperty, ".//*[local-name()='IAO_0000115']", NA)
-	namespace = .owl_get_text(ObjectProperty, ".//*[local-name()='hasOBONamespace']", NA)
+	name = .owl_get_text(ObjectProperty, ".//rdfs:label[@xml:lang='en'] | .//rdfs:label[not(@xml:lang)]", NA_character_); name = gsub(" ", "_", name);
+	def = .owl_get_text(ObjectProperty, ".//*[local-name()='IAO_0000115']", NA_character_)
+	namespace = .owl_get_text(ObjectProperty, ".//*[local-name()='hasOBONamespace']", NA_character_)
 	is_obsolete = .owl_get_text(ObjectProperty, ".//owl:deprecated", "false")
 	is_a = .owl_get_text(ObjectProperty, ".//rdfs:subPropertyOf[@rdf:resource]/@rdf:resource", character(0), return_list = TRUE)
 	is_a = lapply(is_a, function(x) {
@@ -403,11 +403,11 @@ import_owl = function(file, relation_type = "part_of", ...) {
 
 	message("Parsing <owl:Class> ...")
 	id = xml_attr(Class, "about")
-	short_id = .owl_get_text(Class, ".//*[local-name()='id']", NA)
+	short_id = .owl_get_text(Class, ".//*[local-name()='id']", NA_character_)
 	short_id = ifelse(is.na(short_id), gsub("^.*#", "", basename(id)), short_id)
-	name = .owl_get_text(Class, ".//rdfs:label[@xml:lang='en'] | .//rdfs:label[not(@xml:lang)]", NA)
-	def = .owl_get_text(Class, ".//*[local-name()='IAO_0000115']", NA)
-	namespace = .owl_get_text(Class, ".//*[local-name()='hasOBONamespace']", NA)
+	name = .owl_get_text(Class, ".//rdfs:label[@xml:lang='en'] | .//rdfs:label[not(@xml:lang)]", NA_character_)
+	def = .owl_get_text(Class, ".//*[local-name()='IAO_0000115']", NA_character_)
+	namespace = .owl_get_text(Class, ".//*[local-name()='hasOBONamespace']", NA_character_)
 	is_obsolete = .owl_get_text(Class, ".//owl:deprecated", "false")
 	is_a = .owl_get_text(Class, ".//rdfs:subClassOf[@rdf:resource]/@rdf:resource", character(0), return_list = TRUE)
 	is_a = lapply(is_a, function(x) {
@@ -444,8 +444,8 @@ import_owl = function(file, relation_type = "part_of", ...) {
 	if(length(Description)) {
 		message("Parsing <rdf:Description> ...")
 		id = xml_attr(Description, "about")
-		name = .owl_get_text(Description, ".//*[local-name()='prefLabel']", NA)
-		def = .owl_get_text(Description, ".//*[local-name()='definition']", NA)
+		name = .owl_get_text(Description, ".//*[local-name()='prefLabel']", NA_character_)
+		def = .owl_get_text(Description, ".//*[local-name()='definition']", NA_character_)
 
 		lt_description = vector("list", length(id))
 		for(i in seq_along(id)) {
@@ -562,13 +562,6 @@ import_ontology = function(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "
 		return(import_obo(file, ...))
 	}
 
-	# if(grepl("\\.(owl|owl.gz)$", file, ignore.case = TRUE)) {
-	# 	oe = try(obj <- import_owl(file), silent = TRUE)
-	# 	if(!inherits(oe, "try-error")) {
-	# 		return(obj)
-	# 	}
-	# }
-
 	if(Sys.which("java") == "") {
 		stop("Java is not available.")
 	}
@@ -595,12 +588,13 @@ import_ontology = function(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "
 	output = tempfile(fileext = ".obo.gz")
 
 	file = normalizePath(file)
-	cmd = qq("java @{JAVA_ARGS} -jar '@{robot_jar}' convert --input '@{file}' --format obo --output '@{output}' --check false")
+	java_path = Sys.which("java")
+	cmd = qq("'@{java_path}' @{JAVA_ARGS} -jar '@{robot_jar}' convert --input '@{file}' --format obo --output '@{output}' --check false")
 	message("  ", cmd)
 
-	code = system(cmd)
+	code = system2(java_path, c(JAVA_ARGS, "-jar", robot_jar, "convert", "--input", file, "--format", "obo", "--output", output, "--check", "false"))
 	if(code != 0) {
-		stop("There is an error when executing robot.jar.")
+		stop("Executing robot.jar failed.")
 	}
 
 	lt = import_obo(output, ...)
@@ -653,7 +647,7 @@ import_ttl = function(file, relation_type = "part_of", ...) {
 		
 	message("Constructing the DAG_ontology object...")
 	lt_parents = strsplit(df$parent, ",")
-	children = rep(df$id, times = sapply(lt_parents, length))
+	children = rep(df$id, times = vapply(lt_parents, length, FUN.VALUE = integer(1)))
 	parents = unlist(lt_parents)
 
 	lt_relations = strsplit(df$relation_type, ",")
@@ -662,7 +656,7 @@ import_ttl = function(file, relation_type = "part_of", ...) {
 	dag = create_ontology_DAG(parents = parents, children = children, relations = relations,
 		source = basename(file), ...)
 
-	term_meta = df[, 1:4]
+	term_meta = df[, seq_len(4), drop = FALSE]
 	colnames(term_meta) = c("id", "name", "short_id", "definition")
 
 	rownames(term_meta) = term_meta$id

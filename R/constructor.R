@@ -142,8 +142,8 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 		attr(lt_relations, "levels") = relation_levels
 	}
 
-	root = which(sapply(lt_parents, length) == 0)
-	leaves = which(sapply(lt_children, length) == 0)
+	root = which(vapply(lt_parents, length, FUN.VALUE = integer(1)) == 0)
+	leaves = which(vapply(lt_children, length, FUN.VALUE = integer(1)) == 0)
 
 	if(length(root) == 0) {
 		stop("Cannot find the root. There might exist a cycle.")
@@ -151,7 +151,7 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 	
 	if(length(root) > 1) {
 		if(length(root) > 5) {
-			txt = strwrap(paste(terms[root][1:5], collapse = ", "), width = 80)
+			txt = strwrap(paste(terms[root][seq_len(5)], collapse = ", "), width = 80)
 			txt[length(txt)] = paste0(txt[length(txt)], ",")
 			txt = c(txt, qq("  and other @{length(root)-5} terms ..."))
 		} else {
@@ -197,8 +197,8 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 	if(length(cyclic_paths)) {
 		if(remove_cyclic_paths) {
 			message_wrap(qq("Removed @{length(cyclic_paths)} cyclic path@{ifelse(length(cyclic_paths) == 1, '', 's')}."))
-			removed_p = sapply(cyclic_paths, function(x) x[length(x)-1])
-			removed_c = sapply(cyclic_paths, function(x) x[length(x)])
+			removed_p = vapply(cyclic_paths, function(x) x[length(x)-1], FUN.VALUE = integer(1))
+			removed_c = vapply(cyclic_paths, function(x) x[length(x)], FUN.VALUE = integer(1))
 
 			for(ir in seq_along(cyclic_paths)) {
 				ip = removed_p[ir]
@@ -211,8 +211,8 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 					lt_relations[[ip]] = lt_relations[[ip]][ind]
 				}
 			}
-			root = which(sapply(lt_parents, length) == 0)
-			leaves = which(sapply(lt_children, length) == 0)
+			root = which(vapply(lt_parents, length, FUN.VALUE = integer(1)) == 0)
+			leaves = which(vapply(lt_children, length, FUN.VALUE = integer(1)) == 0)
 
 			dag = ontology_DAG(
 				terms = terms,
@@ -232,8 +232,8 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 		}
 	}
 
-	dag@term_env$n_parents = sapply(lt_parents, length)
-	dag@term_env$n_children = sapply(lt_children, length)
+	dag@term_env$n_parents = vapply(lt_parents, length, FUN.VALUE = integer(1))
+	dag@term_env$n_children = vapply(lt_children, length, FUN.VALUE = integer(1))
 
 	tpl_order = order(dag_depth(dag), dag@term_env$n_children, dag@term_env$n_parents, dag@terms)
 	dag@tpl_sorted = seq_len(n_terms)[tpl_order]
@@ -297,7 +297,8 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 print_cyclic_paths = function(cyclic_paths, terms) {
 	for(i in seq_len(length(cyclic_paths))) {
 		message("[", appendLF = FALSE)
-		message(paste(terms[cyclic_paths[[i]]], collapse = " ~ "), appendLF = FALSE)
+		msg = paste(terms[cyclic_paths[[i]]], collapse = " ~ ")
+		message(msg, appendLF = FALSE)
 		message("]", appendLF = TRUE)
 	}
 }
@@ -312,7 +313,7 @@ setMethod("show",
 	definition = function(object) {
 
 		n_terms = object@n_terms
-		n_relations = sum(sapply(object@lt_children, length))
+		n_relations = sum(vapply(object@lt_children, length, FUN.VALUE = integer(1)))
 
 		cat("An ontology_DAG object:\n")
 		cat("  Source:", object@source, "\n")
@@ -323,7 +324,7 @@ setMethod("show",
 		}
 
 		cat("  Root:", paste(object@terms[object@root], collapse = ", "), "\n")
-		txt = strwrap(paste(c(object@terms[1:min(4, object@n_terms)], "..."), collapse = ", "), width = 60)
+		txt = strwrap(paste(c(object@terms[seq_len(min(4, object@n_terms))], "..."), collapse = ", "), width = 60)
 		txt[1] = paste0("  Terms: ", txt[1])
 		txt[-1] = paste0("         ", txt[-1])
 		cat(txt, sep = "\n")
@@ -594,7 +595,7 @@ dag_as_igraph = function(dag) {
 
 	lt_children = dag@lt_children
 	children = unlist(lt_children)
-	parents = rep(seq_along(dag@terms), times = sapply(lt_children, length))
+	parents = rep(seq_along(dag@terms), times = vapply(lt_children, length, FUN.VALUE = integer(1)))
 	if(length(dag@lt_children_relations) > 0) {
 		relation_levels = attr(dag@lt_children_relations, "levels")
 		relations = unlist(dag@lt_children_relations)
@@ -644,14 +645,14 @@ dag_as_igraph = function(dag) {
 #' 
 #' \donttest{
 #' dag = create_ontology_DAG_from_GO_db()
-#' dag_filter(dag, relations = "isa")
+#' dag_filter(dag, relations = "is_a")
 #' }
 dag_filter = function(dag, terms = NULL, relations = NULL, root = NULL, leaves = NULL,
 	mcols_filter = NULL) {
 
 	lt_children = dag@lt_children
 	children = unlist(lt_children)
-	parents = rep(seq_along(dag@terms), times = sapply(lt_children, length))
+	parents = rep(seq_along(dag@terms), times = vapply(lt_children, length, FUN.VALUE = integer(1)))
 	if(length(dag@lt_children_relations) > 0) {
 		relation_levels = attr(dag@lt_children_relations, "levels")
 		v_relations = unlist(dag@lt_children_relations)
@@ -678,7 +679,8 @@ dag_filter = function(dag, terms = NULL, relations = NULL, root = NULL, leaves =
 
 	if(!is.null(relations)) {
 
-		if("is_a" %in% relations) {
+		relations = normalize_relation_type(relations)
+		if(!"is_a" %in% relations) {
 			stop("'is_a' must be included.")
 		}
 

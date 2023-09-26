@@ -23,7 +23,7 @@ reorder_children = function(dag, node) {
 			m[i, j] = m[j, i] = n_links_from_two_groups_of_nodes(dag, xl[[i]], xl[[j]])
 		}
 	}
-	n_relations = sum(sapply(dag@lt_children, length))
+	n_relations = sum(vapply(dag@lt_children, length, FUN.VALUE = integer(1)))
 	m = n_relations - m
 	d = as.dist(m)
 	tsp = TSP(d)

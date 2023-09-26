@@ -53,6 +53,6 @@ dag_filter(dag, root = "b", leaves = "e")
 
 \donttest{
 dag = create_ontology_DAG_from_GO_db()
-dag_filter(dag, relations = "isa")
+dag_filter(dag, relations = "is_a")
 }
 }

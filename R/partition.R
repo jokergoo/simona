@@ -70,6 +70,7 @@ partition_by_level = function(dag, level = 0, from = NULL, term_pos = NULL) {
 #' @param size Number of terms in a cluster. The splitting stops on a term if all its child-tree are smaller than `size`.
 #' @rdname partition_by_level
 #' @importFrom stats dendrapply
+#' @export
 partition_by_size = function(dag, size = ceiling(dag_n_terms(dag)/10)) {
 	
 	tree = dag_treelize(dag)
@@ -96,7 +97,7 @@ partition_by_size = function(dag, size = ceiling(dag_n_terms(dag)/10)) {
 			return(NULL)
 		}
 
-		nn = sapply(dend, function(x) attr(x, "n_nodes"))
+		nn = vapply(dend, function(x) attr(x, "n_nodes"), FUN.VALUE = double(1))
 		for(i in seq_along(nn)) {
 			if(nn[i] > size) {
 				scan_downstream(dend[[i]])

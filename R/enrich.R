@@ -108,24 +108,24 @@ dag_enrich_terms_by_permutation = function(dag, value, n = 1000) {
 	n = dag@n_terms
 
 	lt_offspring = dag_all_offspring(dag, include_self = TRUE, in_labels = FALSE)
-	n_offspring = sapply(lt_offspring, length)
+	n_offspring = vapply(lt_offspring, length, FUN.VALUE = integer(1))
 
-	s = sapply(lt_offspring, function(x) mean(value[x], na.rm = TRUE))
+	s = vapply(lt_offspring, function(x) mean(value[x], na.rm = TRUE), FUN.VALUE = numeric(1))
 	sr = matrix(nrow = length(s), ncol = n)
 	p = numeric(n)
 	
 	for(i in seq_len(n)) {
 		message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\brandom sampling", i, "/", n, appendLF = FALSE)
-		sr[, i] = sapply(n_offspring, function(x) {
+		sr[, i] = vapply(n_offspring, function(x) {
 			mean(sample(value, x), na.rm = TRUE)
-		})
+		}, FUN.VALUE = numeric(1))
 	}
 	message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\brandom sampling", n, "/", n, "\n")
 
-	p = sapply(seq_len(n), function(i) sum(sr[, i] > s[i])/length(s))
+	p = vapply(seq_len(n), function(i) sum(sr[, i] > s[i])/length(s), FUN.VALUE = numeric(1))
 	padj = p.adjust(p, "BH")
-	z = sapply(seq_len(n), function(i) (s[i] - mean(sr[, i]))/sd(sr[, i]))
-	log2fe = sapply(seq_len(n), function(i) log2(s[i]/mean(sr[, i])))
+	z = vapply(seq_len(n), function(i) (s[i] - mean(sr[, i]))/sd(sr[, i]), FUN.VALUE = numeric(1))
+	log2fe = vapply(seq_len(n), function(i) log2(s[i]/mean(sr[, i])), FUN.VALUE = numeric(1))
 
 	data.frame(term = dag@terms, stat = s, n_offspring = unname(n_offspring), z_score = z, log2_fold_enrichment = log2fe, p_value = p, p_adjust = padj)
 }

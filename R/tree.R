@@ -37,47 +37,8 @@ dag_treelize = function(dag) {
 		abs(x[x < 0])
 	})
 
-
-	# n = dag@n_terms
-	# lt_children = dag@lt_children
-	# lt_children2 = rep(list(integer(0)), n)
-
-	# depth = dag_depth(dag)
-	
-	# current_depth = 0
-	# current_term = dag@root
-	# l_visited = rep(FALSE, n)
-	# i_visited = 1L
-	# while(1) {
-	# 	if(length(current_term) == 0) {
-	# 		break
-	# 	}
-	# 	current_depth = current_depth + 1
-	# 	current_term2 = integer(0)
-	# 	for(t in current_term) {
-	# 		children = lt_children[[t]]
-	# 		for(ch in children) {
-	# 			if(depth[ch] == current_depth && !l_visited[ch]) {
-	# 				lt_children2[[t]] = c(lt_children2[[t]], ch)
-	# 				l_visited[ch] = TRUE
-	# 				current_term2 = c(current_term2, ch)
-
-	# 				i_visited = i_visited + 1L
-	# 				if(i_visited %% 1000 == 0) {
-	# 					message(strrep("\b", 100), appendLF = FALSE)
-	# 					message(qq("going through @{i_visited}/@{n} nodes ..."), appendLF = FALSE)
-	# 				}
-	# 			}
-	# 		}
-	# 	}
-	# 	current_term = current_term2
-	# }
-
-	# message(strrep("\b", 100), appendLF = FALSE)
-	# message(qq("going through @{i_visited}/@{n} nodes ... Done."))
-
 	n = length(lt_children2)
-	parents = rep(seq_len(n), times = sapply(lt_children2, length))
+	parents = rep(seq_len(n), times = vapply(lt_children2, length, FUN.VALUE = integer(1)))
 	children = unlist(lt_children2)
 
 	tree = create_ontology_DAG(dag@terms[parents], dag@terms[children])
@@ -116,8 +77,8 @@ dag_as_dendrogram = function(dag) {
 				                    height = height, 
 				                    label = dag@terms[node], 
 				                    term_id = node, 
-				                    n_nodes = 1 + sum(sapply(dend, function(x) attr(x, "n_nodes"))),
-				                    max_dist_to_leaf = 1 + max(sapply(dend, function(x) attr(x, "max_dist_to_leaf"))),
+				                    n_nodes = 1 + sum(vapply(dend, function(x) attr(x, "n_nodes"), FUN.VALUE = numeric(1))),
+				                    max_dist_to_leaf = 1 + max(vapply(dend, function(x) attr(x, "max_dist_to_leaf"), FUN.VALUE = numeric(1))),
 				                    leaf = FALSE, 
 				                    class = "dendrogram")
 		}
@@ -207,7 +168,7 @@ dend_sort = function(dend, by = "n_nodes", decreasing = TRUE) {
 	reorder = function(dend) {
 		k = length(dend)
 		if(k > 1) {
-			v = sapply(dend, function(x) attr(x, by))
+			v = vapply(dend, function(x) attr(x, by), FUN.VALUE = numeric(1))
 			attr = attributes(dend)
 
 			dend = dend[order(v, decreasing = decreasing)]
@@ -224,6 +185,4 @@ dend_sort = function(dend, by = "n_nodes", decreasing = TRUE) {
 	dend = reorder(dend)
 	dend_set_midpoint(dend)
 }
-
-
 

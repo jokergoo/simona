@@ -19,10 +19,10 @@ pairs(df, pch = ".", col = dag_depth(dag), gap = 0)
 And the heatmap of the correlations of IC metrics. 
 
 ```{r, fig.width = 6, fig.height = 6}
-cor = cor(df, method = "spearman", use = "pairwise.complete.obs")
+cor = cor(df, use = "pairwise.complete.obs")
 library(ComplexHeatmap)
 Heatmap(cor, name = "correlation", 
-    column_title = "IC Spearman correlation, GO BP", 
+    column_title = "IC Pearson correlation, GO BP", 
     rect_gp = gpar(type = "none"),
     col = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red")),
     cell_fun = function(j, i, x, y, w, h, fill) {

@@ -82,7 +82,7 @@ add_transparency = function (col, transparency = 0, alpha = TRUE) {
 
 lt_children_to_lt_parents = function(lt_children) {
 	n = length(lt_children)
-	parents = rep(seq_len(n), times = sapply(lt_children, length))
+	parents = rep(seq_len(n), times = vapply(lt_children, length, FUN.VALUE = integer(1)))
 	children = unlist(lt_children)
 
 	lt = split(parents, children)
@@ -95,7 +95,7 @@ lt_children_to_lt_parents = function(lt_children) {
 
 lt_parents_to_lt_children = function(lt_parents) {
 	n = length(lt_parents)
-	children = rep(seq_len(n), times = sapply(lt_parents, length))
+	children = rep(seq_len(n), times = vapply(lt_parents, length, FUN.VALUE = integer(1)))
 	parents = unlist(lt_parents)
 
 	lt = split(children, parents)
@@ -108,7 +108,7 @@ lt_parents_to_lt_children = function(lt_parents) {
 
 dag_is_tree = function(dag) {
 	n_terms = dag@n_terms
-	n_relations = sum(sapply(dag@lt_children, length))
+	n_relations = sum(vapply(dag@lt_children, length, FUN.VALUE = integer(1)))
 
 	n_terms == n_relations + 1
 }

@@ -1,10 +1,19 @@
 # simona: Semantic Similarity in Bio-Ontologies
 
 
+## Introduction
+
+The package implements a rich set of methods for semantic similarity analysis
+on bio-ontologies. They include methods for information contents,
+similarities between two terms as well as similarities between two groups
+of terms. It also implements visualizations on DAGs.
+
 ## Install
 
 ```r
 devtools::install_github("jokergoo/simona")
+# or
+BiocManager::install("simona")
 ```
 
 ## Usage

@@ -191,7 +191,7 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 	
 	lt_children = dag@lt_children
 	n = dag@n_terms
-	df_edge = data.frame(from = rep(seq_len(n), times = sapply(lt_children, length)),
+	df_edge = data.frame(from = rep(seq_len(n), times = vapply(lt_children, length, FUN.VALUE = integer(1))),
 		                 to = unlist(lt_children))
 	# adjust rho
 	tb = log(table(term_pos$rho))
@@ -240,27 +240,27 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 		if(has_highlight) {
 			node_col_map = node_col_map[intersect(names(node_col_map), group[l_highlight])]
 		} else {
-			sector_width = term_pos[sapply(names(node_col_map), function(x) which(dag@terms == x)), "width"]
+			sector_width = term_pos[vapply(names(node_col_map), function(x) which(dag@terms == x), FUN.VALUE = integer(1)), "width"]
 			if(sum(sector_width > 1) > 0) {
 				node_col_map = node_col_map[sector_width > 1]
 			}
 		}
 		if(length(node_col_map) > 20) {
 			n_offspring = n_offspring(dag)
-			node_col_map = node_col_map[ order(-n_offspring[names(node_col_map)])[1:20] ]
+			node_col_map = node_col_map[ order(-n_offspring[names(node_col_map)])[seq_len(20)] ]
 		}
 		if(is.null(legend_labels_from)) {
 			legend_labels = names(node_col_map)
 		} else {
 			legend_labels = mcols(dag)[names(node_col_map), legend_labels_from]
 		}
-		legend_labels = sapply(legend_labels, function(x) {
+		legend_labels = vapply(legend_labels, function(x) {
 			x = strwrap(x, width = legend_labels_max_width)
 			if(length(x) > 1) {
 				x[-1] = paste0("  ", x[-1])
 			}
 			paste(x, collapse = "\n")
-		})
+		}, FUN.VALUE = character(1))
 		lgd_list = c(lgd_list, list(Legend(title = "Top terms", labels = legend_labels,
 			type = "points", pch = 16,
 			background = add_transparency(node_col_map, 0.9, FALSE), 
@@ -268,13 +268,13 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 	}
 	if(!is.null(edge_col)) {
 		legend_labels = names(edge_col)
-		legend_labels = sapply(legend_labels, function(x) {
+		legend_labels = vapply(legend_labels, function(x) {
 			x = strwrap(x, width = legend_labels_max_width)
 			if(length(x) > 1) {
 				x[-1] = paste0("  ", x[-1])
 			}
 			paste(x, collapse = "\n")
-		})
+		}, FUN.VALUE = character(1))
 		lgd_list = c(lgd_list, list(Legend(title = "Relations", labels = legend_labels, type = "lines", legend_gp = gpar(col = edge_col))))
 	}
 
@@ -353,7 +353,7 @@ dag_as_DOT = function(dag, color = "black", style = "solid",
 
 	lt_children = dag@lt_children
 	children = unlist(lt_children)
-	parents = rep(seq_along(dag@terms), times = sapply(lt_children, length))
+	parents = rep(seq_along(dag@terms), times = vapply(lt_children, length, FUN.VALUE = integer(1)))
 	children = dag@terms[children]
 	parents = dag@terms[parents]
 
