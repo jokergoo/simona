@@ -803,7 +803,7 @@ path from $c$ to $a$ and from $c$ to $b$, the distance between $a$ and $b$
 is the sum of $1/\mathrm{IC}$ of the terms on the path. Denote $L_c(a, b)$ as the set of terms on the shortest path connecting $a$ and
 $b$ via the MICA term $c$, the similarity is:
 
-$$ \mathrm{Sim}(a, b) = 1 - \frac{\tanh \left( \sum\limits_{x \in L_c(a, b)} \frac{1}{\mathrm{IC}(x)} \right)}{\pi/2} $$
+$$ \mathrm{Sim}(a, b) = 1 - \frac{\arctan \left( \sum\limits_{x \in L_c(a, b)} \frac{1}{\mathrm{IC}(x)} \right)}{\pi/2} $$
 
 
 <pre class="r">
@@ -823,7 +823,7 @@ DAG structure.
 Denote $L_c(a, b)$ as the set of terms on the shortest path connecting $a$ and $b$ via the LCA term $c$,
 the similarity is calculated as:
 
-$$ \mathrm{Sim}(a, b) = 1 - \frac{\tanh \left( \sum\limits_{x \in L_c(a, b)} T(x) \right) }{\pi/2} $$
+$$ \mathrm{Sim}(a, b) = 1 - \frac{\arctan \left( \sum\limits_{x \in L_c(a, b)} T(x) \right) }{\pi/2} $$
 
 The T-value $T(x)$ depends on the DAG structure which considers both parents and children of $x$. The
 definition of $T(x)$ is:

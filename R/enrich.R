@@ -2,14 +2,18 @@
 
 #' Enrichment analysis on offspring terms
 #' 
+#' The analysis task is to evaluate how significant a term includes `terms`. 
+#' 
 #' @param dag An `ontology_DAG` object.
 #' @param terms A vector of term names.
 #' 
 #' @details
-#' Given a list of terms in `terms`, the function tests whether they are enriched in some terms's offspring terms.
+#' Given a list of terms in `terms`, the function tests whether they are enriched in a term's offspring terms.
 #' The test is based on the hypergeometric distribution. In the following 2x2 contigency table, `S` is the set of `terms`,
 #' for a term `t` in the DAG, `T` is the set of its offspring plus the `t` itself, the aim is to test whether `S` is over-represented
 #' in `T`.
+#' 
+#' If there is a significant p-value, we can say the term `t` preferably includes terms in `term`.
 #' 
 #' ```
 #' +----------+------+----------+-----+
@@ -64,6 +68,9 @@ dag_enrich_terms = function(dag, terms) {
 #' @param n Number of permutations.
 #' 
 #' @details
+#' In the function [`dag_enrich_terms()`], the statistic for testing is the number of terms in each category. Here
+#' this funtion makes the testing procedure more general
+#' 
 #' The function tests whether a term `t`'s offspring terms have an over-represented pattern on values in `value`.
 #' Denote `T` as the set of `t`'s offspring terms plus `t` itself, and `v` as the numeric vector of `value`, we first
 #' calculate a score `s` based on values in `T`:
@@ -81,7 +88,7 @@ dag_enrich_terms = function(dag, terms) {
 #' where index `i` represents the i^th sampling. If we sample `k` times, the p-value is calculated as:
 #' 
 #' ```
-#' p = sum_{go over k}(I(sr > s))/k
+#' p = sum_{i in 1..k}(I(sr_i > s))/k
 #' ```
 #' 
 #' @return A data frame with the following columns:
@@ -130,16 +137,20 @@ dag_enrich_terms_by_permutation = function(dag, value, n = 1000) {
 	data.frame(term = dag@terms, stat = s, n_offspring = unname(n_offspring), z_score = z, log2_fold_enrichment = log2fe, p_value = p, p_adjust = padj)
 }
 
-#' Enrichment analysis on numbers of annotated items
+#' Enrichment analysis on the number of annotated items
+#' 
+#' The analysis task is to evaluate which terms the given items are enriched to.
 #' 
 #' @param dag An `ontology_DAG` object.
 #' @param items A vector of item names.
 #' 
 #' @details
-#' The function tests whether the list of items are enriched in some terms.
+#' The function tests whether the list of items are enriched in terms on the DAG.
 #' The test is based on the hypergeometric distribution. In the following 2x2 contigency table, `S` is the set of `items`,
 #' for a term `t` in the DAG, `T` is the set of items annotated to `t` (by automatically merging from its offspring terms), 
 #' the aim is to test whether `S` is over-represented in `T`.
+#' 
+#' The universal set `all` correspond to the full set of items annotated to the DAG.
 #' 
 #' ```
 #' +----------+------+----------+-----+

@@ -23,7 +23,8 @@ ADD_GROUP_SIM_METHOD = function(method, param = character(0), require_anno = FAL
 
 #' Supported methods
 #' 
-#' @param require_anno Whether to only return methods that require external annotations. A value of `NULL` means both.
+#' @param require_anno If it is set to `TRUE`, methods that require external annotations are only returned. If 
+#'    it is set to `FALSE`, methods that do not require annotations are returned. A value of `NULL` returns both.
 #' 
 #' @details
 #' - `all_ic_methods()`: A vector of all supported IC methods.
@@ -32,7 +33,7 @@ ADD_GROUP_SIM_METHOD = function(method, param = character(0), require_anno = FAL
 #' 
 #' @rdname all_methods
 #' @export
-#' @return A vector of all supported methods.
+#' @return A character vector of all supported methods.
 #' @examples
 #' all_ic_methods()
 #' all_term_sim_methods()

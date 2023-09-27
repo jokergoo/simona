@@ -31,6 +31,8 @@ The similarity between two terms \code{a} and \code{b} is calculated as the IC o
     = 2*IC(c)/(IC(a) + IC(b))
 }\if{html}{\out{</div>}}
 
+Although any IC method can be used here, in more applications, it is normally used together with the \emph{IC_annotation} method.
+
 Paper link: \doi{10.5555/645527.657297}.
 }
 
@@ -48,7 +50,7 @@ The original Resnik similarity is the IC of the MICA term. There are three ways 
 }\if{html}{\out{</div>}}
 
 where \code{N} is the total number of items annotated to the whole DAG, i.e. number of items annotated to the root. Then the IC
-of a term with only one item annotated is \code{-log(1/N)} = log(N)`. So the \emph{Nunif} method normalizes IC to the possible maximal IC in the DAG.
+of a term with only one item annotated is \code{-log(1/N)} = log(N)` which is the maximal IC value in the DAG.
 \enumerate{
 \item \emph{Nmax}
 }
@@ -97,7 +99,7 @@ Paper link: \doi{10.1007/978-3-642-17746-0_39}.
 
 The IC method is fixed to \code{IC_annotation}.
 
-If thinking \emph{Lin_1998} is a measure of how close term \code{a} and \code{b} to their MICA \code{c}, the relevance method corrects it by multiplying
+If thinking \emph{Lin_1998} is a measure of how close term \code{a} and \code{b} to their MICA term \code{c}, the relevance method corrects it by multiplying
 a factor which considers the specificity of how \code{c} brings the information. The factor is calculated as \code{1-p(c)} where \code{p(c)} is the annotation-based
 probability \code{p(c) = k/N} where \code{k} is the number of items annotated to \code{c} and \code{N} is the total number of items annotated to the DAG. Then
 the Relevance semantic similarity is calculated as:
@@ -380,7 +382,7 @@ It is purely based on the depth of term \code{a}, \code{b} and their LCA \code{c
 \if{html}{\out{<div class="sourceCode">}}\preformatted{sim = depth(c)/(depth(a) + depth(b) - depth(c))
 }\if{html}{\out{</div>}}
 
-Since the similarity value might be negative because there is no restrction that the path from root to \code{a} or \code{b} must pass \code{c}.
+The similarity value might be negative because there is no restrction that the path from root to \code{a} or \code{b} must pass \code{c}.
 
 Paper link: \doi{10.1145/500737.500762}.
 }

@@ -31,6 +31,9 @@ shortest_distances_via_NCA = function(dag, terms) {
 	} else {
 		id = terms
 	}
+	if(any(duplicated(id))) {
+		stop("`term` should not be duplicated.")
+	}
 	d = cpp_shortest_distances_via_NCA(dag, id)
 
 	dimnames(d) = list(dag@terms[id], dag@terms[id])
@@ -44,6 +47,9 @@ longest_distances_via_LCA = function(dag, terms) {
 		id = term_to_node_id(dag, terms, strict = FALSE)
 	} else {
 		id = terms
+	}
+	if(any(duplicated(id))) {
+		stop("`term` should not be duplicated.")
 	}
 	d = cpp_longest_distances_via_LCA(dag, id)
 
@@ -59,6 +65,9 @@ shortest_distances_directed = function(dag, terms) {
 	} else {
 		id = terms
 	}
+	if(any(duplicated(id))) {
+		stop("`term` should not be duplicated.")
+	}
 	d = cpp_shortest_distances_directed(dag, id)
 
 	dimnames(d) = list(dag@terms[id], dag@terms[id])
@@ -72,6 +81,9 @@ longest_distances_directed = function(dag, terms) {
 		id = term_to_node_id(dag, terms, strict = FALSE)
 	} else {
 		id = terms
+	}
+	if(any(duplicated(id))) {
+		stop("`term` should not be duplicated.")
 	}
 	d = cpp_longest_distances_directed(dag, id)
 

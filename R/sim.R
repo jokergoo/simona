@@ -12,6 +12,8 @@
 #'     = 2*IC(c)/(IC(a) + IC(b))
 #' ```
 #' 
+#' Although any IC method can be used here, in more applications, it is normally used together with the *IC_annotation* method.
+#' 
 #' Paper link: \doi{10.5555/645527.657297}.
 #' 
 #' @rdname temp__Sim_Lin_1998
@@ -34,7 +36,7 @@ Sim_Lin_1998 = function(dag, terms, IC_method = "IC_annotation") {
 	
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_Lin_1998", "IC_method", require_anno = TRUE)
+ADD_TERM_SIM_METHOD("Sim_Lin_1998", "IC_method")
 
 
 #' Sim_Resnik_1999
@@ -53,7 +55,7 @@ ADD_TERM_SIM_METHOD("Sim_Lin_1998", "IC_method", require_anno = TRUE)
 #' ```
 #' 
 #' where `N` is the total number of items annotated to the whole DAG, i.e. number of items annotated to the root. Then the IC
-#' of a term with only one item annotated is `-log(1/N)` = log(N)`. So the *Nunif* method normalizes IC to the possible maximal IC in the DAG.
+#' of a term with only one item annotated is `-log(1/N)` = log(N)` which is the maximal IC value in the DAG. 
 #' 
 #' 2. *Nmax*
 #' 
@@ -153,7 +155,7 @@ Sim_FaITH_2010 = function(dag, terms, IC_method = "IC_annotation") {
 	sim[is.na(sim)] = 1
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_FaITH_2010", "IC_method", require_anno = TRUE)
+ADD_TERM_SIM_METHOD("Sim_FaITH_2010", "IC_method")
 
 
 #' Sim_Relevance_2006
@@ -163,7 +165,7 @@ ADD_TERM_SIM_METHOD("Sim_FaITH_2010", "IC_method", require_anno = TRUE)
 #' 
 #' The IC method is fixed to `IC_annotation`.
 #' 
-#' If thinking *Lin_1998* is a measure of how close term `a` and `b` to their MICA `c`, the relevance method corrects it by multiplying
+#' If thinking *Lin_1998* is a measure of how close term `a` and `b` to their MICA term `c`, the relevance method corrects it by multiplying
 #' a factor which considers the specificity of how `c` brings the information. The factor is calculated as `1-p(c)` where `p(c)` is the annotation-based
 #' probability `p(c) = k/N` where `k` is the number of items annotated to `c` and `N` is the total number of items annotated to the DAG. Then
 #' the Relevance semantic similarity is calculated as:
@@ -391,12 +393,13 @@ Sim_AIC_2014 = function(dag, terms, IC_method = "IC_annotation") {
 	id = id[l]
 
 	ic = term_IC(dag, IC_method)
+	ic[ic == 0] = 0
 	sim = cpp_sim_aic(dag, id, ic)
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_AIC_2014", "IC_method", require_anno = TRUE)
+ADD_TERM_SIM_METHOD("Sim_AIC_2014", "IC_method")
 
 
 #' Sim_Zhang_2006
@@ -497,10 +500,16 @@ Sim_Wang_2007 = function(dag, terms, contribution_factor = c("is_a" = 0.8, "part
 	if(is.null(names(contribution_factor))) {
 		stop("`contribution_factor` should be a named numeric vector where names should correspond to all relations.")
 	}
+
+	names(contribution_factor) = normalize_relation_type(names(contribution_factor))
 	
 	contribution_factor = extend_contribution_factor(dag@relations_DAG, contribution_factor)
 	if(length(setdiff(relation_levels, names(contribution_factor)))) {
 		stop("Contribution factor should be provided for all relations.")
+	}
+
+	if(any(contribution_factor >= 1)) {
+		stop("All values in `contribution_factor` should be smaller than 1.")
 	}
 
 	id = term_to_node_id(dag, terms, strict = FALSE)
@@ -837,7 +846,7 @@ ADD_TERM_SIM_METHOD("Sim_Pekar_2002")
 #' sim = depth(c)/(depth(a) + depth(b) - depth(c))
 #' ```
 #' 
-#' Since the similarity value might be negative because there is no restrction that the path from root to `a` or `b` must pass `c`.
+#' The similarity value might be negative because there is no restrction that the path from root to `a` or `b` must pass `c`.
 #' 
 #' Paper link: \doi{10.1145/500737.500762}.
 #' 
@@ -883,12 +892,6 @@ ADD_TERM_SIM_METHOD("Sim_Stojanovic_2001")
 Sim_Wang_edge_2012 = function(dag, terms) {
 	
 	id = term_to_node_id(dag, terms, strict = FALSE)
-	
-	l = id %in% dag@root
-	if(any(l)) {
-		message("remove root term.")
-		id = id[!l]
-	}
 
 	sim = cpp_sim_wang_edge(dag, id)
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
@@ -947,7 +950,13 @@ ADD_TERM_SIM_METHOD("Sim_Wang_edge_2012")
 Sim_Zhong_2002 = function(dag, terms, depth_via_LCA = TRUE) {
 	
 	id = term_to_node_id(dag, terms, strict = FALSE)
-	sim = cpp_sim_zhong(dag, id, depth_via_LCA)
+
+	if(!depth_via_LCA) {
+		d = dag_depth(dag)
+		sim = 1 - ( 2^(-LCA_depth(dag, id)) - 0.5*outer(2^(-d[id]), 2^(-d[id]), "+") )
+	} else {
+		sim = cpp_sim_zhong(dag, id, depth_via_LCA)
+	}
 
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 
@@ -1392,7 +1401,7 @@ Sim_Jaccard = function(dag, terms, anno_universe = NULL) {
 	id = id[l]
 	.sim_overlap(dag, id, anno_universe, method = "jaccard")
 }
-ADD_TERM_SIM_METHOD("Sim_Jaccard", require_anno = TRUE)
+ADD_TERM_SIM_METHOD("Sim_Jaccard", "anno_universe", require_anno = TRUE)
 
 
 #' Sim_Dice

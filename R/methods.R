@@ -8,7 +8,7 @@ get_IC_method = function(method, control = list()) {
 		if(length(i) != 1) {
 			stop("method should be in `all_ic_methods()`.")
 		}
-		method = names(.ALL_IC_METHODS)[i]
+		method = i
 		param = .ALL_IC_METHODS[[i]]
 	}
 
@@ -29,7 +29,7 @@ get_term_sim_method = function(method, control = list()) {
 		if(length(i) != 1) {
 			stop("method should be in `all_term_sim_methods()`.")
 		}
-		method = names(.ALL_TERM_SIM_METHODS)[i]
+		method = i
 		param = .ALL_TERM_SIM_METHODS[[i]]
 	}
 
@@ -48,7 +48,7 @@ get_group_sim_method = function(method, control = list()) {
 		if(length(i) != 1) {
 			stop("method should be in `all_group_sim_methods()`.")
 		}
-		method = names(.ALL_GROUP_SIM_METHODS)[i]
+		method = i
 		param = .ALL_GROUP_SIM_METHODS[[i]]
 	}
 
@@ -175,6 +175,10 @@ term_IC = function(dag, method, terms = NULL, control = list()) {
 #' dag = create_ontology_DAG(parents, children, annotation = annotation)
 #' term_sim(dag, dag_all_terms(dag), method = "Sim_Lin_1998")
 term_sim = function(dag, terms, method, control = list()) {
+
+	if(any(duplicated(terms))) {
+		stop("`term` can not have duplicated elements.")
+	}
 	sim_fun = get_term_sim_method(method, control)
 
 	sim_fun(dag, terms)
@@ -205,8 +209,6 @@ term_sim = function(dag, terms, method, control = list()) {
 #' @inheritSection GroupSim_pairwise_Froehlich_2007 Methods
 #' @inheritSection GroupSim_pairwise_Joeng_2014 Methods
 #' @inheritSection GroupSim_SimALN Methods
-#' @inheritSection GroupSim_SimINT Methods
-#' @inheritSection GroupSim_spgk Methods
 #' @inheritSection GroupSim_SimGIC Methods
 #' @inheritSection GroupSim_SimDIC Methods
 #' @inheritSection GroupSim_SimUIC Methods

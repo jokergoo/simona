@@ -249,9 +249,10 @@ dag_ancestors_of_two_groups = function(dag, group1, group2, type = "union", in_l
 #' @param use_cache Internally used.
 #' @details
 #' The depth of a term in the DAG is defined as the maximal distance from the root. The height
-#' of a term in the DAG is the maximal finite distance to the leaf terms.
+#' of a term in the DAG is the maximal finite distance to all leaf terms.
 #' 
 #' `dag_shortest_dist_from_root()` and `dag_shortest_dist_to_leaves()` calculate the minimal distance from the root or to the leaves.
+#' The word "from" and "to" emphasize the distancer is directinoal.
 #' 
 #' @return An integer vector.
 #' @export
@@ -375,7 +376,7 @@ dag_shortest_dist_to_leaves = function(dag, terms = NULL, use_cache = TRUE) {
 #' If `from` or `to` is a vector, for a specific, the longest/shortest distance among all `from`/`to` terms is taken.
 #' 
 #' As a special case, when `from` is the root term, `dag_longest_dist_to_offspring()` is the same as `dag_depth()`,
-#' and when `to` are all leaf terms, `dag_shortest_dist_to_offspring()` is the same as `dag_height()`.
+#' and when `to` are all leaf terms, `dag_longest_dist_to_offspring()` is the same as `dag_height()`.
 #' 
 #' @return An integer vector having length the same as the number of terms in the DAG. If terms are not
 #'        reachable to the `from` or `to` terms, the corresponding value is -1.

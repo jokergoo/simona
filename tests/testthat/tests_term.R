@@ -131,7 +131,7 @@ test_that("test IC_Wang_2007", {
 
 library(igraph)
 g = dag_as_igraph(dag)
-E(g)$weight = c("is_a" = 0.7, "part of" = 0.6)[E(g)$relation]
+E(g)$weight = c("is_a" = 0.7, "part_of" = 0.6)[E(g)$relation]
 d = distances(g, mode = "out", weights = -log(E(g)$weight))
 s = exp(-d)
 test_that("test IC_Wang_2007 and shortest path weighted by 1/w", {

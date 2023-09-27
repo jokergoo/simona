@@ -13,7 +13,8 @@ dag_n_terms(dag)
 \item{dag}{An \code{ontology_DAG} object.}
 }
 \value{
-A vector of term names.
+\code{dag_all_terms()} returns a vector of term names. \code{dag_n_terms()} returns
+a single iteger.
 }
 \description{
 Names of all terms

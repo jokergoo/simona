@@ -13,10 +13,11 @@ all_term_sim_methods(require_anno = NULL)
 all_group_sim_methods(require_anno = NULL)
 }
 \arguments{
-\item{require_anno}{Whether to only return methods that require external annotations. A value of \code{NULL} means both.}
+\item{require_anno}{If it is set to \code{TRUE}, methods that require external annotations are only returned. If
+it is set to \code{FALSE}, methods that do not require annotations are returned. A value of \code{NULL} returns both.}
 }
 \value{
-A vector of all supported methods.
+A character vector of all supported methods.
 }
 \description{
 Supported methods

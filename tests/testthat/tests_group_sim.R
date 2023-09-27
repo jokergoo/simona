@@ -23,5 +23,11 @@ dag = create_ontology_DAG(parents, children, relations = c("is_a", "part_of", "i
 	annotation = annotation)
 
 
-group1 = c("c", "e")
+group1 = c("c", "e", "d")
 group2 = c("b", "d", "f")
+
+
+for(method in all_group_sim_methods()) {
+	cat(method, "\n")
+	print(group_sim(dag, group1, group2, method = method))
+}

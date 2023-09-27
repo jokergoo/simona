@@ -13,7 +13,7 @@
 #' 
 #' In this way, depths of all terms in the orignal DAG are still identical to the depths in the tree (see the Examples section).
 #' 
-#' @returns An `ontology_DAG` object.
+#' @returns A tree is also an `ontology_DAG` object.
 #' @export
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")

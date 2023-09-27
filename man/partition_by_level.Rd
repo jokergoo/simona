@@ -18,7 +18,7 @@ partition_by_size(dag, size = ceiling(dag_n_terms(dag)/10))
 
 \item{term_pos}{Internally used.}
 
-\item{size}{Number of terms in a cluster. The splitting stops on a term if all its child-tree are smaller than \code{size}.}
+\item{size}{Number of terms in a cluster. The splitting stops on a term if all its child-trees are smaller than \code{size}.}
 }
 \value{
 A character vector of top terms in each partition.

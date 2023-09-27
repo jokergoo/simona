@@ -83,7 +83,7 @@ ADD_IC_METHOD("IC_height", "use_cache")
 #' In current implementations in other tools, there is an inconsistency of defining `k` and `N`. 
 #' Please see [`n_annotations()`] for explanation.
 #' 
-#' `NA` is assigned to the terms with no item annotated.
+#' `NA` is assigned to terms with no item annotated.
 #' 
 #' @rdname temp__IC_annotation
 IC_annotation = function(dag, uniquify = simona_opt$anno_uniquify, use_cache = simona_opt$use_cache) {
@@ -129,11 +129,11 @@ ADD_IC_METHOD("IC_annotation", c("uniquify", "use_cache"), require_anno = TRUE)
 #' the p-value of 1.
 #' 
 #' For example, an intermediate term `t` has two parent terms `parent1` and `parent2`, also assume `parent1` has `k1` children
-#' and `parent2` has `k2` children, assume a parent transmits information equally to all its children, then `parent1` only transmits `1/k1` and
+#' and `parent2` has `k2` children, assume a parent transmits information equally to all its children, then respectively `parent1` only transmits `1/k1` and
 #' `parent2` only transmits `1/k2` of its content to term `t`, or the probability of a parent to reach `t` is `1/k1` or `1/k2`. 
-#' Let's say `p1` and `p2` are the accmulated contents from the root for `parnet1` and `parent2` respectively (or the probability 
+#' Let's say `p1` and `p2` are the accumulated contents from the root to `parnet1` and `parent2` respectively (or the probability 
 #' of the two parent terms getting full transmission from root), then the probability of reaching `t` via a full transmission graph from `parent1`
-#' is the multiplication of `p1` and `1/k1`, which is `p1/k1`, and it is similar for `p2/k2`. Then, for term `t`, if getting transmitted from `parent1` and
+#' is the multiplication of `p1` and `1/k1`, which is `p1/k1`, and same for `p2/k2`. Then, for term `t`, if getting transmitted from `parent1` and
 #' `parent2` are independent, the probability of `t` (denoted as `p_t`) to get transmitted from both parents is:
 #' 
 #' ```
@@ -240,7 +240,7 @@ reachability = function(dag, use_cache = simona_opt$use_cache) {
 #' term `a` has three ways to reach leaf, which are `a->b`, `a->d` and `a->c->d`.
 #' 
 #' Let's denote `k` as the number of ways for term `t` to reach leaves and `N` as the maximal value of `k` which
-#' should be associated with the root term, the information content is calculated as 
+#' is associated to the root term, the information content is calculated as 
 #' 
 #' ```
 #' IC = -log(k/N) 
@@ -276,7 +276,7 @@ ADD_IC_METHOD("IC_Zhang_2006", "use_cache")
 #' ```
 #' 
 #' where `k` is the number of offspring terms of `t`, or you can think `k+1` is the number of `t`'s offspring terms plus itself.
-#' `N` is the total number of terms in the DAG.
+#' `N` is the total number of terms on the DAG.
 #' 
 #' Paper link: \doi{10.5555/3000001.3000272}.
 #' 
@@ -377,7 +377,7 @@ ADD_IC_METHOD("IC_Seddiqui_2010", "use_cache")
 #' @section Methods:
 #' ## IC_Sanchez_2011
 #' 
-#' It measures average contribution of term `t` on leaf terms. First denote `zeta` as the number of leaf terms that
+#' It measures the average contribution of term `t` on leaf terms. First denote `zeta` as the number of leaf terms that
 #' can be reached from term `t` (or `t`'s offspring that are leaves.). Since all `t`'s ancestors can also
 #' reach `t`'s leaves, the contribution of `t` on leaf terms is scaled by `n_ancestors` which is the number of `t`'s ancestor terms.
 #' The final information content is normalized by the total number of leaves in the DAG, which is the possible maximal value of `zeta`.
@@ -507,7 +507,7 @@ totipotency = function(dag, use_cache = simona_opt$use_cache) {
 #' the accumulated multiplication of weights along the path reaches maximal:
 #' 
 #' ```
-#' S(a->t) = max(prod(w))
+#' S(a->t) = max_{path}(prod_{node on the paty}(w))
 #' ```
 #' 
 #' Here `max` goes over all possible paths from `a` to `t`, and `prod()` multiplies edge weights in a certain path.
@@ -527,7 +527,7 @@ totipotency = function(dag, use_cache = simona_opt$use_cache) {
 #' as the sum from all `t`'s ancestors (including `t` itself):
 #' 
 #' ```
-#' IC = sum_{a => t's ancestors + t}(S(a->t))
+#' IC = sum_{a in t's ancestors + t}(S(a->t))
 #' ```
 #' 
 #' Paper link: \doi{10.1093/bioinformatics/btm087}.
@@ -541,6 +541,8 @@ totipotency = function(dag, use_cache = simona_opt$use_cache) {
 #'     control = list(contribution_factor = c("relation_a" = 0.8, "relation_b" = 0.6)))
 #' ```
 #' 
+#' Note the **IC_Wang_2007** method is normally used within the **Sim_Wang_2007** semantic similarity method.
+#' 
 #' @rdname temp__IC_Wang_2007
 IC_Wang_2007 = function(dag, contribution_factor = c("is_a" = 0.8, "part_of" = 0.6), use_cache = simona_opt$use_cache) {
 	if(is.null(dag@term_env$IC_Wang_2007) || !use_cache) {
@@ -552,6 +554,12 @@ IC_Wang_2007 = function(dag, contribution_factor = c("is_a" = 0.8, "part_of" = 0
 			stop("`contribution_factor` should be a named numeric vector where names should correspond to all relations.")
 		}
 		
+		names(contribution_factor) = normalize_relation_type(names(contribution_factor))
+
+		if(any(contribution_factor >= 1)) {
+			stop("All values in `contribution_factor` should be smaller than 1.")
+		}
+
 		contribution_factor = extend_contribution_factor(dag@relations_DAG, contribution_factor)
 		if(length(setdiff(relation_levels, names(contribution_factor)))) {
 			stop("Contribution factor should be provided for all relations.")

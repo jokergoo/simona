@@ -48,11 +48,11 @@ NumericMatrix cpp_sim_aic(S4 dag, IntegerVector nodes, NumericVector ic) {
 		}
 		offspring = offspring + 1;
 
-		if(noff > 1) {
+		if(noff >= 1) {
 			for(int i = 0; i < noff; i ++) {
 				int id1 = nodes_ind[ offspring[i]-1 ];
 				if(id1 >= 0) {
-					sv[offspring[i] - 1] += sw[offspring[i] - 1];
+					sv[offspring[i] - 1] += sw[all_ancestors[k]-1];
 				}
 			}
 		}
@@ -71,7 +71,7 @@ NumericMatrix cpp_sim_aic(S4 dag, IntegerVector nodes, NumericVector ic) {
 		}
 		offspring = offspring + 1;
 
-		if(noff > 1) {
+		if(noff >= 1) {
 			for(int i = 0; i < noff - 1; i ++) {
 				int id1 = nodes_ind[ offspring[i]-1 ];
 				if(id1 >= 0) {
@@ -273,11 +273,19 @@ NumericMatrix cpp_sim_wang_edge(S4 dag, IntegerVector nodes) {
 						if(id2 >= 0) {
 							if(LCA_depth(id1, id2) < global_depth[all_ancestors[k]-1]) {
 								LCA_depth(id1, id2) = global_depth[all_ancestors[k]-1];
-								sim(id1, id2) = pow(global_depth[all_ancestors[k]-1], 2)/(global_depth[all_ancestors[k]-1] + depth[offspring[i]-1])/(global_depth[all_ancestors[k]-1] + depth[offspring[j]-1]);
+								if(std::abs(global_depth[all_ancestors[k]-1]) < 1e-10) {
+									sim(id1, id2) = 0;
+								} else {
+									sim(id1, id2) = pow(global_depth[all_ancestors[k]-1], 2)/(global_depth[all_ancestors[k]-1] + depth[offspring[i]-1])/(global_depth[all_ancestors[k]-1] + depth[offspring[j]-1]);
+								}
 								sim(id2, id1) = sim(id1, id2);
 							} else if(LCA_depth(id1, id2) == global_depth[all_ancestors[k]-1]) {
 								if(sim(id1, id2) >= 0) {
-									sim_new = pow(global_depth[all_ancestors[k]-1], 2)/(global_depth[all_ancestors[k]-1] + depth[offspring[i]-1])/(global_depth[all_ancestors[k]-1] + depth[offspring[j]-1]);
+									if(std::abs(global_depth[all_ancestors[k]-1]) < 1e-10) {
+										sim_new = 0;
+									} else {
+										sim_new = pow(global_depth[all_ancestors[k]-1], 2)/(global_depth[all_ancestors[k]-1] + depth[offspring[i]-1])/(global_depth[all_ancestors[k]-1] + depth[offspring[j]-1]);
+									}
 									if(sim_new < sim(id1, id2)) {
 										sim(id1, id2) = sim_new;
 										sim(id2, id1) = sim(id1, id2);
@@ -352,25 +360,17 @@ NumericMatrix cpp_sim_zhong(S4 dag, IntegerVector nodes, bool depth_via_LCA) {
 								LCA_depth(id1, id2) = global_depth[all_ancestors[k]-1];
 
 								sigma_c = global_depth[all_ancestors[k]-1];
-								if(depth_via_LCA) {
-									sigma_a = sigma_c + depth[offspring[i] - 1];
-									sigma_b = sigma_c + depth[offspring[j] - 1];
-								} else {
-									sigma_a = global_depth[offspring[i] - 1];
-									sigma_b = global_depth[offspring[j] - 1];
-								}
+								sigma_a = depth[offspring[i] - 1]; // dist from lca to a
+								sigma_b = depth[offspring[j] - 1]; // dist from lca to b
+								
 								sim(id1, id2) = 1 - 1.0/pow(2, sigma_c)*(1- 1.0/pow(2, sigma_a+1) - 1.0/pow(2, sigma_b+1));
 								sim(id2, id1) = sim(id1, id2);
 							} else if(LCA_depth(id1, id2) == global_depth[all_ancestors[k]-1]) {
 								if(sim(id1, id2) >= 0) {
 									sigma_c = global_depth[all_ancestors[k]-1];
-									if(depth_via_LCA) {
-										sigma_a = sigma_c + depth[offspring[i] - 1];
-										sigma_b = sigma_c + depth[offspring[j] - 1];
-									} else {
-										sigma_a = global_depth[offspring[i] - 1];
-										sigma_b = global_depth[offspring[j] - 1];
-									}
+									sigma_a = depth[offspring[i] - 1];
+									sigma_b = depth[offspring[j] - 1];
+									
 									sim_new = 1 - 1.0/pow(2, sigma_c)*(1- 1.0/pow(2, sigma_a+1) - 1.0/pow(2, sigma_b+1));
 									if(sim_new < sim(id1, id2)) {
 										sim(id1, id2) = sim_new;

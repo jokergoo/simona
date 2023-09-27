@@ -243,17 +243,6 @@ group_sim(dag, group1, group2, method = "GroupSim_SimALN",
 
 Paper link: https://doi.org/10.1109/CBMS.2008.27.
 
-## GroupSim_SimINT
-
-To be added.
-
-Paper link: https://doi.org/10.1186/1471-2105-11-588.
-
-## GroupSim_spgk
-
-To be added.
-
-Paper link: https://doi.org/10.1093/bioinformatics/bti1007.
 
 # Groupwise IC-based methods
 
@@ -297,13 +286,31 @@ group_sim(dag, group1, group2, method = "GroupSim_SimGIC",
 
 ## GroupSim_SimCOU
 
-To be added.
+Let's write $mathcal{A}_p$ and $mathcal{A}_q$ as two vectors $\mathbf{v_p}$
+and $\mathbf{v_q}$. Taking $v_p$ as an example, it is $\mathbf{v_p} = (w_1, ..., w_n)$ where $n$
+is the number of total terms in the DAG. The value $w_i$ is assigned to the corresponding term $t_i$
+and is defined as:
 
+$$
+mathcal{w}_{i} = \left\{ \begin{array}{ll}
+\mathrm{IC}(t_i) & \textrm{if} t_i \in mathcal{A}_p \\
+0 & \textrm{otherwise}
+\end{array} \right.
+$$
 
+The semantic similarity is defined as the cosine similarity between the two vectors:
+
+$$ \mathrm{Sim}(a, b) = \frac{ \mathbf{v_p} \cdot \mathbf{v_q} }{\left \| \mathbf{v_p} \right \| \cdot  \left \| \mathbf{v_q} \right \|} $$
+
+It can also be written as:
+
+$$ \mathrm{Sim}(a, b) = \frac{\sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q}\mathrm{IC}(x)^2}{\sqrt{\sum\limits_{x \in \mathcal{A}_p}\mathrm{IC}(x)} \cdot \sqrt{\sum\limits_{x \in \mathcal{A}_p}\mathrm{IC}(x)}} $$
 
 ## GroupSim_SimCOT
 
-To be added.
+The semantic similarity is defined as:
+
+$$ \mathrm{Sim}(a, b) = \frac{ \mathbf{v_p} \cdot \mathbf{v_q} }{\left \| \mathbf{v_p} \right \|^2 +  \left \| \mathbf{v_q} \right \|^2 - \mathbf{v_p} \cdot \mathbf{v_q}} $$
 
 
 # Groupwise edge-based methods

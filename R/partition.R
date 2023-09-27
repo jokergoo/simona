@@ -67,7 +67,7 @@ partition_by_level = function(dag, level = 0, from = NULL, term_pos = NULL) {
 	partition
 }
 
-#' @param size Number of terms in a cluster. The splitting stops on a term if all its child-tree are smaller than `size`.
+#' @param size Number of terms in a cluster. The splitting stops on a term if all its child-trees are smaller than `size`.
 #' @rdname partition_by_level
 #' @importFrom stats dendrapply
 #' @export

@@ -30,9 +30,10 @@ Depth and height in the DAG
 }
 \details{
 The depth of a term in the DAG is defined as the maximal distance from the root. The height
-of a term in the DAG is the maximal finite distance to the leaf terms.
+of a term in the DAG is the maximal finite distance to all leaf terms.
 
 \code{dag_shortest_dist_from_root()} and \code{dag_shortest_dist_to_leaves()} calculate the minimal distance from the root or to the leaves.
+The word "from" and "to" emphasize the distancer is directinoal.
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")

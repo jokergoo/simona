@@ -57,9 +57,10 @@ ontology_DAG = setClass("ontology_DAG",
 #' @param parents A character vector of parent terms. 
 #' @param children A character vector of child terms. 
 #' @param relations A character vector of parent-child relations, e.g. "is_a", "part_of", or self-defined semantic relations.
-#' @param relations_DAG If the relation types also have hierarchical relations, it can also be constructed by `create_ontology_DAG()` first. See **Examples**.
-#'          When the DAG for relation types is provided, in downstream analysis, the ancestor/offspring relationship for relation types will be taken into consideration.
-#' @param source Source of the ontology. It is only used as a mark of the object.
+#'        If it is set, it should have the same length as `parents` and `children`.
+#' @param relations_DAG If the relation types have hierarchical relations, it can also be constructed by `create_ontology_DAG()` first. See **Examples**.
+#'          When the DAG for relation types is provided, the ancestor/offspring relationship of relation types will be taken into consideration automatically.
+#' @param source Source of the ontology. It is only used as a label of the object.
 #' @param annotation A list of character vectors which contain items annotated to the terms. Names of the list should be the term names. In the DAG, items
 #'                   annotated to a term will also be annotated to its parents. Such merging
 #'                   is applied automatically in the package.
@@ -125,7 +126,7 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 	lt_parents2 = split(unname(terms2ind[parents]), children)
 	lt_children2 = split(unname(terms2ind[children]), parents)
 	if(has_relations) {
-		relations[grepl("^is.*a$", relations, ignore.case = TRUE)] = "is_a"
+		relations = normalize_relation_type(relations)
 		relations = as.factor(relations)
 		relation_levels = levels(relations)
 		relations = as.integer(relations)
@@ -413,10 +414,10 @@ create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = "part of
 	}
 
 	relations = c("is_a", relations)
+	relations = normalize_relation_type(relations)
 	if("regulates" %in% relations) {
-		relations = c(relations, "negatively regulates", "positively regulates")
+		relations = c(relations, "negatively_regulates", "positively_regulates")
 	}
-	relations = gsub(" ", "_", relations)
 	df = df[df[, 3] %in% relations, , drop = FALSE]
 
 	if(!is.null(org_db)) {
@@ -474,29 +475,56 @@ create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = "part of
 #' dag["b", "f"]
 #' dag[, "f"]
 setMethod("[", 
-	signature = c("ontology_DAG"),
+	signature = c("ontology_DAG", "ANY", "ANY"),
 	definition = function(x, i, j, ..., drop = FALSE) {
 
-	if(!missing(i)) {
-		if(!is.character(i)) {
-			stop("Only the character term name should be used as index.")
-		}
-	}
-	if(!missing(j)) {
-		if(!is.character(j)) {
-			stop("Only the character term name should be used as index.")
-		}
+	if(!is.character(i)) {
+		stop("Only the character term name should be used as index.")
 	}
 
-	if(!missing(i) && missing(j)) {  ## dag[i] or dag[i, ]
-		dag_filter(x, root = i)
-	} else if(!missing(i) && !missing(j)) {  ## dag[i, j]
-		dag_filter(x, root = i, leaves = j)
-	} else if(missing(i) && !missing(j)) {  ## dag[, j]
-		dag_filter(x, leaves = j)
-	} else {    ## dag[, ]
-		x
+	if(!is.character(j)) {
+		stop("Only the character term name should be used as index.")
 	}
+	
+	dag_filter(x, root = i, leaves = j)
+	
+})
+
+
+#' @rdname subset
+#' @exportMethod [
+setMethod("[", 
+	signature = c("ontology_DAG", "ANY", "missing"),
+	definition = function(x, i, j, ..., drop = FALSE) {
+
+	if(!is.character(i)) {
+		stop("Only the character term name should be used as index.")
+	}
+
+	dag_filter(x, root = i)
+})
+
+#' @rdname subset
+#' @exportMethod [
+setMethod("[", 
+	signature = c("ontology_DAG", "missing", "ANY"),
+	definition = function(x, i, j, ..., drop = FALSE) {
+
+	if(!is.character(j)) {
+		stop("Only the character term name should be used as index.")
+	}
+
+	dag_filter(x, leaves = j)
+
+})
+
+#' @rdname subset
+#' @exportMethod [
+setMethod("[", 
+	signature = c("ontology_DAG", "missing", "missing"),
+	definition = function(x, i, j, ..., drop = FALSE) {
+
+	x
 	
 })
 
@@ -516,7 +544,8 @@ setMethod("[[",
 #' 
 #' @param dag An `ontology_DAG` object.
 #' 
-#' @return A vector of term names.
+#' @return `dag_all_terms()` returns a vector of term names. `dag_n_terms()` returns
+#'      a single iteger.
 #' @export
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")

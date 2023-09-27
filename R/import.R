@@ -16,7 +16,6 @@
 #' @export
 #' @importFrom utils read.csv
 #' @examples
-#' 1
 #' \donttest{
 #' # The plant ontology: http://obofoundry.org/ontology/po.html 
 #' import_obo("https://raw.githubusercontent.com/Planteome/plant-ontology/master/po.obo")
@@ -548,6 +547,8 @@ import_owl = function(file, relation_type = "part_of", ...) {
 #' - `owx`: OWL/XML
 #' - `ttl`: Turtle 
 #' 
+#' The description of the ROBOT tool is at http://robot.obolibrary.org/convert.
+#' 
 #' @rdname import_obo
 #' @export
 #' @importFrom utils download.file
@@ -611,7 +612,7 @@ import_ontology = function(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "
 #' `import_ttl()` is a simple parser for the `.ttl` format files. It only recognizes
 #' terms that have the `owl:Class` object. The "is_a" relation is recognized by the predicate `rdfs:subClassOf`
 #' or an ontology-specific predicate that contains `.*/isa`. Other relation types are defined with
-#' the predicate `owl:ObjectProperty`.
+#' the predicate `owl:ObjectProperty`. The format is parsed by a Perl script `system.file("scripts", "parse_ttl.pl", package = "simona")`.
 #' @rdname import_obo
 #' @export
 #' @examples

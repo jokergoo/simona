@@ -31,6 +31,9 @@ The number of rows in the data frame is the same as the number of terms in the D
 Enrichment analysis on offspring terms by permutation test
 }
 \details{
+In the function \code{\link[=dag_enrich_terms]{dag_enrich_terms()}}, the statistic for testing is the number of terms in each category. Here
+this funtion makes the testing procedure more general
+
 The function tests whether a term \code{t}'s offspring terms have an over-represented pattern on values in \code{value}.
 Denote \code{T} as the set of \code{t}'s offspring terms plus \code{t} itself, and \code{v} as the numeric vector of \code{value}, we first
 calculate a score \code{s} based on values in \code{T}:
@@ -45,7 +48,7 @@ To construct a random version of \code{s}, we randomly sample \code{n_T} terms f
 
 where index \code{i} represents the i^th sampling. If we sample \code{k} times, the p-value is calculated as:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{p = sum_\{go over k\}(I(sr > s))/k
+\if{html}{\out{<div class="sourceCode">}}\preformatted{p = sum_\{i in 1..k\}(I(sr_i > s))/k
 }\if{html}{\out{</div>}}
 }
 \examples{

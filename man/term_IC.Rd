@@ -60,7 +60,7 @@ the total number of items annotated to the DAG), IC for term \code{t} is calcula
 In current implementations in other tools, there is an inconsistency of defining \code{k} and \code{N}.
 Please see \code{\link[=n_annotations]{n_annotations()}} for explanation.
 
-\code{NA} is assigned to the terms with no item annotated.
+\code{NA} is assigned to terms with no item annotated.
 }
 
 
@@ -70,11 +70,11 @@ It measures the probability of a term getting full transmission from the root. E
 the p-value of 1.
 
 For example, an intermediate term \code{t} has two parent terms \code{parent1} and \code{parent2}, also assume \code{parent1} has \code{k1} children
-and \code{parent2} has \code{k2} children, assume a parent transmits information equally to all its children, then \code{parent1} only transmits \code{1/k1} and
+and \code{parent2} has \code{k2} children, assume a parent transmits information equally to all its children, then respectively \code{parent1} only transmits \code{1/k1} and
 \code{parent2} only transmits \code{1/k2} of its content to term \code{t}, or the probability of a parent to reach \code{t} is \code{1/k1} or \code{1/k2}.
-Let's say \code{p1} and \code{p2} are the accmulated contents from the root for \code{parnet1} and \code{parent2} respectively (or the probability
+Let's say \code{p1} and \code{p2} are the accumulated contents from the root to \code{parnet1} and \code{parent2} respectively (or the probability
 of the two parent terms getting full transmission from root), then the probability of reaching \code{t} via a full transmission graph from \code{parent1}
-is the multiplication of \code{p1} and \code{1/k1}, which is \code{p1/k1}, and it is similar for \code{p2/k2}. Then, for term \code{t}, if getting transmitted from \code{parent1} and
+is the multiplication of \code{p1} and \code{1/k1}, which is \code{p1/k1}, and same for \code{p2/k2}. Then, for term \code{t}, if getting transmitted from \code{parent1} and
 \code{parent2} are independent, the probability of \code{t} (denoted as \code{p_t}) to get transmitted from both parents is:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{p_t = (p1/k1) * (p2/k2)
@@ -104,7 +104,7 @@ It measures the number of ways from a term to reach leaf terms. E.g. in the foll
 term \code{a} has three ways to reach leaf, which are \code{a->b}, \code{a->d} and \code{a->c->d}.
 
 Let's denote \code{k} as the number of ways for term \code{t} to reach leaves and \code{N} as the maximal value of \code{k} which
-should be associated with the root term, the information content is calculated as
+is associated to the root term, the information content is calculated as
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{IC = -log(k/N) 
    = log(N) - log(k)
@@ -123,7 +123,7 @@ The information content is calculated as:
 }\if{html}{\out{</div>}}
 
 where \code{k} is the number of offspring terms of \code{t}, or you can think \code{k+1} is the number of \code{t}'s offspring terms plus itself.
-\code{N} is the total number of terms in the DAG.
+\code{N} is the total number of terms on the DAG.
 
 Paper link: \doi{10.5555/3000001.3000272}.
 }
@@ -166,7 +166,7 @@ Paper link: \doi{10.5555/1862330.1862343}.
 
 \subsection{IC_Sanchez_2011}{
 
-It measures average contribution of term \code{t} on leaf terms. First denote \code{zeta} as the number of leaf terms that
+It measures the average contribution of term \code{t} on leaf terms. First denote \code{zeta} as the number of leaf terms that
 can be reached from term \code{t} (or \code{t}'s offspring that are leaves.). Since all \code{t}'s ancestors can also
 reach \code{t}'s leaves, the contribution of \code{t} on leaf terms is scaled by \code{n_ancestors} which is the number of \code{t}'s ancestor terms.
 The final information content is normalized by the total number of leaves in the DAG, which is the possible maximal value of \code{zeta}.
@@ -219,7 +219,7 @@ Each relation is weighted by a value less than 1 based on the semantic relation,
 For a term \code{t} and one of its ancestor term \code{a}, it first calculates an "S-value" which corresponds to a path from \code{a} to \code{t} where
 the accumulated multiplication of weights along the path reaches maximal:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{S(a->t) = max(prod(w))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{S(a->t) = max_\{path\}(prod_\{node on the paty\}(w))
 }\if{html}{\out{</div>}}
 
 Here \code{max} goes over all possible paths from \code{a} to \code{t}, and \code{prod()} multiplies edge weights in a certain path.
@@ -237,7 +237,7 @@ Since \code{w < 1}, \code{log(1/w)} is positive. According to the equation, the 
 If \code{S(a->t)} can be thought as the maximal semantic contribution from \code{a} to \code{t}, the information content is calculated
 as the sum from all \code{t}'s ancestors (including \code{t} itself):
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{IC = sum_\{a => t's ancestors + t\}(S(a->t))
+\if{html}{\out{<div class="sourceCode">}}\preformatted{IC = sum_\{a in t's ancestors + t\}(S(a->t))
 }\if{html}{\out{</div>}}
 
 Paper link: \doi{10.1093/bioinformatics/btm087}.
@@ -249,6 +249,8 @@ vector where names should cover the relations defined in \code{relations} set in
 \if{html}{\out{<div class="sourceCode">}}\preformatted{term_IC(dag, method = "IC_Wang", 
     control = list(contribution_factor = c("relation_a" = 0.8, "relation_b" = 0.6)))
 }\if{html}{\out{</div>}}
+
+Note the \strong{IC_Wang_2007} method is normally used within the \strong{Sim_Wang_2007} semantic similarity method.
 }
 }
 

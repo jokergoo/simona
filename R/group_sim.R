@@ -1,7 +1,13 @@
 
-
 #' @importFrom matrixStats rowMaxs colMaxs
-.GroupSim_pairwise = function(dag, group1, group2, term_sim_method, group_sim_method = "avg", ...) {
+.GroupSim_pairwise = function(dag, group1, group2, term_sim_method = NULL, group_sim_method = "avg", ...) {
+	if(is.null(term_sim_method)) {
+		if(has_annotation(dag)) {
+			term_sim_method = "Sim_Lin_1998"
+		} else {
+			term_sim_method = "Sim_WP_1994"
+		}
+	}
 
 	group1 = lapply(group1, function(x) term_to_node_id(dag, x, strict = FALSE))
 	group2 = lapply(group2, function(x) term_to_node_id(dag, x, strict = FALSE))
@@ -81,8 +87,10 @@
 #' 
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
+#' Pape link: \doi{10.1093/bioinformatics/btg153}.
+#' 
 #' @rdname temp__GroupSim_pairwise_avg
-GroupSim_pairwise_avg = function(dag, group1, group2, term_sim_method, ...) {
+GroupSim_pairwise_avg = function(dag, group1, group2, term_sim_method = NULL, ...) {
 	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "avg", ...)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_pairwise_avg", c("term_sim_method", "..."))
@@ -101,8 +109,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_avg", c("term_sim_method", "..."))
 #' 
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
+#' Paper link: \doi{10.1109/TCBB.2005.50}.
+#' 
 #' @rdname temp__GroupSim_pairwise_max
-GroupSim_pairwise_max = function(dag, group1, group2, term_sim_method, ...) {
+GroupSim_pairwise_max = function(dag, group1, group2, term_sim_method = NULL, ...) {
 	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "max", ...)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_pairwise_max", c("term_sim_method", "..."))
@@ -130,8 +140,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_max", c("term_sim_method", "..."))
 #' 
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
+#' Paper link: \doi{10.1155/2012/975783}.
+#' 
 #' @rdname temp__GroupSim_pairwise_BMA
-GroupSim_pairwise_BMA = function(dag, group1, group2, term_sim_method, ...) {
+GroupSim_pairwise_BMA = function(dag, group1, group2, term_sim_method = NULL, ...) {
 	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "BMA", ...)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_pairwise_BMA", c("term_sim_method", "..."))
@@ -150,8 +162,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_BMA", c("term_sim_method", "..."))
 #' 
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
+#' Paper link: \doi{10.1186/1471-2105-7-302}.
+#' 
 #' @rdname temp__GroupSim_pairwise_BMM
-GroupSim_pairwise_BMM = function(dag, group1, group2, term_sim_method, ...) {
+GroupSim_pairwise_BMM = function(dag, group1, group2, term_sim_method = NULL, ...) {
 	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "BMM", ...)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_pairwise_BMM", c("term_sim_method", "..."))
@@ -172,8 +186,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_BMM", c("term_sim_method", "..."))
 #' 
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
+#' Paper link: \doi{10.1186/1471-2105-14-284}.
+#' 
 #' @rdname temp__GroupSim_pairwise_ABM
-GroupSim_pairwise_ABM = function(dag, group1, group2, term_sim_method, ...) {
+GroupSim_pairwise_ABM = function(dag, group1, group2, term_sim_method = NULL, ...) {
 	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "ABM", ...)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_pairwise_ABM", c("term_sim_method", "..."))
@@ -205,7 +221,7 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_ABM", c("term_sim_method", "..."))
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_pairwise_HDF
-GroupSim_pairwise_HDF = function(dag, group1, group2, term_sim_method, ...) {
+GroupSim_pairwise_HDF = function(dag, group1, group2, term_sim_method = NULL, ...) {
 	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "HDF", ...)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_pairwise_HDF", c("term_sim_method", "..."))
@@ -230,8 +246,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_HDF", c("term_sim_method", "..."))
 #' 
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
+#' Paper link: \doi{10.1109/ICPR.1994.576361}.
+#' 
 #' @rdname temp__GroupSim_pairwise_MHDF
-GroupSim_pairwise_MHDF = function(dag, group1, group2, term_sim_method, ...) {
+GroupSim_pairwise_MHDF = function(dag, group1, group2, term_sim_method = NULL, ...) {
 	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "MHDF", ...)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_pairwise_MHDF", c("term_sim_method", "..."))
@@ -252,8 +270,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_MHDF", c("term_sim_method", "..."))
 #' 
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
+#' Paper link: \doi{10.1073/pnas.0702965104}.
+#' 
 #' @rdname temp__GroupSim_pairwise_VHDF
-GroupSim_pairwise_VHDF = function(dag, group1, group2, term_sim_method, ...) {
+GroupSim_pairwise_VHDF = function(dag, group1, group2, term_sim_method = NULL, ...) {
 	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "VHDF", ...)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_pairwise_VHDF", c("term_sim_method", "..."))
@@ -272,8 +292,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_VHDF", c("term_sim_method", "..."))
 #' 
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
+#' Paper link: \doi{10.1186/1471-2105-8-166}.
+#' 
 #' @rdname temp__GroupSim_pairwise_Froehlich_2007
-GroupSim_pairwise_Froehlich_2007 = function(dag, group1, group2, term_sim_method, ...) {
+GroupSim_pairwise_Froehlich_2007 = function(dag, group1, group2, term_sim_method = NULL, ...) {
 	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "froehlich_2007", ...)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_pairwise_Froehlich_2007", c("term_sim_method", "..."))
@@ -292,8 +314,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_Froehlich_2007", c("term_sim_method", ".
 #' 
 #' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
 #' 
+#' Paper link: \doi{10.1109/TCBB.2014.2343963}.
+#' 
 #' @rdname temp__GroupSim_pairwise_Joeng_2014
-GroupSim_pairwise_Joeng_2014 = function(dag, group1, group2, term_sim_method, ...) {
+GroupSim_pairwise_Joeng_2014 = function(dag, group1, group2, term_sim_method = NULL, ...) {
 	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "joeng_2014", ...)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_pairwise_Joeng_2014", c("term_sim_method", "..."))
@@ -315,12 +339,15 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_Joeng_2014", c("term_sim_method", "...")
 #' 
 #' Distance method can be set via `control = list(distance = ...)`.
 #' 
+#' Paper link: \doi{10.1109/ISCC.2008.4625763}.
+#' 
 #' @rdname temp__GroupSim_SimALN
 GroupSim_SimALN = function(dag, group1, group2, distance = "longest_distances_via_LCA") {
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
+	group1 = lapply(group1, function(x) term_to_node_id(dag, x, strict = FALSE))
+	group2 = lapply(group2, function(x) term_to_node_id(dag, x, strict = FALSE))
 
-	id = union(id1, id2)
+	id = unique(unlist(c(group1, group2)))
+	
 	if(distance == "shortest_distances_via_CA") {
 		d = cpp_shortest_distances_via_CA(dag, id)
 	} else if(distance == "longest_distances_via_LCA") {
@@ -330,67 +357,79 @@ GroupSim_SimALN = function(dag, group1, group2, distance = "longest_distances_vi
 	}
 	dimnames(d) = list(dag@terms[id], dag@terms[id])
 
-	d = d[dag@terms[id1], dag@terms[id2], drop = FALSE]
-	exp(-mean(d))
+	n1 = length(group1)
+	n2 = length(group2)
+	m = matrix(nrow = n1, ncol = n2)
+	rownames(m) = names(group1)
+	colnames(m) = names(group2)
+
+	for(i in seq(1, length(group1))) {
+		for(j in seq(1, length(group2))) {
+			d2 = d[dag@terms[ group1[[i]] ], dag@terms[ group2[[j]] ] , drop = FALSE]
+			m[i, j] = exp(-mean(d2))
+		}
+	}
+	m
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimALN", "distance")
 
 
-#' GroupSim_SimINT
-#' 
-#' @section Methods:
-#' ## GroupSim_SimINT
-#' 
-#' To be added.
-#' 
-#' @rdname temp__GroupSim_SimINT
-GroupSim_SimINT = function(dag, group1, group2) {
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	i_intersect = intersect(id1, id2)
-	ic_anno = IC_annotation(dag)
-
-	sum(ic_anno[i_intersect]^2)/sum(ic_anno[id1]^2)/sum(ic_anno[id2]^2)
-}
-ADD_GROUP_SIM_METHOD("GroupSim_SimINT")
-
-
-#' GroupSim_spgk
-#' 
-#' @section Methods:
-#' ## GroupSim_spgk
-#' 
-#' To be added.
-#' 
-#' @rdname temp__GroupSim_spgk
-GroupSim_spgk = function(dag, group1, group2) {
-	
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	ancestors1 = cpp_ancestors_of_a_group(dag, id1, TRUE)
-	ancestors2 = cpp_ancestors_of_a_group(dag, id2, TRUE)
-
-	d1 = cpp_shortest_distances_directed(dag, ancestors1)
-	dimnames(d1) = list(dag@terms[ancestors1], dag@terms[ancestors1])
-	d2 = cpp_shortest_distances_directed(dag, ancestors2)
-	dimnames(d2) = list(dag@terms[ancestors2], dag@terms[ancestors2])
-
-	common_ancestors = intersect(ancestors1, ancestors2)
-
-	if(length(common_ancestors) == 0) {
-		0
-	} else {
-		common_ancestors = dag@terms[common_ancestors]
-		sum(pmax(0, 2 - abs(d1[common_ancestors, common_ancestors, drop = FALSE] - d2[common_ancestors, common_ancestors, drop = FALSE])))
-	}
-}
-ADD_GROUP_SIM_METHOD("GroupSim_spgk")
 
 
 GROUPSIM_ANCESTORS_UNION = 1
 GROUPSIM_ANCESTORS_INTERSECT = 2
+
+
+.GroupSim_IC_based = function(dag, group1, group2, IC_method = NULL, group_sim_method = "avg", use_IC = FALSE) {
+
+	if(is.null(IC_method)) {
+		if(has_annotation(dag)) {
+			IC_method = "IC_annotation"
+		} else {
+			IC_method = "IC_offspring"
+		}
+	}
+	group1 = lapply(group1, function(x) term_to_node_id(dag, x, strict = FALSE))
+	group2 = lapply(group2, function(x) term_to_node_id(dag, x, strict = FALSE))
+
+	if(use_IC) {
+		weight = term_IC(dag, IC_method)
+	} else {
+		weight = rep(1, dag@n_terms)
+	}
+	names(weight) = dag@terms
+
+	.calc = function(g1, g2) {
+		if(group_sim_method == "jaccard") {
+			sum(weight[intersect(g1, g2)])/sum(weight[union(g1, g2)])
+		} else if(group_sim_method == "dice") {
+			2*sum(weight[intersect(g1, g2)])/(sum(weight[g1]) + sum(weight[g2]))
+		} else if(group_sim_method == "universal") {
+			sum(weight[intersect(g1, g2)])/max(sum(weight[g1]), sum(weight[g2]))
+		} else if(group_sim_method == "overlap") {
+			sum(weight[intersect(g1, g2)])/min(sum(weight[g1]), sum(weight[g2]))
+		} else if(group_sim_method == "cosine") {
+			sum(weight[intersect(g1, g2)]^2)/sqrt(sum(weight[g1]^2))/sqrt(sum(weight[g2]^2))
+		} else if(group_sim_method == "cosine2") {
+			v = sum(weight[intersect(g1, g2)]^2)
+			v/(sum(weight[g1]^2) + sum(weight[g2]^2) - v)
+		}
+	}
+
+	n1 = length(group1)
+	n2 = length(group2)
+	m = matrix(nrow = n1, ncol = n2)
+	rownames(m) = names(group1)
+	colnames(m) = names(group2)
+
+	for(i in seq(1, length(group1))) {
+		for(j in seq(1, length(group2))) {
+			m[i, j] = .calc(dag@terms[ group1[[i]] ], dag@terms[ group2[[j]] ])
+		}
+	}
+	m
+
+}
 
 #' GroupSim_SimGIC
 #' 
@@ -407,15 +446,8 @@ GROUPSIM_ANCESTORS_INTERSECT = 2
 #' IC method can be set via `control = list(IC_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_SimGIC
-GroupSim_SimGIC = function(dag, group1, group2, IC_method) {
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	ancestors1 = cpp_ancestors_of_two_groups(dag, id1, id2, GROUPSIM_ANCESTORS_INTERSECT, TRUE)
-	ancestors2 = cpp_ancestors_of_two_groups(dag, id1, id2, GROUPSIM_ANCESTORS_UNION, TRUE)
-
-	ic = term_IC(dag, IC_method)
-	sum(ic[ancestors1])/sum(ic[ancestors2])
+GroupSim_SimGIC = function(dag, group1, group2, IC_method = NULL) {
+	.GroupSim_IC_based(dag, group1, group2, IC_method, group_sim_method = "jaccard", use_IC = TRUE)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimGIC", "IC_method")
 
@@ -434,16 +466,8 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimGIC", "IC_method")
 #' IC method can be set via `control = list(IC_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_SimDIC
-GroupSim_SimDIC = function(dag, group1, group2, IC_method) {
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	ancestors1 = cpp_ancestors_of_two_groups(dag, id1, id2, GROUPSIM_ANCESTORS_INTERSECT, TRUE)
-	ancestors2 = cpp_ancestors_of_a_group(dag, id1, TRUE)
-	ancestors3 = cpp_ancestors_of_a_group(dag, id2, TRUE)
-
-	ic = term_IC(dag, IC_method)
-	2*sum(ic[ancestors1])/(sum(ic[ancestors2]) + sum(ic[ancestors3]))
+GroupSim_SimDIC = function(dag, group1, group2, IC_method = NULL) {
+	.GroupSim_IC_based(dag, group1, group2, IC_method, group_sim_method = "dice", use_IC = TRUE)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimDIC", "IC_method")
 
@@ -462,16 +486,8 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimDIC", "IC_method")
 #' IC method can be set via `control = list(IC_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_SimUIC
-GroupSim_SimUIC = function(dag, group1, group2, IC_method) {
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	ancestors1 = cpp_ancestors_of_two_groups(dag, id1, id2, GROUPSIM_ANCESTORS_INTERSECT, TRUE)
-	ancestors2 = cpp_ancestors_of_a_group(dag, id1, TRUE)
-	ancestors3 = cpp_ancestors_of_a_group(dag, id2, TRUE)
-
-	ic = term_IC(dag, IC_method)
-	sum(ic[ancestors1])/max(sum(ic[ancestors2]), sum(ic[ancestors3]))
+GroupSim_SimUIC = function(dag, group1, group2, IC_method = NULL) {
+	.GroupSim_IC_based(dag, group1, group2, IC_method, group_sim_method = "universal", use_IC = TRUE)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimUIC", "IC_method")
 
@@ -490,13 +506,7 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimUIC", "IC_method")
 #' 
 #' @rdname temp__GroupSim_SimUI
 GroupSim_SimUI = function(dag, group1, group2) {
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	ancestors1 = cpp_ancestors_of_two_groups(dag, id1, id2, GROUPSIM_ANCESTORS_INTERSECT, TRUE)
-	ancestors2 = cpp_ancestors_of_two_groups(dag, id1, id2, GROUPSIM_ANCESTORS_UNION, TRUE)
-
-	length(ancestors1)/length(ancestors2)
+	.GroupSim_IC_based(dag, group1, group2, group_sim_method = "jaccard", use_IC = FALSE)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimUI")
 
@@ -514,14 +524,7 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimUI")
 #' 
 #' @rdname temp__GroupSim_SimDB
 GroupSim_SimDB = function(dag, group1, group2) {
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	ancestors1 = cpp_ancestors_of_two_groups(dag, id1, id2, GROUPSIM_ANCESTORS_INTERSECT, TRUE)
-	ancestors2 = cpp_ancestors_of_a_group(dag, id1, TRUE)
-	ancestors3 = cpp_ancestors_of_a_group(dag, id2, TRUE)
-
-	2*length(ancestors1)/(length(ancestors2) + length(ancestors3))
+	.GroupSim_IC_based(dag, group1, group2, group_sim_method = "dice", use_IC = FALSE)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimDB")
 
@@ -539,14 +542,7 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimDB")
 #' 
 #' @rdname temp__GroupSim_SimUB
 GroupSim_SimUB = function(dag, group1, group2) {
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	ancestors1 = cpp_ancestors_of_two_groups(dag, id1, id2, GROUPSIM_ANCESTORS_INTERSECT, TRUE)
-	ancestors2 = cpp_ancestors_of_a_group(dag, id1, TRUE)
-	ancestors3 = cpp_ancestors_of_a_group(dag, id2, TRUE)
-
-	length(ancestors1)/max(length(ancestors2), length(ancestors3))
+	.GroupSim_IC_based(dag, group1, group2, group_sim_method = "universal", use_IC = FALSE)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimUB")
 
@@ -564,14 +560,7 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimUB")
 #' 
 #' @rdname temp__GroupSim_SimNTO
 GroupSim_SimNTO = function(dag, group1, group2) {
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	ancestors1 = cpp_ancestors_of_two_groups(dag, id1, id2, GROUPSIM_ANCESTORS_INTERSECT, TRUE)
-	ancestors2 = cpp_ancestors_of_a_group(dag, id1, TRUE)
-	ancestors3 = cpp_ancestors_of_a_group(dag, id2, TRUE)
-
-	length(ancestors1)/min(length(ancestors2), length(ancestors3))
+	.GroupSim_IC_based(dag, group1, group2, group_sim_method = "overlap", use_IC = FALSE)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimNTO")
 
@@ -602,17 +591,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimNTO")
 #' IC method can be set via `control = list(IC_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_SimCOU
-GroupSim_SimCOU = function(dag, group1, group2, IC_method) {
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	i_intersect = intersect(id1, id2)
-
-	ic = term_IC(dag, IC_method)
-
-	sum(ic[i_intersect]^2)/sqrt(sum(ic[id1]^2))/sqrt(sum(ic[id2]^2))
+GroupSim_SimCOU = function(dag, group1, group2, IC_method = NULL) {
+	.GroupSim_IC_based(dag, group1, group2, IC_method, group_sim_method = "cosine", use_IC = TRUE)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_SimCOU")
+ADD_GROUP_SIM_METHOD("GroupSim_SimCOU", "IC_method")
 
 
 #' GroupSim_SimCOT
@@ -636,18 +618,46 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimCOU")
 #' IC method can be set via `control = list(IC_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_SimCOT
-GroupSim_SimCOT = function(dag, group1, group2, IC_method) {
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	i_intersect = intersect(id1, id2)
-
-	ic = term_IC(dag, IC_method)
-
-	sum(ic[i_intersect]^2)/( sum(ic[id1]^2) + sum(ic[id2]^2) - sum(ic[i_intersect]^2))
+GroupSim_SimCOT = function(dag, group1, group2, IC_method = NULL) {
+	.GroupSim_IC_based(dag, group1, group2, IC_method, group_sim_method = "cosine2", use_IC = TRUE)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_SimCOT")
+ADD_GROUP_SIM_METHOD("GroupSim_SimCOT", "IC_method")
 
+
+
+.GroupSim_edge_based = function(dag, group1, group2, group_sim_method = "lp") {
+
+	group1 = lapply(group1, function(x) term_to_node_id(dag, x, strict = FALSE))
+	group2 = lapply(group2, function(x) term_to_node_id(dag, x, strict = FALSE))
+
+	depth = dag_depth(dag)
+	names(depth) = dag@terms
+
+	max_depth = max(depth)
+	min_depth = min(depth)
+
+	.calc = function(g1, g2) {
+		if(group_sim_method == "lp") {
+			max(depth[c(g1, g2)])
+		} else if(group_sim_method == "ye") {
+			(max(depth[c(g1, g2)]) - min_depth)/(max_depth - min_depth)
+		} 
+	}
+
+	n1 = length(group1)
+	n2 = length(group2)
+	m = matrix(nrow = n1, ncol = n2)
+	rownames(m) = names(group1)
+	colnames(m) = names(group2)
+
+	for(i in seq(1, length(group1))) {
+		for(j in seq(1, length(group2))) {
+			m[i, j] = .calc(dag@terms[ group1[[i]] ], dag@terms[ group2[[j]] ])
+		}
+	}
+	m
+
+}
 
 #' GroupSim_SimLP
 #' 
@@ -663,12 +673,7 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimCOT")
 #' 
 #' @rdname temp__GroupSim_SimLP
 GroupSim_SimLP = function(dag, group1, group2) {
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	depth = dag_depth(dag)
-	ancestors = cpp_ancestors_of_two_groups(dag, id1, id2, GROUPSIM_ANCESTORS_INTERSECT, TRUE)
-	max(depth[ancestors])
+	.GroupSim_edge_based(dag, group1, group2, group_sim_method = "lp")
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimLP")
 
@@ -688,16 +693,54 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimLP")
 #' 
 #' @rdname temp__GroupSim_Ye_2005
 GroupSim_Ye_2005 = function(dag, group1, group2) {
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	depth = dag_depth(dag)
-	ancestors = cpp_ancestors_of_two_groups(dag, id1, id2, GROUPSIM_ANCESTORS_INTERSECT, TRUE)
-
-	max(depth[ancestors])/max(depth)
+	.GroupSim_edge_based(dag, group1, group2, group_sim_method = "ye")
 }
 ADD_GROUP_SIM_METHOD("GroupSim_Ye_2005")
 
+
+
+.GroupSim_annotation_based = function(dag, group1, group2, group_sim_method = "cho") {
+
+	group1 = lapply(group1, function(x) term_to_node_id(dag, x, strict = FALSE))
+	group2 = lapply(group2, function(x) term_to_node_id(dag, x, strict = FALSE))
+
+	n = n_annotations(dag)
+	names(n) = dag@terms
+
+	.calc = function(g1, g2) {
+		i_intersect = intersect(g1, g2)
+		
+		if(group_sim_method == "cho") {
+			if(length(i_intersect) == 0) {
+				0
+			} else {
+				log(min(n[i_intersect])/max(n))/log(min(n)/max(n))
+			}
+
+		} else if(group_sim_method == "ald") {
+
+			if(length(i_intersect) == 0) {
+				0
+			} else {
+				max(1 - n[i_intersect]/max(n))
+			}
+		}
+	}
+
+	n1 = length(group1)
+	n2 = length(group2)
+	m = matrix(nrow = n1, ncol = n2)
+	rownames(m) = names(group1)
+	colnames(m) = names(group2)
+
+	for(i in seq(1, length(group1))) {
+		for(j in seq(1, length(group2))) {
+			m[i, j] = .calc(dag@terms[ group1[[i]] ], dag@terms[ group2[[j]] ])
+		}
+	}
+	m
+
+}
 
 #' GroupSim_SimCHO
 #' 
@@ -717,18 +760,7 @@ ADD_GROUP_SIM_METHOD("GroupSim_Ye_2005")
 #' 
 #' @rdname temp__GroupSim_SimCHO
 GroupSim_SimCHO = function(dag, group1, group2) {
-
-	n = n_annotations(dag)
-
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	i_intersect = intersect(id1, id2)
-	if(length(i_intersect) == 0) {
-		0
-	} else {
-		log(min(n[i_intersect])/max(n))/log(min(n)/max(n))
-	}
+	.GroupSim_annotation_based(dag, group1, group2, group_sim_method = "cho")
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimCHO")
 
@@ -746,21 +778,43 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimCHO")
 #' 
 #' @rdname temp__GroupSim_SimALD
 GroupSim_SimALD = function(dag, group1, group2) {
-
-	n = n_annotations(dag)
-
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	i_intersect = intersect(id1, id2)
-
-	if(length(i_intersect) == 0) {
-		0
-	} else {
-		max(1 - n[i_intersect]/max(n))
-	}
+	.GroupSim_annotation_based(dag, group1, group2, group_sim_method = "ald")
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimALD")
+
+
+
+.GroupSim_count_based = function(dag, group1, group2, group_sim_method = "jaccard", universe = NULL) {
+
+	group1 = lapply(group1, function(x) {
+		id = term_to_node_id(dag, x, strict = FALSE)
+		l = validate_annotated_terms(dag, id)
+		id[l]
+	})
+	group2 = lapply(group2, function(x) {
+		id = term_to_node_id(dag, x, strict = FALSE)
+		l = validate_annotated_terms(dag, id)
+		id[l]
+	})
+
+	.calc = function(g1, g2) {
+		.sim_overlap_from_two_groups(dag, g1, g2, universe, method = group_sim_method)
+	}
+
+	n1 = length(group1)
+	n2 = length(group2)
+	m = matrix(nrow = n1, ncol = n2)
+	rownames(m) = names(group1)
+	colnames(m) = names(group2)
+
+	for(i in seq(1, length(group1))) {
+		for(j in seq(1, length(group2))) {
+			m[i, j] = .calc(group1[[i]], group2[[j]])
+		}
+	}
+	m
+
+}
 
 
 #' GroupSim_Jaccard
@@ -776,14 +830,7 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimALD")
 #' 
 #' @rdname temp__GroupSim_Jaccard
 GroupSim_Jaccard = function(dag, group1, group2, universe = NULL) {
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	l1 = validate_annotated_terms(dag, id1)
-	id1 = id1[l1]
-	l2 = validate_annotated_terms(dag, id2)
-	id2 = id2[l2]
-	.sim_overlap_from_two_groups(dag, id1, id2, universe, method = "jaccard")
+	.GroupSim_count_based(dag, group1, group2, group_sim_method = "jaccard", universe = universe)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_Jaccard", "universe")
 
@@ -799,14 +846,7 @@ ADD_GROUP_SIM_METHOD("GroupSim_Jaccard", "universe")
 #' 
 #' @rdname temp__GroupSim_Dice
 GroupSim_Dice = function(dag, group1, group2, universe = NULL) {
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	l1 = validate_annotated_terms(dag, id1)
-	id1 = id1[l1]
-	l2 = validate_annotated_terms(dag, id2)
-	id2 = id2[l2]
-	.sim_overlap_from_two_groups(dag, id1, id2, universe, method = "dice")
+	.GroupSim_count_based(dag, group1, group2, group_sim_method = "dice", universe = universe)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_Dice", "universe")
 
@@ -822,14 +862,7 @@ ADD_GROUP_SIM_METHOD("GroupSim_Dice", "universe")
 #' 
 #' @rdname temp__GroupSim_Overlap
 GroupSim_Overlap = function(dag, group1, group2, universe = NULL) {
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	l1 = validate_annotated_terms(dag, id1)
-	id1 = id1[l1]
-	l2 = validate_annotated_terms(dag, id2)
-	id2 = id2[l2]
-	.sim_overlap_from_two_groups(dag, id1, id2, universe, method = "overlap")
+	.GroupSim_count_based(dag, group1, group2, group_sim_method = "overlap", universe = universe)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_Overlap", "universe")
 
@@ -845,14 +878,7 @@ ADD_GROUP_SIM_METHOD("GroupSim_Overlap", "universe")
 #' 
 #' @rdname temp__GroupSim_Kappa
 GroupSim_Kappa = function(dag, group1, group2, universe = NULL) {
-	id1 = term_to_node_id(dag, group1, strict = FALSE)
-	id2 = term_to_node_id(dag, group2, strict = FALSE)
-
-	l1 = validate_annotated_terms(dag, id1)
-	id1 = id1[l1]
-	l2 = validate_annotated_terms(dag, id2)
-	id2 = id2[l2]
-	.sim_overlap_from_two_groups(dag, id1, id2, universe, method = "kappa")
+	.GroupSim_count_based(dag, group1, group2, group_sim_method = "kappa", universe = universe)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_Kappa", "universe")
 

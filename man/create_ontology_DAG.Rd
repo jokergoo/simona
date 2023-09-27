@@ -20,12 +20,13 @@ create_ontology_DAG(
 
 \item{children}{A character vector of child terms.}
 
-\item{relations}{A character vector of parent-child relations, e.g. "is_a", "part_of", or self-defined semantic relations.}
+\item{relations}{A character vector of parent-child relations, e.g. "is_a", "part_of", or self-defined semantic relations.
+If it is set, it should have the same length as \code{parents} and \code{children}.}
 
-\item{relations_DAG}{If the relation types also have hierarchical relations, it can also be constructed by \code{create_ontology_DAG()} first. See \strong{Examples}.
-When the DAG for relation types is provided, in downstream analysis, the ancestor/offspring relationship for relation types will be taken into consideration.}
+\item{relations_DAG}{If the relation types have hierarchical relations, it can also be constructed by \code{create_ontology_DAG()} first. See \strong{Examples}.
+When the DAG for relation types is provided, the ancestor/offspring relationship of relation types will be taken into consideration automatically.}
 
-\item{source}{Source of the ontology. It is only used as a mark of the object.}
+\item{source}{Source of the ontology. It is only used as a label of the object.}
 
 \item{annotation}{A list of character vectors which contain items annotated to the terms. Names of the list should be the term names. In the DAG, items
 annotated to a term will also be annotated to its parents. Such merging

@@ -26,13 +26,15 @@ A data frame with the following columns:
 The number of rows in the data frame is the same as the number of terms in the DAG.
 }
 \description{
-Enrichment analysis on offspring terms
+The analysis task is to evaluate how significant a term includes \code{terms}.
 }
 \details{
-Given a list of terms in \code{terms}, the function tests whether they are enriched in some terms's offspring terms.
+Given a list of terms in \code{terms}, the function tests whether they are enriched in a term's offspring terms.
 The test is based on the hypergeometric distribution. In the following 2x2 contigency table, \code{S} is the set of \code{terms},
 for a term \code{t} in the DAG, \code{T} is the set of its offspring plus the \code{t} itself, the aim is to test whether \code{S} is over-represented
 in \code{T}.
+
+If there is a significant p-value, we can say the term \code{t} preferably includes terms in \code{term}.
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{+----------+------+----------+-----+
 |          | in S | not in S | all |

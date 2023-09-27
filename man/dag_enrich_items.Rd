@@ -2,7 +2,7 @@
 % Please edit documentation in R/enrich.R
 \name{dag_enrich_items}
 \alias{dag_enrich_items}
-\title{Enrichment analysis on numbers of annotated items}
+\title{Enrichment analysis on the number of annotated items}
 \usage{
 dag_enrich_items(dag, items)
 }
@@ -26,13 +26,15 @@ A data frame with the following columns:
 The number of rows in the data frame is the same as the number of terms in the DAG.
 }
 \description{
-Enrichment analysis on numbers of annotated items
+The analysis task is to evaluate which terms the given items are enriched to.
 }
 \details{
-The function tests whether the list of items are enriched in some terms.
+The function tests whether the list of items are enriched in terms on the DAG.
 The test is based on the hypergeometric distribution. In the following 2x2 contigency table, \code{S} is the set of \code{items},
 for a term \code{t} in the DAG, \code{T} is the set of items annotated to \code{t} (by automatically merging from its offspring terms),
 the aim is to test whether \code{S} is over-represented in \code{T}.
+
+The universal set \code{all} correspond to the full set of items annotated to the DAG.
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{+----------+------+----------+-----+
 |          | in S | not in S | all |

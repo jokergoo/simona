@@ -20,7 +20,7 @@ dag_as_dendrogram(dag)
 \item{...}{Ignored.}
 }
 \value{
-An \code{ontology_DAG} object.
+A tree is also an \code{ontology_DAG} object.
 }
 \description{
 Reduce the DAG to a tree

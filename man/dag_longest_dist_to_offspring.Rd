@@ -37,7 +37,7 @@ Distance from all ancestors/to all offspring in the DAG
 If \code{from} or \code{to} is a vector, for a specific, the longest/shortest distance among all \code{from}/\code{to} terms is taken.
 
 As a special case, when \code{from} is the root term, \code{dag_longest_dist_to_offspring()} is the same as \code{dag_depth()},
-and when \code{to} are all leaf terms, \code{dag_shortest_dist_to_offspring()} is the same as \code{dag_height()}.
+and when \code{to} are all leaf terms, \code{dag_longest_dist_to_offspring()} is the same as \code{dag_height()}.
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")

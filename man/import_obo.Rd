@@ -50,13 +50,14 @@ The \code{import_obo()} function parses the ontology file in \code{.obo} format.
 \item \code{ttl}: Turtle
 }
 
+The description of the ROBOT tool is at http://robot.obolibrary.org/convert.
+
 \code{import_ttl()} is a simple parser for the \code{.ttl} format files. It only recognizes
 terms that have the \code{owl:Class} object. The "is_a" relation is recognized by the predicate \code{rdfs:subClassOf}
 or an ontology-specific predicate that contains \verb{.*/isa}. Other relation types are defined with
-the predicate \code{owl:ObjectProperty}.
+the predicate \code{owl:ObjectProperty}. The format is parsed by a Perl script \code{system.file("scripts", "parse_ttl.pl", package = "simona")}.
 }
 \examples{
-1
 \donttest{
 # The plant ontology: http://obofoundry.org/ontology/po.html 
 import_obo("https://raw.githubusercontent.com/Planteome/plant-ontology/master/po.obo")

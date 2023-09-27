@@ -23,12 +23,13 @@ Reorder child terms
 For a given term, its child terms are reordered based on the numbers
 of cross-links of their offspring terms.
 
-Denote c1 and c2 are two child terms, S1 and S2 are two sets of offspring terms of c1 and c2.
-We calculate k as the number of links between S1 and S2, which are the links linking parents in S1
-and children in S2, or parents in S2 and children in S1. Denote n as the total number of links
-in the DAG, n - k is the distance bewteen c1 and c2 regarding how close the offspring sub-trees are connected.
+Denote \code{c1} and \code{c2} are two child terms, \code{S1} and \code{S2} are two sets of offspring terms of \code{c1} and \code{c2}.
+We calculate \code{k} as the number of links between \code{S1} and \code{S2}, which are the links linking parents in \code{S1}
+and children in \code{S2}, or parents in \code{S2} and children in \code{S1}. Denote \code{n} as the total number of links
+in the DAG, \code{n - k} is the distance bewteen \code{c1} and \code{c2} regarding how close the offspring sub-trees are connected.
 
-With the distances from the set of child terms, \code{\link[TSP:TSP]{TSP::TSP()}} is applied to reorder child terms.
+With the distances from the set of child terms being defined, \code{\link[TSP:TSP]{TSP::TSP()}} is applied to reorder child terms
+to optmize the sum of distance of neighbouring terms smallest.
 }
 \examples{
 \donttest{

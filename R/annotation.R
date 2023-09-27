@@ -5,7 +5,7 @@
 #' 
 #' @param dag An `ontology_DAG` object.
 #' @param terms A vector of term names. If it is set, the returned vector will be subsetted to the terms that have been set here.
-#' @param uniquify Whether to uniquify items that are annotated to the term? See **Details**.
+#' @param uniquify Whether to uniquify items that are annotated to the term? See **Details**. It is suggested to always be `TRUE`.
 #' @param use_cache Internally used.
 #' 
 #' @details
@@ -34,7 +34,7 @@
 #' 
 #' We suggest to always set `uniquify = TRUE` (the default), and the scenario of `uniquify = FALSE` is only for the testing or benchmarking purpose. 
 #' 
-#' @returns An integer vector.
+#' @returns `n_annotations()` returns an integer vector.
 #' @export
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")
@@ -97,7 +97,7 @@ validate_dag_has_annotation = function(dag) {
 }
 
 
-# remove terms with zero annotation and the root term
+# remove terms with zero annotation
 validate_annotated_terms = function(dag, id) {
 	n_anno = n_annotations(dag)[id]
 
@@ -106,19 +106,11 @@ validate_annotated_terms = function(dag, id) {
 		message("remove ", sum(l1), " terms with no annotation.")
 		
 		if(length(sum(!l1)) == 0) {
-			stop("No term is lef.")
-		}
-	}
-	l2 = id %in% dag@root
-	if(any(l2)) {
-		message("remove root term.")
-		
-		if(length(sum(!l1 & !l2)) == 0) {
-			stop("No term is lef.")
+			stop("No term is left.")
 		}
 	}
 
-	!l1 & !l2
+	!l1 
 }
 
 
@@ -148,7 +140,9 @@ validate_annotated_terms = function(dag, id) {
 #' )
 #' dag = create_ontology_DAG(parents, children, annotation = annotation)
 #' term_annotations(dag, letters[1:6])
+#' term_annotations(dag, letters[1:6], return = "matrix")
 #' annotated_terms(dag, c("t1", "t2", "t3"))
+#' annotated_terms(dag, c("t1", "t2", "t3"), return = "matrix")
 term_annotations = function(dag, terms, return = "list") {
 	validate_dag_has_annotation(dag)
 

@@ -19,12 +19,12 @@ has_annotation(dag)
 
 \item{terms}{A vector of term names. If it is set, the returned vector will be subsetted to the terms that have been set here.}
 
-\item{uniquify}{Whether to uniquify items that are annotated to the term? See \strong{Details}.}
+\item{uniquify}{Whether to uniquify items that are annotated to the term? See \strong{Details}. It is suggested to always be \code{TRUE}.}
 
 \item{use_cache}{Internally used.}
 }
 \value{
-An integer vector.
+\code{n_annotations()} returns an integer vector.
 
 \code{has_annotation()} returns a logical scalar.
 }

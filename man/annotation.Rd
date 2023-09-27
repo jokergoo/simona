@@ -40,5 +40,7 @@ annotation = list(
 )
 dag = create_ontology_DAG(parents, children, annotation = annotation)
 term_annotations(dag, letters[1:6])
+term_annotations(dag, letters[1:6], return = "matrix")
 annotated_terms(dag, c("t1", "t2", "t3"))
+annotated_terms(dag, c("t1", "t2", "t3"), return = "matrix")
 }

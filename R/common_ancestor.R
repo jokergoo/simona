@@ -13,9 +13,9 @@
 #' 
 #' - MICA (most informative common ancestor): The common ancestor with the highest IC value.
 #' - LCA (lowest common ancestor): The common ancestor with the largest depth (The depth of a term is the maximal distance from the root term). If there are multiple ancestors having
-#'        the same max depth, the ancestor with the smallest distance to the two terms is used
+#'        the same max depth, the ancestor with the smallest distance to the two terms is used.
 #' - NCA (nearest common ancestor): The common ancestor with the smallest distance to the two terms. If there are multiple
-#'        ancestors with the same smallest distance, the ancestor with the largest depth is used
+#'        ancestors with the same smallest distance, the ancestor with the largest depth is used.
 #' 
 #' `max_ancestor_v()` and `max_ancestor_id()` are more general functions which return common ancestors with
 #' the highest value in `value`.
@@ -77,6 +77,9 @@ NCA_term = function(dag, terms, in_labels = TRUE) {
 	} else {
 		id = terms
 	}
+	if(any(duplicated(id))) {
+		stop("`term` should not be duplicated.")
+	}
 
 	an = cpp_nearest_common_ancestor(dag, id)
 	dimnames(an) = list(dag@terms[id], dag@terms[id])
@@ -105,7 +108,9 @@ max_ancestor_v = function(dag, terms, value) {
 	} else {
 		id = terms
 	}
-
+	if(any(duplicated(id))) {
+		stop("`term` should not be duplicated.")
+	}
 	an = cpp_max_ancestor_v(dag, id, value)
 	dimnames(an) = list(dag@terms[id], dag@terms[id])
 	an
@@ -125,7 +130,9 @@ max_ancestor_id = function(dag, terms, value, in_labels = FALSE) {
 	} else {
 		id = terms
 	}
-
+	if(any(duplicated(id))) {
+		stop("`term` should not be duplicated.")
+	}
 	an = cpp_max_ancestor_id(dag, id, value)
 	dimnames(an) = list(dag@terms[id], dag@terms[id])
 

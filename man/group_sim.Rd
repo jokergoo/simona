@@ -45,6 +45,8 @@ The similarity between \code{group1} and \code{group2} is the average similarity
 }\if{html}{\out{</div>}}
 
 The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+
+Pape link: \doi{10.1093/bioinformatics/btg153}.
 }
 
 
@@ -56,6 +58,8 @@ This is the maximal \code{S(a, b)} among all pairs of terms in \code{group1} and
 }\if{html}{\out{</div>}}
 
 The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+
+Paper link: \doi{10.1109/TCBB.2005.50}.
 }
 
 
@@ -76,6 +80,8 @@ Then the BMA similarity is calculated as:
 So it is the average of the similarity of every term in \code{group1} to the whole \code{group2} and every term in \code{group2} to the whole \code{group1}.
 
 The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+
+Paper link: \doi{10.1155/2012/975783}.
 }
 
 
@@ -87,6 +93,8 @@ BMM stands for "best-match max". It is defined as:
 }\if{html}{\out{</div>}}
 
 The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+
+Paper link: \doi{10.1186/1471-2105-7-302}.
 }
 
 
@@ -100,6 +108,8 @@ ABM stands for "average best-match". It is defined as:
 where \code{n1} and \code{n2} are the number of terms in \code{group1} and \code{group2}.
 
 The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+
+Paper link: \doi{10.1186/1471-2105-14-284}.
 }
 
 
@@ -137,6 +147,8 @@ This final similarity is:
 }\if{html}{\out{</div>}}
 
 The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+
+Paper link: \doi{10.1109/ICPR.1994.576361}.
 }
 
 
@@ -149,6 +161,8 @@ group_sim = 1 - VHDF
 }\if{html}{\out{</div>}}
 
 The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+
+Paper link: \doi{10.1073/pnas.0702965104}.
 }
 
 
@@ -160,6 +174,8 @@ The similarity is:
 }\if{html}{\out{</div>}}
 
 The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+
+Paper link: \doi{10.1186/1471-2105-8-166}.
 }
 
 
@@ -171,6 +187,8 @@ Similar to \emph{VHDF}, but it directly uses the similarity:
 }\if{html}{\out{</div>}}
 
 The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+
+Paper link: \doi{10.1109/TCBB.2014.2343963}.
 }
 
 
@@ -185,18 +203,8 @@ It is based on the average distances between every pair of terms in the two grou
 the longest distnace via LCA.
 
 Distance method can be set via \code{control = list(distance = ...)}.
-}
 
-
-\subsection{GroupSim_SimINT}{
-
-To be added.
-}
-
-
-\subsection{GroupSim_spgk}{
-
-To be added.
+Paper link: \doi{10.1109/ISCC.2008.4625763}.
 }
 
 

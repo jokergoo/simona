@@ -1,7 +1,7 @@
 Package: simona
 Type: Package
 Title: Semantic Similarity in Bio-Ontologies
-Version: 0.99.4
+Version: 0.99.5
 Date: 2023-09-26
 Authors@R: person("Zuguang", "Gu", email = "z.gu@dkfz.de", role = c("aut", "cre"),
                   comment = c('ORCID'="0000-0002-7395-8709"))
