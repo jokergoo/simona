@@ -105,6 +105,8 @@ term_IC = function(dag, method, terms = NULL, control = list()) {
 	IC_fun = get_IC_method(method, control)
 	ic = IC_fun(dag)
 
+	ic[ic == 0] = 0  # to change -0 to 0
+
 	ic = structure(ic, names = dag@terms)
 
 	if(!is.null(terms)) {
@@ -131,12 +133,12 @@ term_IC = function(dag, method, terms = NULL, control = list()) {
 #' @inheritSection Sim_Relevance_2006 Methods
 #' @inheritSection Sim_SimIC_2010 Methods
 #' @inheritSection Sim_XGraSM_2013 Methods
-#' @inheritSection Sim_GraSM_2005 Methods
 #' @inheritSection Sim_EISI_2015 Methods
 #' @inheritSection Sim_AIC_2014 Methods
 #' @inheritSection Sim_Zhang_2006 Methods
 #' @inheritSection Sim_universal Methods
 #' @inheritSection Sim_Wang_2007 Methods
+#' @inheritSection Sim_GOGO_2018 Methods
 #' @inheritSection Sim_Rada_1989 Methods
 #' @inheritSection Sim_Resnik_edge_2005 Methods
 #' @inheritSection Sim_Leocock_1998 Methods
@@ -158,6 +160,7 @@ term_IC = function(dag, method, terms = NULL, control = list()) {
 #' @inheritSection Sim_Jaccard Methods
 #' @inheritSection Sim_Dice Methods
 #' @inheritSection Sim_Overlap Methods
+#' @inheritSection Sim_Ancestor Methods
 #' 
 #' @return A numeric symmetric matrix.
 #' @export

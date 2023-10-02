@@ -2,7 +2,7 @@
 using namespace Rcpp;
 
 #include "utils.h"
-#include "transverse.h"
+#include "traverse.h"
 
 
 NumericVector _get_breaks(double left, double right, int n, NumericVector weight) {

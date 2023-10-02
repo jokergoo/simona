@@ -1,7 +1,7 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-#include "transverse.h"
+#include "traverse.h"
 #include "utils.h"
 
 // [[Rcpp::export]]
@@ -134,6 +134,7 @@ IntegerMatrix cpp_get_term_annotations(S4 dag, IntegerVector nodes) {
 }
 
 
+// given an item id, return the terms also the ancestors annotated with this item
 IntegerVector cpp_get_annotated_terms(S4 dag, int anno_id) {
 	List lt_children = dag.slot("lt_children");
 	List lt_parents = dag.slot("lt_parents");

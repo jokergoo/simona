@@ -21,16 +21,12 @@ cpp_max_ancestor_v <- function(dag, nodes, v) {
     .Call(`_simona_cpp_max_ancestor_v`, dag, nodes, v)
 }
 
-cpp_max_ancestor_id <- function(dag, nodes, v) {
-    .Call(`_simona_cpp_max_ancestor_id`, dag, nodes, v)
+cpp_max_ancestor_id <- function(dag, nodes, v, use_max_dist = TRUE) {
+    .Call(`_simona_cpp_max_ancestor_id`, dag, nodes, v, use_max_dist)
 }
 
-cpp_shortest_distances_via_CA <- function(dag, nodes) {
-    .Call(`_simona_cpp_shortest_distances_via_CA`, dag, nodes)
-}
-
-cpp_longest_distances_via_LCA <- function(dag, nodes) {
-    .Call(`_simona_cpp_longest_distances_via_LCA`, dag, nodes)
+cpp_max_ancestor_path_sum_value <- function(dag, nodes, v, addv, use_max_dist = TRUE) {
+    .Call(`_simona_cpp_max_ancestor_path_sum_value`, dag, nodes, v, addv, use_max_dist)
 }
 
 cpp_longest_distances_from_LCA <- function(dag, nodes) {
@@ -69,6 +65,14 @@ cpp_tpl_longest_path <- function(dag, from, to) {
     .Call(`_simona_cpp_tpl_longest_path`, dag, from, to)
 }
 
+cpp_tpl_shortest_path_sum_value <- function(dag, from, to, value) {
+    .Call(`_simona_cpp_tpl_shortest_path_sum_value`, dag, from, to, value)
+}
+
+cpp_tpl_longest_path_sum_value <- function(dag, from, to, value) {
+    .Call(`_simona_cpp_tpl_longest_path_sum_value`, dag, from, to, value)
+}
+
 intersectToList_logical <- function(lt, x) {
     .Call(`_simona_intersectToList_logical`, lt, x)
 }
@@ -89,8 +93,8 @@ cpp_sim_aic <- function(dag, nodes, ic) {
     .Call(`_simona_cpp_sim_aic`, dag, nodes, ic)
 }
 
-cpp_sim_wang <- function(dag, nodes, contribution) {
-    .Call(`_simona_cpp_sim_wang`, dag, nodes, contribution)
+cpp_sim_wang <- function(dag, nodes, contribution, correct = FALSE) {
+    .Call(`_simona_cpp_sim_wang`, dag, nodes, contribution, correct)
 }
 
 cpp_wang_sv_to_sim <- function(sv) {
@@ -105,14 +109,6 @@ cpp_sim_zhong <- function(dag, nodes, depth_via_LCA) {
     .Call(`_simona_cpp_sim_zhong`, dag, nodes, depth_via_LCA)
 }
 
-cpp_sim_shen <- function(dag, nodes, ic) {
-    .Call(`_simona_cpp_sim_shen`, dag, nodes, ic)
-}
-
-cpp_sim_SSDD <- function(dag, nodes, t) {
-    .Call(`_simona_cpp_sim_SSDD`, dag, nodes, t)
-}
-
 cpp_common_ancestor_mean_IC_XGraSM <- function(dag, nodes, ic) {
     .Call(`_simona_cpp_common_ancestor_mean_IC_XGraSM`, dag, nodes, ic)
 }
@@ -121,8 +117,8 @@ cpp_common_ancestor_mean_IC_EISI <- function(dag, nodes, ic) {
     .Call(`_simona_cpp_common_ancestor_mean_IC_EISI`, dag, nodes, ic)
 }
 
-cpp_common_ancestor_mean_IC_GraSM <- function(dag, nodes, ic) {
-    .Call(`_simona_cpp_common_ancestor_mean_IC_GraSM`, dag, nodes, ic)
+cpp_sim_ancestor <- function(dag, nodes) {
+    .Call(`_simona_cpp_sim_ancestor`, dag, nodes)
 }
 
 cpp_ic_meng <- function(dag, correct) {
@@ -235,6 +231,10 @@ cpp_dag_shortest_dist_from_ancestors <- function(dag, to_node, l_background = lo
 
 cpp_check_cyclic_node <- function(dag, node = -1L) {
     .Call(`_simona_cpp_check_cyclic_node`, dag, node)
+}
+
+cpp_dag_shortest_path_to_offspring_sum_value <- function(dag, from_node, value, l_background = logical(0)) {
+    .Call(`_simona_cpp_dag_shortest_path_to_offspring_sum_value`, dag, from_node, value, l_background)
 }
 
 cpp_mark_tree_links <- function(dag) {

@@ -1,7 +1,7 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-#include "transverse.h"
+#include "traverse.h"
 #include "utils.h"
 
 
@@ -43,7 +43,7 @@ NumericVector cpp_ic_meng(S4 dag, bool correct) {
 
 // it calculates S_a(t)
 double _calc_wang_s(List lt_children, List lt_children_relations, NumericVector contribution,
-	int i_node, int i_end, LogicalVector l_background) {
+	int i_node, int i_end, LogicalVector l_background, bool correct = false, double c = 0.66667) {
 
 	if(i_node == i_end) {
 		return 1;
@@ -59,11 +59,17 @@ double _calc_wang_s(List lt_children, List lt_children_relations, NumericVector 
 		}
 
 		NumericVector s(sum(l_children_included), 0);
+		int nc = sum(l_children_included);
 		int si = 0;
 		for(int i = 0; i < children.size(); i ++) {
 			if(l_children_included[i]) {
-				s[si] = _calc_wang_s(lt_children, lt_children_relations, contribution,
-				                     children[i] - 1, i_end, l_background) * contribution[relations[i] - 1];
+				if(correct) {
+					s[si] = _calc_wang_s(lt_children, lt_children_relations, contribution,
+					                     children[i] - 1, i_end, l_background, correct, c) * (1/(c+nc) + contribution[relations[i] - 1]);
+				} else {
+					s[si] = _calc_wang_s(lt_children, lt_children_relations, contribution,
+					                     children[i] - 1, i_end, l_background, correct, c) * contribution[relations[i] - 1];
+				}
 				si ++;
 			}
 			

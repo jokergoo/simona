@@ -2,10 +2,12 @@
 using namespace Rcpp;
 
 #include "utils.h"
-#include "transverse.h"
+#include "traverse.h"
 
 // [[Rcpp::export]]
 List cpp_mark_tree_links(S4 dag) {
+	// links that will be used in the tree is marked as negativer ids
+
 	List lt_children = dag.slot("lt_children");
 	IntegerVector depth = _dag_depth(dag);
 	int n = lt_children.size();

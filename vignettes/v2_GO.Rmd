@@ -2,7 +2,10 @@
 title: "Gene Ontology"
 author: "Zuguang Gu ( z.gu@dkfz.de )"
 date: '`r Sys.Date()`'
-output: html_document
+output: 
+  html_vignette:
+    css: main.css
+    toc: true
 vignette: >
   %\VignetteIndexEntry{2. Gene Ontology}
   %\VignetteEngine{knitr::rmarkdown}
@@ -21,14 +24,14 @@ knitr::opts_chunk$set(
 
 
 Gene Ontology is the most widely used bio-ontologies. On Bioconductor, there
-are standard packages for GO (**GO.db**) and organism-specific GO annotations
+are standard packages for GO (**GO.db**) and organism-specific GO annotation packages
 (**org.\*.db**). In **simona**, there is a helper function
 `create_ontology_DAG_from_GO_db()` which makes use of the Biocoductor standard
 GO packages and constructs a DAG object automatically.
 
 ## Create the GO DAG object
 
-GO has three namespaces (or ontologies): biological process (BP), Molecular
+GO has three namespaces (or ontologies): biological process (BP), molecular
 function (MF) and celullar component (CC). The three GO namespaces are
 mutually exclusive, so the first argument of
 `create_ontology_DAG_from_GO_db()` is the GO namespace.
@@ -68,7 +71,8 @@ dag_filter(dag, relations = "is_a")
 ## Add gene annotation
 
 Gene annotation can be set with the argument `org_db`. The value is an
-`OrgDb` object of the corresponding organism.
+`OrgDb` object of the corresponding organism. The primary gene ID type in the __org.*.db__
+package is internally used (which is normally the EntreZ ID type).
 
 ```{r}
 library(org.Hs.eg.db)
@@ -92,6 +96,13 @@ will be installed automatically.
 create_ontology_DAG_from_GO_db("BP", org_db = "org.Mm.eg.db")
 </pre>
 
+Genes that are annotated to GO terms can be obtained by `term_annotations()`. Note
+the genes are automatically merged from offspring terms.
+
+```{r}
+term_annotations(dag, c("GO:0000002", "GO:0000012"))
+```
+
 ## Meta data frame
 
 There are additional meta columns attached to the DAG object. They can be accessed by `mcols()`.
@@ -110,5 +121,39 @@ order of the meta data frame is the same as in `dag_all_terms(dag)`.
 sessionInfo()
 ```
 
+
+
+<script src="jquery.min.js"></script>
+<script src="jquery.sticky.js"></script>
+<script>
+$(document).ready(function(){
+    $("#TOC").sticky({
+        topSpacing: 0,
+        zIndex:1000    
+    })
+    $("#TOC").on("sticky-start", function() {
+
+        $("<p style='font-size:1.2em; padding-left:4px;'><a id='TOC-click'>Table of Content</a></p>").insertBefore($("#TOC ul:first-child"));
+        $("#TOC-click").hover(function() {
+            $(this).css("color", "#0033dd").css("cursor", "pointer");
+            $("#TOC").children().first().next().show();
+            $("#TOC").hover(function() {
+                $(this).children().first().next().show();
+            }, function() {
+                $(this).children().first().next().hide();
+                $("body").off("hover", "#TOC");
+            })
+        }, function() {
+            $(this).css("color", "#0033dd");
+        })
+        $("#TOC").children().first().next().hide();
+
+    })
+    $("#TOC").on("sticky-end", function() {
+        $("#TOC").children().first().remove();
+        $("#TOC").children().first().show();
+    })
+});
+</script>
 
 

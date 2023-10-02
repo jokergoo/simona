@@ -16,7 +16,7 @@ create_ontology_DAG(
 )
 }
 \arguments{
-\item{parents}{A character vector of parent terms.}
+\item{parents}{A character vector of parent terms. You can also construct the \code{ontology_DAG} object by a list of parent-child links. See \strong{Examples}.}
 
 \item{children}{A character vector of child terms.}
 
@@ -70,4 +70,7 @@ relations_DAG = create_ontology_DAG(c("r2", "r2"), c("r3", "r4"))
 dag = create_ontology_DAG(parents, children, 
     relations = c("r1", "r2", "r1", "r3", "r1", "r4"),
     relations_DAG = relations_DAG)
+
+# with a list of parent-child relations
+dag = create_ontology_DAG(c("a-b", "a-c", "b-c", "b-d", "c-e", "e-f"))
 }

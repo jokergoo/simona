@@ -178,8 +178,8 @@ ADD_TERM_SIM_METHOD("Sim_FaITH_2010", "IC_method")
 #' Paper link: \doi{10.1186/1471-2105-7-302}.
 #' 
 #' @rdname temp__Sim_Relevance_2006
-Sim_Relevance_2006 = function(dag, terms) {
-	IC_method = "IC_annotation"
+Sim_Relevance_2006 = function(dag, terms, IC_method = "IC_annotation") {
+	
 
 	id = term_to_node_id(dag, terms, strict = FALSE)
 	
@@ -193,7 +193,7 @@ Sim_Relevance_2006 = function(dag, terms) {
 	eps = 1 - exp(-ic_mica)
 	eps*sim
 }
-ADD_TERM_SIM_METHOD("Sim_Relevance_2006", require_anno = TRUE)
+ADD_TERM_SIM_METHOD("Sim_Relevance_2006", "IC_method")
 
 
 #' Sim_SimIC_2010
@@ -220,9 +220,8 @@ ADD_TERM_SIM_METHOD("Sim_Relevance_2006", require_anno = TRUE)
 #' Paper link: \doi{10.48550/arXiv.1001.0958}.
 #' 
 #' @rdname temp__Sim_SimIC_2010
-Sim_SimIC_2010 = function(dag, terms) {
-	IC_method = "IC_annotation"
-
+Sim_SimIC_2010 = function(dag, terms, IC_method = "IC_annotation") {
+	
 	id = term_to_node_id(dag, terms, strict = FALSE)
 	
 	l = validate_annotated_terms(dag, id)
@@ -235,7 +234,7 @@ Sim_SimIC_2010 = function(dag, terms) {
 	eps = 1 - 1/(1 + ic_mica)
 	eps*sim
 }
-ADD_TERM_SIM_METHOD("Sim_SimIC_2010", require_anno = TRUE)
+ADD_TERM_SIM_METHOD("Sim_SimIC_2010", "IC_method")
 
 
 #' Sim_XGraSM_2013
@@ -261,9 +260,8 @@ ADD_TERM_SIM_METHOD("Sim_SimIC_2010", require_anno = TRUE)
 #' Paper link: \doi{10.1186/1471-2105-14-284}.
 #' 
 #' @rdname temp__Sim_XGraSM_2013
-Sim_XGraSM_2013 = function(dag, terms) {
-	IC_method = "IC_annotation"
-
+Sim_XGraSM_2013 = function(dag, terms, IC_method = "IC_annotation") {
+	
 	id = term_to_node_id(dag, terms, strict = FALSE)
 	
 	l = validate_annotated_terms(dag, id)
@@ -273,52 +271,13 @@ Sim_XGraSM_2013 = function(dag, terms) {
 
 	mean_ic = cpp_common_ancestor_mean_IC_XGraSM(dag, id, ic)
 	sim = mean_ic/outer(ic[id], ic[id], "+")*2
+	sim[is.na(sim)] = 0
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_XGraSM_2013", require_anno = TRUE)
+ADD_TERM_SIM_METHOD("Sim_XGraSM_2013", "IC_method")
 
-
-#' Sim_GraSM_2005
-#' 
-#' @section Methods:
-#' ## Sim_GraSM_2005
-#' 
-#' The IC method is fixed to `IC_annotation`.
-#' 
-#' It applies a complicate way to selet a subset of common ancestors of terms `a` and `b`. The main idea is that content transmission fron ancestors to a term
-#' may overlap and it aims to find upstream paths that give exclusive transmissions.
-#' 
-#' First, for a terms `x` define its disjunctive ancestors (DA) pairs `a` and `b` where there exists a path from `a` to `x` which does not pass `b`, and at the same
-#' time there exists a path frmo `b` to `x` which does not pass `a`. In other words, the directed distance between `a` and `b` is zero. In this way, the two
-#' DA(x) terms can transmit exclusive contents to `x`.
-#' 
-#' Next, for every common ancestor `c` of term `a` and `b`, `c` is only selected if there is another common ancestor `c'` which have smaller IC than `c` (`IC(c) > IC(c')`), `(c, c')` is DA of
-#' either `a` or `b`.
-#' 
-#' Then the mean IC of the subset common ancestors is calculated and normalized by the *Lin_1998* method.
-#' 
-#' Paper link: \doi{10.1145/1099554.1099658}.
-#' 
-#' @rdname temp__Sim_GraSM_2005
-Sim_GraSM_2005 = function(dag, terms) {
-	IC_method = "IC_annotation"
-
-	id = term_to_node_id(dag, terms, strict = FALSE)
-	
-	l = validate_annotated_terms(dag, id)
-	id = id[l]
-
-	ic = term_IC(dag, IC_method)
-
-	mean_ic = cpp_common_ancestor_mean_IC_GraSM(dag, id, ic)
-	sim = mean_ic/outer(ic[id], ic[id], "+")*2
-	dimnames(sim) = list(dag@terms[id], dag@terms[id])
-
-	sim
-}
-ADD_TERM_SIM_METHOD("Sim_GraSM_2005", require_anno = TRUE)
 
 
 #' Sim_EISI_2015
@@ -329,16 +288,16 @@ ADD_TERM_SIM_METHOD("Sim_GraSM_2005", require_anno = TRUE)
 #' The IC method is fixed to `IC_annotation`.
 #' 
 #' It also selects a subset of common ancestors of terms `a` and `b`. It only selects common ancestors which can reach `a` or `b` via one of its child terms
-#' that does not belong to the common ancestors (mutual exclusively in `a`'s ancestors or in `b`'s ancestors). 
+#' that does not belong to the common ancestors. In other words, from the common ancestor, there exist a path where
+#' the information is uniquely transmitted to `a` or `b`, not passing the other.
 #' 
 #' Then the mean IC of the subset common ancestors is calculated and normalized by the *Lin_1998* method.
 #' 
 #' Paper link: \doi{10.1016/j.gene.2014.12.062}.
 #' 
 #' @rdname temp__Sim_EISI_2015
-Sim_EISI_2015 = function(dag, terms) {
-	IC_method = "IC_annotation"
-
+Sim_EISI_2015 = function(dag, terms, IC_method = "IC_annotation") {
+	
 	id = term_to_node_id(dag, terms, strict = FALSE)
 
 	l = validate_annotated_terms(dag, id)
@@ -348,11 +307,12 @@ Sim_EISI_2015 = function(dag, terms) {
 
 	mean_ic = cpp_common_ancestor_mean_IC_EISI(dag, id, ic)
 	sim = mean_ic/outer(ic[id], ic[id], "+")*2
+	sim[is.na(sim)] = 0
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_EISI_2015", require_anno = TRUE)
+ADD_TERM_SIM_METHOD("Sim_EISI_2015", "IC_method")
 
 
 #' Sim_AIC_2014
@@ -486,13 +446,13 @@ ADD_TERM_SIM_METHOD("Sim_universal")
 #' "relation_a" and "relation_b" set in the DAG, the value for `contribution_factor` can be set as:
 #' 
 #' ```
-#' term_IC(dag, method = "IC_Wang", 
+#' term_sim(dag, terms, method = "Sim_Wang_2007", 
 #'     control = list(contribution_factor = c("relation_a" = 0.8, "relation_b" = 0.6)))
 #' ```
 #' 
 #' @rdname temp__Sim_Wang_2007
 #' @import igraph
-Sim_Wang_2007 = function(dag, terms, contribution_factor = c("is_a" = 0.8, "part_of" = 0.6)) {
+Sim_Wang_2007 = function(dag, terms, contribution_factor = c("is_a" = 0.8, "part_of" = 0.6), calc_by = "igraph") {
 	if(length(dag@lt_children_relations) == 0) {
 		stop("`relations` is not set when creating the ontology_DAG object.")
 	}
@@ -521,18 +481,104 @@ Sim_Wang_2007 = function(dag, terms, contribution_factor = c("is_a" = 0.8, "part
 		return(sim)
 	}
 
-	g = dag_as_igraph(dag)
-	E(g)$weight = contribution_factor[E(g)$relation]
-	all_ancestors = cpp_ancestors_of_a_group(dag, id, include_self = TRUE)
-	d = distances(g, v = all_ancestors, to = id, mode = "out", weights = -log(E(g)$weight))
-	s = exp(-d)  # rows are ancestors
-
-	sim = cpp_wang_sv_to_sim(s)
+	if(calc_by == "igraph") {
+		g = dag_as_igraph(dag)
+		E(g)$weight = contribution_factor[E(g)$relation]
+		all_ancestors = cpp_ancestors_of_a_group(dag, id, include_self = TRUE)
+		d = distances(g, v = all_ancestors, to = id, mode = "out", weights = -log(E(g)$weight))
+		s = exp(-d)  # rows are ancestors
+		sim = cpp_wang_sv_to_sim(s)
+	} else {
+		sim = cpp_sim_wang(dag, id, unname(contribution_factor[relation_levels]))
+		
+	}
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 	
 	sim
 }
 ADD_TERM_SIM_METHOD("Sim_Wang_2007", "contribution_factor")
+
+
+#' Sim_GOGO_2018
+#' 
+#' @section Methods:
+#' ## Sim_GOGO_2018
+#' 
+#' It is very similar as _Sim_Wang_2007_, but with a corrected contribution factor when calculating the S-value.
+#' From a parent term to a child term, _Sim_Wang_2007_ directly uses a weight for the relation between the parent
+#' and the child, e.g. 0.8 for "is_a" relation type and 0.6 for "part_of" relation type. In _Sim_GOGO_2018_, the weight
+#' is also scaled by the total number of children of that parent:
+#' 
+#' ```
+#' w = 1/(c + nc) + w_0
+#' ```
+#' 
+#' where w_0 is the original contribution factor, `nc` is the number of child terms of the parent, `c` is calculated to ensure that 
+#' maximal value of `w` is no larger than 1, i.e. `c = max(w_0)/(1 - max(w_0))`, assuming minimal value of `nc` is 1. By default _Sim_GOGO_2018_
+#' sets contribution factor of 0.4 for "is_a" and 0.3 for "part_of", then `w = 1/(2/3 + nc) + w_0`.
+#' 
+#' Paper link: \doi{10.1038/s41598-018-33219-y}.
+#' 
+#' The contribution of different semantic relations can be set with the `contribution_factor` parameter. The value should be a named numeric
+#' vector where names should cover the relations defined in `relations` set in [`create_ontology_DAG()`]. For example, if there are two relations
+#' "relation_a" and "relation_b" set in the DAG, the value for `contribution_factor` can be set as:
+#' 
+#' ```
+#' term_sim(dag, terms, method = "Sim_GOGO_2018", 
+#'     control = list(contribution_factor = c("relation_a" = 0.4, "relation_b" = 0.3)))
+#' ```
+#' 
+#' @rdname temp__Sim_GOGO_2018
+Sim_GOGO_2018 = function(dag, terms, contribution_factor = c("is_a" = 0.4, "part_of" = 0.3), calc_by = "igraph") {
+	if(length(dag@lt_children_relations) == 0) {
+		stop("`relations` is not set when creating the ontology_DAG object.")
+	}
+	relation_levels = attr(dag@lt_children_relations, "levels")
+	if(is.null(names(contribution_factor))) {
+		stop("`contribution_factor` should be a named numeric vector where names should correspond to all relations.")
+	}
+
+	names(contribution_factor) = normalize_relation_type(names(contribution_factor))
+	
+	contribution_factor = extend_contribution_factor(dag@relations_DAG, contribution_factor)
+	if(length(setdiff(relation_levels, names(contribution_factor)))) {
+		stop("Contribution factor should be provided for all relations.")
+	}
+
+	if(any(contribution_factor >= 1)) {
+		stop("All values in `contribution_factor` should be smaller than 1.")
+	}
+
+	id = term_to_node_id(dag, terms, strict = FALSE)
+	sim = matrix(0, nrow = length(id), ncol = length(id))
+	dimnames(sim) = list(dag@terms[id], dag@terms[id])
+	diag(sim) = 1
+
+	if(length(id) <= 1) {
+		return(sim)
+	}
+
+	if(calc_by == "igraph") {
+		g = dag_as_igraph(dag)
+		em = get.edgelist(g)
+		c = max(contribution_factor)/(1 - max(contribution_factor))
+		nc = n_children(dag)
+		E(g)$weight = contribution_factor[E(g)$relation] + 1/(c + nc[em[, 1]])
+		all_ancestors = cpp_ancestors_of_a_group(dag, id, include_self = TRUE)
+		d = distances(g, v = all_ancestors, to = id, mode = "out", weights = -log(E(g)$weight))
+		s = exp(-d)  # rows are ancestors
+		sim = cpp_wang_sv_to_sim(s)
+	} else {
+		sim = cpp_sim_wang(dag, id, unname(contribution_factor[relation_levels]), TRUE)
+		
+	}
+	dimnames(sim) = list(dag@terms[id], dag@terms[id])
+	
+	sim
+}
+ADD_TERM_SIM_METHOD("Sim_GOGO_2018", "contribution_factor")
+
+
 
 ###########################################
 #### edge-based
@@ -568,7 +614,7 @@ Sim_Rada_1989 = function(dag, terms, distance = "longest_distances_via_LCA") {
 	if(distance == "shortest_distances_via_NCA") {
 		dist = cpp_shortest_distances_via_NCA(dag, id)
 	} else if(distance == "longest_distances_via_LCA") {
-		dist = cpp_longest_distances_via_LCA(dag, id)
+		dist = longest_distances_via_LCA(dag, id)
 	} else {
 		stop("`distance` can only be in 'shortest_distances_via_NCA' or 'longest_distances_via_LCA'.")
 	}
@@ -613,7 +659,7 @@ Sim_Resnik_edge_2005 = function(dag, terms, distance = "longest_distances_via_LC
 	if(distance == "shortest_distances_via_NCA") {
 		dist = cpp_shortest_distances_via_NCA(dag, id)
 	} else if(distance == "longest_distances_via_LCA") {
-		dist = cpp_longest_distances_via_LCA(dag, id)
+		dist = longest_distances_via_LCA(dag, id)
 	} else {
 		stop("`distance` can only be in 'shortest_distances_via_NCA' or 'longest_distances_via_LCA'.")
 	}
@@ -637,7 +683,7 @@ ADD_TERM_SIM_METHOD("Sim_Resnik_edge_2005", "distance")
 #' sim = 1 - log(d(a, b) + 1)/log(2*max_depth + 1)
 #' ```
 #' 
-#' Paper link: <https://ieeexplore.ieee.org/document/6287675>.
+#' Paper link: \doi{10.1186/1471-2105-13-261}.
 #' 
 #' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
 #' 
@@ -655,7 +701,7 @@ Sim_Leocock_1998 = function(dag, terms, distance = "longest_distances_via_LCA") 
 	if(distance == "shortest_distances_via_NCA") {
 		dist = cpp_shortest_distances_via_NCA(dag, id)
 	} else if(distance == "longest_distances_via_LCA") {
-		dist = cpp_longest_distances_via_LCA(dag, id)
+		dist = longest_distances_via_LCA(dag, id)
 	} else {
 		stop("`distance` can only be in 'shortest_distances_via_NCA' or 'longest_distances_via_LCA'.")
 	}
@@ -696,7 +742,7 @@ Sim_WP_1994 = function(dag, terms) {
 	id = term_to_node_id(dag, terms, strict = FALSE)
 	
 	lca_depth = LCA_depth(dag, id)
-	sim = 2*lca_depth/(cpp_longest_distances_via_LCA(dag, id) + 2*lca_depth)
+	sim = 2*lca_depth/(longest_distances_via_LCA(dag, id) + 2*lca_depth)
 	
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 
@@ -733,7 +779,7 @@ Sim_Slimani_2006 = function(dag, terms) {
 	lca_depth = LCA_depth(dag, id)
 	depth = dag_depth(dag)
 
-	sim_wp = 2*lca_depth/(cpp_longest_distances_via_LCA(dag, id) + 2*lca_depth)
+	sim_wp = 2*lca_depth/(longest_distances_via_LCA(dag, id) + 2*lca_depth)
 
 	lambda = cpp_is_reachable(dag, id)
 	ltd = cpp_longest_distances_from_LCA(dag, id)
@@ -782,7 +828,7 @@ Sim_Shenoy_2012 = function(dag, terms, distance = "longest_distances_via_LCA") {
 	depth = dag_depth(dag)
 
 	if(distance == "longest_distances_via_LCA") {
-		sim_wp = 2*lca_depth/(cpp_longest_distances_via_LCA(dag, id) + 2*lca_depth)
+		sim_wp = 2*lca_depth/(longest_distances_via_LCA(dag, id) + 2*lca_depth)
 	} else if(distance == "cpp_shortest_distances_via_NCA") {
 		sim_wp = 2*lca_depth/(cpp_shortest_distances_via_NCA(dag, id) + 2*lca_depth)
 	} else {
@@ -792,7 +838,7 @@ Sim_Shenoy_2012 = function(dag, terms, distance = "longest_distances_via_LCA") {
 	lambda = cpp_is_reachable(dag, id)
 
 	max_depth = max(dag_depth(dag))
-	dist = cpp_longest_distances_via_LCA(dag, id)
+	dist = longest_distances_via_LCA(dag, id)
 
 	cf = exp(- lambda*dist/max_depth)
 	diag(cf) = 1
@@ -827,7 +873,7 @@ Sim_Pekar_2002 = function(dag, terms) {
 	id = term_to_node_id(dag, terms, strict = FALSE)
 	lca_depth = LCA_depth(dag, id)
 
-	sim = lca_depth/(cpp_longest_distances_via_LCA(dag, id) + lca_depth)
+	sim = lca_depth/(longest_distances_via_LCA(dag, id) + lca_depth)
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 
 	sim
@@ -993,11 +1039,11 @@ ADD_TERM_SIM_METHOD("Sim_Zhong_2002", "depth_via_LCA")
 #' 
 #' Paper link: \doi{10.1109/IEMBS.2006.259235}.
 #'
-#' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
+#' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
 #' 
 #' ```
 #' term_sim(dag, terms, method = "Sim_AlMubaid_2006",
-#'     control = list(distance = "shortest_distances_via_CA"))
+#'     control = list(distance = "shortest_distances_via_NCA"))
 #' ```
 #' 
 #' @rdname temp__Sim_AlMubaid_2006
@@ -1007,12 +1053,12 @@ Sim_AlMubaid_2006 = function(dag, terms, distance = "longest_distances_via_LCA")
 	lca_depth = LCA_depth(dag, id)
 	max_depth = max(dag_depth(dag))
 
-	if(distance == "shortest_distances_via_CA") {
-		dsp = cpp_shortest_distances_via_CA(dag, id)
+	if(distance == "shortest_distances_via_NCA") {
+		dsp = cpp_shortest_distances_via_NCA(dag, id)
 	} else if(distance == "longest_distances_via_LCA") {
-		dsp = cpp_longest_distances_via_LCA(dag, id)
+		dsp = longest_distances_via_LCA(dag, id)
 	} else {
-		stop("`distance` can only be in 'shortest_distances_via_CA' or 'longest_distances_via_LCA'.")
+		stop("`distance` can only be in 'shortest_distances_via_NCA' or 'longest_distances_via_LCA'.")
 	}
 
 	dist = log(1 + dsp*(max_depth - lca_depth))
@@ -1040,11 +1086,11 @@ ADD_TERM_SIM_METHOD("Sim_AlMubaid_2006", "distance")
 #' 
 #' Paper link: \doi{10.1109/TKDE.2003.1209005}.
 #' 
-#' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
+#' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
 #' 
 #' ```
 #' term_sim(dag, terms, method = "Sim_Li_2003",
-#'     control = list(distance = "shortest_distances_via_CA"))
+#'     control = list(distance = "shortest_distances_via_NCA"))
 #' ```
 #' 
 #' @rdname temp__Sim_Li_2003
@@ -1053,12 +1099,12 @@ Sim_Li_2003 = function(dag, terms, distance = "longest_distances_via_LCA") {
 	id = term_to_node_id(dag, terms, strict = FALSE)
 	lca_depth = LCA_depth(dag, id)
 
-	if(distance == "shortest_distances_via_CA") {
-		dsp = cpp_shortest_distances_via_CA(dag, id)
+	if(distance == "shortest_distances_via_NCA") {
+		dsp = cpp_shortest_distances_via_NCA(dag, id)
 	} else if(distance == "longest_distances_via_LCA") {
-		dsp = cpp_longest_distances_via_LCA(dag, id)
+		dsp = longest_distances_via_LCA(dag, id)
 	} else {
-		stop("`distance` can only be in 'shortest_distances_via_CA' or 'longest_distances_via_LCA'.")
+		stop("`distance` can only be in 'shortest_distances_via_NCA' or 'longest_distances_via_LCA'.")
 	}
 
 	alpha = 0.2
@@ -1098,11 +1144,11 @@ ADD_TERM_SIM_METHOD("Sim_Li_2003", "distance")
 #' 
 #' Paper link: \doi{10.1371/journal.pone.0066745}.
 #' 
-#' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
+#' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
 #' 
 #' ```
 #' term_sim(dag, terms, method = "Sim_RSS_2013",
-#'     control = list(distance = "shortest_distances_via_CA"))
+#'     control = list(distance = "shortest_distances_via_NCA"))
 #' ```
 #' 
 #' @rdname temp__Sim_RSS_2013
@@ -1113,12 +1159,12 @@ Sim_RSS_2013 = function(dag, terms, distance = "longest_distances_via_LCA") {
 	max_depth = max(dag_depth(dag))
 	height = dag_height(dag)[id]
 
-	if(distance == "shortest_distances_via_CA") {
-		dsp = cpp_shortest_distances_via_CA(dag, id)
+	if(distance == "shortest_distances_via_NCA") {
+		dsp = cpp_shortest_distances_via_NCA(dag, id)
 	} else if(distance == "longest_distances_via_LCA") {
-		dsp = cpp_longest_distances_via_LCA(dag, id)
+		dsp = longest_distances_via_LCA(dag, id)
 	} else {
-		stop("`distance` can only be in 'shortest_distances_via_CA' or 'longest_distances_via_LCA'.")
+		stop("`distance` can only be in 'shortest_distances_via_NCA' or 'longest_distances_via_LCA'.")
 	}
 
 	sim = max_depth/(max_depth + dsp) * lca_depth/(lca_depth + outer(height, height, pmin) + 1)
@@ -1226,7 +1272,7 @@ ADD_TERM_SIM_METHOD("Sim_HRSS_2013", require_anno = TRUE)
 #' Paper link: \doi{10.1109/BIBM.2010.5706623}.
 #' 
 #' @rdname temp__Sim_Shen_2010
-Sim_Shen_2010 = function(dag, terms, IC_method = "IC_annotation") {
+Sim_Shen_2010 = function(dag, terms, IC_method = "IC_annotation", distance = "shortest_distances_via_NCA") {
 	id = term_to_node_id(dag, terms, strict = FALSE)
 
 	if(IC_method == "IC_annotation") {
@@ -1235,12 +1281,14 @@ Sim_Shen_2010 = function(dag, terms, IC_method = "IC_annotation") {
 	}
 	ic = term_IC(dag, IC_method)
 
-	sim = cpp_sim_shen(dag, id, ic);
+	sim = cpp_max_ancestor_path_sum_value(dag, id, ic, 1/ic, distance == "longest_distances_via_LCA")
+	sim = 1 - atan(sim)/pi*2
+
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_Shen_2010", "IC_method", require_anno = TRUE)
+ADD_TERM_SIM_METHOD("Sim_Shen_2010", c("IC_method", "distance"))
 
 
 #' Sim_SSDD_2013
@@ -1270,15 +1318,15 @@ ADD_TERM_SIM_METHOD("Sim_Shen_2010", "IC_method", require_anno = TRUE)
 #' Paper link: \doi{10.1016/j.ygeno.2013.04.010}.
 #' 
 #' @rdname temp__Sim_SSDD_2013
-Sim_SSDD_2013 = function(dag, terms) {
+Sim_SSDD_2013 = function(dag, terms, distance = "shortest_distances_via_NCA") {
 	id = term_to_node_id(dag, terms, strict = FALSE)
 	t = totipotency(dag)
 
-	sim = cpp_sim_SSDD(dag, id, t)
+	sim = 1 - atan(cpp_max_ancestor_path_sum_value(dag, id, dag_depth(dag), t, distance == "longest_distances_via_LCA"))/pi*2
 	dimnames(sim) = list(dag@terms[id], dag@terms[id])
 	sim
 }
-ADD_TERM_SIM_METHOD("Sim_SSDD_2013")
+ADD_TERM_SIM_METHOD("Sim_SSDD_2013", "distance")
 
 
 #' Sim_Jiang_1997
@@ -1506,4 +1554,31 @@ overlap_dist = function(m) {
 	proxyC::simil(m, method = "dice")*outer(n, n, "+")/2/outer(n, n, pmin)
 }
 
+##############
 
+#' Sim_Ancestor
+#' 
+#' @section Methods:
+#' ## Sim_Ancestor
+#' 
+#' Denote `S_a` and `S_b` are two sets of ancestor terms of term `a` and `b` (including `a` and `b`), the 
+#' semantic similarity is defined as:
+#' 
+#' ```
+#' length(intersect(S_a, S_b))/length(union(S_a, S_b))
+#' ```
+#' 
+#' ```
+#' term_sim(dag, terms, method = "Sim_Ancestor")
+#' ```
+#' 
+#' @rdname temp__Sim_Ancestor
+Sim_Ancestor = function(dag, terms) {
+	id = term_to_node_id(dag, terms, strict = FALSE)
+	sim = cpp_sim_ancestor(dag, id)
+
+	dimnames(sim) = list(dag@terms[id], dag@terms[id])
+
+	sim
+}
+ADD_TERM_SIM_METHOD("Sim_Ancestor")

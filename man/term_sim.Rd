@@ -151,32 +151,13 @@ Paper link: \doi{10.1186/1471-2105-14-284}.
 }
 
 
-\subsection{Sim_GraSM_2005}{
-
-The IC method is fixed to \code{IC_annotation}.
-
-It applies a complicate way to selet a subset of common ancestors of terms \code{a} and \code{b}. The main idea is that content transmission fron ancestors to a term
-may overlap and it aims to find upstream paths that give exclusive transmissions.
-
-First, for a terms \code{x} define its disjunctive ancestors (DA) pairs \code{a} and \code{b} where there exists a path from \code{a} to \code{x} which does not pass \code{b}, and at the same
-time there exists a path frmo \code{b} to \code{x} which does not pass \code{a}. In other words, the directed distance between \code{a} and \code{b} is zero. In this way, the two
-DA(x) terms can transmit exclusive contents to \code{x}.
-
-Next, for every common ancestor \code{c} of term \code{a} and \code{b}, \code{c} is only selected if there is another common ancestor \verb{c'} which have smaller IC than \code{c} (\verb{IC(c) > IC(c')}), \verb{(c, c')} is DA of
-either \code{a} or \code{b}.
-
-Then the mean IC of the subset common ancestors is calculated and normalized by the \emph{Lin_1998} method.
-
-Paper link: \doi{10.1145/1099554.1099658}.
-}
-
-
 \subsection{Sim_EISI_2015}{
 
 The IC method is fixed to \code{IC_annotation}.
 
 It also selects a subset of common ancestors of terms \code{a} and \code{b}. It only selects common ancestors which can reach \code{a} or \code{b} via one of its child terms
-that does not belong to the common ancestors (mutual exclusively in \code{a}'s ancestors or in \code{b}'s ancestors).
+that does not belong to the common ancestors. In other words, from the common ancestor, there exist a path where
+the information is uniquely transmitted to \code{a} or \code{b}, not passing the other.
 
 Then the mean IC of the subset common ancestors is calculated and normalized by the \emph{Lin_1998} method.
 
@@ -247,8 +228,34 @@ The contribution of different semantic relations can be set with the \code{contr
 vector where names should cover the relations defined in \code{relations} set in \code{\link[=create_ontology_DAG]{create_ontology_DAG()}}. For example, if there are two relations
 "relation_a" and "relation_b" set in the DAG, the value for \code{contribution_factor} can be set as:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{term_IC(dag, method = "IC_Wang", 
+\if{html}{\out{<div class="sourceCode">}}\preformatted{term_sim(dag, terms, method = "Sim_Wang_2007", 
     control = list(contribution_factor = c("relation_a" = 0.8, "relation_b" = 0.6)))
+}\if{html}{\out{</div>}}
+}
+
+
+\subsection{Sim_GOGO_2018}{
+
+It is very similar as \emph{Sim_Wang_2007}, but with a corrected contribution factor when calculating the S-value.
+From a parent term to a child term, \emph{Sim_Wang_2007} directly uses a weight for the relation between the parent
+and the child, e.g. 0.8 for "is_a" relation type and 0.6 for "part_of" relation type. In \emph{Sim_GOGO_2018}, the weight
+is also scaled by the total number of children of that parent:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{w = 1/(c + nc) + w_0
+}\if{html}{\out{</div>}}
+
+where w_0 is the original contribution factor, \code{nc} is the number of child terms of the parent, \code{c} is calculated to ensure that
+maximal value of \code{w} is no larger than 1, i.e. \code{c = max(w_0)/(1 - max(w_0))}, assuming minimal value of \code{nc} is 1. By default \emph{Sim_GOGO_2018}
+sets contribution factor of 0.4 for "is_a" and 0.3 for "part_of", then \code{w = 1/(2/3 + nc) + w_0}.
+
+Paper link: \doi{10.1038/s41598-018-33219-y}.
+
+The contribution of different semantic relations can be set with the \code{contribution_factor} parameter. The value should be a named numeric
+vector where names should cover the relations defined in \code{relations} set in \code{\link[=create_ontology_DAG]{create_ontology_DAG()}}. For example, if there are two relations
+"relation_a" and "relation_b" set in the DAG, the value for \code{contribution_factor} can be set as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{term_sim(dag, terms, method = "Sim_GOGO_2018", 
+    control = list(contribution_factor = c("relation_a" = 0.4, "relation_b" = 0.3)))
 }\if{html}{\out{</div>}}
 }
 
@@ -299,7 +306,7 @@ It is similar as the \emph{Sim_Resnik_edge_2005} method, but it applies log-tran
 \if{html}{\out{<div class="sourceCode">}}\preformatted{sim = 1 - log(d(a, b) + 1)/log(2*max_depth + 1)
 }\if{html}{\out{</div>}}
 
-Paper link: \url{https://ieeexplore.ieee.org/document/6287675}.
+Paper link: \doi{10.1186/1471-2105-13-261}.
 
 There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
 
@@ -462,10 +469,10 @@ And the minimal value of \code{D(a, b)} is zero when \code{a} is identical to \c
 
 Paper link: \doi{10.1109/IEMBS.2006.259235}.
 
-There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
+There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{term_sim(dag, terms, method = "Sim_AlMubaid_2006",
-    control = list(distance = "shortest_distances_via_CA"))
+    control = list(distance = "shortest_distances_via_NCA"))
 }\if{html}{\out{</div>}}
 }
 
@@ -481,10 +488,10 @@ where \code{d(a, b)} can be the shortest distance or the longest distance via LC
 
 Paper link: \doi{10.1109/TKDE.2003.1209005}.
 
-There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
+There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{term_sim(dag, terms, method = "Sim_Li_2003",
-    control = list(distance = "shortest_distances_via_CA"))
+    control = list(distance = "shortest_distances_via_NCA"))
 }\if{html}{\out{</div>}}
 }
 
@@ -506,10 +513,10 @@ is the minimal distance (or the minimal height) of term \code{a} and \code{b}:
 
 Paper link: \doi{10.1371/journal.pone.0066745}.
 
-There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_CA":
+There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{term_sim(dag, terms, method = "Sim_RSS_2013",
-    control = list(distance = "shortest_distances_via_CA"))
+    control = list(distance = "shortest_distances_via_NCA"))
 }\if{html}{\out{</div>}}
 }
 
@@ -672,6 +679,19 @@ The universe or the background can be set via parameter \code{anno_universe}:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{term_sim(dag, terms, method = "Sim_Overlap",
     control = list(anno_universe = ...))
+}\if{html}{\out{</div>}}
+}
+
+
+\subsection{Sim_Ancestor}{
+
+Denote \code{S_a} and \code{S_b} are two sets of ancestor terms of term \code{a} and \code{b} (including \code{a} and \code{b}), the
+semantic similarity is defined as:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{length(intersect(S_a, S_b))/length(union(S_a, S_b))
+}\if{html}{\out{</div>}}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{term_sim(dag, terms, method = "Sim_Ancestor")
 }\if{html}{\out{</div>}}
 }
 }

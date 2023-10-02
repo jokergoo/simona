@@ -64,9 +64,10 @@ test_that("test Sim_Wang_2007", {
 		(0.36+0.49+0.252+0.42)/(2.61+2.212)
 	)
 
-	m2 = Sim_Wang_2007(dag, letters[1:6], contribution_factor = c("is_a" = 0.7, "part_of" = 0.6))
+	m2 = Sim_Wang_2007(dag, letters[1:6], contribution_factor = c("is_a" = 0.7, "part_of" = 0.6), calc_by = "igraph")
 
 	expect_equal(as.vector(m), as.vector(m2))
+
 })
 
 
@@ -159,4 +160,71 @@ test_that("test Sim_SSDD_2013", {
 	}
 })
 
+test_that("test Sim_XGraSM_2013", {
+	m = term_sim(dag, dag@terms, "Sim_XGraSM_2013")
+	ic = term_IC(dag, "IC_annotation")
+
+	for(i in 1:10) {
+		t = sample(dag@terms, 2)
+
+		mica = MICA_term(dag, t, "IC_annotation")[2, 1]
+		a = intersect(dag_ancestors(dag, t[1], include_self = TRUE),
+			          dag_ancestors(dag, t[2], include_self = TRUE))
+		v = ic[a]
+		v = v[v > 0]
+		if(length(v) > 0) {
+			sim = mean(v)*2/(ic[t[1]] + ic[t[2]])
+		} else {
+			sim = 0
+		}
+
+		expect_equal(m[t[1], t[2]], unname(sim), tolerance = 1e-5)
+	}
+})
+
+
+
+test_that("test Sim_EISI_2015", {
+	m = term_sim(dag, dag@terms, "Sim_EISI_2015")
+	ic = term_IC(dag, "IC_annotation")
+
+	for(i in 1:10) {
+		t = sample(dag@terms, 2)
+
+		mica = MICA_term(dag, t, "IC_annotation")[2, 1]
+		a1 = dag_ancestors(dag, t[1], include_self = TRUE)
+		a2 = dag_ancestors(dag, t[2], include_self = TRUE)
+		
+		s = setdiff(union(a1, a2), intersect(a1, a2))
+		a = intersect(a1, a2)
+		l = sapply(a, function(x) {
+			length(intersect(dag_children(dag, x), s)) > 0
+		})
+		a = a[l]
+		v = ic[a]
+		if(length(v) > 0) {
+			sim = mean(v)*2/(ic[t[1]] + ic[t[2]])
+		} else {
+			sim = 0
+		}
+
+		expect_equal(m[t[1], t[2]], unname(sim), tolerance = 1e-5)
+	}
+})
+
+
+test_that("test Sim_Ancestor", {
+	m = term_sim(dag, dag@terms, "Sim_Ancestor")
+	
+	for(i in 1:10) {
+		t = sample(dag@terms, 2)
+
+		a1 = dag_ancestors(dag, t[1], include_self = TRUE)
+		a2 = dag_ancestors(dag, t[2], include_self = TRUE)
+
+		sim = length(intersect(a1, a2))/length(union(a1, a2))
+
+		expect_equal(m[t[1], t[2]], unname(sim), tolerance = 1e-5)
+	}
+})
 

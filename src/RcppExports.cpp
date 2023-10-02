@@ -72,39 +72,31 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_max_ancestor_id
-IntegerMatrix cpp_max_ancestor_id(S4 dag, IntegerVector nodes, NumericVector v);
-RcppExport SEXP _simona_cpp_max_ancestor_id(SEXP dagSEXP, SEXP nodesSEXP, SEXP vSEXP) {
+IntegerMatrix cpp_max_ancestor_id(S4 dag, IntegerVector nodes, NumericVector v, bool use_max_dist);
+RcppExport SEXP _simona_cpp_max_ancestor_id(SEXP dagSEXP, SEXP nodesSEXP, SEXP vSEXP, SEXP use_max_distSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type nodes(nodesSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type v(vSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_max_ancestor_id(dag, nodes, v));
+    Rcpp::traits::input_parameter< bool >::type use_max_dist(use_max_distSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_max_ancestor_id(dag, nodes, v, use_max_dist));
     return rcpp_result_gen;
 END_RCPP
 }
-// cpp_shortest_distances_via_CA
-IntegerMatrix cpp_shortest_distances_via_CA(S4 dag, IntegerVector nodes);
-RcppExport SEXP _simona_cpp_shortest_distances_via_CA(SEXP dagSEXP, SEXP nodesSEXP) {
+// cpp_max_ancestor_path_sum_value
+NumericMatrix cpp_max_ancestor_path_sum_value(S4 dag, IntegerVector nodes, NumericVector v, NumericVector addv, bool use_max_dist);
+RcppExport SEXP _simona_cpp_max_ancestor_path_sum_value(SEXP dagSEXP, SEXP nodesSEXP, SEXP vSEXP, SEXP addvSEXP, SEXP use_max_distSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type nodes(nodesSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_shortest_distances_via_CA(dag, nodes));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cpp_longest_distances_via_LCA
-IntegerMatrix cpp_longest_distances_via_LCA(S4 dag, IntegerVector nodes);
-RcppExport SEXP _simona_cpp_longest_distances_via_LCA(SEXP dagSEXP, SEXP nodesSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type nodes(nodesSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_longest_distances_via_LCA(dag, nodes));
+    Rcpp::traits::input_parameter< NumericVector >::type v(vSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type addv(addvSEXP);
+    Rcpp::traits::input_parameter< bool >::type use_max_dist(use_max_distSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_max_ancestor_path_sum_value(dag, nodes, v, addv, use_max_dist));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -220,6 +212,34 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_tpl_shortest_path_sum_value
+double cpp_tpl_shortest_path_sum_value(S4 dag, int from, int to, NumericVector value);
+RcppExport SEXP _simona_cpp_tpl_shortest_path_sum_value(SEXP dagSEXP, SEXP fromSEXP, SEXP toSEXP, SEXP valueSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
+    Rcpp::traits::input_parameter< int >::type from(fromSEXP);
+    Rcpp::traits::input_parameter< int >::type to(toSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type value(valueSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_tpl_shortest_path_sum_value(dag, from, to, value));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_tpl_longest_path_sum_value
+double cpp_tpl_longest_path_sum_value(S4 dag, int from, int to, NumericVector value);
+RcppExport SEXP _simona_cpp_tpl_longest_path_sum_value(SEXP dagSEXP, SEXP fromSEXP, SEXP toSEXP, SEXP valueSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
+    Rcpp::traits::input_parameter< int >::type from(fromSEXP);
+    Rcpp::traits::input_parameter< int >::type to(toSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type value(valueSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_tpl_longest_path_sum_value(dag, from, to, value));
+    return rcpp_result_gen;
+END_RCPP
+}
 // intersectToList_logical
 List intersectToList_logical(List lt, StringVector x);
 RcppExport SEXP _simona_intersectToList_logical(SEXP ltSEXP, SEXP xSEXP) {
@@ -285,15 +305,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_sim_wang
-NumericVector cpp_sim_wang(S4 dag, IntegerVector nodes, NumericVector contribution);
-RcppExport SEXP _simona_cpp_sim_wang(SEXP dagSEXP, SEXP nodesSEXP, SEXP contributionSEXP) {
+NumericVector cpp_sim_wang(S4 dag, IntegerVector nodes, NumericVector contribution, bool correct);
+RcppExport SEXP _simona_cpp_sim_wang(SEXP dagSEXP, SEXP nodesSEXP, SEXP contributionSEXP, SEXP correctSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type nodes(nodesSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type contribution(contributionSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_sim_wang(dag, nodes, contribution));
+    Rcpp::traits::input_parameter< bool >::type correct(correctSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_sim_wang(dag, nodes, contribution, correct));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -333,32 +354,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cpp_sim_shen
-NumericMatrix cpp_sim_shen(S4 dag, IntegerVector nodes, NumericVector ic);
-RcppExport SEXP _simona_cpp_sim_shen(SEXP dagSEXP, SEXP nodesSEXP, SEXP icSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type nodes(nodesSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type ic(icSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_sim_shen(dag, nodes, ic));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cpp_sim_SSDD
-NumericMatrix cpp_sim_SSDD(S4 dag, IntegerVector nodes, NumericVector t);
-RcppExport SEXP _simona_cpp_sim_SSDD(SEXP dagSEXP, SEXP nodesSEXP, SEXP tSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type nodes(nodesSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type t(tSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_sim_SSDD(dag, nodes, t));
-    return rcpp_result_gen;
-END_RCPP
-}
 // cpp_common_ancestor_mean_IC_XGraSM
 NumericMatrix cpp_common_ancestor_mean_IC_XGraSM(S4 dag, IntegerVector nodes, NumericVector ic);
 RcppExport SEXP _simona_cpp_common_ancestor_mean_IC_XGraSM(SEXP dagSEXP, SEXP nodesSEXP, SEXP icSEXP) {
@@ -385,16 +380,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cpp_common_ancestor_mean_IC_GraSM
-NumericMatrix cpp_common_ancestor_mean_IC_GraSM(S4 dag, IntegerVector nodes, NumericVector ic);
-RcppExport SEXP _simona_cpp_common_ancestor_mean_IC_GraSM(SEXP dagSEXP, SEXP nodesSEXP, SEXP icSEXP) {
+// cpp_sim_ancestor
+NumericMatrix cpp_sim_ancestor(S4 dag, IntegerVector nodes);
+RcppExport SEXP _simona_cpp_sim_ancestor(SEXP dagSEXP, SEXP nodesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type nodes(nodesSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type ic(icSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_common_ancestor_mean_IC_GraSM(dag, nodes, ic));
+    rcpp_result_gen = Rcpp::wrap(cpp_sim_ancestor(dag, nodes));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -748,6 +742,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_dag_shortest_path_to_offspring_sum_value
+List cpp_dag_shortest_path_to_offspring_sum_value(S4 dag, int from_node, NumericVector value, LogicalVector l_background);
+RcppExport SEXP _simona_cpp_dag_shortest_path_to_offspring_sum_value(SEXP dagSEXP, SEXP from_nodeSEXP, SEXP valueSEXP, SEXP l_backgroundSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
+    Rcpp::traits::input_parameter< int >::type from_node(from_nodeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type value(valueSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type l_background(l_backgroundSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_dag_shortest_path_to_offspring_sum_value(dag, from_node, value, l_background));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mark_tree_links
 List cpp_mark_tree_links(S4 dag);
 RcppExport SEXP _simona_cpp_mark_tree_links(SEXP dagSEXP) {
@@ -778,9 +786,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_simona_cpp_get_term_annotations", (DL_FUNC) &_simona_cpp_get_term_annotations, 2},
     {"_simona_cpp_get_annotated_terms", (DL_FUNC) &_simona_cpp_get_annotated_terms, 2},
     {"_simona_cpp_max_ancestor_v", (DL_FUNC) &_simona_cpp_max_ancestor_v, 3},
-    {"_simona_cpp_max_ancestor_id", (DL_FUNC) &_simona_cpp_max_ancestor_id, 3},
-    {"_simona_cpp_shortest_distances_via_CA", (DL_FUNC) &_simona_cpp_shortest_distances_via_CA, 2},
-    {"_simona_cpp_longest_distances_via_LCA", (DL_FUNC) &_simona_cpp_longest_distances_via_LCA, 2},
+    {"_simona_cpp_max_ancestor_id", (DL_FUNC) &_simona_cpp_max_ancestor_id, 4},
+    {"_simona_cpp_max_ancestor_path_sum_value", (DL_FUNC) &_simona_cpp_max_ancestor_path_sum_value, 5},
     {"_simona_cpp_longest_distances_from_LCA", (DL_FUNC) &_simona_cpp_longest_distances_from_LCA, 2},
     {"_simona_cpp_longest_distances_directed", (DL_FUNC) &_simona_cpp_longest_distances_directed, 2},
     {"_simona_cpp_shortest_distances_directed", (DL_FUNC) &_simona_cpp_shortest_distances_directed, 2},
@@ -790,20 +797,20 @@ static const R_CallMethodDef CallEntries[] = {
     {"_simona_cpp_tpl_longest_path_length", (DL_FUNC) &_simona_cpp_tpl_longest_path_length, 3},
     {"_simona_cpp_tpl_shortest_path", (DL_FUNC) &_simona_cpp_tpl_shortest_path, 3},
     {"_simona_cpp_tpl_longest_path", (DL_FUNC) &_simona_cpp_tpl_longest_path, 3},
+    {"_simona_cpp_tpl_shortest_path_sum_value", (DL_FUNC) &_simona_cpp_tpl_shortest_path_sum_value, 4},
+    {"_simona_cpp_tpl_longest_path_sum_value", (DL_FUNC) &_simona_cpp_tpl_longest_path_sum_value, 4},
     {"_simona_intersectToList_logical", (DL_FUNC) &_simona_intersectToList_logical, 2},
     {"_simona_cpp_term_pos_on_circle", (DL_FUNC) &_simona_cpp_term_pos_on_circle, 4},
     {"_simona_cpp_calc_n_neighbours_on_circle", (DL_FUNC) &_simona_cpp_calc_n_neighbours_on_circle, 2},
     {"_simona_n_links_from_two_groups_of_nodes", (DL_FUNC) &_simona_n_links_from_two_groups_of_nodes, 3},
     {"_simona_cpp_sim_aic", (DL_FUNC) &_simona_cpp_sim_aic, 3},
-    {"_simona_cpp_sim_wang", (DL_FUNC) &_simona_cpp_sim_wang, 3},
+    {"_simona_cpp_sim_wang", (DL_FUNC) &_simona_cpp_sim_wang, 4},
     {"_simona_cpp_wang_sv_to_sim", (DL_FUNC) &_simona_cpp_wang_sv_to_sim, 1},
     {"_simona_cpp_sim_wang_edge", (DL_FUNC) &_simona_cpp_sim_wang_edge, 2},
     {"_simona_cpp_sim_zhong", (DL_FUNC) &_simona_cpp_sim_zhong, 3},
-    {"_simona_cpp_sim_shen", (DL_FUNC) &_simona_cpp_sim_shen, 3},
-    {"_simona_cpp_sim_SSDD", (DL_FUNC) &_simona_cpp_sim_SSDD, 3},
     {"_simona_cpp_common_ancestor_mean_IC_XGraSM", (DL_FUNC) &_simona_cpp_common_ancestor_mean_IC_XGraSM, 3},
     {"_simona_cpp_common_ancestor_mean_IC_EISI", (DL_FUNC) &_simona_cpp_common_ancestor_mean_IC_EISI, 3},
-    {"_simona_cpp_common_ancestor_mean_IC_GraSM", (DL_FUNC) &_simona_cpp_common_ancestor_mean_IC_GraSM, 3},
+    {"_simona_cpp_sim_ancestor", (DL_FUNC) &_simona_cpp_sim_ancestor, 2},
     {"_simona_cpp_ic_meng", (DL_FUNC) &_simona_cpp_ic_meng, 2},
     {"_simona_cpp_ic_wang", (DL_FUNC) &_simona_cpp_ic_wang, 2},
     {"_simona_cpp_max_leaves_id", (DL_FUNC) &_simona_cpp_max_leaves_id, 3},
@@ -832,6 +839,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_simona_cpp_dag_longest_dist_from_ancestors", (DL_FUNC) &_simona_cpp_dag_longest_dist_from_ancestors, 3},
     {"_simona_cpp_dag_shortest_dist_from_ancestors", (DL_FUNC) &_simona_cpp_dag_shortest_dist_from_ancestors, 3},
     {"_simona_cpp_check_cyclic_node", (DL_FUNC) &_simona_cpp_check_cyclic_node, 2},
+    {"_simona_cpp_dag_shortest_path_to_offspring_sum_value", (DL_FUNC) &_simona_cpp_dag_shortest_path_to_offspring_sum_value, 4},
     {"_simona_cpp_mark_tree_links", (DL_FUNC) &_simona_cpp_mark_tree_links, 1},
     {"_simona_cpp_match_index", (DL_FUNC) &_simona_cpp_match_index, 2},
     {NULL, NULL, 0}

@@ -41,6 +41,8 @@ IntegerVector _dag_depth(S4 dag) {
 	return depth;
 }
 
+
+// return the indices where elements in `l` is true
 IntegerVector _which(LogicalVector l) {
 	int n = l.size();
 	int n2 = sum(l);
@@ -72,6 +74,8 @@ LogicalVector integer_to_logical_vector(IntegerVector i, int n) {
 
 // [[Rcpp::export]]
 IntegerVector cpp_match_index(IntegerVector ind1, IntegerVector ind2) {
+
+	// ind1 and ind2 are all sorted, for each i in ind1, assign the index in ind2 which is the nearest larger value to i
 	int n1 = ind1.size();
 
 	IntegerVector ind(n1);

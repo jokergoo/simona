@@ -6,6 +6,7 @@ using namespace Rcpp;
 const int USE_LONGEST_DISTANCE = 1;
 const int USE_SHORTEST_DISTANCE = 2;
 
+// the distance is calculated as directed
 
 int cpp_tpl_path_length(S4 dag, int from, int to, int type = 2) {
 	
@@ -189,6 +190,30 @@ IntegerVector cpp_tpl_shortest_path(S4 dag, int from, int to) {
 // [[Rcpp::export]]
 IntegerVector cpp_tpl_longest_path(S4 dag, int from, int to) {
 	return cpp_tpl_find_path(dag, from, to, USE_LONGEST_DISTANCE);
+}
+
+
+
+// [[Rcpp::export]]
+double cpp_tpl_shortest_path_sum_value(S4 dag, int from, int to, NumericVector value) {
+	IntegerVector path = cpp_tpl_find_path(dag, from, to, USE_SHORTEST_DISTANCE);
+	
+	double v = 0;
+	for(int i = 0; i < path.size(); i ++) {
+		v += value[path[i] - 1];
+	}
+	return v;
+}
+
+// [[Rcpp::export]]
+double cpp_tpl_longest_path_sum_value(S4 dag, int from, int to, NumericVector value) {
+	IntegerVector path =  cpp_tpl_find_path(dag, from, to, USE_LONGEST_DISTANCE);
+
+	double v = 0;
+	for(int i = 0; i < path.size(); i ++) {
+		v += value[path[i] - 1];
+	}
+	return v;
 }
 
 

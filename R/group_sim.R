@@ -349,9 +349,9 @@ GroupSim_SimALN = function(dag, group1, group2, distance = "longest_distances_vi
 	id = unique(unlist(c(group1, group2)))
 	
 	if(distance == "shortest_distances_via_CA") {
-		d = cpp_shortest_distances_via_CA(dag, id)
+		d = cpp_shortest_distances_via_NCA(dag, id)
 	} else if(distance == "longest_distances_via_LCA") {
-		d = cpp_longest_distances_via_LCA(dag, id)
+		d = longest_distances_via_LCA(dag, id)
 	} else {
 		stop("`distance` can only be in 'shortest_distances_via_CA' or 'longest_distances_via_LCA'.")
 	}

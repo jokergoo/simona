@@ -10,11 +10,11 @@
 \alias{max_ancestor_id}
 \title{Various types of common ancestors}
 \usage{
-MICA_term(dag, terms, IC_method, in_labels = TRUE)
+MICA_term(dag, terms, IC_method, in_labels = TRUE, distance = "longest")
 
 MICA_IC(dag, terms, IC_method)
 
-LCA_term(dag, terms, in_labels = TRUE)
+LCA_term(dag, terms, in_labels = TRUE, distance = "longest")
 
 LCA_depth(dag, terms)
 
@@ -22,7 +22,7 @@ NCA_term(dag, terms, in_labels = TRUE)
 
 max_ancestor_v(dag, terms, value)
 
-max_ancestor_id(dag, terms, value, in_labels = FALSE)
+max_ancestor_id(dag, terms, value, in_labels = FALSE, distance = "longest")
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
@@ -32,6 +32,9 @@ max_ancestor_id(dag, terms, value, in_labels = FALSE)
 \item{IC_method}{An IC method. Valid values are in \code{\link[=all_ic_methods]{all_ic_methods()}}.}
 
 \item{in_labels}{Whether the terms are represented in their names or as integer indices?}
+
+\item{distance}{If there are multiple LCA or MICA of two terms, whether to take the one with
+the longest distance of shortest distance to the two terms. Possible values are "longest" and "shortest".}
 
 \item{value}{A numeric vector. The elements should corrrespond to terms in \code{dag_all_terms()} (should have the same length as the number of terms in the DAG).}
 }

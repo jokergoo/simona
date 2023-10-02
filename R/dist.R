@@ -51,7 +51,7 @@ longest_distances_via_LCA = function(dag, terms) {
 	if(any(duplicated(id))) {
 		stop("`term` should not be duplicated.")
 	}
-	d = cpp_longest_distances_via_LCA(dag, id)
+	d = cpp_max_ancestor_path_sum_value(dag, id, dag_depth(dag), rep(1, dag@n_terms)) - 1
 
 	dimnames(d) = list(dag@terms[id], dag@terms[id])
 	d

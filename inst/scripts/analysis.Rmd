@@ -49,7 +49,7 @@ Let's make a comparison of various similarity methods, using the GO BP ontology.
 set.seed(123)
 ic = term_IC(dag, method = "IC_annotation")
 ic = ic[!is.na(ic)]
-go_id = sample(names(ic), 100)
+go_id = sample(names(ic), 500)
 
 lt = lapply(all_term_sim_methods(), function(method) {
     cat("=====", method, "=====\n")
@@ -62,14 +62,14 @@ df = as.data.frame(lt)
 LCA_depth = LCA_depth(dag, go_id)
 LCA_depth = LCA_depth[lower.tri(LCA_depth)]
 
-pairs(df[, 1:29], pch = ".", gap = 0, col = LCA_depth+1)
+pairs(df, pch = ".", gap = 0, col = LCA_depth+1)
 ```
 
 
 And the heatmap of the correlations of semantic similarities. 
 
 ```{r, fig.width = 8, fig.height = 8}
-cor = cor(df[, 1:29], method = "spearman", use = "pairwise.complete.obs")
+cor = cor(df, use = "pairwise.complete.obs")
 library(ComplexHeatmap)
 Heatmap(cor, name = "correlation", column_title = "Spearman correlation")
 ```

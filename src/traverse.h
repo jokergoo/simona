@@ -1,5 +1,5 @@
-#ifndef __TRANSVERSE__
-#define __TRANSVERSE__
+#ifndef __TRAVERSE__
+#define __TRAVERSE__
 
 extern const int SET_UNION;
 extern const int SET_INTERSECT;
@@ -40,5 +40,15 @@ IntegerVector cpp_dag_longest_dist_from_ancestors(S4 dag, IntegerVector to_node,
 IntegerVector cpp_dag_longest_dist_from_ancestors(S4 dag, int to_node, LogicalVector l_background = LogicalVector(0));
 IntegerVector cpp_dag_shortest_dist_from_ancestors(S4 dag, IntegerVector to_node, LogicalVector l_background = LogicalVector(0));
 IntegerVector cpp_dag_shortest_dist_from_ancestors(S4 dag, int to_node, LogicalVector l_background = LogicalVector(0));
+
+
+NumericVector cpp_dag_longest_path_to_offspring_sum_value(S4 dag, IntegerVector from_node, NumericVector value, LogicalVector l_background = LogicalVector(0));
+NumericVector cpp_dag_shortest_path_to_offspring_sum_value(S4 dag, IntegerVector from_node, NumericVector value, LogicalVector l_background = LogicalVector(0));
+NumericVector cpp_dag_longest_path_from_ancestors_sum_value(S4 dag, IntegerVector to_node, NumericVector value, LogicalVector l_background = LogicalVector(0));
+NumericVector cpp_dag_shortest_path_from_ancestors_sum_value(S4 dag, IntegerVector to_node, NumericVector value, LogicalVector l_background = LogicalVector(0));
+NumericVector cpp_dag_longest_path_to_offspring_sum_value(S4 dag, int from_node, NumericVector value, LogicalVector l_background = LogicalVector(0));
+NumericVector cpp_dag_shortest_path_to_offspring_sum_value(S4 dag, int from_node, NumericVector value, LogicalVector l_background = LogicalVector(0));
+NumericVector cpp_dag_longest_path_from_ancestors_sum_value(S4 dag, int to_node, NumericVector value, LogicalVector l_background = LogicalVector(0));
+NumericVector cpp_dag_shortest_path_from_ancestors_sum_value(S4 dag, int to_node, NumericVector value, LogicalVector l_background = LogicalVector(0));
 
 #endif

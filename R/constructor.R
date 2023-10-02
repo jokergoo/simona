@@ -54,7 +54,7 @@ ontology_DAG = setClass("ontology_DAG",
 
 #' Create the ontology_DAG object
 #' 
-#' @param parents A character vector of parent terms. 
+#' @param parents A character vector of parent terms. You can also construct the `ontology_DAG` object by a list of parent-child links. See **Examples**.
 #' @param children A character vector of child terms. 
 #' @param relations A character vector of parent-child relations, e.g. "is_a", "part_of", or self-defined semantic relations.
 #'        If it is set, it should have the same length as `parents` and `children`.
@@ -101,8 +101,17 @@ ontology_DAG = setClass("ontology_DAG",
 #' dag = create_ontology_DAG(parents, children, 
 #'     relations = c("r1", "r2", "r1", "r3", "r1", "r4"),
 #'     relations_DAG = relations_DAG)
+#' 
+#' # with a list of parent-child relations
+#' dag = create_ontology_DAG(c("a-b", "a-c", "b-c", "b-d", "c-e", "e-f"))
 create_ontology_DAG = function(parents, children, relations = NULL, relations_DAG = NULL,
 	source = "Ontology", annotation = NULL, remove_cyclic_paths = FALSE, remove_rings = FALSE) {
+
+	if(missing(children)) {
+		lt = strsplit(parents, "\\s*-\\s*")
+		parents = sapply(lt, function(x) x[1])
+		children = sapply(lt, function(x) x[2])
+	}
 
 	if(!is.character(parents)) {
 		stop("`parents` should be in character mode.")

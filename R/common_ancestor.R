@@ -7,6 +7,8 @@
 #' @param terms A vector of term names.
 #' @param IC_method An IC method. Valid values are in [`all_ic_methods()`].
 #' @param in_labels Whether the terms are represented in their names or as integer indices?
+#' @param distance If there are multiple LCA or MICA of two terms, whether to take the one with
+#'   the longest distance of shortest distance to the two terms. Possible values are "longest" and "shortest".
 #' 
 #' @details
 #' There are the following three types of common ancestors:
@@ -40,9 +42,9 @@
 #' LCA_term(dag, letters[1:6])
 #' LCA_depth(dag, letters[1:6])
 #' NCA_term(dag, letters[1:6])
-MICA_term = function(dag, terms, IC_method, in_labels = TRUE) {
+MICA_term = function(dag, terms, IC_method, in_labels = TRUE, distance = "longest") {
 	ic = term_IC(dag, IC_method)
-	max_ancestor_id(dag, terms, ic, in_labels = in_labels)
+	max_ancestor_id(dag, terms, ic, in_labels = in_labels, distance = distance)
 }
 
 #' @rdname common_ancestor
@@ -55,10 +57,10 @@ MICA_IC = function(dag, terms, IC_method) {
 
 #' @rdname common_ancestor
 #' @export
-LCA_term = function(dag, terms, in_labels = TRUE) {
+LCA_term = function(dag, terms, in_labels = TRUE, distance = "longest") {
 	depth = dag_depth(dag)
 	
-	max_ancestor_id(dag, terms, depth, in_labels = in_labels)
+	max_ancestor_id(dag, terms, depth, in_labels = in_labels, distance = distance)
 }
 
 #' @rdname common_ancestor
@@ -119,7 +121,7 @@ max_ancestor_v = function(dag, terms, value) {
 
 #' @rdname common_ancestor
 #' @export
-max_ancestor_id = function(dag, terms, value, in_labels = FALSE) {
+max_ancestor_id = function(dag, terms, value, in_labels = FALSE, distance = "longest") {
 
 	if(length(value) != dag@n_terms) {
 		stop("Length of `value` should be the same as number of total terms in the DAG.")
@@ -133,7 +135,7 @@ max_ancestor_id = function(dag, terms, value, in_labels = FALSE) {
 	if(any(duplicated(id))) {
 		stop("`term` should not be duplicated.")
 	}
-	an = cpp_max_ancestor_id(dag, id, value)
+	an = cpp_max_ancestor_id(dag, id, value, distance == "longest")
 	dimnames(an) = list(dag@terms[id], dag@terms[id])
 
 	if(in_labels) {

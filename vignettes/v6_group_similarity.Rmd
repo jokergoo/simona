@@ -2,7 +2,10 @@
 title: "Similarity between two groups of terms"
 author: "Zuguang Gu ( z.gu@dkfz.de )"
 date: '`r Sys.Date()`'
-output: html_document
+output: 
+  html_vignette:
+    css: main.css
+    toc: true
 vignette: >
   %\VignetteIndexEntry{6. Similarity between two groups of terms}
   %\VignetteEngine{knitr::rmarkdown}
@@ -22,13 +25,12 @@ knitr::opts_chunk$set(
 
 
 The methods of group similarity implemented in **simona** are mainly from
-the [supplementary file](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/bib/18/5/10.1093_bib_bbw067/2/bbw067_supplementary_file.pdf?Expires=1692176766&Signature=Ks4C96x-kinySVP7rzVzMn8cGnQWXOqkB-6gYHhs48Bl9A2Vj~-mcI9pEnvntNBvjBD1hp4ZncMWUNT-y1ArrrQgDJ0dCCEJp5LG0Ag2oPWsC5NFEeUQiYNZCXal8Kwa3Ze1vtDHjIwZpT9-sZhn9ryqKHd3C88RvuGx10jcSYRL1Pec0F~a9CnrbivieCfFELg2OQTf5zpAobxhlqzWqv~sa1b62PunNZ~XkmnTGOJoSMQFnNaBy~bDNEf9Pd6eRYaOc8MUh5Br4xB4y8mivT6Et2vKzLrGJFQjYpvouQpBu0nf03xwHVmNFN5-6LsDnpyQPCy4nQ5DHYltVHkEOA__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA)
+the [supplementary file](https://academic.oup.com/bib/article/18/5/886/2562801#supplementary-data)
 of the paper ["Mazandu et al., Gene Ontology semantic similarity tools: survey
 on features and challenges for biological knowledge discovery. Briefings in
 Bioinformatics 2017"](https://doi.org/10.1093/bib/bbw067). Original
 denotations have been slightly modified to make them more consistent. Also
-more explanations have been added in this vignette. Credits go to
-the original paper.
+more explanations have been added in this vignette. 
 
 
 There are two groups of terms denoted as $T_p$ and $T_q$ represented as two sets:
@@ -286,31 +288,37 @@ group_sim(dag, group1, group2, method = "GroupSim_SimGIC",
 
 ## GroupSim_SimCOU
 
-Let's write $mathcal{A}_p$ and $mathcal{A}_q$ as two vectors $\mathbf{v_p}$
-and $\mathbf{v_q}$. Taking $v_p$ as an example, it is $\mathbf{v_p} = (w_1, ..., w_n)$ where $n$
+Let's write $\mathcal{A}_p$ and $\mathcal{A}_q$ as two vectors $\mathbf{v_p}$
+and $\mathbf{v_q}$. Taking $\mathr{v_p}$ as an example, it is $\mathbf{v_p} = (w_1, ..., w_n)$ where $n$
 is the number of total terms in the DAG. The value $w_i$ is assigned to the corresponding term $t_i$
 and is defined as:
 
 $$
-mathcal{w}_{i} = \left\{ \begin{array}{ll}
-\mathrm{IC}(t_i) & \textrm{if} t_i \in mathcal{A}_p \\
+\mathcal{w}_{i} = \left\{ \begin{array}{ll}
+\mathrm{IC}(t_i) & \textrm{if} t_i \in \mathcal{A}_p \\
 0 & \textrm{otherwise}
 \end{array} \right.
 $$
 
 The semantic similarity is defined as the cosine similarity between the two vectors:
 
-$$ \mathrm{Sim}(a, b) = \frac{ \mathbf{v_p} \cdot \mathbf{v_q} }{\left \| \mathbf{v_p} \right \| \cdot  \left \| \mathbf{v_q} \right \|} $$
+$$ \mathrm{GroupSim}(a, b) = \frac{ \mathbf{v_p} \cdot \mathbf{v_q} }{\left \| \mathbf{v_p} \right \| \cdot  \left \| \mathbf{v_q} \right \|} $$
 
 It can also be written as:
 
-$$ \mathrm{Sim}(a, b) = \frac{\sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q}\mathrm{IC}(x)^2}{\sqrt{\sum\limits_{x \in \mathcal{A}_p}\mathrm{IC}(x)} \cdot \sqrt{\sum\limits_{x \in \mathcal{A}_p}\mathrm{IC}(x)}} $$
+$$ \mathrm{GroupSim}(a, b) = \frac{\sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q}\mathrm{IC}(x)^2}{\sqrt{\sum\limits_{x \in \mathcal{A}_p}\mathrm{IC}(x)^2} \cdot \sqrt{\sum\limits_{x \in \mathcal{A}_q}\mathrm{IC}(x)^2}} $$
 
 ## GroupSim_SimCOT
 
 The semantic similarity is defined as:
 
-$$ \mathrm{Sim}(a, b) = \frac{ \mathbf{v_p} \cdot \mathbf{v_q} }{\left \| \mathbf{v_p} \right \|^2 +  \left \| \mathbf{v_q} \right \|^2 - \mathbf{v_p} \cdot \mathbf{v_q}} $$
+$$
+\begin{align*}
+ \mathrm{GroupSim}(a, b) &= \frac{ \mathbf{v_p} \cdot \mathbf{v_q} }{\left \| \mathbf{v_p} \right \|^2 +  \left \| \mathbf{v_q} \right \|^2 - \mathbf{v_p} \cdot \mathbf{v_q}} \\
+     &=  \frac{\sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q}\mathrm{IC}(x)^2}{\sum\limits_{x \in \mathcal{A}_p \cup \mathcal{A}_q}\mathrm{IC}(x)^2}
+\end{align*}
+$$
+
 
 
 # Groupwise edge-based methods
@@ -411,4 +419,38 @@ group_sim(dag, group1, group2, method = "GroupSim_Kappa",
 ```{r}
 sessionInfo()
 ```
+
+
+<script src="jquery.min.js"></script>
+<script src="jquery.sticky.js"></script>
+<script>
+$(document).ready(function(){
+    $("#TOC").sticky({
+        topSpacing: 0,
+        zIndex:1000    
+    })
+    $("#TOC").on("sticky-start", function() {
+
+        $("<p style='font-size:1.2em; padding-left:4px;'><a id='TOC-click'>Table of Content</a></p>").insertBefore($("#TOC ul:first-child"));
+        $("#TOC-click").hover(function() {
+            $(this).css("color", "#0033dd").css("cursor", "pointer");
+            $("#TOC").children().first().next().show();
+            $("#TOC").hover(function() {
+                $(this).children().first().next().show();
+            }, function() {
+                $(this).children().first().next().hide();
+                $("body").off("hover", "#TOC");
+            })
+        }, function() {
+            $(this).css("color", "#0033dd");
+        })
+        $("#TOC").children().first().next().hide();
+
+    })
+    $("#TOC").on("sticky-end", function() {
+        $("#TOC").children().first().remove();
+        $("#TOC").children().first().show();
+    })
+});
+</script>
 

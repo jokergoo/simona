@@ -8,6 +8,13 @@ on bio-ontologies. They include methods for information contents,
 similarities between two terms as well as similarities between two groups
 of terms. It also implements visualizations on DAGs.
 
+
+The methods of information content implemented in **simona** are mainly from
+the [supplementary file](https://academic.oup.com/bib/article/18/5/886/2562801#supplementary-data)
+of the paper ["Mazandu et al., Gene Ontology semantic similarity tools: survey
+on features and challenges for biological knowledge discovery. Briefings in
+Bioinformatics 2017"](https://doi.org/10.1093/bib/bbw067).
+
 ## Install
 
 ```r

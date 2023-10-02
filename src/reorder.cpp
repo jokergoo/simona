@@ -6,6 +6,8 @@ using namespace Rcpp;
 
 // [[Rcpp::export]]
 int n_links_from_two_groups_of_nodes(S4 dag, IntegerVector nodes1, IntegerVector nodes2) {
+
+	// number of cross-cluster links
 	List lt_children = dag.slot("lt_children");
 	List lt_parents = dag.slot("lt_parents");
 	int n = lt_children.size();

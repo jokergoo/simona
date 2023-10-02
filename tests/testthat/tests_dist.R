@@ -51,16 +51,32 @@ test_that("test tpl paths", {
 		c(1, 3)
 	)
 	expect_equal(
+		cpp_tpl_shortest_path_sum_value(dag, 1, 3, 1:6),
+		4
+	)
+	expect_equal(
 		cpp_tpl_shortest_path(dag, 1, 5),
 		c(1, 3, 5)
+	)
+	expect_equal(
+		cpp_tpl_shortest_path_sum_value(dag, 1, 5, 1:6),
+		9
 	)
 	expect_equal(
 		cpp_tpl_longest_path(dag, 1, 3),
 		c(1, 2, 3)
 	)
 	expect_equal(
+		cpp_tpl_longest_path_sum_value(dag, 1, 3, 1:6),
+		6
+	)
+	expect_equal(
 		cpp_tpl_longest_path(dag, 1, 5),
 		c(1, 2, 3, 5)
+	)
+	expect_equal(
+		cpp_tpl_longest_path_sum_value(dag, 1, 5, 1:6),
+		11
 	)
 	expect_equal(
 		cpp_tpl_shortest_path(dag, 1, 4),
@@ -124,12 +140,4 @@ system.time(d3 <- shortest_distances_directed(dag, dag@terms[1:1000])); rm(d3); 
 system.time(d4 <- longest_distances_directed(dag, dag@terms[1:1000])); rm(d4); gc();
 
 }
-
-
-test_that("test two shortest_distances_via_NCA implementations", {
-	d1 = cpp_shortest_distances_via_NCA(dag, 1:100)
-	d2 = cpp_shortest_distances_via_CA(dag, 1:100)
-	expect_equal(d1, d2)
-})
-
 

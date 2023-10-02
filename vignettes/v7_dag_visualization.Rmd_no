@@ -2,7 +2,10 @@
 title: "Visualize DAGs"
 author: "Zuguang Gu ( z.gu@dkfz.de )"
 date: '`r Sys.Date()`'
-output: html_document
+output: 
+  html_vignette:
+    css: main.css
+    toc: true
 vignette: >
   %\VignetteIndexEntry{7. Visualize DAGs}
   %\VignetteEngine{knitr::rmarkdown}

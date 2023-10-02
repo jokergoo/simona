@@ -2,7 +2,10 @@
 title: "Information content"
 author: "Zuguang Gu ( z.gu@dkfz.de )"
 date: '`r Sys.Date()`'
-output: html_document
+output: 
+  html_vignette:
+    css: main.css
+    toc: true
 vignette: >
   %\VignetteIndexEntry{4. Information content}
   %\VignetteEngine{knitr::rmarkdown}
@@ -31,27 +34,27 @@ knitr::opts_chunk$set(
 ```
 
 The methods of information content implemented in **simona** are mainly from
-the [supplementary file](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/bib/18/5/10.1093_bib_bbw067/2/bbw067_supplementary_file.pdf?Expires=1692176766&Signature=Ks4C96x-kinySVP7rzVzMn8cGnQWXOqkB-6gYHhs48Bl9A2Vj~-mcI9pEnvntNBvjBD1hp4ZncMWUNT-y1ArrrQgDJ0dCCEJp5LG0Ag2oPWsC5NFEeUQiYNZCXal8Kwa3Ze1vtDHjIwZpT9-sZhn9ryqKHd3C88RvuGx10jcSYRL1Pec0F~a9CnrbivieCfFELg2OQTf5zpAobxhlqzWqv~sa1b62PunNZ~XkmnTGOJoSMQFnNaBy~bDNEf9Pd6eRYaOc8MUh5Br4xB4y8mivT6Et2vKzLrGJFQjYpvouQpBu0nf03xwHVmNFN5-6LsDnpyQPCy4nQ5DHYltVHkEOA__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA)
+the [supplementary file](https://academic.oup.com/bib/article/18/5/886/2562801#supplementary-data)
 of the paper ["Mazandu et al., Gene Ontology semantic similarity tools: survey
 on features and challenges for biological knowledge discovery. Briefings in
 Bioinformatics 2017"](https://doi.org/10.1093/bib/bbw067). Original
 denotations have been slightly modified to make them more consistent. Also
-more explanations have been added in this vignette. Credits go to
-the original paper.
+more explanations have been added in this vignette. 
 
 ## Denotations
 
-The following denotations will be used throughout the vignette.
+The following denotations will be used throughout the vignette. The denotations are mainly from
+_Mazandu 2017_ only with small modifications.
 
 |  Denotation |  Description    |
 | :----- | :------------------------ |
-| $r$ | The root term of the DAG.  |
+| $r$ | The root term of the DAG. In **simona** there is always one root term.  |
 | $\delta(x)$ | The depth of a term $x$ in the DAG, which is the longest distance from root $r$. |
 | $\delta_s(x)$ | The length of the longest path from root $r$ to a term $x$ via term $s$. |
 | $\delta_\max$ | The maximal depth in the DAG. |
 | $\eta(x)$ | The height of term $x$ in the DAG, which is the longest finite distance to leaf terms. |
 | $\mathcal{C}_s$ | The set of child terms of term $s$. |
-| $\mathcal{P}_s$ | The set of parents terms of term $s$. |
+| $\mathcal{P}_s$ | The set of parent terms of term $s$. |
 | $\mathcal{A}_s$ | The set of ancestor terms of term $s$. |
 | $\mathcal{A}_s^+$ | The set of ancestor terms of term $s$, including $s$ itself. |
 | $\mathcal{D}_s$ | The set of offspring terms of term $s$. |
@@ -61,10 +64,10 @@ The following denotations will be used throughout the vignette.
 | $D_\mathrm{sp}(a, b)$ | The shortest distance bewteen $a$ and $b$. | 
 | $\mathrm{len}(a, b)$ | The longest distance bewteen $a$ and $b$. |
 | $\mathrm{len}_s(a, b)$ | The length of the longest path from $a$ and $b$ via $s$. |
-| $\mathrm{CA}(a, b)$ | The set of common ancestors of term $a$ and $b$, i.e. $\mathrm{CA}(a, b) = \mathcal{A}_a^+ \cap \mathcal{A}_b^+$ |
-| $\mathrm{LCA}(a, b)$ | Lowest common ancestor of $a$ and $b$, which is the common ancestor with the largest depth in DAG, i.e. $$\operatorname*{argmax}_{t \in \mathrm{CA}(a, b)} \delta(t)$$ There might be more than one LCA terms for given two terms, to simplify the calculation, the one with the smallest distance to $a$ and $b$ is used. |
-| $\mathrm{NCA}(a, b)$ | Nearest common ancestor of $a$ and $b$, i.e. $$\operatorname*{argmin}_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t, a) + D_\mathrm{sp}(t, b) \right)$$ If there are more than one NCA terms, the one with the highest depth is used. |
-| $\mathrm{MICA}(a, b)$ | Most informative common ancestor of $a$ and $b$, i.e. $$\operatorname*{argmax}_{t \in \mathrm{CA}(a, b)} \left( \mathrm{IC}(t) \right )$$ There might be more than one MICA terms for given two terms, the one with the smallest distance to $a$ and $b$ is used.|
+| $\mathrm{CA}(a, b)$ | The set of common ancestors of term $a$ and $b$, i.e. $\mathrm{CA}(a, b) = \mathcal{A}_a^+ \cap \mathcal{A}_b^+$. |
+| $\mathrm{LCA}(a, b)$ | Lowest common ancestor of $a$ and $b$, which is the common ancestor with the largest depth in DAG, i.e. $$\operatorname*{argmax}_{t \in \mathrm{CA}(a, b)} \delta(t)$$ There might be more than one LCA terms for given two terms, to simplify the calculation, the one with the longest distance (the default) to $a$ and $b$ is used. |
+| $\mathrm{NCA}(a, b)$ | Nearest common ancestor of $a$ and $b$, i.e. $$\operatorname*{argmin}_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t, a) + D_\mathrm{sp}(t, b) \right)$$ If there are more than one NCA terms, the one with the largest depth (the lowest one) is used. |
+| $\mathrm{MICA}(a, b)$ | Most informative common ancestor of $a$ and $b$, i.e. $$\operatorname*{argmax}_{t \in \mathrm{CA}(a, b)} \left( \mathrm{IC}(t) \right )$$ There might be more than one MICA terms for given two terms, the one with the longest distance (the default) to $a$ and $b$ is used.|
 | $G_s$ | The set of annotated items on term $s$. |
 
 Assume term $a$ is an ancestor of term $b$, $D_\mathrm{sp}(a, b)$ (the order
@@ -81,6 +84,8 @@ D_\mathrm{sp}(a, b) &= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t, a)
 \end{align*}
 $$
 
+## Information content
+
 For many information content (IC) definitions, it has the following form:
 
 $$ \mathrm{IC}(x) = -\log(p(x)) $$
@@ -90,6 +95,12 @@ DAG. If a term has a smaller probability, it means it is more specific, the
 form $-\log(p(x))$ will have a larger value, thus it is called the
 "information content". Basically the more to the leaves in the DAG, a smaller
 p-value is gained and the higher information content a term has.
+
+IC can be generalized not necessarily to be determined by p-values, but to a
+metric which is non-negative and a larger value of a term means more
+informative/important/deep in the DAG. One valid definition of such
+generalized IC is the term depth where with a larger value of the depth means
+more specific a term is in the DAG.
 
 In the following sections, I will use Gene Ontology as an example to
 demonstrate various IC methods supported in the **simona** package. Note
@@ -104,6 +115,7 @@ dag
 
 The wrapper function `term_IC()` calculates information contents of terms in
 the DAG with a specific method. Note the method name can be partially matched.
+`control` argument controls parameters for specific methods.
 
 <pre class="r">
 term_IC(dag, method = ..., control = list(...))
@@ -138,7 +150,7 @@ term_IC(dag, method = "IC_height")
 
 ## IC_annotation
 
-Due to the nature of DAG, if a child term is annotated to an item, all its
+Due to the nature of DAG, if a term is annotated to an item, all its
 ancestor terms are also associated with that item. The calculation of annotated items
 is applied in a recursive way.
 
@@ -161,6 +173,10 @@ term_IC(dag, method = "IC_annotation")
 </pre>
 
 `NA` is assigned to the terms with no item annotated.
+
+$G_x$ can also be written as:
+
+$$ G_x = \bigcup_{z \in \mathcal{D}^+_x} G_z^* $$
 
 In some implementation of current tools, number of annotated items on a term
 is calculated by simply adding such numbers from all its child terms, as shown
@@ -206,8 +222,11 @@ It shows there is a systematic shift between the two methods.
 *IC_annotation* is the only method which replies on external annotation data.
 This type of method has been criticized because it replies on changable
 external data and people argue that IC should be an intrinsic attribute and
-only depends on the DAG structure itself. All other IC methods introduced in
-later sections only purely reply on the DAG structure itself.
+only depends on the DAG structure itself. 
+
+
+All other IC methods introduced in
+later sections only purely depend on the DAG structure itself.
 
 ## IC_universal
 
@@ -301,7 +320,7 @@ $$
 \end{align*} 
 $$
 
-where $\|\mathcal{D}_r^+\|$ is the total number of terms in the DAG.
+where $|\mathcal{D}_r^+|$ is the total number of terms in the DAG.
 
 ```
 term_IC(dag, method = "IC_Seco_2004")
@@ -313,10 +332,12 @@ $$
 \begin{align*}
 \mathrm{IC}_\mathrm{Seco}(x) & = 1 - \frac{\log(|\mathcal{D}_x^+|)}{\log(|\mathcal{D}_r^+|)} \\
 & = \frac{\log(|\mathcal{D}_r^+|) - \log(|\mathcal{D}_x^+|)}{\log(|\mathcal{D}_r^+|)} \\
-& = \frac{-\log (|\mathcal{D}_x^+| / |\mathcal{D}_r^+|)}{\log(|\mathcal{D}_r^+|)} \\
-& = \frac{\mathrm{IC}_\mathrm{offspring}(x)}{\log(|\mathcal{D}_r^+|)}
+& = \frac{-\log (|\mathcal{D}_x^+| / |\mathcal{D}_r^+|)}{-\log(1/|\mathcal{D}_r^+|)} \\
+& = \frac{\mathrm{IC}_\mathrm{offspring}(x)}{\mathrm{IC}_\mathrm{offspring}^\mathrm{max}}
 \end{align*}
 $$
+
+where $\mathrm{IC}_\mathrm{offspring}^\mathrm{max} = -\log(1/|\mathcal{D}_r^+|)$ for leaf terms ($|\mathcal{D}_\mathrm{leaf}^+| = 1$).
 
 Paper link: https://dl.acm.org/doi/10.5555/3000001.3000272.
 
@@ -356,7 +377,9 @@ following relation:
 
 $$ \lambda_\mathrm{node} = \lambda_\mathrm{edge} + 1$$
 
-In this case, $\sigma \approx 0.5$.
+In this case, $\sigma \approx 0.5$, and
+
+$$ \mathrm{IC}(x) = 0.5 * \mathrm{IC}_\mathrm{Seco}(x) + 0.5 * \frac{\log(\lambda(x)+1)}{\log(\lambda_\mathrm{edge}+1)} $$
 
 <pre class="r">
 term_IC(dag, method = "IC_Seddiqui_2010")
@@ -443,7 +466,7 @@ The information content is the summation over all $x$'s ancestors:
 $$ \mathrm{IC}(x) = \sum\limits_{t \in \mathcal{A}_x^+} S_x(t) $$
 
 Normally _IC_Wang_2007_ is only used for calculating the semantic similarity
-using _Sim_Wang_2007_ method.
+using [_Sim_Wang_2007_ method](v5_term_similarity.html#sim_wang_2007).
 
 The contribution of different semantic relations can be set with the
 `contribution_factor` parameter. The value should be a named numeric vector
@@ -473,3 +496,36 @@ sessionInfo()
 ```
 
 
+
+<script src="jquery.min.js"></script>
+<script src="jquery.sticky.js"></script>
+<script>
+$(document).ready(function(){
+    $("#TOC").sticky({
+        topSpacing: 0,
+        zIndex:1000    
+    })
+    $("#TOC").on("sticky-start", function() {
+
+        $("<p style='font-size:1.2em; padding-left:4px;'><a id='TOC-click'>Table of Content</a></p>").insertBefore($("#TOC ul:first-child"));
+        $("#TOC-click").hover(function() {
+            $(this).css("color", "#0033dd").css("cursor", "pointer");
+            $("#TOC").children().first().next().show();
+            $("#TOC").hover(function() {
+                $(this).children().first().next().show();
+            }, function() {
+                $(this).children().first().next().hide();
+                $("body").off("hover", "#TOC");
+            })
+        }, function() {
+            $(this).css("color", "#0033dd");
+        })
+        $("#TOC").children().first().next().hide();
+
+    })
+    $("#TOC").on("sticky-end", function() {
+        $("#TOC").children().first().remove();
+        $("#TOC").children().first().show();
+    })
+});
+</script>

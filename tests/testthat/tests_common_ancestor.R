@@ -59,28 +59,29 @@ test_that("test cpp_max_ancestor_id", {
 })
 
 test_that("test cpp_distances", {
-	m = cpp_shortest_distances_via_CA(dag, 1:6)
+	m = cpp_shortest_distances_via_NCA(dag, 1:6)
 	expect_equal(
 		m[upper.tri(m, diag = TRUE)],
 		c(0, 1, 0, 1, 1, 0, 2, 1, 2, 0, 2, 2, 1, 3, 0, 3, 2, 3, 1, 4, 0)
 	)
 
-	m2 = cpp_shortest_distances_via_CA(dag, c(2, 4, 5, 3))
+	m2 = cpp_shortest_distances_via_NCA(dag, c(2, 4, 5, 3))
 	m3 = m[c(2, 4, 5, 3), c(2, 4, 5, 3)]
 	expect_equal(m2, m3)
 
-	m = cpp_longest_distances_via_LCA(dag, 1:6)
+	m = longest_distances_via_LCA(dag, 1:6)
 	expect_equal(
 		m[upper.tri(m, diag = TRUE)],
 		c(0, 1, 0, 2, 1, 0, 2, 1, 2, 0, 3, 2, 1, 3, 0, 3, 2, 3, 1, 4, 0)
 	)
 
-	m2 = cpp_longest_distances_via_LCA(dag, c(2, 4, 5, 3))
+	m2 = longest_distances_via_LCA(dag, c(2, 4, 5, 3))
 	m3 = m[c(2, 4, 5, 3), c(2, 4, 5, 3)]
 	expect_equal(m2, m3)
 
 	lt = cpp_longest_distances_from_LCA(dag, 1:6)
-	m = cpp_longest_distances_via_LCA(dag, 1:6)
+	m = longest_distances_via_LCA(dag, 1:6)
+	dimnames(m) = NULL
 
 	expect_equal(m, lt$left + lt$right)
 })
