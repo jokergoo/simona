@@ -22,6 +22,9 @@
 #' `max_ancestor_v()` and `max_ancestor_id()` are more general functions which return common ancestors with
 #' the highest value in `value`.
 #' 
+#' Given a path connecting two terms and their MICA/LCA, `max_ancestor_path_sum()` calculates the sum of terms along the path. The values
+#' to be added in specified in `add_v` argument.
+#' 
 #' @return 
 #' - `MICA_term()` returns an integer or a character matrix of the MICA terms depending on the value of `in_labels`. 
 #' - `MICA_IC()` returns a numeric matrix of the IC of the MICA terms.
@@ -145,3 +148,29 @@ max_ancestor_id = function(dag, terms, value, in_labels = FALSE, distance = "lon
 	}
 }
 
+
+#' @param add_v Values to be added along the path to the MICA or LCA. The same format as `value`.
+#' 
+#' @export
+#' @rdname common_ancestor
+max_ancestor_path_sum = function(dag, terms, value, add_v, distance = "longest") {
+	if(length(value) != dag@n_terms) {
+		stop("Length of `value` should be the same as number of total terms in the DAG.")
+	}
+	if(length(add_v) != dag@n_terms) {
+		stop("Length of `add_v` should be the same as number of total terms in the DAG.")
+	}
+
+	if(is.character(terms)) {
+		id = term_to_node_id(dag, terms, strict = FALSE)
+	} else {
+		id = terms
+	}
+	if(any(duplicated(id))) {
+		stop("`term` should not be duplicated.")
+	}
+
+	sv = cpp_max_ancestor_path_sum_value(dag, id, value, addv, distance == "longest") {
+	dimnames(sv) = list(dag@terms[id], dag@terms[id])
+	sv
+}

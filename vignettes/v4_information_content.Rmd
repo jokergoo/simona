@@ -121,7 +121,13 @@ the DAG with a specific method. Note the method name can be partially matched.
 term_IC(dag, method = ..., control = list(...))
 </pre>
 
-## IC_offspring
+All supported term IC methods are:
+
+```{r}
+all_ic_methods()
+```
+
+### IC_offspring
 
 The information content is calculated as:
 
@@ -135,7 +141,7 @@ term_IC(dag, method = "IC_offspring")
 </pre>
 
 
-## IC_height
+### IC_height
 
 It measures the relative position of a term in the DAG:
 
@@ -148,7 +154,7 @@ where $\eta(x)$ is the height of a term and $\delta(x)$ is the depth of the term
 term_IC(dag, method = "IC_height")
 </pre>
 
-## IC_annotation
+### IC_annotation
 
 Due to the nature of DAG, if a term is annotated to an item, all its
 ancestor terms are also associated with that item. The calculation of annotated items
@@ -228,7 +234,7 @@ only depends on the DAG structure itself.
 All other IC methods introduced in
 later sections only purely depend on the DAG structure itself.
 
-## IC_universal
+### IC_universal
 
 It measures the probability of a term getting full transmission from the root.
 Each term is associated with a p-value and the root has the p-value of 1.
@@ -271,7 +277,7 @@ $$ p(x) = \left\{ \begin{array}{cl}
 
 Paper link: https://doi.org/10.1155/2012/975783.
 
-## IC_Zhang_2006
+### IC_Zhang_2006
 
 It measures the number of ways of a term to reach leaf terms. E.g. in the
 following DAG:
@@ -307,7 +313,7 @@ term_IC(dag, method = "IC_Zhang_2006")
 
 Paper link: https://doi.org/10.1186/1471-2105-7-135.
 
-## IC_Seco_2004
+### IC_Seco_2004
 
 It is based on the number of offspring terms (with itself) of term $x$. The
 information content is calculated as:
@@ -341,7 +347,7 @@ where $\mathrm{IC}_\mathrm{offspring}^\mathrm{max} = -\log(1/|\mathcal{D}_r^+|)$
 
 Paper link: https://dl.acm.org/doi/10.5555/3000001.3000272.
 
-## IC_Zhou_2008
+### IC_Zhou_2008
 
 It is a correction of _IC_Seco_2004_ which also considers the depth of a term
 in the DAG. The information content is calculated as:
@@ -358,7 +364,7 @@ term_IC(dag, method = "IC_Zhou_2008")
 
 Paper link: https://doi.org/10.1109/FGCNS.2008.16.
 
-## IC_Seddiqui_2010
+### IC_Seddiqui_2010
 
 It is also a correction of _IC_Seco_2004_ but considers the number of
 relations a term has in the DAG.
@@ -387,7 +393,7 @@ term_IC(dag, method = "IC_Seddiqui_2010")
 
 Paper link: https://dl.acm.org/doi/10.5555/1862330.1862343.
 
-## IC_Sanchez_2011
+### IC_Sanchez_2011
 
 It measures the average contribution of term $x$ on leaf terms. First denote
 $\zeta_x$ as the number of leaf terms that can be reached from term $x$. Since
@@ -405,7 +411,7 @@ term_IC(dag, method = "IC_Sanchez_2011")
 
 Paper link: https://doi.org/10.1016/j.knosys.2010.10.001.
 
-## IC_Meng_2012
+### IC_Meng_2012
 
 It has a complex form which takes account of the term depth and the downstream
 of the term. The first factor $r_1$ is calculated as:
@@ -432,7 +438,7 @@ term_IC(dag, method = "IC_Meng_2012")
 Paper link: http://article.nadiapub.com/IJGDC/vol5_no3/6.pdf.
 
 
-## IC_Wang_2007
+### IC_Wang_2007
 
 Each child-parent relation is weighted by a value smaller than 1 based on the
 semantic relation type, i.e. 0.8 for "is_a" and 0.6 for "part_of". For a term
