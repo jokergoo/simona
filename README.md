@@ -102,38 +102,38 @@ The following semantic similarity methods are provided:
 
 ```
 > all_term_sim_methods()
- [1] "Sim_Lin_1998"         "Sim_Resnik_1999"      "Sim_FaITH_2010"
- [4] "Sim_Relevance_2006"   "Sim_SimIC_2010"       "Sim_XGraSM_2013"
- [7] "Sim_GraSM_2005"       "Sim_EISI_2015"        "Sim_AIC_2014"
-[10] "Sim_Zhang_2006"       "Sim_universal"        "Sim_Wang_2007"
-[13] "Sim_Rada_1989"        "Sim_Resnik_edge_2005" "Sim_Leocock_1998"
-[16] "Sim_WP_1994"          "Sim_Slimani_2006"     "Sim_Shenoy_2012"
-[19] "Sim_Pekar_2002"       "Sim_Stojanovic_2001"  "Sim_Wang_edge_2012"
-[22] "Sim_Zhong_2002"       "Sim_AlMubaid_2006"    "Sim_Li_2003"
-[25] "Sim_RSS_2013"         "Sim_HRSS_2013"        "Sim_Shen_2010"
-[28] "Sim_SSDD_2013"        "Sim_Jiang_1997"       "Sim_Kappa"
-[31] "Sim_Jaccard"          "Sim_Dice"             "Sim_Overlap"
+ [1] "Sim_Lin_1998"         "Sim_Resnik_1999"      "Sim_FaITH_2010"      
+ [4] "Sim_Relevance_2006"   "Sim_SimIC_2010"       "Sim_XGraSM_2013"     
+ [7] "Sim_EISI_2015"        "Sim_AIC_2014"         "Sim_Zhang_2006"      
+[10] "Sim_universal"        "Sim_Wang_2007"        "Sim_GOGO_2018"       
+[13] "Sim_Rada_1989"        "Sim_Resnik_edge_2005" "Sim_Leocock_1998"    
+[16] "Sim_WP_1994"          "Sim_Slimani_2006"     "Sim_Shenoy_2012"     
+[19] "Sim_Pekar_2002"       "Sim_Stojanovic_2001"  "Sim_Wang_edge_2012"  
+[22] "Sim_Zhong_2002"       "Sim_AlMubaid_2006"    "Sim_Li_2003"         
+[25] "Sim_RSS_2013"         "Sim_HRSS_2013"        "Sim_Shen_2010"       
+[28] "Sim_SSDD_2013"        "Sim_Jiang_1997"       "Sim_Kappa"           
+[31] "Sim_Jaccard"          "Sim_Dice"             "Sim_Overlap"         
+[34] "Sim_Ancestor" 
 ```
 
 The following group similarity methods are provided:
 
 ```
 > all_group_sim_methods()
- [1] "GroupSim_pairwise_avg"            "GroupSim_pairwise_max"
- [3] "GroupSim_pairwise_BMA"            "GroupSim_pairwise_BMM"
- [5] "GroupSim_pairwise_ABM"            "GroupSim_pairwise_HDF"
- [7] "GroupSim_pairwise_MHDF"           "GroupSim_pairwise_VHDF"
- [9] "GroupSim_pairwise_Froehlich_2007" "GroupSim_pairwise_Joeng_2014"
-[11] "GroupSim_SimALN"                  "GroupSim_SimINT"
-[13] "GroupSim_spgk"                    "GroupSim_SimGIC"
-[15] "GroupSim_SimDIC"                  "GroupSim_SimUIC"
-[17] "GroupSim_SimUI"                   "GroupSim_SimDB"
-[19] "GroupSim_SimUB"                   "GroupSim_SimNTO"
-[21] "GroupSim_SimCOU"                  "GroupSim_SimCOT"
-[23] "GroupSim_SimLP"                   "GroupSim_Ye_2005"
-[25] "GroupSim_SimCHO"                  "GroupSim_SimALD"
-[27] "GroupSim_Jaccard"                 "GroupSim_Dice"
-[29] "GroupSim_Overlap"                 "GroupSim_Kappa"
+ [1] "GroupSim_pairwise_avg"            "GroupSim_pairwise_max"           
+ [3] "GroupSim_pairwise_BMA"            "GroupSim_pairwise_BMM"           
+ [5] "GroupSim_pairwise_ABM"            "GroupSim_pairwise_HDF"           
+ [7] "GroupSim_pairwise_MHDF"           "GroupSim_pairwise_VHDF"          
+ [9] "GroupSim_pairwise_Froehlich_2007" "GroupSim_pairwise_Joeng_2014"    
+[11] "GroupSim_SimALN"                  "GroupSim_SimGIC"                 
+[13] "GroupSim_SimDIC"                  "GroupSim_SimUIC"                 
+[15] "GroupSim_SimUI"                   "GroupSim_SimDB"                  
+[17] "GroupSim_SimUB"                   "GroupSim_SimNTO"                 
+[19] "GroupSim_SimCOU"                  "GroupSim_SimCOT"                 
+[21] "GroupSim_SimLP"                   "GroupSim_Ye_2005"                
+[23] "GroupSim_SimCHO"                  "GroupSim_SimALD"                 
+[25] "GroupSim_Jaccard"                 "GroupSim_Dice"                   
+[27] "GroupSim_Overlap"                 "GroupSim_Kappa" 
 ```
 
 There is also a visualization on the complete huge DAG:
@@ -145,14 +145,6 @@ dag_circular_viz(dag, highlight = sig_go_ids, reorder_level = 3,
 ```
 
 ![image](https://github.com/jokergoo/simona/assets/449218/ada30534-182e-4513-93bf-9819e84b8604)
-
-
-The methods of semantic similarity implemented in **simona** are mainly from
-the [supplementary file](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/bib/18/5/10.1093_bib_bbw067/2/bbw067_supplementary_file.pdf?Expires=1692176766&Signature=Ks4C96x-kinySVP7rzVzMn8cGnQWXOqkB-6gYHhs48Bl9A2Vj~-mcI9pEnvntNBvjBD1hp4ZncMWUNT-y1ArrrQgDJ0dCCEJp5LG0Ag2oPWsC5NFEeUQiYNZCXal8Kwa3Ze1vtDHjIwZpT9-sZhn9ryqKHd3C88RvuGx10jcSYRL1Pec0F~a9CnrbivieCfFELg2OQTf5zpAobxhlqzWqv~sa1b62PunNZ~XkmnTGOJoSMQFnNaBy~bDNEf9Pd6eRYaOc8MUh5Br4xB4y8mivT6Et2vKzLrGJFQjYpvouQpBu0nf03xwHVmNFN5-6LsDnpyQPCy4nQ5DHYltVHkEOA__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA)
-of the paper ["Mazandu et al., Gene Ontology semantic similarity tools: survey
-on features and challenges for biological knowledge discovery. Briefings in
-Bioinformatics 2017"](https://doi.org/10.1093/bib/bbw067). Credits go to
-the original paper.
 
 
 ## License
