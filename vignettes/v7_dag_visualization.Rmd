@@ -49,9 +49,11 @@ dag_graphviz(dag_small, color = color, shape = shape)
 
 The DOT code can be obtained with `dag_as_DOT()`:
 
-```{r}
+```{r, comment = ''}
 dag_as_DOT(dag_small, color = color, shape = shape) |> cat()
 ```
+
+You can paste the DOT code to http://magjac.com/graphviz-visual-editor/ to generate the graph.
 
 Following is an example of visualizing all upstream terms of a GO term. Note `dag[, "GO:0010228"]`
 returns a sub-DAG of all upstream terms of `GO:0010228`.
@@ -78,12 +80,17 @@ the `dag_circular_viz()` uses a circular layout to visualize huge DAGs.
 dag_circular_viz(dag)
 ```
 
-In the circular layout, each circle correspond to a specific depth (maximal distance to root).
-On each circle, each term has a width (or a sector on the circle) associated where offspring terms
-are only drawn within that section. The width is proportional to the number of offspring terms of the term.
-Dot size corresponds to the number of child terms. If colors are not set, let's say root term is on level 0,
-the DAG is cut at level-0 terms (links between level-1 terms and level-0 terms are all cut), and each sub-DAG
-is assigned with a different color. A legend of top terms of sub-DAGs is also added in the plot.
+In the circular layout, each circle correspond to a specific depth (maximal
+distance to root). The distance of a circle to the circle center is
+proportional to the logorithm of the number of terms with depth equal to or
+less than the current depth of this circle. On each circle, each term has a
+width (or a sector on the circle) associated where offspring terms are only
+drawn within that section. The width is proportional to the number of
+offspring terms of the term. Dot size corresponds to the number of child
+terms. If colors are not set, let's say root term is on level 0, the DAG is
+cut at level-0 terms (links between level-1 terms and level-0 terms are all
+cut), and each sub-DAG is assigned with a different color. A legend of top
+terms of sub-DAGs is also added in the plot.
 
 The term IDs are not informative in the plot. If there are additional information of terms stored
 in the meta data frame of the DAG object, the column name can be set with the `legend_labels_from` argument.

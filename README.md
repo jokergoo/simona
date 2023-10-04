@@ -92,7 +92,7 @@ With the following columns in the metadata data frame:
 The following IC methods are provided:
 
 ```
-> all_ic_methods()
+> all_term_IC_methods()
  [1] "IC_offspring"     "IC_height"        "IC_annotation"    "IC_universal"
  [5] "IC_Zhang_2006"    "IC_Seco_2004"     "IC_Zhou_2008"     "IC_Seddiqui_2010"
  [9] "IC_Sanchez_2011"  "IC_Meng_2012"     "IC_Wang_2007"

@@ -4,7 +4,7 @@
 \alias{term_sim}
 \title{Semantic similarity}
 \usage{
-term_sim(dag, terms, method, control = list())
+term_sim(dag, terms, method, control = list(), verbose = simona_opt$verbose)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
@@ -14,6 +14,8 @@ term_sim(dag, terms, method, control = list())
 \item{method}{A term similarity method. All available methods are in \code{\link[=all_term_sim_methods]{all_term_sim_methods()}}.}
 
 \item{control}{A list of parameters passing to individual methods. See the subsections.}
+
+\item{verbose}{Whether to print messages.}
 }
 \value{
 A numeric symmetric matrix.

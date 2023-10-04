@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -81,7 +81,8 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">create_ontology_DAG_from_GO_db</span><span class="op">(</span></span>
 <span>  namespace <span class="op">=</span> <span class="st">"BP"</span>,</span>
 <span>  relations <span class="op">=</span> <span class="st">"part of"</span>,</span>
-<span>  org_db <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  org_db <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -103,6 +104,10 @@ are also selected. Note "is_a" is always included.</p></dd>
 directly the <code><a href="https://rdrr.io/pkg/org.Hs.eg.db/man/org.Hs.egBASE.html" class="external-link">org.Hs.eg.db::org.Hs.eg.db</a></code> object for human, then the gene annotation to GO terms will be added
 to the object. For other non-model organisms, consider to use the <strong>AnnotationHub</strong> package to find one.</p></dd>
 
+
+<dt>verbose</dt>
+<dd><p>Whether to print messages.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -115,16 +120,17 @@ to the object. For other non-model organisms, consider to use the <strong>Annota
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu">create_ontology_DAG_from_GO_db</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> relations: is_a, part_of</span>
 <span class="r-in"><span><span class="va">dag</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An ontology_DAG object:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Source: GO BP / GO.db package </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   28140 terms / 56449 relations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   27942 terms / 55956 relations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Root: GO:0008150 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Terms: GO:0000001, GO:0000002, GO:0000003, GO:0000011, ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Max depth: 18 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Avg number of parents: 2.01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Aspect ratio: 342.43:1 (based on the longest distance to root)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 780.22:1 (based on the shortest distance to root)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Avg number of parents: 2.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Aspect ratio: 363.92:1 (based on the longest distance to root)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 782.78:1 (based on the shortest distance to root)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Relations: is_a, part_of</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> With the following columns in the metadata data frame:</span>

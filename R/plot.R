@@ -36,6 +36,7 @@ calc_n_neighbours_on_circle = function(theta, width = 1) {
 #'         legend labels.
 #' @param legend_labels_max_width Maximal width of legend labels. Labels are wrapped into
 #'        multiple lines if the widths exceed it.
+#' @param verbose Whether to print messages.
 #' 
 #' @details
 #' `dag_circular_viz()` uses a circular layout for visualizing large DAGs. `dag_graphviz()`
@@ -55,8 +56,9 @@ calc_n_neighbours_on_circle = function(theta, width = 1) {
 dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 	reorder_level = NA, partition_by_level = 1, partition_by_size = NULL,
 	node_col = NULL, node_transparency = 0.5, node_size = NULL, 
-	edge_col = NULL, edge_transparency = 0.98,
-	legend_labels_from = NULL, legend_labels_max_width = 50) {
+	edge_col = NULL, edge_transparency = 0.96,
+	legend_labels_from = NULL, legend_labels_max_width = 50,
+	verbose = simona_opt$verbose) {
 
 	if(end < start) {
 		stop_wrap("`end` should be larger than `start`.")
@@ -65,8 +67,8 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 	n_terms = dag@n_terms
 
 	if(!is.na(reorder_level)) {
-		message(qq("reordering children on depth <= @{reorder_level} in DAG..."))
-		dag = dag_reorder(dag, max_level = reorder_level)
+		if(verbose) message(qq("reordering children on depth <= @{reorder_level} in DAG..."))
+		dag = dag_reorder(dag, max_level = reorder_level, verbose = verbose)
 	}
 
 	has_highlight = FALSE
@@ -78,10 +80,10 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 	if(dag_is_tree(dag)) {
 		tree = dag
 	} else {
-		message("converting DAG to a tree...")
-		tree = dag_treelize(dag)
+		if(verbose) message("converting DAG to a tree...")
+		tree = dag_treelize(dag, verbose = verbose)
 	}
-	message("calculating term positions on the DAG...")
+	if(verbose) message("calculating term positions on the DAG...")
 	term_pos = cpp_term_pos_on_circle(tree, n_offspring(tree), start, end) ## in polar coordinate
 
 	term_pos$n_neighbours = 0
@@ -89,11 +91,11 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 	all_levels = all_levels[!is.na(all_levels)]
 	for(level in all_levels) {
 		l = term_pos$rho == level
-		message(strrep("\b", 100), appendLF = FALSE)
-		message(qq("calculating numbers of neighbours within 1 degree neighbourhood on level @{level}/@{max(all_levels)}, @{sum(l)} terms..."), appendLF = FALSE)
+		if(verbose) message(strrep("\b", 100), appendLF = FALSE)
+		if(verbose) message(qq("calculating numbers of neighbours within 1 degree neighbourhood on level @{level}/@{max(all_levels)}, @{sum(l)} terms..."), appendLF = FALSE)
 		term_pos[l, "n_neighbours"] = calc_n_neighbours_on_circle(term_pos$theta[l], width = 0.5)
 	}
-	message("")
+	if(verbose) message("")
 
 	node_col_map = NULL
 	if(is.null(node_col)) {
@@ -207,7 +209,7 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 
 	max_depth = max(abs(term_pos$rho))
 
-	message("making plot...")
+	if(verbose) message("making plot...")
 	grid.newpage()
 	pushViewport(viewport(x = unit(0, "npc"), just = "left", width = unit(1, "snpc"), height = unit(1, "snpc"), 
 		xscale = c(-max_depth, max_depth), yscale = c(-max_depth, max_depth)))
@@ -227,9 +229,9 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 		grid.points(term_pos2[l_highlight, 1], term_pos2[l_highlight, 2], default.units = "native", pch = 16, 
 			gp = gpar(col = node_col[l_highlight]), size = unit(node_size[l_highlight], "pt"))
 	} else {
-		message("adding links...")
+		if(verbose) message("adding links...")
 		grid.segments(x1, y1, x2, y2, default.units = "native", gp = gpar(col = edge_col_v))
-		message("adding terms...")
+		if(verbose) message("adding terms...")
 		grid.points(term_pos2[, 1], term_pos2[, 2], default.units = "native", pch = 16, 
 			gp = gpar(col = node_col), size = unit(node_size, "pt"))
 	}

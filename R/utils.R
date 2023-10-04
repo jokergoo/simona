@@ -157,3 +157,12 @@ normalize_relation_type = function(x) {
 
 	x
 }
+
+exec_under_message_condition = function(code, verbose = TRUE, envir = parent.frame()) {
+	if(verbose) {
+		eval(code, envir = envir)
+	} else {
+		suppressMessages(eval(code, envir = envir))
+	}
+}
+

@@ -5,17 +5,23 @@
 .ALL_GROUP_SIM_METHODS = NULL
 
 
-ADD_IC_METHOD = function(method, param = character(0), require_anno = FALSE) {
+ADD_IC_METHOD = function(method, require_anno = FALSE) {
+	fun = get(method, envir = topenv(), inherits = FALSE)
+	param = names(formals(fun)[-1])
 	attr(param, "require_anno") = require_anno
 	.ALL_IC_METHODS[[method]] <<- param
 }
 
-ADD_TERM_SIM_METHOD = function(method, param = character(0), require_anno = FALSE) {
+ADD_TERM_SIM_METHOD = function(method, require_anno = FALSE) {
+	fun = get(method, envir = topenv(), inherits = FALSE)
+	param = names(formals(fun)[-(1:2)])
 	attr(param, "require_anno") = require_anno
 	.ALL_TERM_SIM_METHODS[[method]] <<- param
 }
 
-ADD_GROUP_SIM_METHOD = function(method, param = character(0), require_anno = FALSE) {
+ADD_GROUP_SIM_METHOD = function(method, require_anno = FALSE) {
+	fun = get(method, envir = topenv(), inherits = FALSE)
+	param = names(formals(fun)[-(1:3)])
 	attr(param, "require_anno") = require_anno
 	.ALL_GROUP_SIM_METHODS[[method]] <<- param
 }
@@ -27,7 +33,7 @@ ADD_GROUP_SIM_METHOD = function(method, param = character(0), require_anno = FAL
 #'    it is set to `FALSE`, methods that do not require annotations are returned. A value of `NULL` returns both.
 #' 
 #' @details
-#' - `all_ic_methods()`: A vector of all supported IC methods.
+#' - `all_term_IC_methods()`: A vector of all supported IC methods.
 #' - `all_term_sim_methods()`: A vector of all supported term similarity methods.
 #' - `all_group_sim_methods()`: A vector of all supported group similarity methods.
 #' 
@@ -35,10 +41,10 @@ ADD_GROUP_SIM_METHOD = function(method, param = character(0), require_anno = FAL
 #' @export
 #' @return A character vector of all supported methods.
 #' @examples
-#' all_ic_methods()
+#' all_term_IC_methods()
 #' all_term_sim_methods()
 #' all_group_sim_methods()
-all_ic_methods = function(require_anno = NULL) {
+all_term_IC_methods = function(require_anno = NULL) {
 	if(is.null(require_anno)) {
 		names(.ALL_IC_METHODS)
 	} else if(require_anno) {
@@ -70,6 +76,32 @@ all_group_sim_methods = function(require_anno = NULL) {
 	} else {
 		names(.ALL_GROUP_SIM_METHODS)[!vapply(.ALL_GROUP_SIM_METHODS, function(x) attr(x, "use_anno"), FUN.VALUE = character(1))]
 	}
+}
+
+#' All Papameters of a given method
+#' 
+#' @param IC_method A single IC method name.
+#' @param term_sim_method A single term similarity method name.
+#' @param group_sim_method A single group similarity method name.
+#' 
+#' @return A vector of parameter names.
+#' @export
+#' @examples
+#' method_param(IC_method = "IC_annotation")
+#' method_param(term_sim_method = "Sim_Wang_2007")
+method_param = function(IC_method = NULL, term_sim_method = NULL, group_sim_method = NULL) {
+	if(!is.null(IC_method)) {
+		p = .ALL_IC_METHODS[[IC_method]]
+	} else if(!is.null(term_sim_method)) {
+		p = .ALL_TERM_SIM_METHODS[[term_sim_method]]
+	} else if(!is.null(group_sim_method)) {
+		p = .ALL_GROUP_SIM_METHODS[[group_sim_method]]
+	} else {
+		return(NULL)
+	}
+
+	attributes(p) = NULL
+	p
 }
 
 
@@ -120,6 +152,11 @@ simona_opt = GlobalOptions::setGlobalOptions(
 		.length = 1
 	),
 	anno_uniquify = list(
+		.value = TRUE,
+		.class = "logical",
+		.length = 1
+	),
+	verbose = list(
 		.value = TRUE,
 		.class = "logical",
 		.length = 1

@@ -7,18 +7,20 @@
 \alias{longest_distances_directed}
 \title{Distance on the DAG}
 \usage{
-shortest_distances_via_NCA(dag, terms)
+shortest_distances_via_NCA(dag, terms, verbose = simona_opt$verbose)
 
-longest_distances_via_LCA(dag, terms)
+longest_distances_via_LCA(dag, terms, verbose = simona_opt$verbose)
 
-shortest_distances_directed(dag, terms)
+shortest_distances_directed(dag, terms, verbose = simona_opt$verbose)
 
-longest_distances_directed(dag, terms)
+longest_distances_directed(dag, terms, verbose = simona_opt$verbose)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
 
 \item{terms}{A vector of term names.}
+
+\item{verbose}{Whether to print messages.}
 }
 \value{
 A numeric distance matrix.

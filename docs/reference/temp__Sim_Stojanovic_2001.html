@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -78,7 +78,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Sim_Stojanovic_2001</span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Sim_Stojanovic_2001</span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="methods">
@@ -91,7 +91,7 @@
 
 <p>It is purely based on the depth of term <code>a</code>, <code>b</code> and their LCA <code>c</code>.</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="fu">depth</span>(c)<span class="sc">/</span>(<span class="fu">depth</span>(a) <span class="sc">+</span> <span class="fu">depth</span>(b) <span class="sc">-</span> <span class="fu">depth</span>(c))</span></code></pre><p></p></div>
-<p>Since the similarity value might be negative because there is no restrction that the path from root to <code>a</code> or <code>b</code> must pass <code>c</code>.</p>
+<p>The similarity value might be negative because there is no restrction that the path from root to <code>a</code> or <code>b</code> must pass <code>c</code>.</p>
 <p>Paper link: <a href="https://doi.org/10.1145/500737.500762" class="external-link">doi:10.1145/500737.500762</a>
 .</p>
 </div>

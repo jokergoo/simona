@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -50,7 +50,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -96,7 +96,7 @@
       <h1 data-toc-skip>Information content</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2023-08-14</h4>
+            <h4 data-toc-skip class="date">2023-10-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/vignettes/v4_information_content.Rmd" class="external-link"><code>vignettes/v4_information_content.Rmd</code></a></small>
       <div class="hidden name"><code>v4_information_content.Rmd</code></div>
@@ -105,11 +105,11 @@
 
     
     
-<p>The methods of information content implemented in <strong>simona</strong> are mainly from the <a href="https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/bib/18/5/10.1093_bib_bbw067/2/bbw067_supplementary_file.pdf?Expires=1692176766&amp;Signature=Ks4C96x-kinySVP7rzVzMn8cGnQWXOqkB-6gYHhs48Bl9A2Vj~-mcI9pEnvntNBvjBD1hp4ZncMWUNT-y1ArrrQgDJ0dCCEJp5LG0Ag2oPWsC5NFEeUQiYNZCXal8Kwa3Ze1vtDHjIwZpT9-sZhn9ryqKHd3C88RvuGx10jcSYRL1Pec0F~a9CnrbivieCfFELg2OQTf5zpAobxhlqzWqv~sa1b62PunNZ~XkmnTGOJoSMQFnNaBy~bDNEf9Pd6eRYaOc8MUh5Br4xB4y8mivT6Et2vKzLrGJFQjYpvouQpBu0nf03xwHVmNFN5-6LsDnpyQPCy4nQ5DHYltVHkEOA__&amp;Key-Pair-Id=APKAIE5G5CRDK6RD3PGA" class="external-link">supplementary file</a> of the paper <a href="https://doi.org/10.1093/bib/bbw067" class="external-link">“Mazandu et al., Gene Ontology semantic similarity tools: survey on features and challenges for biological knowledge discovery. Briefings in Bioinformatics 2017”</a>. Original denotations have been slightly modified to make them more consistent. Also more explanations have been added in this vignette. Credits go to the original paper.</p>
+<p>The methods of information content implemented in <strong>simona</strong> are mainly from the <a href="https://academic.oup.com/bib/article/18/5/886/2562801#supplementary-data" class="external-link">supplementary file</a> of the paper <a href="https://doi.org/10.1093/bib/bbw067" class="external-link">“Mazandu et al., Gene Ontology semantic similarity tools: survey on features and challenges for biological knowledge discovery. Briefings in Bioinformatics 2017”</a>. Original denotations have been slightly modified to make them more consistent. Also more explanations have been added in this vignette.</p>
 <div class="section level2">
 <h2 id="denotations">Denotations<a class="anchor" aria-label="anchor" href="#denotations"></a>
 </h2>
-<p>The following denotations will be used throughout the vignette.</p>
+<p>The following denotations will be used throughout the vignette. The denotations are mainly from <em>Mazandu 2017</em> only with small modifications.</p>
 <table class="table">
 <colgroup>
 <col width="19%">
@@ -122,7 +122,7 @@
 <tbody>
 <tr class="odd">
 <td align="left"><span class="math inline">\(r\)</span></td>
-<td align="left">The root term of the DAG.</td>
+<td align="left">The root term of the DAG. In <strong>simona</strong> there is always one root term.</td>
 </tr>
 <tr class="even">
 <td align="left"><span class="math inline">\(\delta(x)\)</span></td>
@@ -146,7 +146,7 @@
 </tr>
 <tr class="odd">
 <td align="left"><span class="math inline">\(\mathcal{P}_s\)</span></td>
-<td align="left">The set of parents terms of term <span class="math inline">\(s\)</span>.</td>
+<td align="left">The set of parent terms of term <span class="math inline">\(s\)</span>.</td>
 </tr>
 <tr class="even">
 <td align="left"><span class="math inline">\(\mathcal{A}_s\)</span></td>
@@ -186,20 +186,19 @@
 </tr>
 <tr class="odd">
 <td align="left"><span class="math inline">\(\mathrm{CA}(a, b)\)</span></td>
-<td align="left">The set of common ancestors of term <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>, i.e. <span class="math inline">\(\mathrm{CA}(a, b) = \mathcal{A}_a^+ \cap \mathcal{A}_b^+\)</span>
-</td>
+<td align="left">The set of common ancestors of term <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>, i.e. <span class="math inline">\(\mathrm{CA}(a, b) = \mathcal{A}_a^+ \cap \mathcal{A}_b^+\)</span>.</td>
 </tr>
 <tr class="even">
 <td align="left"><span class="math inline">\(\mathrm{LCA}(a, b)\)</span></td>
-<td align="left">Lowest common ancestor of <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>, which is the common ancestor with the largest depth in DAG, i.e. <span class="math display">\[\operatorname*{argmax}_{t \in \mathrm{CA}(a, b)} \delta(t)\]</span> There might be more than one LCA terms for given two terms, to simplify the calculation, the one with the smallest distance to <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> is used.</td>
+<td align="left">Lowest common ancestor of <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>, which is the common ancestor with the largest depth in DAG, i.e. <span class="math display">\[\operatorname*{argmax}_{t \in \mathrm{CA}(a, b)} \delta(t)\]</span> There might be more than one LCA terms for given two terms, to simplify the calculation, the one with the longest distance (the default) to <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> is used.</td>
 </tr>
 <tr class="odd">
 <td align="left"><span class="math inline">\(\mathrm{NCA}(a, b)\)</span></td>
-<td align="left">Nearest common ancestor of <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>, i.e. <span class="math display">\[\operatorname*{argmin}_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t, a) + D_\mathrm{sp}(t, b) \right)\]</span> If there are more than one NCA terms, the one with the highest depth is used.</td>
+<td align="left">Nearest common ancestor of <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>, i.e. <span class="math display">\[\operatorname*{argmin}_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t, a) + D_\mathrm{sp}(t, b) \right)\]</span> If there are more than one NCA terms, the one with the largest depth (the lowest one) is used.</td>
 </tr>
 <tr class="even">
 <td align="left"><span class="math inline">\(\mathrm{MICA}(a, b)\)</span></td>
-<td align="left">Most informative common ancestor of <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>, i.e. <span class="math display">\[\operatorname*{argmax}_{t \in \mathrm{CA}(a, b)} \left( \mathrm{IC}(t) \right )\]</span> There might be more than one MICA terms for given two terms, the one with the smallest distance to <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> is used.</td>
+<td align="left">Most informative common ancestor of <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>, i.e. <span class="math display">\[\operatorname*{argmax}_{t \in \mathrm{CA}(a, b)} \left( \mathrm{IC}(t) \right )\]</span> There might be more than one MICA terms for given two terms, the one with the longest distance (the default) to <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> is used.</td>
 </tr>
 <tr class="odd">
 <td align="left"><span class="math inline">\(G_s\)</span></td>
@@ -215,9 +214,14 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 \mathrm{len}(a, b) &amp;= \max_{t \in \mathrm{CA}(a, b)} \left( \mathrm{len}(t, a) + \mathrm{len}(t, b) \right)
 \end{align*}
 \]</span></p>
+</div>
+<div class="section level2">
+<h2 id="information-content">Information content<a class="anchor" aria-label="anchor" href="#information-content"></a>
+</h2>
 <p>For many information content (IC) definitions, it has the following form:</p>
 <p><span class="math display">\[ \mathrm{IC}(x) = -\log(p(x)) \]</span></p>
 <p>where <span class="math inline">\(p(x)\)</span> is the probability of term <span class="math inline">\(x\)</span> under a certain measure in the DAG. If a term has a smaller probability, it means it is more specific, the form <span class="math inline">\(-\log(p(x))\)</span> will have a larger value, thus it is called the “information content”. Basically the more to the leaves in the DAG, a smaller p-value is gained and the higher information content a term has.</p>
+<p>IC can be generalized not necessarily to be determined by p-values, but to a metric which is non-negative and a larger value of a term means more informative/important/deep in the DAG. One valid definition of such generalized IC is the term depth where with a larger value of the depth means more specific a term is in the DAG.</p>
 <p>In the following sections, I will use Gene Ontology as an example to demonstrate various IC methods supported in the <strong>simona</strong> package. Note here I also set the gene annotation because some IC methods depend on the number of annotated genes on GO terms.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jokergoo/simona" class="external-link">simona</a></span><span class="op">)</span></span>
@@ -225,26 +229,31 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <span><span class="va">dag</span></span></code></pre></div>
 <pre><code><span><span class="co">## An ontology_DAG object:</span></span>
 <span><span class="co">##   Source: GO BP / GO.db package </span></span>
-<span><span class="co">##   28140 terms / 56449 relations</span></span>
+<span><span class="co">##   27942 terms / 55956 relations</span></span>
 <span><span class="co">##   Root: GO:0008150 </span></span>
 <span><span class="co">##   Terms: GO:0000001, GO:0000002, GO:0000003, GO:0000011, ...</span></span>
 <span><span class="co">##   Max depth: 18 </span></span>
-<span><span class="co">##   Avg number of parents: 2.01</span></span>
-<span><span class="co">##   Aspect ratio: 342.43:1 (based on the longest distance to root)</span></span>
-<span><span class="co">##                 780.22:1 (based on the shortest distance to root)</span></span>
+<span><span class="co">##   Avg number of parents: 2.00</span></span>
+<span><span class="co">##   Aspect ratio: 363.92:1 (based on the longest distance to root)</span></span>
+<span><span class="co">##                 782.78:1 (based on the shortest distance to root)</span></span>
 <span><span class="co">##   Relations: is_a, part_of</span></span>
 <span><span class="co">##   Annotations are available.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## With the following columns in the metadata data frame:</span></span>
 <span><span class="co">##   id, name, definition</span></span></code></pre>
-<p>The wrapper function <code><a href="../reference/term_IC.html">term_IC()</a></code> calculates information contents of terms in the DAG with a specific method. Note the method name can be partially matched.</p>
+<p>The wrapper function <code><a href="../reference/term_IC.html">term_IC()</a></code> calculates information contents of terms in the DAG with a specific method. Note the method name can be partially matched. <code>control</code> argument controls parameters for specific methods.</p>
 <pre class="r">
 term_IC(dag, method = ..., control = list(...))
 </pre>
-</div>
-<div class="section level2">
-<h2 id="ic_offspring">IC_offspring<a class="anchor" aria-label="anchor" href="#ic_offspring"></a>
-</h2>
+<p>All supported term IC methods are:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/all_methods.html">all_term_IC_methods</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##  [1] "IC_offspring"     "IC_height"        "IC_annotation"    "IC_universal"    </span></span>
+<span><span class="co">##  [5] "IC_Zhang_2006"    "IC_Seco_2004"     "IC_Zhou_2008"     "IC_Seddiqui_2010"</span></span>
+<span><span class="co">##  [9] "IC_Sanchez_2011"  "IC_Meng_2012"     "IC_Wang_2007"</span></span></code></pre>
+<div class="section level3">
+<h3 id="ic_offspring">IC_offspring<a class="anchor" aria-label="anchor" href="#ic_offspring"></a>
+</h3>
 <p>The information content is calculated as:</p>
 <p><span class="math display">\[ \mathrm{IC}(x) = -\log \left(  \frac{|\mathcal{D}_x^+|}{|\mathcal{D}_r^+|} \right) \]</span></p>
 <p>In the bracket is the fraction of number of offspring terms to the total number of terms in the DAG.</p>
@@ -252,9 +261,9 @@ term_IC(dag, method = ..., control = list(...))
 term_IC(dag, method = "IC_offspring")
 </pre>
 </div>
-<div class="section level2">
-<h2 id="ic_height">IC_height<a class="anchor" aria-label="anchor" href="#ic_height"></a>
-</h2>
+<div class="section level3">
+<h3 id="ic_height">IC_height<a class="anchor" aria-label="anchor" href="#ic_height"></a>
+</h3>
 <p>It measures the relative position of a term in the DAG:</p>
 <p><span class="math display">\[ \mathrm{IC}(x) = -\log \left( \frac{\eta(x) + 1}{\delta(x) + \eta(x) + 1} \right) \]</span></p>
 <p>where <span class="math inline">\(\eta(x)\)</span> is the height of a term and <span class="math inline">\(\delta(x)\)</span> is the depth of the term. 1 is added in the formula to get rid of <span class="math inline">\(\log(0)\)</span> for leaf terms.</p>
@@ -262,10 +271,10 @@ term_IC(dag, method = "IC_offspring")
 term_IC(dag, method = "IC_height")
 </pre>
 </div>
-<div class="section level2">
-<h2 id="ic_annotation">IC_annotation<a class="anchor" aria-label="anchor" href="#ic_annotation"></a>
-</h2>
-<p>Due to the nature of DAG, if a child term is annotated to an item, all its ancestor terms are also associated with that item. The calculation of annotated items is applied in a recursive way.</p>
+<div class="section level3">
+<h3 id="ic_annotation">IC_annotation<a class="anchor" aria-label="anchor" href="#ic_annotation"></a>
+</h3>
+<p>Due to the nature of DAG, if a term is annotated to an item, all its ancestor terms are also associated with that item. The calculation of annotated items is applied in a recursive way.</p>
 <p>Denote <span class="math inline">\(G^*_x\)</span> as the set of items <em>directly</em> annotated to <span class="math inline">\(x\)</span>, and <span class="math inline">\(G_x\)</span> as the set of items annotated to <span class="math inline">\(x\)</span> after merging from its child terms. <span class="math inline">\(G_x\)</span> is the union of all items annotated to its child terms and the items directly annotated to <span class="math inline">\(x\)</span>.</p>
 <p><span class="math display">\[ G_x = \left( \bigcup_{z \in \mathcal{C}_x} G_z \right) \bigcup G^*_x \]</span></p>
 <p>And the information content is:</p>
@@ -275,6 +284,8 @@ term_IC(dag, method = "IC_height")
 term_IC(dag, method = "IC_annotation")
 </pre>
 <p><code>NA</code> is assigned to the terms with no item annotated.</p>
+<p><span class="math inline">\(G_x\)</span> can also be written as:</p>
+<p><span class="math display">\[ G_x = \bigcup_{z \in \mathcal{D}^+_x} G_z^* \]</span></p>
 <p>In some implementation of current tools, number of annotated items on a term is calculated by simply adding such numbers from all its child terms, as shown in the following equation:</p>
 <p><span class="math display">\[ f(x) = \left\{ \begin{array}{lr}
 \beta(x) &amp; \text{if } \textit{x} \text{ is a leaf} \\
@@ -283,7 +294,7 @@ term_IC(dag, method = "IC_annotation")
 <p>where <span class="math inline">\(\beta(x)\)</span> is the number of items directly annotated to term <span class="math inline">\(x\)</span>. It should be noted that this way over-estimates the number of annotated items because an item can be annotated to multiple terms. For example, a gene can be annotated to multiple GO terms (you can check the object <code><a href="https://rdrr.io/pkg/org.Hs.eg.db/man/org.Hs.egGO.html" class="external-link">org.Hs.eg.db::org.Hs.egGO</a></code>. And even for the same term, it may have duplicated annotated genes with multiple evidence codes (e.g. the gene with Entrez ID <code>"994"</code> is annotated to a GO term <code>"GO:0000086"</code> twice with evidence code <code>"IBA"</code> and <code>"TAS"</code>).</p>
 <p>Since annotated-based <span class="math inline">\(p(x)\)</span> is the probability of a term being annotated when randomly selecting an item, the second way might not be proper. The two methods are identical only if an item is uniquely annotated to a term in the DAG.</p>
 <p>We can compare the two different implementations with or without uniquifying annotations. We can specify an additional parameter for the <em>IC_annotation</em> method: <code>control = list(uniquify = FALSE)</code> to use the second method.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ic1</span> <span class="op">=</span> <span class="fu"><a href="../reference/term_IC.html">term_IC</a></span><span class="op">(</span><span class="va">dag</span>, method <span class="op">=</span> <span class="st">"IC_annotation"</span><span class="op">)</span></span>
 <span><span class="va">ic2</span> <span class="op">=</span> <span class="fu"><a href="../reference/term_IC.html">term_IC</a></span><span class="op">(</span><span class="va">dag</span>, method <span class="op">=</span> <span class="st">"IC_annotation"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>uniquify <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># ranges on both x- and y-axes</span></span>
@@ -292,13 +303,14 @@ term_IC(dag, method = "IC_annotation")
 <span>    xlab <span class="op">=</span> <span class="st">"uniquified (first method)"</span>, ylab <span class="op">=</span> <span class="st">"not uniquified (second method)"</span>, </span>
 <span>    pch <span class="op">=</span> <span class="fl">16</span>, col <span class="op">=</span> <span class="st">"#00000020"</span>, main <span class="op">=</span> <span class="st">"compare IC_annotation"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="v4_information_content_files/figure-html/unnamed-chunk-4-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="v4_information_content_files/figure-html/unnamed-chunk-5-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>It shows there is a systematic shift between the two methods.</p>
-<p><em>IC_annotation</em> is the only method which replies on external annotation data. This type of method has been criticized because it replies on changable external data and people argue that IC should be an intrinsic attribute and only depends on the DAG structure itself. All other IC methods introduced in later sections only purely reply on the DAG structure itself.</p>
+<p><em>IC_annotation</em> is the only method which replies on external annotation data. This type of method has been criticized because it replies on changable external data and people argue that IC should be an intrinsic attribute and only depends on the DAG structure itself.</p>
+<p>All other IC methods introduced in later sections only purely depend on the DAG structure itself.</p>
 </div>
-<div class="section level2">
-<h2 id="ic_universal">IC_universal<a class="anchor" aria-label="anchor" href="#ic_universal"></a>
-</h2>
+<div class="section level3">
+<h3 id="ic_universal">IC_universal<a class="anchor" aria-label="anchor" href="#ic_universal"></a>
+</h3>
 <p>It measures the probability of a term getting full transmission from the root. Each term is associated with a p-value and the root has the p-value of 1.</p>
 <p>To understand this method, let’s think the DAG relates to a kind of information transmission from the root to the inner DAG, where information is 100% on root. Then, in a certain level in the DAG, a term <span class="math inline">\(x\)</span> has two parents <span class="math inline">\(t_1\)</span> and <span class="math inline">\(t_2\)</span>, also let’s assume <span class="math inline">\(t_1\)</span> has <span class="math inline">\(k_1\)</span> children and <span class="math inline">\(t_2\)</span> has <span class="math inline">\(k_2\)</span> children, next we assume a parent transmits information equally to all its children, then <span class="math inline">\(t_1\)</span> only transmits <span class="math inline">\(1/k_1\)</span> and <span class="math inline">\(t_2\)</span> only transmits <span class="math inline">\(1/k_2\)</span> of its content to term <span class="math inline">\(x\)</span>, on which we could also say, the probability of <span class="math inline">\(t_1\)</span> or <span class="math inline">\(t_2\)</span> to reach <span class="math inline">\(x\)</span> is <span class="math inline">\(1/k_1\)</span> or <span class="math inline">\(1/k_2\)</span>. Let’s assume <span class="math inline">\(p(t_1)\)</span> and <span class="math inline">\(p(t_2)\)</span> are the accumulated contents from the root to <span class="math inline">\(t_1\)</span> and <span class="math inline">\(t_2\)</span> already (or the probability of the two parent terms getting full transmission from root), then the probability of reaching <span class="math inline">\(x\)</span> via a full transmission graph from <span class="math inline">\(t_1\)</span> is the multiplication of <span class="math inline">\(p(t_1)\)</span> and <span class="math inline">\(1/k_1\)</span>, which is <span class="math inline">\(p(t_1)/k_1\)</span>, and it is similar for <span class="math inline">\(p(t_2)/k_2\)</span>. Then, for term <span class="math inline">\(x\)</span>, if getting transmitted from <span class="math inline">\(t_1\)</span> and <span class="math inline">\(t_2\)</span> are independent, the probability of <span class="math inline">\(x\)</span> (denoted as <span class="math inline">\(p(x)\)</span>) to get transmitted from both parents is:</p>
 <p><span class="math display">\[ p(x) = \frac{p(t_1)}{k_1} * \frac{p(t_2)}{k_2} \]</span></p>
@@ -314,9 +326,9 @@ term_IC(dag, method = "IC_universal")
 \end{array} \right. \]</span></p>
 <p>Paper link: <a href="https://doi.org/10.1155/2012/975783" class="external-link uri">https://doi.org/10.1155/2012/975783</a>.</p>
 </div>
-<div class="section level2">
-<h2 id="ic_zhang_2006">IC_Zhang_2006<a class="anchor" aria-label="anchor" href="#ic_zhang_2006"></a>
-</h2>
+<div class="section level3">
+<h3 id="ic_zhang_2006">IC_Zhang_2006<a class="anchor" aria-label="anchor" href="#ic_zhang_2006"></a>
+</h3>
 <p>It measures the number of ways of a term to reach leaf terms. E.g. in the following DAG:</p>
 <pre><code>     a      upstream
     /|\
@@ -337,9 +349,9 @@ term_IC(dag, method = "IC_Zhang_2006")
 </pre>
 <p>Paper link: <a href="https://doi.org/10.1186/1471-2105-7-135" class="external-link uri">https://doi.org/10.1186/1471-2105-7-135</a>.</p>
 </div>
-<div class="section level2">
-<h2 id="ic_seco_2004">IC_Seco_2004<a class="anchor" aria-label="anchor" href="#ic_seco_2004"></a>
-</h2>
+<div class="section level3">
+<h3 id="ic_seco_2004">IC_Seco_2004<a class="anchor" aria-label="anchor" href="#ic_seco_2004"></a>
+</h3>
 <p>It is based on the number of offspring terms (with itself) of term <span class="math inline">\(x\)</span>. The information content is calculated as:</p>
 <p><span class="math display">\[ 
 \begin{align*}
@@ -347,22 +359,23 @@ term_IC(dag, method = "IC_Zhang_2006")
  &amp; = 1 - \frac{\log(|\mathcal{D}_x^+|)}{\log(|\mathcal{D}_r^+|)}
 \end{align*} 
 \]</span></p>
-<p>where <span class="math inline">\(\|\mathcal{D}_r^+\|\)</span> is the total number of terms in the DAG.</p>
+<p>where <span class="math inline">\(|\mathcal{D}_r^+|\)</span> is the total number of terms in the DAG.</p>
 <pre><code><span><span class="fu"><a href="../reference/term_IC.html">term_IC</a></span><span class="op">(</span><span class="va">dag</span>, method <span class="op">=</span> <span class="st">"IC_Seco_2004"</span><span class="op">)</span></span></code></pre>
 <p><em>IC_Seco_2004</em> is actually a normalized version of <em>IC_offspring</em>:</p>
 <p><span class="math display">\[
 \begin{align*}
 \mathrm{IC}_\mathrm{Seco}(x) &amp; = 1 - \frac{\log(|\mathcal{D}_x^+|)}{\log(|\mathcal{D}_r^+|)} \\
 &amp; = \frac{\log(|\mathcal{D}_r^+|) - \log(|\mathcal{D}_x^+|)}{\log(|\mathcal{D}_r^+|)} \\
-&amp; = \frac{-\log (|\mathcal{D}_x^+| / |\mathcal{D}_r^+|)}{\log(|\mathcal{D}_r^+|)} \\
-&amp; = \frac{\mathrm{IC}_\mathrm{offspring}(x)}{\log(|\mathcal{D}_r^+|)}
+&amp; = \frac{-\log (|\mathcal{D}_x^+| / |\mathcal{D}_r^+|)}{-\log(1/|\mathcal{D}_r^+|)} \\
+&amp; = \frac{\mathrm{IC}_\mathrm{offspring}(x)}{\mathrm{IC}_\mathrm{offspring}^\mathrm{max}}
 \end{align*}
 \]</span></p>
+<p>where <span class="math inline">\(\mathrm{IC}_\mathrm{offspring}^\mathrm{max} = -\log(1/|\mathcal{D}_r^+|)\)</span> for leaf terms (<span class="math inline">\(|\mathcal{D}_\mathrm{leaf}^+| = 1\)</span>).</p>
 <p>Paper link: <a href="https://dl.acm.org/doi/10.5555/3000001.3000272" class="external-link uri">https://dl.acm.org/doi/10.5555/3000001.3000272</a>.</p>
 </div>
-<div class="section level2">
-<h2 id="ic_zhou_2008">IC_Zhou_2008<a class="anchor" aria-label="anchor" href="#ic_zhou_2008"></a>
-</h2>
+<div class="section level3">
+<h3 id="ic_zhou_2008">IC_Zhou_2008<a class="anchor" aria-label="anchor" href="#ic_zhou_2008"></a>
+</h3>
 <p>It is a correction of <em>IC_Seco_2004</em> which also considers the depth of a term in the DAG. The information content is calculated as:</p>
 <p><span class="math display">\[ \mathrm{IC}(x) = 0.5 * \mathrm{IC}_\mathrm{Seco}(x) + 0.5*\frac{\log(\delta(x))}{\log(\delta_\mathrm{max})} \]</span></p>
 <p>And IC is set to 0 for root term.</p>
@@ -371,24 +384,25 @@ term_IC(dag, method = "IC_Zhou_2008")
 </pre>
 <p>Paper link: <a href="https://doi.org/10.1109/FGCNS.2008.16" class="external-link uri">https://doi.org/10.1109/FGCNS.2008.16</a>.</p>
 </div>
-<div class="section level2">
-<h2 id="ic_seddiqui_2010">IC_Seddiqui_2010<a class="anchor" aria-label="anchor" href="#ic_seddiqui_2010"></a>
-</h2>
+<div class="section level3">
+<h3 id="ic_seddiqui_2010">IC_Seddiqui_2010<a class="anchor" aria-label="anchor" href="#ic_seddiqui_2010"></a>
+</h3>
 <p>It is also a correction of <em>IC_Seco_2004</em> but considers the number of relations a term has in the DAG.</p>
 <p><span class="math display">\[ \mathrm{IC}(x) = (1 - \sigma) * \mathrm{IC}_\mathrm{Seco}(x) + \sigma*\frac{\log(\lambda(x) + 1)}{\log(\lambda_\mathrm{edge} + 1)} \]</span></p>
 <p>where <span class="math inline">\(\lambda(x)\)</span> is the number of relations of <span class="math inline">\(x\)</span>, i.e. number of its parent and child terms, <span class="math inline">\(\lambda_\mathrm{edge}\)</span> is the total number of edges in the DAG. The tunning factor <span class="math inline">\(\sigma\)</span> is defined as:</p>
 <p><span class="math display">\[ \sigma = \frac{\log(\lambda_\mathrm{edge}+1)}{\log(\lambda_\mathrm{edge}) + \log(\lambda_\mathrm{node})} \]</span></p>
 <p>where <span class="math inline">\(\lambda_\mathrm{node}\)</span> is the total number of nodes in the DAG. When the DAG has a tree structure, i.e. a term only has one parent and root has no parent, there is the following relation:</p>
 <p><span class="math display">\[ \lambda_\mathrm{node} = \lambda_\mathrm{edge} + 1\]</span></p>
-<p>In this case, <span class="math inline">\(\sigma \approx 0.5\)</span>.</p>
+<p>In this case, <span class="math inline">\(\sigma \approx 0.5\)</span>, and</p>
+<p><span class="math display">\[ \mathrm{IC}(x) = 0.5 * \mathrm{IC}_\mathrm{Seco}(x) + 0.5 * \frac{\log(\lambda(x)+1)}{\log(\lambda_\mathrm{edge}+1)} \]</span></p>
 <pre class="r">
 term_IC(dag, method = "IC_Seddiqui_2010")
 </pre>
 <p>Paper link: <a href="https://dl.acm.org/doi/10.5555/1862330.1862343" class="external-link uri">https://dl.acm.org/doi/10.5555/1862330.1862343</a>.</p>
 </div>
-<div class="section level2">
-<h2 id="ic_sanchez_2011">IC_Sanchez_2011<a class="anchor" aria-label="anchor" href="#ic_sanchez_2011"></a>
-</h2>
+<div class="section level3">
+<h3 id="ic_sanchez_2011">IC_Sanchez_2011<a class="anchor" aria-label="anchor" href="#ic_sanchez_2011"></a>
+</h3>
 <p>It measures the average contribution of term <span class="math inline">\(x\)</span> on leaf terms. First denote <span class="math inline">\(\zeta_x\)</span> as the number of leaf terms that can be reached from term <span class="math inline">\(x\)</span>. Since all <span class="math inline">\(x\)</span>’s ancestors can also reach <span class="math inline">\(x\)</span>’s leaves, the contribution of <span class="math inline">\(x\)</span> on leaf terms is scaled by the number of its ancestors. The final information content is normalized by the total number of leaves in the DAG.</p>
 <p><span class="math display">\[ \mathrm{IC}(x) = -\log \left( \frac{\zeta_x}{|\mathcal{A}_x^+| * \zeta_\mathrm{leaf}} \right) \]</span></p>
 <p>where <span class="math inline">\(\zeta_\mathrm{max}\)</span> is the total number of leaves in the DAG.</p>
@@ -397,9 +411,9 @@ term_IC(dag, method = "IC_Sanchez_2011")
 </pre>
 <p>Paper link: <a href="https://doi.org/10.1016/j.knosys.2010.10.001" class="external-link uri">https://doi.org/10.1016/j.knosys.2010.10.001</a>.</p>
 </div>
-<div class="section level2">
-<h2 id="ic_meng_2012">IC_Meng_2012<a class="anchor" aria-label="anchor" href="#ic_meng_2012"></a>
-</h2>
+<div class="section level3">
+<h3 id="ic_meng_2012">IC_Meng_2012<a class="anchor" aria-label="anchor" href="#ic_meng_2012"></a>
+</h3>
 <p>It has a complex form which takes account of the term depth and the downstream of the term. The first factor <span class="math inline">\(r_1\)</span> is calculated as:</p>
 <p><span class="math display">\[ r_1 = \frac{\log(\delta(x))}{\log(\delta_\mathrm{max})} \]</span></p>
 <p>The second factor <span class="math inline">\(r_2\)</span> is calculated as:</p>
@@ -413,9 +427,9 @@ term_IC(dag, method = "IC_Meng_2012")
 </pre>
 <p>Paper link: <a href="http://article.nadiapub.com/IJGDC/vol5_no3/6.pdf" class="external-link uri">http://article.nadiapub.com/IJGDC/vol5_no3/6.pdf</a>.</p>
 </div>
-<div class="section level2">
-<h2 id="ic_wang_2007">IC_Wang_2007<a class="anchor" aria-label="anchor" href="#ic_wang_2007"></a>
-</h2>
+<div class="section level3">
+<h3 id="ic_wang_2007">IC_Wang_2007<a class="anchor" aria-label="anchor" href="#ic_wang_2007"></a>
+</h3>
 <p>Each child-parent relation is weighted by a value smaller than 1 based on the semantic relation type, i.e. 0.8 for “is_a” and 0.6 for “part_of”. For a term <span class="math inline">\(x\)</span> and one of its ancestor term <span class="math inline">\(t\)</span>, it first calculates an “S-value” which corresponds to a path from <span class="math inline">\(t\)</span> to <span class="math inline">\(x\)</span> where the accumulated multiplication of weights along the path reaches maximal:</p>
 <p><span class="math display">\[ S_x(t) = \left\{ \begin{array}{cl}
 1 &amp; \text{if } \textit{t = x} \\
@@ -432,7 +446,7 @@ term_IC(dag, method = "IC_Meng_2012")
 <p><span class="math display">\[ S_x(t) = \exp(-T_x(t)) \]</span></p>
 <p>The information content is the summation over all <span class="math inline">\(x\)</span>’s ancestors:</p>
 <p><span class="math display">\[ \mathrm{IC}(x) = \sum\limits_{t \in \mathcal{A}_x^+} S_x(t) \]</span></p>
-<p>Normally <em>IC_Wang_2007</em> is only used for calculating the semantic similarity using <em>Sim_Wang_2007</em> method.</p>
+<p>Normally <em>IC_Wang_2007</em> is only used for calculating the semantic similarity using <a href="v5_term_similarity.html#sim_wang_2007"><em>Sim_Wang_2007</em> method</a>.</p>
 <p>The contribution of different semantic relations can be set with the <code>contribution_factor</code> parameter. The value should be a named numeric vector where names should cover the relations defined in relations set in <code><a href="../reference/create_ontology_DAG.html">create_ontology_DAG()</a></code>. For example, if there are two relations “relation_a” and “relation_b” set in the DAG, the value for contribution_factor can be set as:</p>
 <pre class="r">
 term_IC(dag, method = "IC_Wang_2007", 
@@ -442,56 +456,90 @@ term_IC(dag, method = "IC_Wang_2007",
 <p>If you are not sure what types of relations have been set, simply type the <code>dag</code> object. The relation types are all printed there.</p>
 <p>Paper link: <a href="https://doi.org/10.1093/bioinformatics/btm087" class="external-link uri">https://doi.org/10.1093/bioinformatics/btm087</a>.</p>
 </div>
+</div>
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.2.0 (2022-04-22)</span></span>
-<span><span class="co">## Platform: x86_64-apple-darwin17.0 (64-bit)</span></span>
-<span><span class="co">## Running under: macOS Big Sur/Monterey 10.16</span></span>
+<pre><code><span><span class="co">## R version 4.3.1 (2023-06-16)</span></span>
+<span><span class="co">## Platform: x86_64-apple-darwin20 (64-bit)</span></span>
+<span><span class="co">## Running under: macOS Ventura 13.2.1</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
-<span><span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib</span></span>
-<span><span class="co">## LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib</span></span>
+<span><span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRblas.0.dylib </span></span>
+<span><span class="co">## LAPACK: /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## locale:</span></span>
 <span><span class="co">## [1] C/UTF-8/C/C/C/C</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## time zone: Europe/Berlin</span></span>
+<span><span class="co">## tzcode source: internal</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attached base packages:</span></span>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] simona_0.99.0 knitr_1.43   </span></span>
+<span><span class="co">## [1] simona_0.99.7 knitr_1.44   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] Rcpp_1.0.11            circlize_0.4.16        GO.db_3.16.0          </span></span>
-<span><span class="co">##  [4] Biostrings_2.66.0      png_0.1-8              rprojroot_2.0.3       </span></span>
-<span><span class="co">##  [7] digest_0.6.33          foreach_1.5.2          GenomeInfoDb_1.34.9   </span></span>
-<span><span class="co">## [10] R6_2.5.1               stats4_4.2.0           Polychrome_1.5.1      </span></span>
-<span><span class="co">## [13] RSQLite_2.3.1          evaluate_0.21          highr_0.10            </span></span>
-<span><span class="co">## [16] httr_1.4.6             zlibbioc_1.44.0        GlobalOptions_0.1.2   </span></span>
-<span><span class="co">## [19] rlang_1.1.1            jquerylib_0.1.4        blob_1.2.4            </span></span>
-<span><span class="co">## [22] S4Vectors_0.36.2       GetoptLong_1.1.0       rmarkdown_2.23        </span></span>
-<span><span class="co">## [25] pkgdown_2.0.7          textshaping_0.3.6      desc_1.4.2            </span></span>
-<span><span class="co">## [28] stringr_1.5.0          RCurl_1.98-1.12        igraph_1.5.0          </span></span>
-<span><span class="co">## [31] bit_4.0.5              compiler_4.2.0         xfun_0.39             </span></span>
-<span><span class="co">## [34] pkgconfig_2.0.3        systemfonts_1.0.4      BiocGenerics_0.44.0   </span></span>
-<span><span class="co">## [37] shape_1.4.6            htmltools_0.5.5        KEGGREST_1.38.0       </span></span>
-<span><span class="co">## [40] GenomeInfoDbData_1.2.9 IRanges_2.32.0         codetools_0.2-19      </span></span>
-<span><span class="co">## [43] matrixStats_1.0.0      crayon_1.5.2           bitops_1.0-7          </span></span>
-<span><span class="co">## [46] grid_4.2.0             jsonlite_1.8.7         lifecycle_1.0.3       </span></span>
-<span><span class="co">## [49] DBI_1.1.3              magrittr_2.0.3         cli_3.6.1             </span></span>
-<span><span class="co">## [52] stringi_1.7.12         cachem_1.0.8           XVector_0.38.0        </span></span>
-<span><span class="co">## [55] fs_1.6.2               scatterplot3d_0.3-44   doParallel_1.0.17     </span></span>
-<span><span class="co">## [58] xml2_1.3.5             bslib_0.5.0            ragg_1.2.5            </span></span>
-<span><span class="co">## [61] vctrs_0.6.3            org.Hs.eg.db_3.16.0    rjson_0.2.21          </span></span>
-<span><span class="co">## [64] RColorBrewer_1.1-3     iterators_1.0.14       tools_4.2.0           </span></span>
-<span><span class="co">## [67] bit64_4.0.5            Biobase_2.58.0         glue_1.6.2            </span></span>
-<span><span class="co">## [70] purrr_1.0.1            parallel_4.2.0         fastmap_1.1.1         </span></span>
-<span><span class="co">## [73] yaml_2.3.7             clue_0.3-64            AnnotationDbi_1.60.2  </span></span>
-<span><span class="co">## [76] colorspace_2.1-0       cluster_2.1.4          TSP_1.2-4             </span></span>
-<span><span class="co">## [79] ComplexHeatmap_2.15.4  memoise_2.0.1          sass_0.4.7</span></span></code></pre>
+<span><span class="co">##  [1] KEGGREST_1.40.1         circlize_0.4.15         shape_1.4.6            </span></span>
+<span><span class="co">##  [4] rjson_0.2.21            xfun_0.40               bslib_0.5.1            </span></span>
+<span><span class="co">##  [7] GlobalOptions_0.1.2     Biobase_2.60.0          bitops_1.0-7           </span></span>
+<span><span class="co">## [10] vctrs_0.6.3             tools_4.3.1             stats4_4.3.1           </span></span>
+<span><span class="co">## [13] parallel_4.3.1          Polychrome_1.5.1        AnnotationDbi_1.62.2   </span></span>
+<span><span class="co">## [16] RSQLite_2.3.1           cluster_2.1.4           blob_1.2.4             </span></span>
+<span><span class="co">## [19] pkgconfig_2.0.3         RColorBrewer_1.1-3      desc_1.4.2             </span></span>
+<span><span class="co">## [22] S4Vectors_0.38.2        scatterplot3d_0.3-44    GenomeInfoDbData_1.2.10</span></span>
+<span><span class="co">## [25] lifecycle_1.0.3         compiler_4.3.1          stringr_1.5.0          </span></span>
+<span><span class="co">## [28] Biostrings_2.68.1       textshaping_0.3.6       codetools_0.2-19       </span></span>
+<span><span class="co">## [31] ComplexHeatmap_2.16.0   clue_0.3-65             GenomeInfoDb_1.36.4    </span></span>
+<span><span class="co">## [34] htmltools_0.5.6         sass_0.4.7              RCurl_1.98-1.12        </span></span>
+<span><span class="co">## [37] yaml_2.3.7              pkgdown_2.0.7           crayon_1.5.2           </span></span>
+<span><span class="co">## [40] jquerylib_0.1.4         GO.db_3.17.0            cachem_1.0.8           </span></span>
+<span><span class="co">## [43] org.Hs.eg.db_3.17.0     iterators_1.0.14        TSP_1.2-4              </span></span>
+<span><span class="co">## [46] foreach_1.5.2           digest_0.6.33           stringi_1.7.12         </span></span>
+<span><span class="co">## [49] purrr_1.0.2             rprojroot_2.0.3         fastmap_1.1.1          </span></span>
+<span><span class="co">## [52] grid_4.3.1              colorspace_2.1-0        cli_3.6.1              </span></span>
+<span><span class="co">## [55] magrittr_2.0.3          bit64_4.0.5             XVector_0.40.0         </span></span>
+<span><span class="co">## [58] httr_1.4.7              rmarkdown_2.25          matrixStats_1.0.0      </span></span>
+<span><span class="co">## [61] igraph_1.5.1            bit_4.0.5               ragg_1.2.5             </span></span>
+<span><span class="co">## [64] png_0.1-8               GetoptLong_1.0.5        memoise_2.0.1          </span></span>
+<span><span class="co">## [67] evaluate_0.22           IRanges_2.34.1          doParallel_1.0.17      </span></span>
+<span><span class="co">## [70] rlang_1.1.1             Rcpp_1.0.11             glue_1.6.2             </span></span>
+<span><span class="co">## [73] DBI_1.1.3               xml2_1.3.5              BiocGenerics_0.46.0    </span></span>
+<span><span class="co">## [76] jsonlite_1.8.7          R6_2.5.1                zlibbioc_1.46.0        </span></span>
+<span><span class="co">## [79] systemfonts_1.0.4       fs_1.6.3</span></span></code></pre>
+<script src="jquery.min.js"></script><script src="jquery.sticky.js"></script><script>
+$(document).ready(function(){
+    $("#TOC").sticky({
+        topSpacing: 0,
+        zIndex:1000    
+    })
+    $("#TOC").on("sticky-start", function() {
+
+        $("<p style='font-size:1.2em; padding-left:4px;'><a id='TOC-click'>Table of Content</a></p>").insertBefore($("#TOC ul:first-child"));
+        $("#TOC-click").hover(function() {
+            $(this).css("color", "#0033dd").css("cursor", "pointer");
+            $("#TOC").children().first().next().show();
+            $("#TOC").hover(function() {
+                $(this).children().first().next().show();
+            }, function() {
+                $(this).children().first().next().hide();
+                $("body").off("hover", "#TOC");
+            })
+        }, function() {
+            $(this).css("color", "#0033dd");
+        })
+        $("#TOC").children().first().next().hide();
+
+    })
+    $("#TOC").on("sticky-end", function() {
+        $("#TOC").children().first().remove();
+        $("#TOC").children().first().show();
+    })
+});
+</script>
 </div>
   </div>
 

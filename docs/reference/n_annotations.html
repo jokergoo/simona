@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -83,7 +83,9 @@
 <span>  terms <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  uniquify <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">anno_uniquify</span>,</span>
 <span>  use_cache <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">use_cache</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">has_annotation</span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -97,7 +99,7 @@
 
 
 <dt>uniquify</dt>
-<dd><p>Whether to uniquify items that are annotated to the term? See <strong>Details</strong>.</p></dd>
+<dd><p>Whether to uniquify items that are annotated to the term? See <strong>Details</strong>. It is suggested to always be <code>TRUE</code>.</p></dd>
 
 
 <dt>use_cache</dt>
@@ -108,7 +110,10 @@
     <h2>Value</h2>
     
 
-<p>An integer vector.</p>
+<p><code>n_annotations()</code> returns an integer vector.</p>
+
+
+<p><code>has_annotation()</code> returns a logical scalar.</p>
     </div>
     <div id="details">
     <h2>Details</h2>

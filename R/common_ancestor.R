@@ -5,10 +5,11 @@
 #' 
 #' @param dag An `ontology_DAG` object.
 #' @param terms A vector of term names.
-#' @param IC_method An IC method. Valid values are in [`all_ic_methods()`].
+#' @param IC_method An IC method. Valid values are in [`all_term_IC_methods()`].
 #' @param in_labels Whether the terms are represented in their names or as integer indices?
 #' @param distance If there are multiple LCA or MICA of two terms, whether to take the one with
 #'   the longest distance of shortest distance to the two terms. Possible values are "longest" and "shortest".
+#' @param verbose Whether to print messages.
 #' 
 #' @details
 #' There are the following three types of common ancestors:
@@ -45,38 +46,38 @@
 #' LCA_term(dag, letters[1:6])
 #' LCA_depth(dag, letters[1:6])
 #' NCA_term(dag, letters[1:6])
-MICA_term = function(dag, terms, IC_method, in_labels = TRUE, distance = "longest") {
-	ic = term_IC(dag, IC_method)
-	max_ancestor_id(dag, terms, ic, in_labels = in_labels, distance = distance)
+MICA_term = function(dag, terms, IC_method, in_labels = TRUE, distance = "longest", verbose = simona_opt$verbose) {
+	ic = term_IC(dag, IC_method, verbose = verbose)
+	max_ancestor_id(dag, terms, ic, in_labels = in_labels, distance = distance, verbose = verbose)
 }
 
 #' @rdname common_ancestor
 #' @export
-MICA_IC = function(dag, terms, IC_method) {
-	ic = term_IC(dag, IC_method)
-	max_ancestor_v(dag, terms, ic)
+MICA_IC = function(dag, terms, IC_method, verbose = simona_opt$verbose) {
+	ic = term_IC(dag, IC_method, verbose = verbose)
+	max_ancestor_v(dag, terms, ic, verbose = verbose)
 }
 
 
 #' @rdname common_ancestor
 #' @export
-LCA_term = function(dag, terms, in_labels = TRUE, distance = "longest") {
+LCA_term = function(dag, terms, in_labels = TRUE, distance = "longest", verbose = simona_opt$verbose) {
 	depth = dag_depth(dag)
 	
-	max_ancestor_id(dag, terms, depth, in_labels = in_labels, distance = distance)
+	max_ancestor_id(dag, terms, depth, in_labels = in_labels, distance = distance, verbose = verbose)
 }
 
 #' @rdname common_ancestor
 #' @export
-LCA_depth = function(dag, terms) {
+LCA_depth = function(dag, terms, verbose = simona_opt$verbose) {
 	depth = dag_depth(dag)
 	
-	max_ancestor_v(dag, terms, depth)
+	max_ancestor_v(dag, terms, depth, verbose = verbose)
 }
 
 #' @rdname common_ancestor
 #' @export
-NCA_term = function(dag, terms, in_labels = TRUE) {
+NCA_term = function(dag, terms, in_labels = TRUE, verbose = simona_opt$verbose) {
 	if(is.character(terms)) {
 		id = term_to_node_id(dag, terms, strict = FALSE)
 	} else {
@@ -86,7 +87,9 @@ NCA_term = function(dag, terms, in_labels = TRUE) {
 		stop("`term` should not be duplicated.")
 	}
 
-	an = cpp_nearest_common_ancestor(dag, id)
+	an = exec_under_message_condition({
+		cpp_nearest_common_ancestor(dag, id)
+	}, verbose = verbose)
 	dimnames(an) = list(dag@terms[id], dag@terms[id])
 
 	if(in_labels) {
@@ -102,7 +105,7 @@ NCA_term = function(dag, terms, in_labels = TRUE) {
 #' 
 #' @rdname common_ancestor
 #' @export
-max_ancestor_v = function(dag, terms, value) {
+max_ancestor_v = function(dag, terms, value, verbose = simona_opt$verbose) {
 
 	if(length(value) != dag@n_terms) {
 		stop("Length of `value` should be the same as number of total terms in the DAG.")
@@ -116,7 +119,9 @@ max_ancestor_v = function(dag, terms, value) {
 	if(any(duplicated(id))) {
 		stop("`term` should not be duplicated.")
 	}
-	an = cpp_max_ancestor_v(dag, id, value)
+	an = exec_under_message_condition({
+		cpp_max_ancestor_v(dag, id, value)
+	}, verbose = verbose)
 	dimnames(an) = list(dag@terms[id], dag@terms[id])
 	an
 }
@@ -124,7 +129,7 @@ max_ancestor_v = function(dag, terms, value) {
 
 #' @rdname common_ancestor
 #' @export
-max_ancestor_id = function(dag, terms, value, in_labels = FALSE, distance = "longest") {
+max_ancestor_id = function(dag, terms, value, in_labels = FALSE, distance = "longest", verbose = simona_opt$verbose) {
 
 	if(length(value) != dag@n_terms) {
 		stop("Length of `value` should be the same as number of total terms in the DAG.")
@@ -138,7 +143,9 @@ max_ancestor_id = function(dag, terms, value, in_labels = FALSE, distance = "lon
 	if(any(duplicated(id))) {
 		stop("`term` should not be duplicated.")
 	}
-	an = cpp_max_ancestor_id(dag, id, value, distance == "longest")
+	an = exec_under_message_condition({
+		cpp_max_ancestor_id(dag, id, value, distance == "longest")
+	}, verbose = verbose)
 	dimnames(an) = list(dag@terms[id], dag@terms[id])
 
 	if(in_labels) {
@@ -153,7 +160,7 @@ max_ancestor_id = function(dag, terms, value, in_labels = FALSE, distance = "lon
 #' 
 #' @export
 #' @rdname common_ancestor
-max_ancestor_path_sum = function(dag, terms, value, add_v, distance = "longest") {
+max_ancestor_path_sum = function(dag, terms, value, add_v, distance = "longest", verbose = simona_opt$verbose) {
 	if(length(value) != dag@n_terms) {
 		stop("Length of `value` should be the same as number of total terms in the DAG.")
 	}
@@ -170,7 +177,11 @@ max_ancestor_path_sum = function(dag, terms, value, add_v, distance = "longest")
 		stop("`term` should not be duplicated.")
 	}
 
-	sv = cpp_max_ancestor_path_sum_value(dag, id, value, addv, distance == "longest") {
+	sv = exec_under_message_condition({
+		cpp_max_ancestor_path_sum_value(dag, id, value, add_v, distance == "longest")
+	}, verbose = verbose)
+
 	dimnames(sv) = list(dag@terms[id], dag@terms[id])
 	sv
 }
+

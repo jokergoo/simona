@@ -8,35 +8,69 @@
 \alias{NCA_term}
 \alias{max_ancestor_v}
 \alias{max_ancestor_id}
+\alias{max_ancestor_path_sum}
 \title{Various types of common ancestors}
 \usage{
-MICA_term(dag, terms, IC_method, in_labels = TRUE, distance = "longest")
+MICA_term(
+  dag,
+  terms,
+  IC_method,
+  in_labels = TRUE,
+  distance = "longest",
+  verbose = simona_opt$verbose
+)
 
-MICA_IC(dag, terms, IC_method)
+MICA_IC(dag, terms, IC_method, verbose = simona_opt$verbose)
 
-LCA_term(dag, terms, in_labels = TRUE, distance = "longest")
+LCA_term(
+  dag,
+  terms,
+  in_labels = TRUE,
+  distance = "longest",
+  verbose = simona_opt$verbose
+)
 
-LCA_depth(dag, terms)
+LCA_depth(dag, terms, verbose = simona_opt$verbose)
 
-NCA_term(dag, terms, in_labels = TRUE)
+NCA_term(dag, terms, in_labels = TRUE, verbose = simona_opt$verbose)
 
-max_ancestor_v(dag, terms, value)
+max_ancestor_v(dag, terms, value, verbose = simona_opt$verbose)
 
-max_ancestor_id(dag, terms, value, in_labels = FALSE, distance = "longest")
+max_ancestor_id(
+  dag,
+  terms,
+  value,
+  in_labels = FALSE,
+  distance = "longest",
+  verbose = simona_opt$verbose
+)
+
+max_ancestor_path_sum(
+  dag,
+  terms,
+  value,
+  add_v,
+  distance = "longest",
+  verbose = simona_opt$verbose
+)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
 
 \item{terms}{A vector of term names.}
 
-\item{IC_method}{An IC method. Valid values are in \code{\link[=all_ic_methods]{all_ic_methods()}}.}
+\item{IC_method}{An IC method. Valid values are in \code{\link[=all_term_IC_methods]{all_term_IC_methods()}}.}
 
 \item{in_labels}{Whether the terms are represented in their names or as integer indices?}
 
 \item{distance}{If there are multiple LCA or MICA of two terms, whether to take the one with
 the longest distance of shortest distance to the two terms. Possible values are "longest" and "shortest".}
 
+\item{verbose}{Whether to print messages.}
+
 \item{value}{A numeric vector. The elements should corrrespond to terms in \code{dag_all_terms()} (should have the same length as the number of terms in the DAG).}
+
+\item{add_v}{Values to be added along the path to the MICA or LCA. The same format as \code{value}.}
 }
 \value{
 \itemize{
@@ -64,6 +98,9 @@ ancestors with the same smallest distance, the ancestor with the largest depth i
 
 \code{max_ancestor_v()} and \code{max_ancestor_id()} are more general functions which return common ancestors with
 the highest value in \code{value}.
+
+Given a path connecting two terms and their MICA/LCA, \code{max_ancestor_path_sum()} calculates the sum of terms along the path. The values
+to be added in specified in \code{add_v} argument.
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")

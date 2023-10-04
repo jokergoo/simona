@@ -254,7 +254,7 @@ dag_ancestors_of_two_groups = function(dag, group1, group2, type = "union", in_l
 #' `dag_shortest_dist_from_root()` and `dag_shortest_dist_to_leaves()` calculate the minimal distance from the root or to the leaves.
 #' The word "from" and "to" emphasize the distancer is directinoal.
 #' 
-#' @return An integer vector.
+#' @return An integer vector with length the same as the number of total terms in the DAG.
 #' @export
 #' @examples
 #' parents  = c("a", "a", "b", "b", "c", "d")

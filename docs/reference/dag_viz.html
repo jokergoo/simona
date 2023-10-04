@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -90,9 +90,10 @@
 <span>  node_transparency <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  node_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  edge_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  edge_transparency <span class="op">=</span> <span class="fl">0.98</span>,</span>
+<span>  edge_transparency <span class="op">=</span> <span class="fl">0.96</span>,</span>
 <span>  legend_labels_from <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  legend_labels_max_width <span class="op">=</span> <span class="fl">50</span></span>
+<span>  legend_labels_max_width <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">dag_as_DOT</span><span class="op">(</span></span>
@@ -180,6 +181,10 @@ legend labels.</p></dd>
 multiple lines if the widths exceed it.</p></dd>
 
 
+<dt>verbose</dt>
+<dd><p>Whether to print messages.</p></dd>
+
+
 <dt>color</dt>
 <dd><p>A vector of colors. If the value is a vector, the order should correspond to terms in <code><a href="dag_all_terms.html">dag_all_terms()</a></code>.</p></dd>
 
@@ -234,45 +239,158 @@ uses a hierarchical layout for visualizing small DAGs.</p>
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="create_ontology_DAG_from_GO_db.html">create_ontology_DAG_from_GO_db</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> relations: is_a, part_of</span>
 <span class="r-in"><span><span class="fu">dag_circular_viz</span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> converting DAG to a tree...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 1000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 2000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 3000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 4000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 5000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 6000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 7000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 8000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 9000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 10000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 11000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 12000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 13000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 14000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 15000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 16000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 17000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 18000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 19000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 20000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 21000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 22000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 23000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 24000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 25000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 26000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 27000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 27942 / 27942 nodes ... Done.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> calculating term positions on the DAG...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 1000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 2000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 3000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 4000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 5000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 6000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 7000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 8000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 9000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 10000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 11000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 12000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 13000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 14000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 15000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 16000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 17000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 18000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 19000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 20000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 21000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 22000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 23000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 24000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 25000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 26000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 27000 / 27942 nodes ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> going through 27942 / 27942 nodes ... Done.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 0/18, 1 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 1/18, 19 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 2/18, 154 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 2/18, 153 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 3/18, 528 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 3/18, 543 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 4/18, 1256 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 4/18, 1293 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 5/18, 2642 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 5/18, 2685 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 6/18, 4091 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 6/18, 4122 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 7/18, 4794 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 7/18, 4731 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 8/18, 4713 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 8/18, 4692 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 9/18, 3903 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 9/18, 3792 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 10/18, 2723 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 10/18, 2701 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 11/18, 1636 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 11/18, 1639 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 12/18, 927 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 12/18, 921 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 13/18, 424 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 13/18, 397 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 14/18, 187 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 14/18, 145 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 15/18, 88 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 15/18, 66 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 16/18, 28 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 16/18, 19 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 17/18, 23 terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 17/18, 20 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 18/18, 3 terms...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>

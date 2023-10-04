@@ -69,6 +69,7 @@ ontology_DAG = setClass("ontology_DAG",
 #'       will be an error that lists all cyclic paths.
 #' @param remove_rings There might be rings that are isolated to the main DAG where there are no roots on the rings, thus they cannot be attached to the main DAG. If the value
 #'        of `remove_rings` is set to `TRUE`, such rings are removed.
+#' @param verbose Whether to print messages.
 #' 
 #' @return An `ontology_DAG` object.
 #' @export
@@ -105,7 +106,8 @@ ontology_DAG = setClass("ontology_DAG",
 #' # with a list of parent-child relations
 #' dag = create_ontology_DAG(c("a-b", "a-c", "b-c", "b-d", "c-e", "e-f"))
 create_ontology_DAG = function(parents, children, relations = NULL, relations_DAG = NULL,
-	source = "Ontology", annotation = NULL, remove_cyclic_paths = FALSE, remove_rings = FALSE) {
+	source = "Ontology", annotation = NULL, remove_cyclic_paths = FALSE, remove_rings = FALSE,
+	verbose = simona_opt$verbose) {
 
 	if(missing(children)) {
 		lt = strsplit(parents, "\\s*-\\s*")
@@ -168,7 +170,9 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 			txt = strwrap(paste(terms[root], collapse = ", "), width = 80)
 		}
 		txt = paste(paste0("  ", txt), collapse = "\n")
-		message("There are more than one root:\n", txt, "\n  A super root (_all_) is added.")
+		if(verbose) {
+			message("There are more than one root:\n", txt, "\n  A super root (_all_) is added.")
+		}
 		
 		super_root = n_terms + 1L
 		lt_parents[[super_root]] = integer(0)
@@ -237,7 +241,9 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 				term_env = new.env(parent = emptyenv())
 			)
 		} else {
-			print_cyclic_paths(cyclic_paths, terms)
+			if(verbose) {
+				print_cyclic_paths(cyclic_paths, terms)
+			}
 			stop_wrap("Found cyclic nodes (paths are listed above). Set `remove_cyclic_paths = TRUE` to remove them.")
 		}
 	}
@@ -290,7 +296,9 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 	iring = which(depth < 0)
 	if(length(iring)) {
 		if(remove_rings) {
-			message_wrap(qq("Removed @{length(iring)} terms in isolated rings."))
+			if(verbose) {
+				message_wrap(qq("Removed @{length(iring)} terms in isolated rings."))
+			}
 			return(dag[[dag_root(dag)]])
 		} else {
 			for(i in iring) {
@@ -389,6 +397,7 @@ setMethod("show",
 #' @param org_db The name of the organism package or the corresponding database object, e.g. `"org.Hs.eg.db"` or 
 #'            directly the [`org.Hs.eg.db::org.Hs.eg.db`] object for human, then the gene annotation to GO terms will be added
 #'            to the object. For other non-model organisms, consider to use the **AnnotationHub** package to find one.
+#' @param verbose Whether to print messages.
 #' 
 #' @return An `ontology_DAG` object.
 #' @export
@@ -396,7 +405,7 @@ setMethod("show",
 #' @examples
 #' dag = create_ontology_DAG_from_GO_db()
 #' dag
-create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = "part of", org_db = NULL) {
+create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = "part of", org_db = NULL, verbose = simona_opt$verbose) {
 
 	check_pkg("GO.db", bioc = TRUE)
 
@@ -428,6 +437,10 @@ create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = "part of
 		relations = c(relations, "negatively_regulates", "positively_regulates")
 	}
 	df = df[df[, 3] %in% relations, , drop = FALSE]
+
+	if(verbose) {
+		message("relations: ", paste(relations, collapse = ", "))
+	}
 
 	if(!is.null(org_db)) {
 		if(is.character(org_db)) {
@@ -484,7 +497,7 @@ create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = "part of
 #' dag["b", "f"]
 #' dag[, "f"]
 setMethod("[", 
-	signature = c("ontology_DAG", "ANY", "ANY"),
+	signature = c("ontology_DAG", i = "ANY", j = "ANY", drop = "missing"),
 	definition = function(x, i, j, ..., drop = FALSE) {
 
 	if(!is.character(i)) {
@@ -503,7 +516,18 @@ setMethod("[",
 #' @rdname subset
 #' @exportMethod [
 setMethod("[", 
-	signature = c("ontology_DAG", "ANY", "missing"),
+	signature = c("ontology_DAG", i = "ANY", j = "ANY", drop = "ANY"),
+	definition = function(x, i, j, ..., drop = FALSE) {
+
+	x[i, j]
+	
+})
+
+
+#' @rdname subset
+#' @exportMethod [
+setMethod("[", 
+	signature = c("ontology_DAG", i = "ANY", j = "missing", drop = "missing"),
 	definition = function(x, i, j, ..., drop = FALSE) {
 
 	if(!is.character(i)) {
@@ -516,7 +540,16 @@ setMethod("[",
 #' @rdname subset
 #' @exportMethod [
 setMethod("[", 
-	signature = c("ontology_DAG", "missing", "ANY"),
+	signature = c("ontology_DAG", i = "ANY", j = "missing", drop = "ANY"),
+	definition = function(x, i, j, ..., drop = FALSE) {
+
+	x[i]
+})
+
+#' @rdname subset
+#' @exportMethod [
+setMethod("[", 
+	signature = c("ontology_DAG", i = "missing", j = "ANY", drop = "missing"),
 	definition = function(x, i, j, ..., drop = FALSE) {
 
 	if(!is.character(j)) {
@@ -530,7 +563,27 @@ setMethod("[",
 #' @rdname subset
 #' @exportMethod [
 setMethod("[", 
-	signature = c("ontology_DAG", "missing", "missing"),
+	signature = c("ontology_DAG", i = "missing", j = "ANY", drop = "ANY"),
+	definition = function(x, i, j, ..., drop = FALSE) {
+
+	x[, j]
+
+})
+
+#' @rdname subset
+#' @exportMethod [
+setMethod("[", 
+	signature = c("ontology_DAG", i = "missing", j = "missing", drop = "missing"),
+	definition = function(x, i, j, ..., drop = FALSE) {
+
+	x
+	
+})
+
+#' @rdname subset
+#' @exportMethod [
+setMethod("[", 
+	signature = c("ontology_DAG", i = "missing", j = "missing", drop = "ANY"),
 	definition = function(x, i, j, ..., drop = FALSE) {
 
 	x

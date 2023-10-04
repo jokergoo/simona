@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -105,13 +105,14 @@
     <h2>Value</h2>
     
 
-<p>An integer vector.</p>
+<p>An integer vector with length the same as the number of total terms in the DAG.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
     <p>The depth of a term in the DAG is defined as the maximal distance from the root. The height
-of a term in the DAG is the maximal finite distance to the leaf terms.</p>
-<p><code>dag_shortest_dist_from_root()</code> and <code>dag_shortest_dist_to_leaves()</code> calculate the minimal distance from the root or to the leaves.</p>
+of a term in the DAG is the maximal finite distance to all leaf terms.</p>
+<p><code>dag_shortest_dist_from_root()</code> and <code>dag_shortest_dist_to_leaves()</code> calculate the minimal distance from the root or to the leaves.
+The word "from" and "to" emphasize the distancer is directinoal.</p>
     </div>
 
     <div id="ref-examples">

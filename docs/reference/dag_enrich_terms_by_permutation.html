@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -110,14 +110,16 @@
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>The function tests whether a term <code>t</code>'s offspring terms have an over-represented pattern on values in <code>value</code>.
+    <p>In the function <code><a href="dag_enrich_terms.html">dag_enrich_terms()</a></code>, the statistic for testing is the number of terms in each category. Here
+this funtion makes the testing procedure more general</p>
+<p>The function tests whether a term <code>t</code>'s offspring terms have an over-represented pattern on values in <code>value</code>.
 Denote <code>T</code> as the set of <code>t</code>'s offspring terms plus <code>t</code> itself, and <code>v</code> as the numeric vector of <code>value</code>, we first
 calculate a score <code>s</code> based on values in <code>T</code>:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>s <span class="ot">=</span> mean_{terms <span class="cf">in</span> T}(v)</span></code></pre><p></p></div>
 <p>To construct a random version of <code>s</code>, we randomly sample <code>n_T</code> terms from the DAG where <code>n_T</code> is the size of set <code>T</code>:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sr_i <span class="ot">=</span> mean_{n_T randomly sampled terms}(v)</span></code></pre><p></p></div>
 <p>where index <code>i</code> represents the i^th sampling. If we sample <code>k</code> times, the p-value is calculated as:</p>
-<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">=</span> sum_{go over k}(<span class="fu">I</span>(sr <span class="sc">&gt;</span> s))<span class="sc">/</span>k</span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">=</span> sum_{i <span class="cf">in</span> <span class="dv">1</span>..k}(<span class="fu">I</span>(sr_i <span class="sc">&gt;</span> s))<span class="sc">/</span>k</span></code></pre><p></p></div>
     </div>
 
     <div id="ref-examples">

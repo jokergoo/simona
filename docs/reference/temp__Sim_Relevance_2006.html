@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -78,7 +78,12 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Sim_Relevance_2006</span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Sim_Relevance_2006</span><span class="op">(</span></span>
+<span>  <span class="va">dag</span>,</span>
+<span>  <span class="va">terms</span>,</span>
+<span>  IC_method <span class="op">=</span> <span class="st">"IC_annotation"</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="methods">
@@ -90,7 +95,7 @@
 
 
 <p>The IC method is fixed to <code>IC_annotation</code>.</p>
-<p>If thinking <em>Lin_1998</em> is a measure of how close term <code>a</code> and <code>b</code> to their MICA <code>c</code>, the relevance method corrects it by multiplying
+<p>If thinking <em>Lin_1998</em> is a measure of how close term <code>a</code> and <code>b</code> to their MICA term <code>c</code>, the relevance method corrects it by multiplying
 a factor which considers the specificity of how <code>c</code> brings the information. The factor is calculated as <code>1-p(c)</code> where <code>p(c)</code> is the annotation-based
 probability <code>p(c) = k/N</code> where <code>k</code> is the number of items annotated to <code>c</code> and <code>N</code> is the total number of items annotated to the DAG. Then
 the Relevance semantic similarity is calculated as:</p>

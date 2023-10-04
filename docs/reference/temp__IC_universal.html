@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -78,7 +78,11 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">IC_universal</span><span class="op">(</span><span class="va">dag</span>, use_cache <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">use_cache</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">IC_universal</span><span class="op">(</span></span>
+<span>  <span class="va">dag</span>,</span>
+<span>  use_cache <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">use_cache</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="methods">
@@ -92,11 +96,11 @@
 <p>It measures the probability of a term getting full transmission from the root. Each term is associated with a p-value and the root has
 the p-value of 1.</p>
 <p>For example, an intermediate term <code>t</code> has two parent terms <code>parent1</code> and <code>parent2</code>, also assume <code>parent1</code> has <code>k1</code> children
-and <code>parent2</code> has <code>k2</code> children, assume a parent transmits information equally to all its children, then <code>parent1</code> only transmits <code>1/k1</code> and
+and <code>parent2</code> has <code>k2</code> children, assume a parent transmits information equally to all its children, then respectively <code>parent1</code> only transmits <code>1/k1</code> and
 <code>parent2</code> only transmits <code>1/k2</code> of its content to term <code>t</code>, or the probability of a parent to reach <code>t</code> is <code>1/k1</code> or <code>1/k2</code>.
-Let's say <code>p1</code> and <code>p2</code> are the accmulated contents from the root for <code>parnet1</code> and <code>parent2</code> respectively (or the probability
+Let's say <code>p1</code> and <code>p2</code> are the accumulated contents from the root to <code>parnet1</code> and <code>parent2</code> respectively (or the probability
 of the two parent terms getting full transmission from root), then the probability of reaching <code>t</code> via a full transmission graph from <code>parent1</code>
-is the multiplication of <code>p1</code> and <code>1/k1</code>, which is <code>p1/k1</code>, and it is similar for <code>p2/k2</code>. Then, for term <code>t</code>, if getting transmitted from <code>parent1</code> and
+is the multiplication of <code>p1</code> and <code>1/k1</code>, which is <code>p1/k1</code>, and same for <code>p2/k2</code>. Then, for term <code>t</code>, if getting transmitted from <code>parent1</code> and
 <code>parent2</code> are independent, the probability of <code>t</code> (denoted as <code>p_t</code>) to get transmitted from both parents is:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>p_t <span class="ot">=</span> (p1<span class="sc">/</span>k1) <span class="sc">*</span> (p2<span class="sc">/</span>k2)</span></code></pre><p></p></div>
 <p>Since the two parents are the full set of <code>t</code>'s parents, <code>p_t</code> is the probability of <code>t</code> getting full transmission from root. And the final

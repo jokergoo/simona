@@ -1,19 +1,23 @@
 
 #' @importFrom matrixStats rowMaxs colMaxs
-.GroupSim_pairwise = function(dag, group1, group2, term_sim_method = NULL, group_sim_method = "avg", ...) {
+.GroupSim_pairwise = function(dag, group1, group2, term_sim_method = NULL, IC_method = NULL, group_sim_method = "avg", verbose = simona_opt$verbose, ...) {
 	if(is.null(term_sim_method)) {
-		if(has_annotation(dag)) {
-			term_sim_method = "Sim_Lin_1998"
-		} else {
-			term_sim_method = "Sim_WP_1994"
-		}
+		term_sim_method = default_term_sim_method(dag)
+	}
+	if(is.null(IC_method)) {
+		IC_method = default_term_IC_method(dag)
 	}
 
 	group1 = lapply(group1, function(x) term_to_node_id(dag, x, strict = FALSE))
 	group2 = lapply(group2, function(x) term_to_node_id(dag, x, strict = FALSE))
 
 	id = unique(unlist(c(group1, group2)))
-	sim = term_sim(dag, id, term_sim_method, control = list(...))
+
+	control = list(...)
+	control$IC_method = IC_method
+	if(is.null(control$verbose)) control$verbose = verbose
+
+	sim = term_sim(dag, id, term_sim_method, control = control)
 	rownames(sim) = colnames(sim) = dag@terms[id]
 
 	.calc = function(g1, g2) {
@@ -85,15 +89,26 @@
 #' group_sim = mean_{a in group1, b in group2}(S(a, b))
 #' ```
 #' 
-#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
+#' The term semantic similarity method and the IC method can be set via `control` argument:
+#' 
+#' ```
+#' group_sim(dag, group1, group2, method = "GroupSim_pairwise_avg"
+#'     control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+#' ```
+#' 
+#' Other parameters for the `term_sim_method` can also be set in the `control` list.
 #' 
 #' Pape link: \doi{10.1093/bioinformatics/btg153}.
 #' 
 #' @rdname temp__GroupSim_pairwise_avg
-GroupSim_pairwise_avg = function(dag, group1, group2, term_sim_method = NULL, ...) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "avg", ...)
+GroupSim_pairwise_avg = function(dag, group1, group2, term_sim_method = NULL, IC_method = NULL, verbose = simona_opt$verbose, ...) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_pairwise_avg")
+	}
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method = term_sim_method, IC_method = IC_method, 
+		group_sim_method = "avg", verbose = verbose, ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_avg", c("term_sim_method", "..."))
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_avg")
 
 
 #' GroupSim_pairwise_max
@@ -107,15 +122,27 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_avg", c("term_sim_method", "..."))
 #' group_sim = max_{a in group1, b in group2}(S(a, b))
 #' ```
 #' 
-#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
+#' The term semantic similarity method and the IC method can be set via `control` argument:
+#' 
+#' ```
+#' group_sim(dag, group1, group2, method = "GroupSim_pairwise_max"
+#'     control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+#' ```
+#' 
+#' Other parameters for the `term_sim_method` can also be set in the `control` list.
 #' 
 #' Paper link: \doi{10.1109/TCBB.2005.50}.
 #' 
 #' @rdname temp__GroupSim_pairwise_max
-GroupSim_pairwise_max = function(dag, group1, group2, term_sim_method = NULL, ...) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "max", ...)
+GroupSim_pairwise_max = function(dag, group1, group2, term_sim_method = NULL, IC_method = NULL, verbose = simona_opt$verbose, ...) {
+	
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_pairwise_max")
+	}
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method = term_sim_method, IC_method = IC_method, 
+		group_sim_method = "max", verbose = verbose, ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_max", c("term_sim_method", "..."))
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_max")
 
 #' GroupSim_pairwise_BMA
 #' 
@@ -138,15 +165,26 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_max", c("term_sim_method", "..."))
 #' 
 #' So it is the average of the similarity of every term in `group1` to the whole `group2` and every term in `group2` to the whole `group1`.
 #' 
-#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
+#' The term semantic similarity method and the IC method can be set via `control` argument:
+#' 
+#' ```
+#' group_sim(dag, group1, group2, method = "GroupSim_pairwise_BMA"
+#'     control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+#' ```
+#' 
+#' Other parameters for the `term_sim_method` can also be set in the `control` list.
 #' 
 #' Paper link: \doi{10.1155/2012/975783}.
 #' 
 #' @rdname temp__GroupSim_pairwise_BMA
-GroupSim_pairwise_BMA = function(dag, group1, group2, term_sim_method = NULL, ...) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "BMA", ...)
+GroupSim_pairwise_BMA = function(dag, group1, group2, term_sim_method = NULL, IC_method = NULL, verbose = simona_opt$verbose, ...) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_pairwise_BMA")
+	}
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method = term_sim_method, IC_method = IC_method, 
+		group_sim_method = "BMA", verbose = verbose, ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_BMA", c("term_sim_method", "..."))
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_BMA")
 
 
 #' GroupSim_pairwise_BMM
@@ -160,15 +198,26 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_BMA", c("term_sim_method", "..."))
 #' group_sim = max(mean_{a in group1}(S(a, group2)), mean_{b in group2}(S(b, group1)))
 #' ```
 #' 
-#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
+#' The term semantic similarity method and the IC method can be set via `control` argument:
+#' 
+#' ```
+#' group_sim(dag, group1, group2, method = "GroupSim_pairwise_BMM"
+#'     control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+#' ```
+#' 
+#' Other parameters for the `term_sim_method` can also be set in the `control` list.
 #' 
 #' Paper link: \doi{10.1186/1471-2105-7-302}.
 #' 
 #' @rdname temp__GroupSim_pairwise_BMM
-GroupSim_pairwise_BMM = function(dag, group1, group2, term_sim_method = NULL, ...) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "BMM", ...)
+GroupSim_pairwise_BMM = function(dag, group1, group2, term_sim_method = NULL, IC_method = NULL, verbose = simona_opt$verbose, ...) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_pairwise_BMM")
+	}
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method = term_sim_method, IC_method = IC_method, 
+		group_sim_method = "BMM", verbose = verbose, ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_BMM", c("term_sim_method", "..."))
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_BMM")
 
 
 #' GroupSim_pairwise_ABM
@@ -184,15 +233,26 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_BMM", c("term_sim_method", "..."))
 #' 
 #' where `n1` and `n2` are the number of terms in `group1` and `group2`.
 #' 
-#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
+#' The term semantic similarity method and the IC method can be set via `control` argument:
+#' 
+#' ```
+#' group_sim(dag, group1, group2, method = "GroupSim_pairwise_ABM"
+#'     control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+#' ```
+#' 
+#' Other parameters for the `term_sim_method` can also be set in the `control` list.
 #' 
 #' Paper link: \doi{10.1186/1471-2105-14-284}.
 #' 
 #' @rdname temp__GroupSim_pairwise_ABM
-GroupSim_pairwise_ABM = function(dag, group1, group2, term_sim_method = NULL, ...) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "ABM", ...)
+GroupSim_pairwise_ABM = function(dag, group1, group2, term_sim_method = NULL, IC_method = NULL, verbose = simona_opt$verbose, ...) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_pairwise_ABM")
+	}
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method = term_sim_method, IC_method = IC_method, 
+		group_sim_method = "ABM", verbose = verbose, ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_ABM", c("term_sim_method", "..."))
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_ABM")
 
 
 #' GroupSim_pairwise_HDF
@@ -218,13 +278,24 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_ABM", c("term_sim_method", "..."))
 #' group_sim = 1 - HDF
 #' ```
 #' 
-#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
+#' The term semantic similarity method and the IC method can be set via `control` argument:
+#' 
+#' ```
+#' group_sim(dag, group1, group2, method = "GroupSim_pairwise_HDF"
+#'     control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+#' ```
+#' 
+#' Other parameters for the `term_sim_method` can also be set in the `control` list.
 #' 
 #' @rdname temp__GroupSim_pairwise_HDF
-GroupSim_pairwise_HDF = function(dag, group1, group2, term_sim_method = NULL, ...) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "HDF", ...)
+GroupSim_pairwise_HDF = function(dag, group1, group2, term_sim_method = NULL, IC_method = NULL, verbose = simona_opt$verbose, ...) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_pairwise_HDF")
+	}
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method = term_sim_method, IC_method = IC_method, 
+		group_sim_method = "HDF", verbose = verbose, ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_HDF", c("term_sim_method", "..."))
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_HDF")
 
 
 #' GroupSim_pairwise_MHDF
@@ -244,15 +315,26 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_HDF", c("term_sim_method", "..."))
 #' group_sim = 1 - MHDF
 #' ```
 #' 
-#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
+#' The term semantic similarity method and the IC method can be set via `control` argument:
+#' 
+#' ```
+#' group_sim(dag, group1, group2, method = "GroupSim_pairwise_MHDF"
+#'     control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+#' ```
+#' 
+#' Other parameters for the `term_sim_method` can also be set in the `control` list.
 #' 
 #' Paper link: \doi{10.1109/ICPR.1994.576361}.
 #' 
 #' @rdname temp__GroupSim_pairwise_MHDF
-GroupSim_pairwise_MHDF = function(dag, group1, group2, term_sim_method = NULL, ...) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "MHDF", ...)
+GroupSim_pairwise_MHDF = function(dag, group1, group2, term_sim_method = NULL, IC_method = NULL, verbose = simona_opt$verbose, ...) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_pairwise_MHDF")
+	}
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method = term_sim_method, IC_method = IC_method, 
+		group_sim_method = "MHDF", verbose = verbose, ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_MHDF", c("term_sim_method", "..."))
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_MHDF")
 
 
 
@@ -268,15 +350,26 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_MHDF", c("term_sim_method", "..."))
 #' group_sim = 1 - VHDF
 #' ```
 #' 
-#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
+#' The term semantic similarity method and the IC method can be set via `control` argument:
+#' 
+#' ```
+#' group_sim(dag, group1, group2, method = "GroupSim_pairwise_VHDF"
+#'     control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+#' ```
+#' 
+#' Other parameters for the `term_sim_method` can also be set in the `control` list.
 #' 
 #' Paper link: \doi{10.1073/pnas.0702965104}.
 #' 
 #' @rdname temp__GroupSim_pairwise_VHDF
-GroupSim_pairwise_VHDF = function(dag, group1, group2, term_sim_method = NULL, ...) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "VHDF", ...)
+GroupSim_pairwise_VHDF = function(dag, group1, group2, term_sim_method = NULL, IC_method = NULL, verbose = simona_opt$verbose, ...) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_pairwise_VHDF")
+	}
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method = term_sim_method, IC_method = IC_method, 
+		group_sim_method = "VHDF", verbose = verbose, ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_VHDF", c("term_sim_method", "..."))
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_VHDF")
 
 
 #' GroupSim_pairwise_Froehlich_2007
@@ -290,15 +383,26 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_VHDF", c("term_sim_method", "..."))
 #' group_sim = exp(-HDF(group1, group2))
 #' ```
 #' 
-#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
+#' The term semantic similarity method and the IC method can be set via `control` argument:
+#' 
+#' ```
+#' group_sim(dag, group1, group2, method = "GroupSim_pairwise_Froehlich_2007"
+#'     control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+#' ```
+#' 
+#' Other parameters for the `term_sim_method` can also be set in the `control` list.
 #' 
 #' Paper link: \doi{10.1186/1471-2105-8-166}.
 #' 
 #' @rdname temp__GroupSim_pairwise_Froehlich_2007
-GroupSim_pairwise_Froehlich_2007 = function(dag, group1, group2, term_sim_method = NULL, ...) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "froehlich_2007", ...)
+GroupSim_pairwise_Froehlich_2007 = function(dag, group1, group2, term_sim_method = NULL, IC_method = NULL, verbose = simona_opt$verbose, ...) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_pairwise_Froehlich_2007")
+	}
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method = term_sim_method, IC_method = IC_method, 
+		group_sim_method = "froehlich_2007", verbose = verbose, ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_Froehlich_2007", c("term_sim_method", "..."))
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_Froehlich_2007")
 
 
 #' GroupSim_pairwise_Joeng_2014
@@ -312,15 +416,27 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_Froehlich_2007", c("term_sim_method", ".
 #' group_sim = 0.5*(sqrt(mean_{a in group1}(S(a, group2)^2)) + sqrt(mean_{b in group2}(S(b, group1)^2)))
 #' ```
 #' 
-#' The term semantic similarity method can be set via `control = list(term_sim_method = ...)`.
+#' The term semantic similarity method and the IC method can be set via `control` argument:
+#' 
+#' ```
+#' group_sim(dag, group1, group2, method = "GroupSim_pairwise_Joeng_2014"
+#'     control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+#' ```
+#' 
+#' Other parameters for the `term_sim_method` can also be set in the `control` list.
 #' 
 #' Paper link: \doi{10.1109/TCBB.2014.2343963}.
 #' 
 #' @rdname temp__GroupSim_pairwise_Joeng_2014
-GroupSim_pairwise_Joeng_2014 = function(dag, group1, group2, term_sim_method = NULL, ...) {
-	.GroupSim_pairwise(dag, group1, group2, term_sim_method, "joeng_2014", ...)
+GroupSim_pairwise_Joeng_2014 = function(dag, group1, group2, term_sim_method = NULL, IC_method = NULL, verbose = simona_opt$verbose, ...) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_pairwise_Joeng_2014")
+	}
+
+	.GroupSim_pairwise(dag, group1, group2, term_sim_method = term_sim_method, IC_method = IC_method, 
+		group_sim_method = "joeng_2014", verbose = verbose, ...)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_pairwise_Joeng_2014", c("term_sim_method", "..."))
+ADD_GROUP_SIM_METHOD("GroupSim_pairwise_Joeng_2014")
 
 
 #' GroupSim_SimALN
@@ -337,21 +453,31 @@ ADD_GROUP_SIM_METHOD("GroupSim_pairwise_Joeng_2014", c("term_sim_method", "...")
 #' `d(a, b)` is the distance between `a` and `b`, which can be the shortest distance between the two terms or
 #' the longest distnace via LCA.
 #' 
-#' Distance method can be set via `control = list(distance = ...)`.
+#' There is a parameter `distance` which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
+#' 
+#' ```
+#' group_sim(dag, group1, group2, method = "GroupSim_SimALN",
+#'     control = list(distance = "shortest_distances_via_NCA"))
+#' ```
 #' 
 #' Paper link: \doi{10.1109/ISCC.2008.4625763}.
 #' 
 #' @rdname temp__GroupSim_SimALN
-GroupSim_SimALN = function(dag, group1, group2, distance = "longest_distances_via_LCA") {
+GroupSim_SimALN = function(dag, group1, group2, distance = "longest_distances_via_LCA", verbose = simona_opt$verbose) {
+
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_SimALN")
+	}
+
 	group1 = lapply(group1, function(x) term_to_node_id(dag, x, strict = FALSE))
 	group2 = lapply(group2, function(x) term_to_node_id(dag, x, strict = FALSE))
 
 	id = unique(unlist(c(group1, group2)))
 	
 	if(distance == "shortest_distances_via_CA") {
-		d = cpp_shortest_distances_via_NCA(dag, id)
+		d = shortest_distances_via_NCA(dag, id, verbose = verbose)
 	} else if(distance == "longest_distances_via_LCA") {
-		d = longest_distances_via_LCA(dag, id)
+		d = longest_distances_via_LCA(dag, id, verbose = verbose)
 	} else {
 		stop("`distance` can only be in 'shortest_distances_via_CA' or 'longest_distances_via_LCA'.")
 	}
@@ -371,7 +497,7 @@ GroupSim_SimALN = function(dag, group1, group2, distance = "longest_distances_vi
 	}
 	m
 }
-ADD_GROUP_SIM_METHOD("GroupSim_SimALN", "distance")
+ADD_GROUP_SIM_METHOD("GroupSim_SimALN")
 
 
 
@@ -380,20 +506,16 @@ GROUPSIM_ANCESTORS_UNION = 1
 GROUPSIM_ANCESTORS_INTERSECT = 2
 
 
-.GroupSim_IC_based = function(dag, group1, group2, IC_method = NULL, group_sim_method = "avg", use_IC = FALSE) {
+.GroupSim_IC_based = function(dag, group1, group2, IC_method = NULL, group_sim_method = "avg", use_IC = FALSE, verbose = simona_opt$verbose) {
 
 	if(is.null(IC_method)) {
-		if(has_annotation(dag)) {
-			IC_method = "IC_annotation"
-		} else {
-			IC_method = "IC_offspring"
-		}
+		IC_method = default_term_IC_method(dag)
 	}
 	group1 = lapply(group1, function(x) term_to_node_id(dag, x, strict = FALSE))
 	group2 = lapply(group2, function(x) term_to_node_id(dag, x, strict = FALSE))
 
 	if(use_IC) {
-		weight = term_IC(dag, IC_method)
+		weight = term_IC(dag, IC_method, verbose = verbose)
 	} else {
 		weight = rep(1, dag@n_terms)
 	}
@@ -446,10 +568,13 @@ GROUPSIM_ANCESTORS_INTERSECT = 2
 #' IC method can be set via `control = list(IC_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_SimGIC
-GroupSim_SimGIC = function(dag, group1, group2, IC_method = NULL) {
-	.GroupSim_IC_based(dag, group1, group2, IC_method, group_sim_method = "jaccard", use_IC = TRUE)
+GroupSim_SimGIC = function(dag, group1, group2, IC_method = NULL, verbose = simona_opt$verbose) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_SimGIC")
+	}
+	.GroupSim_IC_based(dag, group1, group2, IC_method, group_sim_method = "jaccard", use_IC = TRUE, verbose = verbose)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_SimGIC", "IC_method")
+ADD_GROUP_SIM_METHOD("GroupSim_SimGIC")
 
 
 #' GroupSim_SimDIC
@@ -466,10 +591,13 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimGIC", "IC_method")
 #' IC method can be set via `control = list(IC_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_SimDIC
-GroupSim_SimDIC = function(dag, group1, group2, IC_method = NULL) {
-	.GroupSim_IC_based(dag, group1, group2, IC_method, group_sim_method = "dice", use_IC = TRUE)
+GroupSim_SimDIC = function(dag, group1, group2, IC_method = NULL, verbose = simona_opt$verbose) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_SimDIC")
+	}
+	.GroupSim_IC_based(dag, group1, group2, IC_method, group_sim_method = "dice", use_IC = TRUE, verbose = verbose)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_SimDIC", "IC_method")
+ADD_GROUP_SIM_METHOD("GroupSim_SimDIC")
 
 
 #' GroupSim_SimUIC
@@ -486,10 +614,13 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimDIC", "IC_method")
 #' IC method can be set via `control = list(IC_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_SimUIC
-GroupSim_SimUIC = function(dag, group1, group2, IC_method = NULL) {
-	.GroupSim_IC_based(dag, group1, group2, IC_method, group_sim_method = "universal", use_IC = TRUE)
+GroupSim_SimUIC = function(dag, group1, group2, IC_method = NULL, verbose = simona_opt$verbose) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_SimUIC")
+	}
+	.GroupSim_IC_based(dag, group1, group2, IC_method, group_sim_method = "universal", use_IC = TRUE, verbose = verbose)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_SimUIC", "IC_method")
+ADD_GROUP_SIM_METHOD("GroupSim_SimUIC")
 
 
 #' GroupSim_SimUI
@@ -505,8 +636,11 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimUIC", "IC_method")
 #' ```
 #' 
 #' @rdname temp__GroupSim_SimUI
-GroupSim_SimUI = function(dag, group1, group2) {
-	.GroupSim_IC_based(dag, group1, group2, group_sim_method = "jaccard", use_IC = FALSE)
+GroupSim_SimUI = function(dag, group1, group2, verbose = simona_opt$verbose) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_SimUI")
+	}
+	.GroupSim_IC_based(dag, group1, group2, group_sim_method = "jaccard", use_IC = FALSE, verbose = verbose)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimUI")
 
@@ -523,8 +657,11 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimUI")
 #' ```
 #' 
 #' @rdname temp__GroupSim_SimDB
-GroupSim_SimDB = function(dag, group1, group2) {
-	.GroupSim_IC_based(dag, group1, group2, group_sim_method = "dice", use_IC = FALSE)
+GroupSim_SimDB = function(dag, group1, group2, verbose = simona_opt$verbose) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_SimDB")
+	}
+	.GroupSim_IC_based(dag, group1, group2, group_sim_method = "dice", use_IC = FALSE, verbose = verbose)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimDB")
 
@@ -541,8 +678,11 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimDB")
 #' ```
 #' 
 #' @rdname temp__GroupSim_SimUB
-GroupSim_SimUB = function(dag, group1, group2) {
-	.GroupSim_IC_based(dag, group1, group2, group_sim_method = "universal", use_IC = FALSE)
+GroupSim_SimUB = function(dag, group1, group2, verbose = simona_opt$verbose) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_SimUB")
+	}
+	.GroupSim_IC_based(dag, group1, group2, group_sim_method = "universal", use_IC = FALSE, verbose = verbose)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimUB")
 
@@ -559,8 +699,11 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimUB")
 #' ```
 #' 
 #' @rdname temp__GroupSim_SimNTO
-GroupSim_SimNTO = function(dag, group1, group2) {
-	.GroupSim_IC_based(dag, group1, group2, group_sim_method = "overlap", use_IC = FALSE)
+GroupSim_SimNTO = function(dag, group1, group2, verbose = simona_opt$verbose) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_SimNTO")
+	}
+	.GroupSim_IC_based(dag, group1, group2, group_sim_method = "overlap", use_IC = FALSE, verbose = verbose)
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimNTO")
 
@@ -591,10 +734,13 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimNTO")
 #' IC method can be set via `control = list(IC_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_SimCOU
-GroupSim_SimCOU = function(dag, group1, group2, IC_method = NULL) {
-	.GroupSim_IC_based(dag, group1, group2, IC_method, group_sim_method = "cosine", use_IC = TRUE)
+GroupSim_SimCOU = function(dag, group1, group2, IC_method = NULL, verbose = simona_opt$verbose) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_SimCOU")
+	}
+	.GroupSim_IC_based(dag, group1, group2, IC_method, group_sim_method = "cosine", use_IC = TRUE, verbose = verbose)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_SimCOU", "IC_method")
+ADD_GROUP_SIM_METHOD("GroupSim_SimCOU")
 
 
 #' GroupSim_SimCOT
@@ -618,10 +764,13 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimCOU", "IC_method")
 #' IC method can be set via `control = list(IC_method = ...)`.
 #' 
 #' @rdname temp__GroupSim_SimCOT
-GroupSim_SimCOT = function(dag, group1, group2, IC_method = NULL) {
-	.GroupSim_IC_based(dag, group1, group2, IC_method, group_sim_method = "cosine2", use_IC = TRUE)
+GroupSim_SimCOT = function(dag, group1, group2, IC_method = NULL, verbose = simona_opt$verbose) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_SimCOT")
+	}
+	.GroupSim_IC_based(dag, group1, group2, IC_method, group_sim_method = "cosine2", use_IC = TRUE, verbose = verbose)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_SimCOT", "IC_method")
+ADD_GROUP_SIM_METHOD("GroupSim_SimCOT")
 
 
 
@@ -672,7 +821,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimCOT", "IC_method")
 #' ```
 #' 
 #' @rdname temp__GroupSim_SimLP
-GroupSim_SimLP = function(dag, group1, group2) {
+GroupSim_SimLP = function(dag, group1, group2, verbose = simona_opt$verbose) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_SimLP")
+	}
 	.GroupSim_edge_based(dag, group1, group2, group_sim_method = "lp")
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimLP")
@@ -692,7 +844,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimLP")
 #' Since the minimal depth is zero for root.
 #' 
 #' @rdname temp__GroupSim_Ye_2005
-GroupSim_Ye_2005 = function(dag, group1, group2) {
+GroupSim_Ye_2005 = function(dag, group1, group2, verbose = simona_opt$verbose) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_Ye_2005")
+	}
 	.GroupSim_edge_based(dag, group1, group2, group_sim_method = "ye")
 }
 ADD_GROUP_SIM_METHOD("GroupSim_Ye_2005")
@@ -759,7 +914,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_Ye_2005")
 #' is mostly 1.
 #' 
 #' @rdname temp__GroupSim_SimCHO
-GroupSim_SimCHO = function(dag, group1, group2) {
+GroupSim_SimCHO = function(dag, group1, group2, verbose = simona_opt$verbose) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_SimCHO")
+	}
 	.GroupSim_annotation_based(dag, group1, group2, group_sim_method = "cho")
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimCHO")
@@ -777,7 +935,10 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimCHO")
 #' ```
 #' 
 #' @rdname temp__GroupSim_SimALD
-GroupSim_SimALD = function(dag, group1, group2) {
+GroupSim_SimALD = function(dag, group1, group2, verbose = simona_opt$verbose) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_SimALD")
+	}
 	.GroupSim_annotation_based(dag, group1, group2, group_sim_method = "ald")
 }
 ADD_GROUP_SIM_METHOD("GroupSim_SimALD")
@@ -829,10 +990,13 @@ ADD_GROUP_SIM_METHOD("GroupSim_SimALD")
 #' The universe/background can be set via `control = list(universe = ...)`.
 #' 
 #' @rdname temp__GroupSim_Jaccard
-GroupSim_Jaccard = function(dag, group1, group2, universe = NULL) {
+GroupSim_Jaccard = function(dag, group1, group2, universe = NULL, verbose = simona_opt$verbose) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_Jaccard")
+	}
 	.GroupSim_count_based(dag, group1, group2, group_sim_method = "jaccard", universe = universe)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_Jaccard", "universe")
+ADD_GROUP_SIM_METHOD("GroupSim_Jaccard")
 
 
 #' GroupSim_Dice
@@ -845,10 +1009,13 @@ ADD_GROUP_SIM_METHOD("GroupSim_Jaccard", "universe")
 #' The universe/background can be set via `control = list(universe = ...)`.
 #' 
 #' @rdname temp__GroupSim_Dice
-GroupSim_Dice = function(dag, group1, group2, universe = NULL) {
+GroupSim_Dice = function(dag, group1, group2, universe = NULL, verbose = simona_opt$verbose) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_Dice")
+	}
 	.GroupSim_count_based(dag, group1, group2, group_sim_method = "dice", universe = universe)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_Dice", "universe")
+ADD_GROUP_SIM_METHOD("GroupSim_Dice")
 
 
 #' GroupSim_Overlap
@@ -861,10 +1028,13 @@ ADD_GROUP_SIM_METHOD("GroupSim_Dice", "universe")
 #' The universe/background can be set via `control = list(universe = ...)`.
 #' 
 #' @rdname temp__GroupSim_Overlap
-GroupSim_Overlap = function(dag, group1, group2, universe = NULL) {
+GroupSim_Overlap = function(dag, group1, group2, universe = NULL, verbose = simona_opt$verbose) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_Overlap")
+	}
 	.GroupSim_count_based(dag, group1, group2, group_sim_method = "overlap", universe = universe)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_Overlap", "universe")
+ADD_GROUP_SIM_METHOD("GroupSim_Overlap")
 
 
 #' GroupSim_Kappa
@@ -877,10 +1047,13 @@ ADD_GROUP_SIM_METHOD("GroupSim_Overlap", "universe")
 #' The universe/background can be set via `control = list(universe = ...)`.
 #' 
 #' @rdname temp__GroupSim_Kappa
-GroupSim_Kappa = function(dag, group1, group2, universe = NULL) {
+GroupSim_Kappa = function(dag, group1, group2, universe = NULL, verbose = simona_opt$verbose) {
+	if(verbose) {
+		message("group_sim_method: ", "GroupSim_Kappa")
+	}
 	.GroupSim_count_based(dag, group1, group2, group_sim_method = "kappa", universe = universe)
 }
-ADD_GROUP_SIM_METHOD("GroupSim_Kappa", "universe")
+ADD_GROUP_SIM_METHOD("GroupSim_Kappa")
 
 
 .sim_overlap_from_two_groups = function(dag, id1, id2, universe = NULL, method = c("kappa", "jaccard", "dice", "overlap")) {

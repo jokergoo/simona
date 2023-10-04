@@ -4,7 +4,7 @@
 \alias{dag_reorder}
 \title{Reorder child terms}
 \usage{
-dag_reorder(dag, max_level = 2)
+dag_reorder(dag, max_level = 2, verbose = simona_opt$verbose)
 }
 \arguments{
 \item{dag}{An \code{ontology_Dag} object.}
@@ -12,6 +12,8 @@ dag_reorder(dag, max_level = 2)
 \item{max_level}{Maximal depth of terms in DAG to apply reordering. The value
 should be set to a small integer because normally the effect of reordering
 too deep in the DAG is not noticable.}
+
+\item{verbose}{Whether to print messages.}
 }
 \value{
 An \code{ontology_Dag} object.

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -78,13 +78,19 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">import_obo</span><span class="op">(</span><span class="va">file</span>, relation_type <span class="op">=</span> <span class="st">"part_of"</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">import_obo</span><span class="op">(</span><span class="va">file</span>, relation_type <span class="op">=</span> <span class="st">"part_of"</span>, verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">import_owl</span><span class="op">(</span><span class="va">file</span>, relation_type <span class="op">=</span> <span class="st">"part_of"</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">import_owl</span><span class="op">(</span><span class="va">file</span>, relation_type <span class="op">=</span> <span class="st">"part_of"</span>, verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">import_ontology</span><span class="op">(</span><span class="va">file</span>, robot_jar <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">robot_jar</span>, JAVA_ARGS <span class="op">=</span> <span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">import_ontology</span><span class="op">(</span></span>
+<span>  <span class="va">file</span>,</span>
+<span>  robot_jar <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">robot_jar</span>,</span>
+<span>  JAVA_ARGS <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">import_ttl</span><span class="op">(</span><span class="va">file</span>, relation_type <span class="op">=</span> <span class="st">"part_of"</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">import_ttl</span><span class="op">(</span><span class="va">file</span>, relation_type <span class="op">=</span> <span class="st">"part_of"</span>, verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -95,6 +101,10 @@
 
 <dt>relation_type</dt>
 <dd><p>Semantic relation types to include. Note <code>is_a</code> relation is always included.</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>Whether to print messages.</p></dd>
 
 
 <dt>...</dt>
@@ -128,17 +138,16 @@ set as a global option <code>simona_opt$robot_jar = ...</code>.</p></dd>
 <li><p><code>owl</code>: RDF/XML</p></li>
 <li><p><code>owx</code>: OWL/XML</p></li>
 <li><p><code>ttl</code>: Turtle</p></li>
-</ul><p><code>import_ttl()</code> is a simple parser for the <code>.ttl</code> format files. It only recognizes
+</ul><p>The description of the ROBOT tool is at http://robot.obolibrary.org/convert.</p>
+<p><code>import_ttl()</code> is a simple parser for the <code>.ttl</code> format files. It only recognizes
 terms that have the <code>owl:Class</code> object. The "is_a" relation is recognized by the predicate <code>rdfs:subClassOf</code>
 or an ontology-specific predicate that contains <code>.*/isa</code>. Other relation types are defined with
-the predicate <code>owl:ObjectProperty</code>.</p>
+the predicate <code>owl:ObjectProperty</code>. The format is parsed by a Perl script <code>system.file("scripts", "parse_ttl.pl", package = "simona")</code>.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fl">1</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># The plant ontology: http://obofoundry.org/ontology/po.html </span></span></span>
 <span class="r-in"><span><span class="fu">import_obo</span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/Planteome/plant-ontology/master/po.obo"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Parsing [Typedef] sections in the obo file [13/13]</span>
@@ -205,7 +214,7 @@ the predicate <code>owl:ObjectProperty</code>.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     and other 272 terms ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   A super root (_all_) is added.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An ontology_DAG object:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Source: filec82d58d301ce_MSTDE.ttl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Source: fileff4f3d50e710_MSTDE.ttl </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1411 terms / 1415 relations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Root: _all_ </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Terms: MT010001, MT010002, MT010003, MT010004, ...</span>

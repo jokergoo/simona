@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -78,7 +78,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">term_IC</span><span class="op">(</span><span class="va">dag</span>, <span class="va">method</span>, terms <span class="op">=</span> <span class="cn">NULL</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">term_IC</span><span class="op">(</span></span>
+<span>  <span class="va">dag</span>,</span>
+<span>  <span class="va">method</span>,</span>
+<span>  terms <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -88,7 +94,7 @@
 
 
 <dt>method</dt>
-<dd><p>An IC method. All available methods are in <code><a href="all_methods.html">all_ic_methods()</a></code>.</p></dd>
+<dd><p>An IC method. All available methods are in <code><a href="all_methods.html">all_term_IC_methods()</a></code>.</p></dd>
 
 
 <dt>terms</dt>
@@ -97,6 +103,10 @@
 
 <dt>control</dt>
 <dd><p>A list of parameters passing to individual methods. See the subsections.</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>Whether to print messages.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -141,7 +151,7 @@ the total number of items annotated to the DAG), IC for term <code>t</code> is c
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>IC <span class="ot">=</span> <span class="sc">-</span><span class="fu">log</span>(k<span class="sc">/</span>N)</span></code></pre><p></p></div>
 <p>In current implementations in other tools, there is an inconsistency of defining <code>k</code> and <code>N</code>.
 Please see <code><a href="n_annotations.html">n_annotations()</a></code> for explanation.</p>
-<p><code>NA</code> is assigned to the terms with no item annotated.</p>
+<p><code>NA</code> is assigned to terms with no item annotated.</p>
 </div>
 
 
@@ -152,11 +162,11 @@ Please see <code><a href="n_annotations.html">n_annotations()</a></code> for exp
 <p>It measures the probability of a term getting full transmission from the root. Each term is associated with a p-value and the root has
 the p-value of 1.</p>
 <p>For example, an intermediate term <code>t</code> has two parent terms <code>parent1</code> and <code>parent2</code>, also assume <code>parent1</code> has <code>k1</code> children
-and <code>parent2</code> has <code>k2</code> children, assume a parent transmits information equally to all its children, then <code>parent1</code> only transmits <code>1/k1</code> and
+and <code>parent2</code> has <code>k2</code> children, assume a parent transmits information equally to all its children, then respectively <code>parent1</code> only transmits <code>1/k1</code> and
 <code>parent2</code> only transmits <code>1/k2</code> of its content to term <code>t</code>, or the probability of a parent to reach <code>t</code> is <code>1/k1</code> or <code>1/k2</code>.
-Let's say <code>p1</code> and <code>p2</code> are the accmulated contents from the root for <code>parnet1</code> and <code>parent2</code> respectively (or the probability
+Let's say <code>p1</code> and <code>p2</code> are the accumulated contents from the root to <code>parnet1</code> and <code>parent2</code> respectively (or the probability
 of the two parent terms getting full transmission from root), then the probability of reaching <code>t</code> via a full transmission graph from <code>parent1</code>
-is the multiplication of <code>p1</code> and <code>1/k1</code>, which is <code>p1/k1</code>, and it is similar for <code>p2/k2</code>. Then, for term <code>t</code>, if getting transmitted from <code>parent1</code> and
+is the multiplication of <code>p1</code> and <code>1/k1</code>, which is <code>p1/k1</code>, and same for <code>p2/k2</code>. Then, for term <code>t</code>, if getting transmitted from <code>parent1</code> and
 <code>parent2</code> are independent, the probability of <code>t</code> (denoted as <code>p_t</code>) to get transmitted from both parents is:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>p_t <span class="ot">=</span> (p1<span class="sc">/</span>k1) <span class="sc">*</span> (p2<span class="sc">/</span>k2)</span></code></pre><p></p></div>
 <p>Since the two parents are the full set of <code>t</code>'s parents, <code>p_t</code> is the probability of <code>t</code> getting full transmission from root. And the final
@@ -179,7 +189,7 @@ information content is:</p>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>     d      downstream</span></code></pre><p></p></div>
 <p>term <code>a</code> has three ways to reach leaf, which are <code>a-&gt;b</code>, <code>a-&gt;d</code> and <code>a-&gt;c-&gt;d</code>.</p>
 <p>Let's denote <code>k</code> as the number of ways for term <code>t</code> to reach leaves and <code>N</code> as the maximal value of <code>k</code> which
-should be associated with the root term, the information content is calculated as</p>
+is associated to the root term, the information content is calculated as</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>IC <span class="ot">=</span> <span class="sc">-</span><span class="fu">log</span>(k<span class="sc">/</span>N) </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>   <span class="ot">=</span> <span class="fu">log</span>(N) <span class="sc">-</span> <span class="fu">log</span>(k)</span></code></pre><p></p></div>
 <p>Paper link: <a href="https://doi.org/10.1186/1471-2105-7-135" class="external-link">doi:10.1186/1471-2105-7-135</a>
@@ -195,7 +205,7 @@ should be associated with the root term, the information content is calculated a
 The information content is calculated as:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>IC <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">log</span>(k<span class="sc">+</span><span class="dv">1</span>)<span class="sc">/</span><span class="fu">log</span>(N)</span></code></pre><p></p></div>
 <p>where <code>k</code> is the number of offspring terms of <code>t</code>, or you can think <code>k+1</code> is the number of <code>t</code>'s offspring terms plus itself.
-<code>N</code> is the total number of terms in the DAG.</p>
+<code>N</code> is the total number of terms on the DAG.</p>
 <p>Paper link: <a href="https://doi.org/10.5555/3000001.3000272" class="external-link">doi:10.5555/3000001.3000272</a>
 .</p>
 </div>
@@ -235,7 +245,7 @@ and <code>total_terms</code> is the number of all terms in the DAG.</p>
 <h3 id="ic-sanchez-">IC_Sanchez_2011<a class="anchor" aria-label="anchor" href="#ic-sanchez-"></a></h3>
 
 
-<p>It measures average contribution of term <code>t</code> on leaf terms. First denote <code>zeta</code> as the number of leaf terms that
+<p>It measures the average contribution of term <code>t</code> on leaf terms. First denote <code>zeta</code> as the number of leaf terms that
 can be reached from term <code>t</code> (or <code>t</code>'s offspring that are leaves.). Since all <code>t</code>'s ancestors can also
 reach <code>t</code>'s leaves, the contribution of <code>t</code> on leaf terms is scaled by <code>n_ancestors</code> which is the number of <code>t</code>'s ancestor terms.
 The final information content is normalized by the total number of leaves in the DAG, which is the possible maximal value of <code>zeta</code>.
@@ -273,7 +283,7 @@ The first factor is calculated as:</p>
 <p>Each relation is weighted by a value less than 1 based on the semantic relation, i.e. 0.8 for "is_a" and 0.6 for "part_of".
 For a term <code>t</code> and one of its ancestor term <code>a</code>, it first calculates an "S-value" which corresponds to a path from <code>a</code> to <code>t</code> where
 the accumulated multiplication of weights along the path reaches maximal:</p>
-<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">S</span>(a<span class="ot">-&gt;</span>t) <span class="ot">=</span> <span class="fu">max</span>(<span class="fu">prod</span>(w))</span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">S</span>(a<span class="ot">-&gt;</span>t) <span class="ot">=</span> max_{path}(prod_{node on the paty}(w))</span></code></pre><p></p></div>
 <p>Here <code>max</code> goes over all possible paths from <code>a</code> to <code>t</code>, and <code><a href="https://rdrr.io/r/base/prod.html" class="external-link">prod()</a></code> multiplies edge weights in a certain path.</p>
 <p>The formula can be transformed as (we simply rewrite <code>S(a-&gt;t)</code> to <code>S</code>):</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span>S <span class="ot">=</span> <span class="fu">min</span>(<span class="fu">prod</span>(<span class="dv">1</span><span class="sc">/</span>w))</span>
@@ -283,7 +293,7 @@ the accumulated multiplication of weights along the path reaches maximal:</p>
 <code>log(1/w)</code> as the weight, and <code>log(1/S)</code> is the weighted shortest distance.</p>
 <p>If <code>S(a-&gt;t)</code> can be thought as the maximal semantic contribution from <code>a</code> to <code>t</code>, the information content is calculated
 as the sum from all <code>t</code>'s ancestors (including <code>t</code> itself):</p>
-<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>IC <span class="ot">=</span> sum_{a <span class="ot">=</span><span class="er">&gt;</span> t<span class="st">'s ancestors + t}(S(a-&gt;t))</span></span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>IC <span class="ot">=</span> sum_{a <span class="cf">in</span> t<span class="st">'s ancestors + t}(S(a-&gt;t))</span></span></code></pre><p></p></div>
 <p>Paper link: <a href="https://doi.org/10.1093/bioinformatics/btm087" class="external-link">doi:10.1093/bioinformatics/btm087</a>
 .</p>
 <p>The contribution of different semantic relations can be set with the <code>contribution_factor</code> parameter. The value should be a named numeric
@@ -291,6 +301,7 @@ vector where names should cover the relations defined in <code>relations</code> 
 "relation_a" and "relation_b" set in the DAG, the value for <code>contribution_factor</code> can be set as:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">term_IC</span>(dag, <span class="at">method =</span> <span class="st">"IC_Wang"</span>, </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">list</span>(<span class="at">contribution_factor =</span> <span class="fu">c</span>(<span class="st">"relation_a"</span> <span class="ot">=</span> <span class="fl">0.8</span>, <span class="st">"relation_b"</span> <span class="ot">=</span> <span class="fl">0.6</span>)))</span></code></pre><p></p></div>
+<p>Note the <strong>IC_Wang_2007</strong> method is normally used within the <strong>Sim_Wang_2007</strong> semantic similarity method.</p>
 </div>
 
     </div>
@@ -309,6 +320,7 @@ vector where names should cover the relations defined in <code>relations</code> 
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="create_ontology_DAG.html">create_ontology_DAG</a></span><span class="op">(</span><span class="va">parents</span>, <span class="va">children</span>, annotation <span class="op">=</span> <span class="va">annotation</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">term_IC</span><span class="op">(</span><span class="va">dag</span>, <span class="st">"IC_annotation"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> IC_method: IC_annotation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         a         b         c         d         e         f </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.0000000 0.2876821 0.6931472 1.3862944 0.6931472 2.0794415 </span>
 </code></pre></div>

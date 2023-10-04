@@ -23,7 +23,7 @@ dag_shortest_dist_to_leaves(dag, terms = NULL, use_cache = TRUE)
 \item{use_cache}{Internally used.}
 }
 \value{
-An integer vector.
+An integer vector with length the same as the number of total terms in the DAG.
 }
 \description{
 Depth and height in the DAG

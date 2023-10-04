@@ -40,6 +40,7 @@ reorder_children = function(dag, node) {
 #' @param max_level Maximal depth of terms in DAG to apply reordering. The value
 #'      should be set to a small integer because normally the effect of reordering
 #'      too deep in the DAG is not noticable.
+#' @param verbose Whether to print messages.
 #' 
 #' @details 
 #' For a given term, its child terms are reordered based on the numbers
@@ -62,12 +63,12 @@ reorder_children = function(dag, node) {
 #' dag_reorder(dag)
 #' }
 #' 1
-dag_reorder = function(dag, max_level = 2) {
+dag_reorder = function(dag, max_level = 2, verbose = simona_opt$verbose) {
 	max_adjust_level = max_level
 	current_terms = dag_root(dag, in_labels = FALSE)
 	current_level = 0
 	while(current_level < max_adjust_level) {
-		message(qq("adjust child terms on level @{current_level}, @{length(current_terms)} terms"))
+		if(verbose) message(qq("adjust child terms on level @{current_level}, @{length(current_terms)} terms"))
 		current_terms2 = integer(0)
 		for(t in current_terms) {
 			dag@lt_children[[t]] = reorder_children(dag, t)

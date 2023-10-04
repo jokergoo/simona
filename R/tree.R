@@ -3,6 +3,7 @@
 #' Reduce the DAG to a tree
 #' 
 #' @param dag An `ontology_DAG` object.
+#' @param verbose Whether to print messages.
 #' 
 #' @details
 #' A tree is a reduced DAG where a child only has one parent. The reducing is applied by a breadth-first searching
@@ -26,7 +27,7 @@
 #' 
 #' dend = dag_as_dendrogram(tree)
 #' dend
-dag_treelize = function(dag) {
+dag_treelize = function(dag, verbose = simona_opt$verbose) {
 
 	if(dag_is_tree(dag)) {
 		return(dag)
@@ -41,7 +42,7 @@ dag_treelize = function(dag) {
 	parents = rep(seq_len(n), times = vapply(lt_children2, length, FUN.VALUE = integer(1)))
 	children = unlist(lt_children2)
 
-	tree = create_ontology_DAG(dag@terms[parents], dag@terms[children])
+	tree = create_ontology_DAG(dag@terms[parents], dag@terms[children], verbose = verbose)
 	tree@annotation = dag@annotation
 
 	if(!is.null(mcols(dag))) {

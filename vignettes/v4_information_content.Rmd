@@ -124,7 +124,7 @@ term_IC(dag, method = ..., control = list(...))
 All supported term IC methods are:
 
 ```{r}
-all_ic_methods()
+all_term_IC_methods()
 ```
 
 ### IC_offspring

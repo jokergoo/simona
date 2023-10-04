@@ -6,7 +6,7 @@
 \alias{print.ontology_tree}
 \title{Reduce the DAG to a tree}
 \usage{
-dag_treelize(dag)
+dag_treelize(dag, verbose = simona_opt$verbose)
 
 dag_as_dendrogram(dag)
 
@@ -14,6 +14,8 @@ dag_as_dendrogram(dag)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
+
+\item{verbose}{Whether to print messages.}
 
 \item{x}{An \code{ontology_DAG} object.}
 

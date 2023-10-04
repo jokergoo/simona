@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -78,7 +78,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">GroupSim_SimALN</span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, distance <span class="op">=</span> <span class="st">"longest_distances_via_LCA"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">GroupSim_SimALN</span><span class="op">(</span></span>
+<span>  <span class="va">dag</span>,</span>
+<span>  <span class="va">group1</span>,</span>
+<span>  <span class="va">group2</span>,</span>
+<span>  distance <span class="op">=</span> <span class="st">"longest_distances_via_LCA"</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="methods">
@@ -93,7 +99,11 @@
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="sc">-</span>mean_{a <span class="cf">in</span> group1, b <span class="cf">in</span> group2}(<span class="fu">d</span>(a, b)))</span></code></pre><p></p></div>
 <p><code>d(a, b)</code> is the distance between <code>a</code> and <code>b</code>, which can be the shortest distance between the two terms or
 the longest distnace via LCA.</p>
-<p>Distance method can be set via <code>control = list(distance = ...)</code>.</p>
+<p>There is a parameter <code>distance</code> which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">group_sim</span>(dag, group1, group2, <span class="at">method =</span> <span class="st">"GroupSim_SimALN"</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">list</span>(<span class="at">distance =</span> <span class="st">"shortest_distances_via_NCA"</span>))</span></code></pre><p></p></div>
+<p>Paper link: <a href="https://doi.org/10.1109/ISCC.2008.4625763" class="external-link">doi:10.1109/ISCC.2008.4625763</a>
+.</p>
 </div>
 
     </div>

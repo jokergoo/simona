@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -78,7 +78,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Sim_Wang_2007</span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, contribution_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>is_a <span class="op">=</span> <span class="fl">0.8</span>, part_of <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Sim_Wang_2007</span><span class="op">(</span></span>
+<span>  <span class="va">dag</span>,</span>
+<span>  <span class="va">terms</span>,</span>
+<span>  contribution_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>is_a <span class="op">=</span> <span class="fl">0.8</span>, part_of <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span>,</span>
+<span>  calc_by <span class="op">=</span> <span class="st">"igraph"</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="methods">
@@ -101,7 +107,7 @@ Similar to the <em>Sim_AIC_2014</em>, aggregation only to common ancestors, to <
 <p>The contribution of different semantic relations can be set with the <code>contribution_factor</code> parameter. The value should be a named numeric
 vector where names should cover the relations defined in <code>relations</code> set in <code><a href="create_ontology_DAG.html">create_ontology_DAG()</a></code>. For example, if there are two relations
 "relation_a" and "relation_b" set in the DAG, the value for <code>contribution_factor</code> can be set as:</p>
-<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">term_IC</span>(dag, <span class="at">method =</span> <span class="st">"IC_Wang"</span>, </span>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">term_sim</span>(dag, terms, <span class="at">method =</span> <span class="st">"Sim_Wang_2007"</span>, </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">list</span>(<span class="at">contribution_factor =</span> <span class="fu">c</span>(<span class="st">"relation_a"</span> <span class="ot">=</span> <span class="fl">0.8</span>, <span class="st">"relation_b"</span> <span class="ot">=</span> <span class="fl">0.6</span>)))</span></code></pre><p></p></div>
 </div>
 

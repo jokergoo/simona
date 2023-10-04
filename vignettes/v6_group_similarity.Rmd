@@ -61,6 +61,15 @@ group_sim(dag, group1, group2, method = ...,
     control = list(term_sim_method = ...))
 </pre>
 
+
+All supported group similarity methods are:
+
+```{r}
+library(simona)
+all_group_sim_methods()
+```
+
+
 ## Pairwise term similarity-based methods
 
 ### GroupSim_pairwise_avg
@@ -72,10 +81,16 @@ the two groups:
 
 $$ \mathrm{GroupSim}(p, q) = \frac{1}{|T_p|*|T_q|} \sum_{a \in T_p, b \in T_q}S(a, b) $$
 
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
 <pre class="r">
-group_sim(dag, group1, group2, method = "GroupSim_pairwise_avg",
-    control = list(term_sim_method = ...))
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_avg"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
 </pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
+
+Paper link: https://doi.org/10.1093/bioinformatics/btg153.
 
 ### GroupSim_pairwise_max
 
@@ -84,10 +99,16 @@ The similarity is defined as the maximal $S(a, b)$ among all pairs of terms in g
 $$ \mathrm{GroupSim}(p, q) = \max_{a \in T_p, b \in T_q}S(a, b) $$
 
 
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
 <pre class="r">
-group_sim(dag, group1, group2, method = "GroupSim_pairwise_max",
-    control = list(term_sim_method = ...))
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_max"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
 </pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
+
+Paper link: https://doi.org/10.1109/TCBB.2005.50.
 
 ### GroupSim_pairwise_BMA
 
@@ -99,10 +120,16 @@ which corresponds to the most similar term in $T$ to $x$. Then the BMA similarit
 
 $$ \mathrm{GroupSim}(p, q) = \frac{1}{2}\left( \frac{1}{|T_p|}\sum_{a \in T_p} S(a, T_q) + \frac{1}{|T_q|}\sum_{b \in T_q} S(b, T_p) \right) $$
 
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
 <pre class="r">
-group_sim(dag, group1, group2, method = "GroupSim_pairwise_BMA",
-    control = list(term_sim_method = ...))
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_BMA"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
 </pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
+
+Paper link: https://doi.org/10.1155/2012/975783.
 
 ### GroupSim_pairwise_BMM
 
@@ -111,12 +138,17 @@ BMM stands for "best-match max". It is defined as:
 $$ \mathrm{GroupSim}(p, q) = \max \left \{ \frac{1}{|T_p|}\sum_{a \in T_p} S(a, T_q), \frac{1}{|T_q|}\sum_{b \in T_q} S(b, T_p) \right \} $$
 
 
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
 <pre class="r">
-group_sim(dag, group1, group2, method = "GroupSim_pairwise_BMM",
-    control = list(term_sim_method = ...))
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_BMM"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
 </pre>
 
-Paper link: https://doi.org/10.1093/bioinformatics/btq064.
+Other parameters for the `term_sim_method` can also be set in the `control` list.
+
+Paper link: https://doi.org/10.1186/1471-2105-7-302.
+
 
 ### GroupSim_pairwise_ABM
 
@@ -124,10 +156,14 @@ ABM stands for "average best-match". It is defined as:
 
 $$ \mathrm{GroupSim}(p, q) = \frac{1}{|T_q| + |T_q|} \left( \sum_{a \in T_p} S(a, T_q) + \sum_{b \in T_q} S(b, T_p) \right)  $$
 
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
 <pre class="r">
-group_sim(dag, group1, group2, method = "GroupSim_pairwise_ABM",
-    control = list(term_sim_method = ...))
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_ABM"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
 </pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
 
 Paper link: https://doi.org/10.1186/1471-2105-14-284.
 
@@ -147,10 +183,14 @@ This final similarity is:
 $$ \mathrm{GroupSim}(p, q) = 1 - \mathrm{HDF}(p, q) $$
 
 
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
 <pre class="r">
-group_sim(dag, group1, group2, method = "GroupSim_pairwise_HDF",
-    control = list(term_sim_method = ...))
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_HDF"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
 </pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
 
 
 ### GroupSim_pairwise_MHDF
@@ -165,10 +205,14 @@ This final similarity is:
 $$ \mathrm{GroupSim}(p, q) = 1 - \mathrm{MHDF}(p, q) $$
 
 
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
 <pre class="r">
-group_sim(dag, group1, group2, method = "GroupSim_pairwise_MHDF",
-    control = list(term_sim_method = ...))
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_MHDF"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
 </pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
 
 Paper link: https://doi.org/10.1109/ICPR.1994.576361.
 
@@ -184,10 +228,14 @@ This final similarity is:
 
 $$ \mathrm{GroupSim}(p, q) = 1 - \mathrm{VHDF}(p, q) $$
 
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
 <pre class="r">
-group_sim(dag, group1, group2, method = "GroupSim_pairwise_VHDF",
-    control = list(term_sim_method = ...))
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_VHDF"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
 </pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
 
 Paper link: https://doi.org/10.1073/pnas.0702965104.
 
@@ -199,10 +247,15 @@ The similarity is:
 $$ \mathrm{GroupSim}(p, q) = \exp(-\mathrm{HDF}(p, q)) $$
 
 
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
 <pre class="r">
-group_sim(dag, group1, group2, method = "GroupSim_pairwise_Froehlich_2007",
-    control = list(term_sim_method = ...))
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_Froehlich_2007"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
 </pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
+
 
 Paper link: https://doi.org/10.1186/1471-2105-8-166.
 
@@ -214,10 +267,15 @@ Similar to VHDF, but it directly uses the similarity:
 $$ \mathrm{GroupSim}(p, q) = \frac{1}{2} \left( \sqrt{\frac{1}{|T_p|} \sum_{a \in T_p} S^2(a, T_q)} + \sqrt{\frac{1}{|T_q|} \sum_{b \in T_q} S^2(b, T_q)} \right) $$
 
 
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
 <pre class="r">
-group_sim(dag, group1, group2, method = "GroupSim_pairwise_Joeng_2014",
-    control = list(term_sim_method = ...))
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_Joeng_2014"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
 </pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
+
 
 Paper link: https://doi.org/10.1109/tcbb.2014.2343963.
 
@@ -289,7 +347,7 @@ group_sim(dag, group1, group2, method = "GroupSim_SimGIC",
 ### GroupSim_SimCOU
 
 Let's write $\mathcal{A}_p$ and $\mathcal{A}_q$ as two vectors $\mathbf{v_p}$
-and $\mathbf{v_q}$. Taking $\mathr{v_p}$ as an example, it is $\mathbf{v_p} = (w_1, ..., w_n)$ where $n$
+and $\mathbf{v_q}$. Taking $\mathbf{v_p}$ as an example, it is $\mathbf{v_p} = (w_1, ..., w_n)$ where $n$
 is the number of total terms in the DAG. The value $w_i$ is assigned to the corresponding term $t_i$
 and is defined as:
 
@@ -308,6 +366,13 @@ It can also be written as:
 
 $$ \mathrm{GroupSim}(a, b) = \frac{\sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q}\mathrm{IC}(x)^2}{\sqrt{\sum\limits_{x \in \mathcal{A}_p}\mathrm{IC}(x)^2} \cdot \sqrt{\sum\limits_{x \in \mathcal{A}_q}\mathrm{IC}(x)^2}} $$
 
+IC method can be set via the `control` argument. By default if there is annotation associated, _IC_annotation_ is used, or else _IC_offspring_ is used.
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_SimCOU",
+    control = list(IC_method = ...))
+</pre>
+
 ### GroupSim_SimCOT
 
 The semantic similarity is defined as:
@@ -319,7 +384,12 @@ $$
 \end{align*}
 $$
 
+IC method can be set via the `control` argument. By default if there is annotation associated, _IC_annotation_ is used, or else _IC_offspring_ is used.
 
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_SimCOT",
+    control = list(IC_method = ...))
+</pre>
 
 ## Groupwise edge-based methods
 

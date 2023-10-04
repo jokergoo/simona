@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -78,7 +78,11 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">IC_Zhang_2006</span><span class="op">(</span><span class="va">dag</span>, use_cache <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">use_cache</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">IC_Zhang_2006</span><span class="op">(</span></span>
+<span>  <span class="va">dag</span>,</span>
+<span>  use_cache <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">use_cache</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="methods">
@@ -97,7 +101,7 @@
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>     d      downstream</span></code></pre><p></p></div>
 <p>term <code>a</code> has three ways to reach leaf, which are <code>a-&gt;b</code>, <code>a-&gt;d</code> and <code>a-&gt;c-&gt;d</code>.</p>
 <p>Let's denote <code>k</code> as the number of ways for term <code>t</code> to reach leaves and <code>N</code> as the maximal value of <code>k</code> which
-should be associated with the root term, the information content is calculated as</p>
+is associated to the root term, the information content is calculated as</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>IC <span class="ot">=</span> <span class="sc">-</span><span class="fu">log</span>(k<span class="sc">/</span>N) </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>   <span class="ot">=</span> <span class="fu">log</span>(N) <span class="sc">-</span> <span class="fu">log</span>(k)</span></code></pre><p></p></div>
 <p>Paper link: <a href="https://doi.org/10.1186/1471-2105-7-135" class="external-link">doi:10.1186/1471-2105-7-135</a>

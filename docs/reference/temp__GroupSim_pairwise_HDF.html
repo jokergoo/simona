@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -78,7 +78,15 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">GroupSim_pairwise_HDF</span><span class="op">(</span><span class="va">dag</span>, <span class="va">group1</span>, <span class="va">group2</span>, <span class="va">term_sim_method</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">GroupSim_pairwise_HDF</span><span class="op">(</span></span>
+<span>  <span class="va">dag</span>,</span>
+<span>  <span class="va">group1</span>,</span>
+<span>  <span class="va">group2</span>,</span>
+<span>  term_sim_method <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  IC_method <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="methods">
@@ -95,7 +103,10 @@
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>HDF <span class="ot">=</span> <span class="fu">max</span>(max_{a <span class="cf">in</span> group1}(<span class="fu">D</span>(a, group2)), max_{b <span class="cf">in</span> group2}(<span class="fu">D</span>(b, group1)))</span></code></pre><p></p></div>
 <p>This final similarity is:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>group_sim <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> HDF</span></code></pre><p></p></div>
-<p>The term semantic similarity method can be set via <code>control = list(term_sim_method = ...)</code>.</p>
+<p>The term semantic similarity method and the IC method can be set via <code>control</code> argument:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">group_sim</span>(dag, group1, group2, <span class="at">method =</span> <span class="st">"GroupSim_pairwise_HDF"</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">list</span>(<span class="at">term_sim_method =</span> <span class="st">"Sim_Lin_1998"</span>, <span class="at">IC_method =</span> <span class="st">"IC_annotation"</span>)<span class="st">`</span><span class="at">.</span></span></code></pre><p></p></div>
+<p>Other parameters for the <code>term_sim_method</code> can also be set in the <code>control</code> list.</p>
 </div>
 
     </div>

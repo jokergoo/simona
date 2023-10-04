@@ -12,7 +12,11 @@
 #' ```
 #' 
 #' @rdname temp__IC_offspring
-IC_offspring = function(dag, use_cache = simona_opt$use_cache) {
+IC_offspring = function(dag, use_cache = simona_opt$use_cache, verbose = simona_opt$verbose) {
+
+	if(verbose) {
+		message("IC_method: ", "IC_offspring")
+	}
 
 	if(is.null(dag@term_env$IC_offspring)) {
 		use_cache = FALSE
@@ -27,10 +31,9 @@ IC_offspring = function(dag, use_cache = simona_opt$use_cache) {
 		
 	}
 	
-	
 	dag@term_env$IC_offspring
 }
-ADD_IC_METHOD("IC_offspring", "use_cache")
+ADD_IC_METHOD("IC_offspring")
 
 
 #' IC_depth
@@ -52,7 +55,12 @@ ADD_IC_METHOD("IC_offspring", "use_cache")
 #' ```
 #' 
 #' @rdname temp__IC_height
-IC_height = function(dag, use_cache = simona_opt$use_cache) {
+IC_height = function(dag, use_cache = simona_opt$use_cache, verbose = simona_opt$verbose) {
+
+	if(verbose) {
+		message("IC_method: ", "IC_height")
+	}
+	
 	if(is.null(dag@term_env$IC_height)) {
 		use_cache = FALSE
 	} 
@@ -66,7 +74,7 @@ IC_height = function(dag, use_cache = simona_opt$use_cache) {
 	
 	dag@term_env$IC_height
 }
-ADD_IC_METHOD("IC_height", "use_cache")
+ADD_IC_METHOD("IC_height")
 
 
 #' IC_annotation
@@ -86,8 +94,12 @@ ADD_IC_METHOD("IC_height", "use_cache")
 #' `NA` is assigned to terms with no item annotated.
 #' 
 #' @rdname temp__IC_annotation
-IC_annotation = function(dag, uniquify = simona_opt$anno_uniquify, use_cache = simona_opt$use_cache) {
+IC_annotation = function(dag, uniquify = simona_opt$anno_uniquify, use_cache = simona_opt$use_cache, verbose = simona_opt$verbose) {
 
+	if(verbose) {
+		message("IC_method: ", "IC_annotation")
+	}
+	
 	if(!uniquify && is.null(dag@term_env$IC_annotation)) {
 		use_cache = FALSE
 	} else if(uniquify && is.null(dag@term_env$IC_annotations_unique)) {
@@ -113,7 +125,7 @@ IC_annotation = function(dag, uniquify = simona_opt$anno_uniquify, use_cache = s
 		dag@term_env$IC_annotation
 	}
 }
-ADD_IC_METHOD("IC_annotation", c("uniquify", "use_cache"), require_anno = TRUE)
+ADD_IC_METHOD("IC_annotation", require_anno = TRUE)
 
 
 
@@ -150,7 +162,12 @@ ADD_IC_METHOD("IC_annotation", c("uniquify", "use_cache"), require_anno = TRUE)
 #' Paper link: \doi{10.1155/2012/975783}.
 #' 
 #' @rdname temp__IC_universal
-IC_universal = function(dag, use_cache = simona_opt$use_cache) {
+IC_universal = function(dag, use_cache = simona_opt$use_cache, verbose = simona_opt$verbose) {
+
+	if(verbose) {
+		message("IC_method: ", "IC_universal")
+	}
+	
 	if(is.null(dag@term_env$IC_universal) || !use_cache) {
 		lt_parents = dag@lt_parents
 
@@ -184,7 +201,7 @@ IC_universal = function(dag, use_cache = simona_opt$use_cache) {
 
 	dag@term_env$IC_universal
 }
-ADD_IC_METHOD("IC_universal", "use_cache")
+ADD_IC_METHOD("IC_universal")
 
 
 ##############################################
@@ -250,14 +267,18 @@ reachability = function(dag, use_cache = simona_opt$use_cache) {
 #' Paper link: \doi{10.1186/1471-2105-7-135}.
 #' 
 #' @rdname temp__IC_Zhang_2006
-IC_Zhang_2006 = function(dag, use_cache = simona_opt$use_cache) {
+IC_Zhang_2006 = function(dag, use_cache = simona_opt$use_cache, verbose = simona_opt$verbose) {
+	if(verbose) {
+		message("IC_method: ", "IC_Zhang_2006")
+	}
+	
 	if(is.null(dag@term_env$IC_Zhang_2006) || !use_cache) {
 		re = reachability(dag, use_cache)
 		dag@term_env$IC_Zhang_2006 = -log(re/max(re))
 	}
 	dag@term_env$IC_Zhang_2006
 }
-ADD_IC_METHOD("IC_Zhang_2006", "use_cache")
+ADD_IC_METHOD("IC_Zhang_2006")
 
 
 ########################################
@@ -281,14 +302,19 @@ ADD_IC_METHOD("IC_Zhang_2006", "use_cache")
 #' Paper link: \doi{10.5555/3000001.3000272}.
 #' 
 #' @rdname temp__IC_Seco_2004
-IC_Seco_2004 = function(dag, use_cache = simona_opt$use_cache) {
+IC_Seco_2004 = function(dag, use_cache = simona_opt$use_cache, verbose = simona_opt$verbose) {
+
+	if(verbose) {
+		message("IC_method: ", "IC_Seco_2004")
+	}
+	
 	if(is.null(dag@term_env$IC_Seco_2004) || !use_cache) {
 		n = n_offspring(dag, include_self = TRUE)
 		dag@term_env$IC_Seco_2004 = 1 - log(n)/log(dag@n_terms) # dag@n_terms == max(n)
 	}
 	dag@term_env$IC_Seco_2004
 }
-ADD_IC_METHOD("IC_Seco_2004", "use_cache")
+ADD_IC_METHOD("IC_Seco_2004")
 
 
 ########################################
@@ -312,17 +338,22 @@ ADD_IC_METHOD("IC_Seco_2004", "use_cache")
 #' Paper link: \doi{10.1109/FGCNS.2008.16}.
 #' 
 #' @rdname temp__IC_Zhou_2008
-IC_Zhou_2008 = function(dag, use_cache = simona_opt$use_cache) {
+IC_Zhou_2008 = function(dag, use_cache = simona_opt$use_cache, verbose = simona_opt$verbose) {
+
+	if(verbose) {
+		message("IC_method: ", "IC_Zhou_2008")
+	}
+	
 	if(is.null(dag@term_env$IC_Zhou_2008) || !use_cache) {
 		depth = dag_depth(dag, use_cache = use_cache)
-		ic_seco = IC_Seco_2004(dag, use_cache = use_cache)
+		ic_seco = IC_Seco_2004(dag, use_cache = use_cache, verbose = FALSE)
 		
 		sigma = 0.5
 		dag@term_env$IC_Zhou_2008 = sigma*ic_seco + (1-sigma)*log(ifelse(depth == 0, 1, depth))/log(max(depth))
 	}
 	dag@term_env$IC_Zhou_2008
 }
-ADD_IC_METHOD("IC_Zhou_2008", "use_cache")
+ADD_IC_METHOD("IC_Zhou_2008")
 
 
 # ########################################
@@ -352,20 +383,25 @@ ADD_IC_METHOD("IC_Zhou_2008", "use_cache")
 #' Paper link: \doi{10.5555/1862330.1862343}.
 #' 
 #' @rdname temp__IC_Seddiqui_2010
-IC_Seddiqui_2010 = function(dag, use_cache = simona_opt$use_cache) {
+IC_Seddiqui_2010 = function(dag, use_cache = simona_opt$use_cache, verbose = simona_opt$verbose) {
+
+	if(verbose) {
+		message("IC_method: ", "IC_Seddiqui_2010")
+	}
+	
 	if(is.null(dag@term_env$IC_Seddiqui_2010) || !use_cache) {
 		n_relations = dag@term_env$n_parents + dag@term_env$n_children
 		n_edges = sum(dag@term_env$n_parents)
 		n_nodes = dag@n_terms
 
-		ic_seco = IC_Seco_2004(dag, use_cache)
+		ic_seco = IC_Seco_2004(dag, use_cache, verbose = FALSE)
 
 		sigma = log(n_edges + 1)/( log(n_edges) + log(n_nodes) )
 		dag@term_env$IC_Seddiqui_2010 = (1 - sigma)*ic_seco + sigma*log(n_relations + 1)/log(n_edges + 1)
 	}
 	dag@term_env$IC_Seddiqui_2010
 }
-ADD_IC_METHOD("IC_Seddiqui_2010", "use_cache")
+ADD_IC_METHOD("IC_Seddiqui_2010")
 
 
 
@@ -390,7 +426,12 @@ ADD_IC_METHOD("IC_Seddiqui_2010", "use_cache")
 #' Paper link: \doi{10.1016/j.knosys.2010.10.001}.
 #' 
 #' @rdname temp__IC_Sanchez_2011
-IC_Sanchez_2011 = function(dag, use_cache = simona_opt$use_cache) {
+IC_Sanchez_2011 = function(dag, use_cache = simona_opt$use_cache, verbose = simona_opt$verbose) {
+
+	if(verbose) {
+		message("IC_method: ", "IC_Sanchez_2011")
+	}
+	
 	if(is.null(dag@term_env$IC_Sanchez_2011) || !use_cache) {
 		nl = length(dag@leaves)
 		n_connected_leaves = n_connected_leaves(dag)
@@ -402,7 +443,7 @@ IC_Sanchez_2011 = function(dag, use_cache = simona_opt$use_cache) {
 	}
 	dag@term_env$IC_Sanchez_2011
 }
-ADD_IC_METHOD("IC_Sanchez_2011", "use_cache")
+ADD_IC_METHOD("IC_Sanchez_2011")
 
 
 
@@ -450,13 +491,18 @@ ADD_IC_METHOD("IC_Sanchez_2011", "use_cache")
 #' ```
 #' 
 #' @rdname temp__IC_Meng_2012
-IC_Meng_2012 = function(dag, correct = FALSE, use_cache = simona_opt$use_cache) {
+IC_Meng_2012 = function(dag, correct = FALSE, use_cache = simona_opt$use_cache, verbose = simona_opt$verbose) {
+
+	if(verbose) {
+		message("IC_method: ", "IC_Meng_2012")
+	}
+	
 	if(is.null(dag@term_env$IC_Meng_2012) || !use_cache) {
 		dag@term_env$IC_Meng_2012 = cpp_ic_meng(dag, correct)
 	}
 	dag@term_env$IC_Meng_2012
 }
-ADD_IC_METHOD("IC_Meng_2012", c("correct", "use_cache"))
+ADD_IC_METHOD("IC_Meng_2012")
 
 
 
@@ -544,7 +590,13 @@ totipotency = function(dag, use_cache = simona_opt$use_cache) {
 #' Note the **IC_Wang_2007** method is normally used within the **Sim_Wang_2007** semantic similarity method.
 #' 
 #' @rdname temp__IC_Wang_2007
-IC_Wang_2007 = function(dag, contribution_factor = c("is_a" = 0.8, "part_of" = 0.6), use_cache = simona_opt$use_cache) {
+IC_Wang_2007 = function(dag, contribution_factor = c("is_a" = 0.8, "part_of" = 0.6), 
+	use_cache = simona_opt$use_cache, verbose = simona_opt$verbose) {
+
+	if(verbose) {
+		message("IC_method: ", "IC_Wang_2007")
+	}
+	
 	if(is.null(dag@term_env$IC_Wang_2007) || !use_cache) {
 		if(length(dag@lt_children_relations) == 0) {
 			stop("`relations` is not set when creating the ontology_DAG object.")
@@ -564,10 +616,13 @@ IC_Wang_2007 = function(dag, contribution_factor = c("is_a" = 0.8, "part_of" = 0
 		if(length(setdiff(relation_levels, names(contribution_factor)))) {
 			stop("Contribution factor should be provided for all relations.")
 		}
-		dag@term_env$IC_Wang_2007 = cpp_ic_wang(dag, unname(contribution_factor[relation_levels]))
+
+		dag@term_env$IC_Wang_2007 = exec_under_message_condition({
+			cpp_ic_wang(dag, unname(contribution_factor[relation_levels]))
+		}, verbose = verbose)
 	}
 	dag@term_env$IC_Wang_2007
 }
-ADD_IC_METHOD("IC_Wang_2007", c("contribution_factor", "use_cache"))
+ADD_IC_METHOD("IC_Wang_2007")
 
 

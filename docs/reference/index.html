@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -76,7 +76,7 @@
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="all_methods.html">all_ic_methods()</a></code> <code><a href="all_methods.html">all_term_sim_methods()</a></code> <code><a href="all_methods.html">all_group_sim_methods()</a></code> </p>
+          <p><code><a href="all_methods.html">all_term_IC_methods()</a></code> <code><a href="all_methods.html">all_term_sim_methods()</a></code> <code><a href="all_methods.html">all_group_sim_methods()</a></code> </p>
         </td>
         <td><p>Supported methods</p></td>
       </tr><tr><td>
@@ -84,7 +84,7 @@
         </td>
         <td><p>Term-item associations</p></td>
       </tr><tr><td>
-          <p><code><a href="common_ancestor.html">MICA_term()</a></code> <code><a href="common_ancestor.html">MICA_IC()</a></code> <code><a href="common_ancestor.html">LCA_term()</a></code> <code><a href="common_ancestor.html">LCA_depth()</a></code> <code><a href="common_ancestor.html">NCA_term()</a></code> <code><a href="common_ancestor.html">max_ancestor_v()</a></code> <code><a href="common_ancestor.html">max_ancestor_id()</a></code> </p>
+          <p><code><a href="common_ancestor.html">MICA_term()</a></code> <code><a href="common_ancestor.html">MICA_IC()</a></code> <code><a href="common_ancestor.html">LCA_term()</a></code> <code><a href="common_ancestor.html">LCA_depth()</a></code> <code><a href="common_ancestor.html">NCA_term()</a></code> <code><a href="common_ancestor.html">max_ancestor_v()</a></code> <code><a href="common_ancestor.html">max_ancestor_id()</a></code> <code><a href="common_ancestor.html">max_ancestor_path_sum()</a></code> </p>
         </td>
         <td><p>Various types of common ancestors</p></td>
       </tr><tr><td>
@@ -110,7 +110,7 @@
       </tr><tr><td>
           <p><code><a href="dag_enrich_items.html">dag_enrich_items()</a></code> </p>
         </td>
-        <td><p>Enrichment analysis on numbers of annotated items</p></td>
+        <td><p>Enrichment analysis on the number of annotated items</p></td>
       </tr><tr><td>
           <p><code><a href="dag_enrich_terms.html">dag_enrich_terms()</a></code> </p>
         </td>
@@ -164,7 +164,11 @@
         </td>
         <td><p>Get or set meta columns on DAG</p></td>
       </tr><tr><td>
-          <p><code><a href="n_annotations.html">n_annotations()</a></code> </p>
+          <p><code><a href="method_param.html">method_param()</a></code> </p>
+        </td>
+        <td><p>All Papameters of a given method</p></td>
+      </tr><tr><td>
+          <p><code><a href="n_annotations.html">n_annotations()</a></code> <code><a href="n_annotations.html">has_annotation()</a></code> </p>
         </td>
         <td><p>Number of annotated items</p></td>
       </tr><tr><td>
@@ -192,7 +196,7 @@
         </td>
         <td><p>Global options</p></td>
       </tr><tr><td>
-          <p><code><a href="subset.html">`[`(<i>&lt;ontology_DAG&gt;</i>)</a></code> <code><a href="subset.html">`[[`(<i>&lt;ontology_DAG&gt;</i>,<i>&lt;character&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> </p>
+          <p><code><a href="subset.html">`[`(<i>&lt;ontology_DAG&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> <code><a href="subset.html">`[`(<i>&lt;ontology_DAG&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;ANY&gt;</i>)</a></code> <code><a href="subset.html">`[`(<i>&lt;ontology_DAG&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;missing&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> <code><a href="subset.html">`[`(<i>&lt;ontology_DAG&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;missing&gt;</i>,<i>&lt;ANY&gt;</i>)</a></code> <code><a href="subset.html">`[`(<i>&lt;ontology_DAG&gt;</i>,<i>&lt;missing&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> <code><a href="subset.html">`[`(<i>&lt;ontology_DAG&gt;</i>,<i>&lt;missing&gt;</i>,<i>&lt;ANY&gt;</i>,<i>&lt;ANY&gt;</i>)</a></code> <code><a href="subset.html">`[`(<i>&lt;ontology_DAG&gt;</i>,<i>&lt;missing&gt;</i>,<i>&lt;missing&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> <code><a href="subset.html">`[`(<i>&lt;ontology_DAG&gt;</i>,<i>&lt;missing&gt;</i>,<i>&lt;missing&gt;</i>,<i>&lt;ANY&gt;</i>)</a></code> <code><a href="subset.html">`[[`(<i>&lt;ontology_DAG&gt;</i>,<i>&lt;character&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> </p>
         </td>
         <td><p>Create sub-DAGs</p></td>
       </tr><tr><td>
@@ -243,10 +247,6 @@
           <p><code><a href="temp__GroupSim_SimGIC.html">GroupSim_SimGIC()</a></code> </p>
         </td>
         <td><p>GroupSim_SimGIC</p></td>
-      </tr><tr><td>
-          <p><code><a href="temp__GroupSim_SimINT.html">GroupSim_SimINT()</a></code> </p>
-        </td>
-        <td><p>GroupSim_SimINT</p></td>
       </tr><tr><td>
           <p><code><a href="temp__GroupSim_SimLP.html">GroupSim_SimLP()</a></code> </p>
         </td>
@@ -312,10 +312,6 @@
         </td>
         <td><p>GroupSim_pairwise_max</p></td>
       </tr><tr><td>
-          <p><code><a href="temp__GroupSim_spgk.html">GroupSim_spgk()</a></code> </p>
-        </td>
-        <td><p>GroupSim_spgk</p></td>
-      </tr><tr><td>
           <p><code><a href="temp__IC_Meng_2012.html">IC_Meng_2012()</a></code> </p>
         </td>
         <td><p>IC_Meng_2012</p></td>
@@ -368,6 +364,10 @@
         </td>
         <td><p>Sim_AlMubaid_2006</p></td>
       </tr><tr><td>
+          <p><code><a href="temp__Sim_Ancestor.html">Sim_Ancestor()</a></code> </p>
+        </td>
+        <td><p>Sim_Ancestor</p></td>
+      </tr><tr><td>
           <p><code><a href="temp__Sim_Dice.html">Sim_Dice()</a></code> </p>
         </td>
         <td><p>Sim_Dice</p></td>
@@ -380,9 +380,9 @@
         </td>
         <td><p>Sim_FaITH_2010</p></td>
       </tr><tr><td>
-          <p><code><a href="temp__Sim_GraSM_2005.html">Sim_GraSM_2005()</a></code> </p>
+          <p><code><a href="temp__Sim_GOGO_2018.html">Sim_GOGO_2018()</a></code> </p>
         </td>
-        <td><p>Sim_GraSM_2005</p></td>
+        <td><p>Sim_GOGO_2018</p></td>
       </tr><tr><td>
           <p><code><a href="temp__Sim_HRSS_2013.html">Sim_HRSS_2013()</a></code> </p>
         </td>

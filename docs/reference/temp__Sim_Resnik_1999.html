@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -78,7 +78,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Sim_Resnik_1999</span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, norm_method <span class="op">=</span> <span class="st">"Nmax"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Sim_Resnik_1999</span><span class="op">(</span><span class="va">dag</span>, <span class="va">terms</span>, norm_method <span class="op">=</span> <span class="st">"Nmax"</span>, verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="methods">
@@ -93,7 +93,7 @@
 <p>The original Resnik similarity is the IC of the MICA term. There are three ways to normalize the Resnik similarity into the scale of <code>[0, 1]</code>:</p><ol><li><p><em>Nunif</em></p></li>
 </ol><p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="fu">IC</span>(c)<span class="sc">/</span><span class="fu">log</span>(N)</span></code></pre><p></p></div>
 <p>where <code>N</code> is the total number of items annotated to the whole DAG, i.e. number of items annotated to the root. Then the IC
-of a term with only one item annotated is <code>-log(1/N)</code> = log(N)`. So the <em>Nunif</em> method normalizes IC to the possible maximal IC in the DAG.</p><ol><li><p><em>Nmax</em></p></li>
+of a term with only one item annotated is <code>-log(1/N)</code> = log(N)` which is the maximal IC value in the DAG.</p><ol><li><p><em>Nmax</em></p></li>
 </ol><p><code>IC_max</code> is the maximal IC of all terms. If there is a term with only one item annotated, <code>Nmax</code> is identical to the `Nunif* method.</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">=</span> <span class="fu">IC</span>(c)<span class="sc">/</span>IC_max</span></code></pre><p></p></div><ol><li><p><em>Nunivers</em></p></li>
 </ol><p>The IC is normalized by the maximal IC of term <code>a</code> and <code>b</code>.</p>

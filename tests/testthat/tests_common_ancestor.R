@@ -24,13 +24,13 @@ children = c("b", "c", "c", "d", "e", "f")
 dag = create_ontology_DAG(parents, children)
 
 test_that("test cpp_max_ancestor_v", {
-	m = cpp_max_ancestor_v(dag, 1:6, dag_depth(dag))
+	m = max_ancestor_v(dag, 1:6, dag_depth(dag))
 	expect_equal(
 		m[upper.tri(m, diag = TRUE)],
 		c(0, 0, 1, 0, 1, 2, 0, 1, 1, 2, 0, 1, 2, 1, 3, 0, 1, 1, 2, 1, 3)
 	)
 
-	m = cpp_max_ancestor_v(dag, c(2, 4, 5, 3), dag_depth(dag))
+	m = max_ancestor_v(dag, c(2, 4, 5, 3), dag_depth(dag))
 	expect_equal(
 		m[upper.tri(m, diag = TRUE)],
 		c(1, 1, 2, 1, 1, 3, 1, 1, 2, 2)
@@ -38,19 +38,19 @@ test_that("test cpp_max_ancestor_v", {
 })
 
 test_that("test cpp_max_ancestor_id", {
-	m = cpp_max_ancestor_id(dag, 1:6, dag_depth(dag))
+	m = max_ancestor_id(dag, 1:6, dag_depth(dag))
 	expect_equal(
 		m[upper.tri(m, diag = TRUE)],
 		c(1, 1, 2, 1, 2, 3, 1, 2, 2, 4, 1, 2, 3, 2, 5, 1, 2, 2, 4, 2, 6)
 	)
 
-	m = cpp_max_ancestor_id(dag, c(2, 4, 5, 3), dag_depth(dag))
+	m = max_ancestor_id(dag, c(2, 4, 5, 3), dag_depth(dag))
 	expect_equal(
 		m[upper.tri(m, diag = TRUE)],
 		c(2, 2,4, 2, 2, 5, 2, 2, 3, 3)
 	)
 
-	m = cpp_max_ancestor_id(dag, 1:6, rep(0, 6))
+	m = max_ancestor_id(dag, 1:6, rep(0, 6))
 	expect_equal(
 		m[upper.tri(m, diag = TRUE)],
 		c(1, 1, 2, 1, 2, 3, 1, 2, 2, 4, 1, 2, 3, 2, 5, 1, 2, 2, 4, 2, 6)
@@ -59,13 +59,13 @@ test_that("test cpp_max_ancestor_id", {
 })
 
 test_that("test cpp_distances", {
-	m = cpp_shortest_distances_via_NCA(dag, 1:6)
+	m = shortest_distances_via_NCA(dag, 1:6)
 	expect_equal(
 		m[upper.tri(m, diag = TRUE)],
 		c(0, 1, 0, 1, 1, 0, 2, 1, 2, 0, 2, 2, 1, 3, 0, 3, 2, 3, 1, 4, 0)
 	)
 
-	m2 = cpp_shortest_distances_via_NCA(dag, c(2, 4, 5, 3))
+	m2 = shortest_distances_via_NCA(dag, c(2, 4, 5, 3))
 	m3 = m[c(2, 4, 5, 3), c(2, 4, 5, 3)]
 	expect_equal(m2, m3)
 
@@ -87,13 +87,13 @@ test_that("test cpp_distances", {
 })
 
 test_that("test distance_directed", {
-	m = cpp_longest_distances_directed(dag, 1:6)
+	m = longest_distances_directed(dag, 1:6)
 	expect_equal(
 		m[upper.tri(m, diag = TRUE)],
 		c(0, 1, 0, 2, 1, 0, 2, 1, -1, 0, 3, 2, 1, -1, 0, 3, 2, -1, 1, -1, 0)
 	)
 
-	m2 = cpp_longest_distances_directed(dag, c(2, 4, 5, 3))
+	m2 = longest_distances_directed(dag, c(2, 4, 5, 3))
 	m3 = m[c(2, 4, 5, 3), c(2, 4, 5, 3)]
 	expect_equal(m2, m3)
 
@@ -102,13 +102,13 @@ test_that("test distance_directed", {
 		rep(-1, 15)
 	)
 
-	m = cpp_shortest_distances_directed(dag, 1:6)
+	m = shortest_distances_directed(dag, 1:6)
 	expect_equal(
 		m[upper.tri(m, diag = TRUE)],
 		c(0, 1, 0, 1, 1, 0, 2, 1, -1, 0, 2, 2, 1, -1, 0, 3, 2, -1, 1, -1, 0)
 	)
 
-	m2 = cpp_shortest_distances_directed(dag, c(2, 4, 5, 3))
+	m2 = shortest_distances_directed(dag, c(2, 4, 5, 3))
 	m3 = m[c(2, 4, 5, 3), c(2, 4, 5, 3)]
 	expect_equal(m2, m3)
 
@@ -138,7 +138,7 @@ test_that("compare cpp_nearest_common_ancestor and cpp_max_ancestor_v", {
 	dag = create_ontology_DAG(parents, children)
 	depth = dag_depth(dag)
 
-	m1 = cpp_max_ancestor_id(dag, 1:7, depth)
+	m1 = max_ancestor_id(dag, 1:7, depth)
 	m2 = cpp_nearest_common_ancestor(dag, 1:7)
 
 	expect_equal(m1[5, 7], 3)

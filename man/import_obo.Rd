@@ -7,18 +7,26 @@
 \alias{import_ttl}
 \title{Import ontology file to an ontology_DAG object}
 \usage{
-import_obo(file, relation_type = "part_of", ...)
+import_obo(file, relation_type = "part_of", verbose = simona_opt$verbose, ...)
 
-import_owl(file, relation_type = "part_of", ...)
+import_owl(file, relation_type = "part_of", verbose = simona_opt$verbose, ...)
 
-import_ontology(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "", ...)
+import_ontology(
+  file,
+  robot_jar = simona_opt$robot_jar,
+  JAVA_ARGS = "",
+  verbose = simona_opt$verbose,
+  ...
+)
 
-import_ttl(file, relation_type = "part_of", ...)
+import_ttl(file, relation_type = "part_of", verbose = simona_opt$verbose, ...)
 }
 \arguments{
 \item{file}{Path of the ontology file or an URL.}
 
 \item{relation_type}{Semantic relation types to include. Note \code{is_a} relation is always included.}
+
+\item{verbose}{Whether to print messages.}
 
 \item{...}{Pass to \code{\link[=create_ontology_DAG]{create_ontology_DAG()}}.}
 

@@ -4,16 +4,24 @@
 \alias{term_IC}
 \title{Information content}
 \usage{
-term_IC(dag, method, terms = NULL, control = list())
+term_IC(
+  dag,
+  method,
+  terms = NULL,
+  control = list(),
+  verbose = simona_opt$verbose
+)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
 
-\item{method}{An IC method. All available methods are in \code{\link[=all_ic_methods]{all_ic_methods()}}.}
+\item{method}{An IC method. All available methods are in \code{\link[=all_term_IC_methods]{all_term_IC_methods()}}.}
 
 \item{terms}{A vector of term names. If it is set, the returned vector will be subsetted to the terms that have been set here.}
 
 \item{control}{A list of parameters passing to individual methods. See the subsections.}
+
+\item{verbose}{Whether to print messages.}
 }
 \value{
 A numeric vector.

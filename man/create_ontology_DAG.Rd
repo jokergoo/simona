@@ -12,7 +12,8 @@ create_ontology_DAG(
   source = "Ontology",
   annotation = NULL,
   remove_cyclic_paths = FALSE,
-  remove_rings = FALSE
+  remove_rings = FALSE,
+  verbose = simona_opt$verbose
 )
 }
 \arguments{
@@ -38,6 +39,8 @@ will be an error that lists all cyclic paths.}
 
 \item{remove_rings}{There might be rings that are isolated to the main DAG where there are no roots on the rings, thus they cannot be attached to the main DAG. If the value
 of \code{remove_rings} is set to \code{TRUE}, such rings are removed.}
+
+\item{verbose}{Whether to print messages.}
 }
 \value{
 An \code{ontology_DAG} object.

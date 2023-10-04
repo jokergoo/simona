@@ -40,7 +40,7 @@ NumericMatrix cpp_max_ancestor_v(S4 dag, IntegerVector nodes, NumericVector v) {
 		return score;
 	}
 
-	Rcout << "collecting all ancestors of input terms ...\n";
+	message("collecting all ancestors of input terms ...", true);
 	IntegerVector all_ancestors = cpp_ancestors_of_a_group(dag, nodes, 1, true);
 	LogicalVector l_offspring(n);
 	LogicalVector l_all_ancestors = integer_to_logical_vector(all_ancestors - 1, n);

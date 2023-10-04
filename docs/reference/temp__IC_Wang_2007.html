@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -81,7 +81,8 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">IC_Wang_2007</span><span class="op">(</span></span>
 <span>  <span class="va">dag</span>,</span>
 <span>  contribution_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>is_a <span class="op">=</span> <span class="fl">0.8</span>, part_of <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span>,</span>
-<span>  use_cache <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">use_cache</span></span>
+<span>  use_cache <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">use_cache</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -96,7 +97,7 @@
 <p>Each relation is weighted by a value less than 1 based on the semantic relation, i.e. 0.8 for "is_a" and 0.6 for "part_of".
 For a term <code>t</code> and one of its ancestor term <code>a</code>, it first calculates an "S-value" which corresponds to a path from <code>a</code> to <code>t</code> where
 the accumulated multiplication of weights along the path reaches maximal:</p>
-<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">S</span>(a<span class="ot">-&gt;</span>t) <span class="ot">=</span> <span class="fu">max</span>(<span class="fu">prod</span>(w))</span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">S</span>(a<span class="ot">-&gt;</span>t) <span class="ot">=</span> max_{path}(prod_{node on the paty}(w))</span></code></pre><p></p></div>
 <p>Here <code>max</code> goes over all possible paths from <code>a</code> to <code>t</code>, and <code><a href="https://rdrr.io/r/base/prod.html" class="external-link">prod()</a></code> multiplies edge weights in a certain path.</p>
 <p>The formula can be transformed as (we simply rewrite <code>S(a-&gt;t)</code> to <code>S</code>):</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span>S <span class="ot">=</span> <span class="fu">min</span>(<span class="fu">prod</span>(<span class="dv">1</span><span class="sc">/</span>w))</span>
@@ -106,7 +107,7 @@ the accumulated multiplication of weights along the path reaches maximal:</p>
 <code>log(1/w)</code> as the weight, and <code>log(1/S)</code> is the weighted shortest distance.</p>
 <p>If <code>S(a-&gt;t)</code> can be thought as the maximal semantic contribution from <code>a</code> to <code>t</code>, the information content is calculated
 as the sum from all <code>t</code>'s ancestors (including <code>t</code> itself):</p>
-<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>IC <span class="ot">=</span> sum_{a <span class="ot">=</span><span class="er">&gt;</span> t<span class="st">'s ancestors + t}(S(a-&gt;t))</span></span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>IC <span class="ot">=</span> sum_{a <span class="cf">in</span> t<span class="st">'s ancestors + t}(S(a-&gt;t))</span></span></code></pre><p></p></div>
 <p>Paper link: <a href="https://doi.org/10.1093/bioinformatics/btm087" class="external-link">doi:10.1093/bioinformatics/btm087</a>
 .</p>
 <p>The contribution of different semantic relations can be set with the <code>contribution_factor</code> parameter. The value should be a named numeric
@@ -114,6 +115,7 @@ vector where names should cover the relations defined in <code>relations</code> 
 "relation_a" and "relation_b" set in the DAG, the value for <code>contribution_factor</code> can be set as:</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">term_IC</span>(dag, <span class="at">method =</span> <span class="st">"IC_Wang"</span>, </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">list</span>(<span class="at">contribution_factor =</span> <span class="fu">c</span>(<span class="st">"relation_a"</span> <span class="ot">=</span> <span class="fl">0.8</span>, <span class="st">"relation_b"</span> <span class="ot">=</span> <span class="fl">0.6</span>)))</span></code></pre><p></p></div>
+<p>Note the <strong>IC_Wang_2007</strong> method is normally used within the <strong>Sim_Wang_2007</strong> semantic similarity method.</p>
 </div>
 
     </div>

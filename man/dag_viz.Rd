@@ -18,9 +18,10 @@ dag_circular_viz(
   node_transparency = 0.5,
   node_size = NULL,
   edge_col = NULL,
-  edge_transparency = 0.98,
+  edge_transparency = 0.96,
   legend_labels_from = NULL,
-  legend_labels_max_width = 50
+  legend_labels_max_width = 50,
+  verbose = simona_opt$verbose
 )
 
 dag_as_DOT(
@@ -77,6 +78,8 @@ legend labels.}
 
 \item{legend_labels_max_width}{Maximal width of legend labels. Labels are wrapped into
 multiple lines if the widths exceed it.}
+
+\item{verbose}{Whether to print messages.}
 
 \item{color}{A vector of colors. If the value is a vector, the order should correspond to terms in \code{\link[=dag_all_terms]{dag_all_terms()}}.}
 

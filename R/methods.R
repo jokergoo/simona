@@ -34,6 +34,8 @@ get_term_sim_method = function(method, control = list()) {
 	}
 
 	f = get(method, envir = topenv(), inherits = FALSE)
+
+	control = control[intersect(names(control), param)]
 	
 	function(dag, terms) {
 		do.call(f, c(list(dag = dag, terms = terms), control))
@@ -70,9 +72,10 @@ get_group_sim_method = function(method, control = list()) {
 #' Information content
 #' 
 #' @param dag An `ontology_DAG` object.
-#' @param method An IC method. All available methods are in [`all_ic_methods()`].
+#' @param method An IC method. All available methods are in [`all_term_IC_methods()`].
 #' @param terms A vector of term names. If it is set, the returned vector will be subsetted to the terms that have been set here.
 #' @param control A list of parameters passing to individual methods. See the subsections.
+#' @param verbose Whether to print messages.
 #' 
 #' @inheritSection IC_offspring Methods
 #' @inheritSection IC_height Methods
@@ -101,7 +104,14 @@ get_group_sim_method = function(method, control = list()) {
 #' )
 #' dag = create_ontology_DAG(parents, children, annotation = annotation)
 #' term_IC(dag, "IC_annotation")
-term_IC = function(dag, method, terms = NULL, control = list()) {
+term_IC = function(dag, method, terms = NULL, control = list(), verbose = simona_opt$verbose) {
+		
+	if(missing(method)) {
+		method = default_term_IC_method(dag)
+	}
+
+	if(is.null(control$verbose)) control$verbose = verbose
+	
 	IC_fun = get_IC_method(method, control)
 	ic = IC_fun(dag)
 
@@ -126,6 +136,7 @@ term_IC = function(dag, method, terms = NULL, control = list()) {
 #' @param terms A vector of term names.
 #' @param method A term similarity method. All available methods are in [`all_term_sim_methods()`].
 #' @param control A list of parameters passing to individual methods. See the subsections.
+#' @param verbose Whether to print messages.
 #' 
 #' @inheritSection Sim_Lin_1998 Methods
 #' @inheritSection Sim_Resnik_1999 Methods
@@ -177,7 +188,13 @@ term_IC = function(dag, method, terms = NULL, control = list()) {
 #' )
 #' dag = create_ontology_DAG(parents, children, annotation = annotation)
 #' term_sim(dag, dag_all_terms(dag), method = "Sim_Lin_1998")
-term_sim = function(dag, terms, method, control = list()) {
+term_sim = function(dag, terms, method, control = list(), verbose = simona_opt$verbose) {
+
+	if(missing(method)) {
+		method = default_term_sim_method(dag)
+	}
+
+	if(is.null(control$verbose)) control$verbose = verbose
 
 	if(any(duplicated(terms))) {
 		stop("`term` can not have duplicated elements.")
@@ -196,8 +213,9 @@ term_sim = function(dag, terms, method, control = list()) {
 #' @param group1 A vector of term names or a list of term vectors.
 #' @param group2 A vector of term names or a list of term vectors..
 #' @param method A group similarity method. All available methods are in [`all_group_sim_methods()`].
-#' @param control A list of parameters passing to individual methods. See the subsections.
-#'
+#' @param control A list of parameters passing to individual methods. The term similarity method is controlled by `term_sim_method`
+#'     and the IC method is controlled by `IC_method`. Other term similarity related parameters can also be specified in `control`. See the subsections.
+#' @param verbose Whether to print messages.
 #' 
 #' @section Methods:
 #' 
@@ -258,7 +276,9 @@ term_sim = function(dag, terms, method, control = list()) {
 #'     method = "GroupSim_pairwise_avg", 
 #'     control = list(term_sim_method = "Sim_Lin_1998")
 #' )
-group_sim = function(dag, group1, group2, method, control = list()) {
+group_sim = function(dag, group1, group2, method, control = list(), verbose = simona_opt$verbose) {
+
+	if(is.null(control$verbose)) control$verbose = verbose
 
 	if(has_annotation(dag)) {
 		if(!"term_sim_method" %in% names(control)) {
@@ -282,3 +302,22 @@ group_sim = function(dag, group1, group2, method, control = list()) {
 
 	group_sim_fun(dag, group1, group2)
 }
+
+default_term_IC_method = function(dag) {
+	if(has_annotation(dag)) {
+		"IC_annotation"
+	} else {
+		"IC_offspring"
+	}
+}
+
+
+default_term_sim_method = function(dag) {
+	if(has_annotation(dag)) {
+		"Sim_Lin_1998"
+	} else {
+		"Sim_WP_1994"
+	}
+}
+
+

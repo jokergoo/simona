@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontologies</a>
+      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
       <a href="../articles/v2_GO.html">Gene Ontology</a>
@@ -86,14 +86,15 @@
 <span>  source <span class="op">=</span> <span class="st">"Ontology"</span>,</span>
 <span>  annotation <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  remove_cyclic_paths <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  remove_rings <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  remove_rings <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>parents</dt>
-<dd><p>A character vector of parent terms.</p></dd>
+<dd><p>A character vector of parent terms. You can also construct the <code>ontology_DAG</code> object by a list of parent-child links. See <strong>Examples</strong>.</p></dd>
 
 
 <dt>children</dt>
@@ -101,16 +102,17 @@
 
 
 <dt>relations</dt>
-<dd><p>A character vector of parent-child relations, e.g. "is_a", "part_of", or self-defined semantic relations.</p></dd>
+<dd><p>A character vector of parent-child relations, e.g. "is_a", "part_of", or self-defined semantic relations.
+If it is set, it should have the same length as <code>parents</code> and <code>children</code>.</p></dd>
 
 
 <dt>relations_DAG</dt>
-<dd><p>If the relation types also have hierarchical relations, it can also be constructed by <code>create_ontology_DAG()</code> first. See <strong>Examples</strong>.
-When the DAG for relation types is provided, in downstream analysis, the ancestor/offspring relationship for relation types will be taken into consideration.</p></dd>
+<dd><p>If the relation types have hierarchical relations, it can also be constructed by <code>create_ontology_DAG()</code> first. See <strong>Examples</strong>.
+When the DAG for relation types is provided, the ancestor/offspring relationship of relation types will be taken into consideration automatically.</p></dd>
 
 
 <dt>source</dt>
-<dd><p>Source of the ontology. It is only used as a mark of the object.</p></dd>
+<dd><p>Source of the ontology. It is only used as a label of the object.</p></dd>
 
 
 <dt>annotation</dt>
@@ -128,6 +130,10 @@ will be an error that lists all cyclic paths.</p></dd>
 <dt>remove_rings</dt>
 <dd><p>There might be rings that are isolated to the main DAG where there are no roots on the rings, thus they cannot be attached to the main DAG. If the value
 of <code>remove_rings</code> is set to <code>TRUE</code>, such rings are removed.</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>Whether to print messages.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -163,6 +169,9 @@ of <code>remove_rings</code> is set to <code>TRUE</code>, such rings are removed
 <span class="r-in"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu">create_ontology_DAG</span><span class="op">(</span><span class="va">parents</span>, <span class="va">children</span>, </span></span>
 <span class="r-in"><span>    relations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"r1"</span>, <span class="st">"r2"</span>, <span class="st">"r1"</span>, <span class="st">"r3"</span>, <span class="st">"r1"</span>, <span class="st">"r4"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    relations_DAG <span class="op">=</span> <span class="va">relations_DAG</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># with a list of parent-child relations</span></span></span>
+<span class="r-in"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu">create_ontology_DAG</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a-b"</span>, <span class="st">"a-c"</span>, <span class="st">"b-c"</span>, <span class="st">"b-d"</span>, <span class="st">"c-e"</span>, <span class="st">"e-f"</span><span class="op">)</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>

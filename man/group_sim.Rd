@@ -4,7 +4,14 @@
 \alias{group_sim}
 \title{Semantic similarity between two groups of terms}
 \usage{
-group_sim(dag, group1, group2, method, control = list())
+group_sim(
+  dag,
+  group1,
+  group2,
+  method,
+  control = list(),
+  verbose = simona_opt$verbose
+)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
@@ -15,7 +22,10 @@ group_sim(dag, group1, group2, method, control = list())
 
 \item{method}{A group similarity method. All available methods are in \code{\link[=all_group_sim_methods]{all_group_sim_methods()}}.}
 
-\item{control}{A list of parameters passing to individual methods. See the subsections.}
+\item{control}{A list of parameters passing to individual methods. The term similarity method is controlled by \code{term_sim_method}
+and the IC method is controlled by \code{IC_method}. Other term similarity related parameters can also be specified in \code{control}. See the subsections.}
+
+\item{verbose}{Whether to print messages.}
 }
 \value{
 A numeric scalar, a numeric vector or a matrix depending on the dat type of \code{group1} and \code{group2}.
@@ -44,7 +54,13 @@ The similarity between \code{group1} and \code{group2} is the average similarity
 \if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = mean_\{a in group1, b in group2\}(S(a, b))
 }\if{html}{\out{</div>}}
 
-The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+The term semantic similarity method and the IC method can be set via \code{control} argument:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim(dag, group1, group2, method = "GroupSim_pairwise_avg"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+}\if{html}{\out{</div>}}
+
+Other parameters for the \code{term_sim_method} can also be set in the \code{control} list.
 
 Pape link: \doi{10.1093/bioinformatics/btg153}.
 }
@@ -57,7 +73,13 @@ This is the maximal \code{S(a, b)} among all pairs of terms in \code{group1} and
 \if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = max_\{a in group1, b in group2\}(S(a, b))
 }\if{html}{\out{</div>}}
 
-The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+The term semantic similarity method and the IC method can be set via \code{control} argument:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim(dag, group1, group2, method = "GroupSim_pairwise_max"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+}\if{html}{\out{</div>}}
+
+Other parameters for the \code{term_sim_method} can also be set in the \code{control} list.
 
 Paper link: \doi{10.1109/TCBB.2005.50}.
 }
@@ -79,7 +101,13 @@ Then the BMA similarity is calculated as:
 
 So it is the average of the similarity of every term in \code{group1} to the whole \code{group2} and every term in \code{group2} to the whole \code{group1}.
 
-The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+The term semantic similarity method and the IC method can be set via \code{control} argument:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim(dag, group1, group2, method = "GroupSim_pairwise_BMA"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+}\if{html}{\out{</div>}}
+
+Other parameters for the \code{term_sim_method} can also be set in the \code{control} list.
 
 Paper link: \doi{10.1155/2012/975783}.
 }
@@ -92,7 +120,13 @@ BMM stands for "best-match max". It is defined as:
 \if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = max(mean_\{a in group1\}(S(a, group2)), mean_\{b in group2\}(S(b, group1)))
 }\if{html}{\out{</div>}}
 
-The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+The term semantic similarity method and the IC method can be set via \code{control} argument:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim(dag, group1, group2, method = "GroupSim_pairwise_BMM"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+}\if{html}{\out{</div>}}
+
+Other parameters for the \code{term_sim_method} can also be set in the \code{control} list.
 
 Paper link: \doi{10.1186/1471-2105-7-302}.
 }
@@ -107,7 +141,13 @@ ABM stands for "average best-match". It is defined as:
 
 where \code{n1} and \code{n2} are the number of terms in \code{group1} and \code{group2}.
 
-The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+The term semantic similarity method and the IC method can be set via \code{control} argument:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim(dag, group1, group2, method = "GroupSim_pairwise_ABM"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+}\if{html}{\out{</div>}}
+
+Other parameters for the \code{term_sim_method} can also be set in the \code{control} list.
 
 Paper link: \doi{10.1186/1471-2105-14-284}.
 }
@@ -130,7 +170,13 @@ This final similarity is:
 \if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = 1 - HDF
 }\if{html}{\out{</div>}}
 
-The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+The term semantic similarity method and the IC method can be set via \code{control} argument:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim(dag, group1, group2, method = "GroupSim_pairwise_HDF"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+}\if{html}{\out{</div>}}
+
+Other parameters for the \code{term_sim_method} can also be set in the \code{control} list.
 }
 
 
@@ -146,7 +192,13 @@ This final similarity is:
 \if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = 1 - MHDF
 }\if{html}{\out{</div>}}
 
-The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+The term semantic similarity method and the IC method can be set via \code{control} argument:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim(dag, group1, group2, method = "GroupSim_pairwise_MHDF"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+}\if{html}{\out{</div>}}
+
+Other parameters for the \code{term_sim_method} can also be set in the \code{control} list.
 
 Paper link: \doi{10.1109/ICPR.1994.576361}.
 }
@@ -160,7 +212,13 @@ It is defined as:
 group_sim = 1 - VHDF
 }\if{html}{\out{</div>}}
 
-The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+The term semantic similarity method and the IC method can be set via \code{control} argument:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim(dag, group1, group2, method = "GroupSim_pairwise_VHDF"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+}\if{html}{\out{</div>}}
+
+Other parameters for the \code{term_sim_method} can also be set in the \code{control} list.
 
 Paper link: \doi{10.1073/pnas.0702965104}.
 }
@@ -173,7 +231,13 @@ The similarity is:
 \if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = exp(-HDF(group1, group2))
 }\if{html}{\out{</div>}}
 
-The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+The term semantic similarity method and the IC method can be set via \code{control} argument:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim(dag, group1, group2, method = "GroupSim_pairwise_Froehlich_2007"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+}\if{html}{\out{</div>}}
+
+Other parameters for the \code{term_sim_method} can also be set in the \code{control} list.
 
 Paper link: \doi{10.1186/1471-2105-8-166}.
 }
@@ -186,7 +250,13 @@ Similar to \emph{VHDF}, but it directly uses the similarity:
 \if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim = 0.5*(sqrt(mean_\{a in group1\}(S(a, group2)^2)) + sqrt(mean_\{b in group2\}(S(b, group1)^2)))
 }\if{html}{\out{</div>}}
 
-The term semantic similarity method can be set via \code{control = list(term_sim_method = ...)}.
+The term semantic similarity method and the IC method can be set via \code{control} argument:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim(dag, group1, group2, method = "GroupSim_pairwise_Joeng_2014"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+}\if{html}{\out{</div>}}
+
+Other parameters for the \code{term_sim_method} can also be set in the \code{control} list.
 
 Paper link: \doi{10.1109/TCBB.2014.2343963}.
 }
@@ -202,7 +272,11 @@ It is based on the average distances between every pair of terms in the two grou
 \code{d(a, b)} is the distance between \code{a} and \code{b}, which can be the shortest distance between the two terms or
 the longest distnace via LCA.
 
-Distance method can be set via \code{control = list(distance = ...)}.
+There is a parameter \code{distance} which takes value of "longest_distances_via_LCA" (the default) or "shortest_distances_via_NCA":
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{group_sim(dag, group1, group2, method = "GroupSim_SimALN",
+    control = list(distance = "shortest_distances_via_NCA"))
+}\if{html}{\out{</div>}}
 
 Paper link: \doi{10.1109/ISCC.2008.4625763}.
 }
