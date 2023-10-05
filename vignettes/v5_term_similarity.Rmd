@@ -707,7 +707,7 @@ term_sim(dag, terms, method = "Sim_Li_2003",
 
 Paper link: https://doi.org/10.1109/TKDE.2003.1209005.
 
-# Hybrid methods
+## Hybrid methods
 
 Hybrid methods use both DAG structure information and IC.
 
@@ -878,7 +878,7 @@ term_sim(dag, terms, method = "Sim_Jiang_1997", control = list(norm_method = "Ra
 Paper link: https://aclanthology.org/O97-1002/.
 
 
-# Annotation-count based methods
+## Annotation-count based methods
 
 Denote $A$ and $B$ as the sets of items annotated to term $a$ and $b$, and $U$ as the universe set
 of all items annotated to the DAG.

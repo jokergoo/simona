@@ -548,7 +548,7 @@ import_owl = function(file, relation_type = "part_of", verbose = simona_opt$verb
 #' - `owx`: OWL/XML
 #' - `ttl`: Turtle 
 #' 
-#' The description of the ROBOT tool is at http://robot.obolibrary.org/convert.
+#' The description of the ROBOT tool is at \url{http://robot.obolibrary.org/convert}.
 #' 
 #' @rdname import_obo
 #' @export
@@ -569,11 +569,11 @@ import_ontology = function(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "
 	}
 
 	if(is.null(robot_jar)) {
-		stop("robot.jar has not been set. It can be downloaded from https://github.com/ontodev/robot/releases.")
+		stop("'robot.jar' has not been set. It can be downloaded from https://github.com/ontodev/robot/releases.")
 	}
 
 	if(!file.exists(robot_jar)) {
-		stop("Cannot find robot.jar. It can be downloaded from https://github.com/ontodev/robot/releases.")
+		stop("Cannot find 'robot.jar'. It can be downloaded from https://github.com/ontodev/robot/releases.")
 	}
 	robot_jar = normalizePath(robot_jar)
 
@@ -596,7 +596,7 @@ import_ontology = function(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "
 
 	code = system2(java_path, c(JAVA_ARGS, "-jar", robot_jar, "convert", "--input", file, "--format", "obo", "--output", output, "--check", "false"))
 	if(code != 0) {
-		stop("Executing robot.jar failed.")
+		stop("Executing 'robot.jar' failed.")
 	}
 
 	lt = import_obo(output, verbose = verbose, ...)

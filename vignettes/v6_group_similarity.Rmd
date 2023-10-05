@@ -308,7 +308,7 @@ Paper link: https://doi.org/10.1109/CBMS.2008.27.
 
 This category of methods depend on the IC of terms in the two groups as well as their ancestor terms.
 
-### GroupSim_SimGIC, GroupSim_SimDIC, GroupSim_SimUIC, GroupSim_SimUI, GroupSim_SimDB, GroupSim_SimUB and GroupSim_SimNTO
+### GroupSim_SimGIC, GroupSim_SimDIC and GroupSim_SimUIC, 
 
 Denote $A$ and $B$ as the two sets of ancestors of terms in group $p$ and $q$ respectively:
 
@@ -320,9 +320,8 @@ $$
 \end{align*}
 $$
 
-The _GroupSim_SimGIC_, _GroupSim_SimDIC_, _GroupSim_SimUIC_, _GroupSim_SimUI_,
-_GroupSim_SimDB_,  _GroupSim_SimUB_ and _GroupSim_SimNTO_ are very similar.
-They are defined as:
+The _GroupSim_SimGIC_, _GroupSim_SimDIC_ and _GroupSim_SimUIC_ are very similar. They are
+based on the IC of the ancestor terms, defined as:
 
 
 $$
@@ -330,10 +329,6 @@ $$
  \mathrm{GroupSim}_\mathrm{SimGIC}(p, q) &= \frac{\sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q} \mathrm{IC}(x)}{\sum\limits_{x \in \mathcal{A}_p \cup \mathcal{A}_q} \mathrm{IC}(x)} \\
  \mathrm{GroupSim}_\mathrm{SimDIC}(p, q) &= \frac{2 * \sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q} \mathrm{IC}(x)}{\sum\limits_{x \in \mathcal{A}_p} \mathrm{IC}(x) + \sum\limits_{x \in \mathcal{A}_q} \mathrm{IC}(x)} \\
  \mathrm{GroupSim}_\mathrm{SimUIC}(p, q) &= \frac{2 * \sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q} \mathrm{IC}(x)}{\max\left\{\sum\limits_{x \in \mathcal{A}_p} \mathrm{IC}(x), \sum\limits_{x \in \mathcal{A}_q} \mathrm{IC}(x) \right\}}  \\
- \mathrm{GroupSim}_\mathrm{SimUI}(p, q) &= \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{|\mathcal{A}_p \cup \mathcal{A}_q|} \\
- \mathrm{GroupSim}_\mathrm{SimDB}(p, q) &= \frac{2*|\mathcal{A}_p \cap \mathcal{A}_q|}{|\mathcal{A}_p| +  |\mathcal{A}_q|} \\
- \mathrm{GroupSim}_\mathrm{SimUB}(p, q) &= \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{\max\{|\mathcal{A}_p|,  |\mathcal{A}_q|\}} \\
- \mathrm{GroupSim}_\mathrm{SimNTO}(p, q) &= \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{\min\{|\mathcal{A}_p|,  |\mathcal{A}_q|\}}
 \end{align*}
 $$
 
@@ -342,6 +337,24 @@ IC method can be set via the `control` argument. By default if there is annotati
 <pre class="r">
 group_sim(dag, group1, group2, method = "GroupSim_SimGIC",
     control = list(IC_method = ...))
+</pre>
+
+
+### GroupSim_SimUI, GroupSim_SimDB, GroupSim_SimUB and GroupSim_SimNTO
+
+These four methods are based on the counts of ancestor terms:
+
+$$
+\begin{align*}
+ \mathrm{GroupSim}_\mathrm{SimUI}(p, q) &= \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{|\mathcal{A}_p \cup \mathcal{A}_q|} \\
+ \mathrm{GroupSim}_\mathrm{SimDB}(p, q) &= \frac{2*|\mathcal{A}_p \cap \mathcal{A}_q|}{|\mathcal{A}_p| +  |\mathcal{A}_q|} \\
+ \mathrm{GroupSim}_\mathrm{SimUB}(p, q) &= \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{\max\{|\mathcal{A}_p|,  |\mathcal{A}_q|\}} \\
+ \mathrm{GroupSim}_\mathrm{SimNTO}(p, q) &= \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{\min\{|\mathcal{A}_p|,  |\mathcal{A}_q|\}}
+\end{align*}
+$$
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_SimUI")
 </pre>
 
 ### GroupSim_SimCOU

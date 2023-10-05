@@ -96,7 +96,7 @@
       <h1 data-toc-skip>Term similarity</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2023-10-04</h4>
+            <h4 data-toc-skip class="date">2023-10-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/vignettes/v5_term_similarity.Rmd" class="external-link"><code>vignettes/v5_term_similarity.Rmd</code></a></small>
       <div class="hidden name"><code>v5_term_similarity.Rmd</code></div>
@@ -626,10 +626,9 @@ term_sim(dag, terms, method = "Sim_Li_2003",
 </pre>
 <p>Paper link: <a href="https://doi.org/10.1109/TKDE.2003.1209005" class="external-link uri">https://doi.org/10.1109/TKDE.2003.1209005</a>.</p>
 </div>
-</div>
-<div class="section level2">
-<h2 id="hybrid-methods">Hybrid methods<a class="anchor" aria-label="anchor" href="#hybrid-methods"></a>
-</h2>
+<div class="section level3">
+<h3 id="hybrid-methods">Hybrid methods<a class="anchor" aria-label="anchor" href="#hybrid-methods"></a>
+</h3>
 <p>Hybrid methods use both DAG structure information and IC.</p>
 <div class="section level4">
 <h4 id="sim_rss_2013">Sim_RSS_2013<a class="anchor" aria-label="anchor" href="#sim_rss_2013"></a>
@@ -750,9 +749,9 @@ term_sim(dag, terms, method = "Sim_Jiang_1997", control = list(norm_method = "Ra
 <p>Paper link: <a href="https://aclanthology.org/O97-1002/" class="external-link uri">https://aclanthology.org/O97-1002/</a>.</p>
 </div>
 </div>
-<div class="section level2">
-<h2 id="annotation-count-based-methods">Annotation-count based methods<a class="anchor" aria-label="anchor" href="#annotation-count-based-methods"></a>
-</h2>
+<div class="section level3">
+<h3 id="annotation-count-based-methods">Annotation-count based methods<a class="anchor" aria-label="anchor" href="#annotation-count-based-methods"></a>
+</h3>
 <p>Denote <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> as the sets of items annotated to term <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>, and <span class="math inline">\(U\)</span> as the universe set of all items annotated to the DAG.</p>
 <div class="section level4">
 <h4 id="sim_kappa">Sim_Kappa<a class="anchor" aria-label="anchor" href="#sim_kappa"></a>
@@ -855,6 +854,7 @@ term_sim(dag, terms, method = "Sim_Dice",
 term_sim(dag, terms, method = "Sim_Overlap",
     control = list(anno_universe = ...))
 </pre>
+</div>
 </div>
 <div class="section level3">
 <h3 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>

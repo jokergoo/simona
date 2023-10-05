@@ -96,7 +96,7 @@
       <h1 data-toc-skip>Similarity between two groups of terms</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2023-10-04</h4>
+            <h4 data-toc-skip class="date">2023-10-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/vignettes/v6_group_similarity.Rmd" class="external-link"><code>vignettes/v6_group_similarity.Rmd</code></a></small>
       <div class="hidden name"><code>v6_group_similarity.Rmd</code></div>
@@ -303,7 +303,7 @@ group_sim(dag, group1, group2, method = "GroupSim_SimALN",
 </h2>
 <p>This category of methods depend on the IC of terms in the two groups as well as their ancestor terms.</p>
 <div class="section level3">
-<h3 id="groupsim_simgic-groupsim_simdic-groupsim_simuic-groupsim_simui-groupsim_simdb-groupsim_simub-and-groupsim_simnto">GroupSim_SimGIC, GroupSim_SimDIC, GroupSim_SimUIC, GroupSim_SimUI, GroupSim_SimDB, GroupSim_SimUB and GroupSim_SimNTO<a class="anchor" aria-label="anchor" href="#groupsim_simgic-groupsim_simdic-groupsim_simuic-groupsim_simui-groupsim_simdb-groupsim_simub-and-groupsim_simnto"></a>
+<h3 id="groupsim_simgic-groupsim_simdic-and-groupsim_simuic">GroupSim_SimGIC, GroupSim_SimDIC and GroupSim_SimUIC,<a class="anchor" aria-label="anchor" href="#groupsim_simgic-groupsim_simdic-and-groupsim_simuic"></a>
 </h3>
 <p>Denote <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> as the two sets of ancestors of terms in group <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span> respectively:</p>
 <p><span class="math display">\[
@@ -312,22 +312,34 @@ group_sim(dag, group1, group2, method = "GroupSim_SimALN",
  \mathcal{A}_q &amp;= \bigcup_{b \in T_q} \mathcal{A}_b \\
 \end{align*}
 \]</span></p>
-<p>The <em>GroupSim_SimGIC</em>, <em>GroupSim_SimDIC</em>, <em>GroupSim_SimUIC</em>, <em>GroupSim_SimUI</em>, <em>GroupSim_SimDB</em>, <em>GroupSim_SimUB</em> and <em>GroupSim_SimNTO</em> are very similar. They are defined as:</p>
+<p>The <em>GroupSim_SimGIC</em>, <em>GroupSim_SimDIC</em> and <em>GroupSim_SimUIC</em> are very similar. They are based on the IC of the ancestor terms, defined as:</p>
 <p><span class="math display">\[
 \begin{align*}
  \mathrm{GroupSim}_\mathrm{SimGIC}(p, q) &amp;= \frac{\sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q} \mathrm{IC}(x)}{\sum\limits_{x \in \mathcal{A}_p \cup \mathcal{A}_q} \mathrm{IC}(x)} \\
  \mathrm{GroupSim}_\mathrm{SimDIC}(p, q) &amp;= \frac{2 * \sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q} \mathrm{IC}(x)}{\sum\limits_{x \in \mathcal{A}_p} \mathrm{IC}(x) + \sum\limits_{x \in \mathcal{A}_q} \mathrm{IC}(x)} \\
  \mathrm{GroupSim}_\mathrm{SimUIC}(p, q) &amp;= \frac{2 * \sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q} \mathrm{IC}(x)}{\max\left\{\sum\limits_{x \in \mathcal{A}_p} \mathrm{IC}(x), \sum\limits_{x \in \mathcal{A}_q} \mathrm{IC}(x) \right\}}  \\
- \mathrm{GroupSim}_\mathrm{SimUI}(p, q) &amp;= \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{|\mathcal{A}_p \cup \mathcal{A}_q|} \\
- \mathrm{GroupSim}_\mathrm{SimDB}(p, q) &amp;= \frac{2*|\mathcal{A}_p \cap \mathcal{A}_q|}{|\mathcal{A}_p| +  |\mathcal{A}_q|} \\
- \mathrm{GroupSim}_\mathrm{SimUB}(p, q) &amp;= \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{\max\{|\mathcal{A}_p|,  |\mathcal{A}_q|\}} \\
- \mathrm{GroupSim}_\mathrm{SimNTO}(p, q) &amp;= \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{\min\{|\mathcal{A}_p|,  |\mathcal{A}_q|\}}
 \end{align*}
 \]</span></p>
 <p>IC method can be set via the <code>control</code> argument. By default if there is annotation associated, <em>IC_annotation</em> is used, or else <em>IC_offspring</em> is used.</p>
 <pre class="r">
 group_sim(dag, group1, group2, method = "GroupSim_SimGIC",
     control = list(IC_method = ...))
+</pre>
+</div>
+<div class="section level3">
+<h3 id="groupsim_simui-groupsim_simdb-groupsim_simub-and-groupsim_simnto">GroupSim_SimUI, GroupSim_SimDB, GroupSim_SimUB and GroupSim_SimNTO<a class="anchor" aria-label="anchor" href="#groupsim_simui-groupsim_simdb-groupsim_simub-and-groupsim_simnto"></a>
+</h3>
+<p>These four methods are based on the counts of ancestor terms:</p>
+<p><span class="math display">\[
+\begin{align*}
+ \mathrm{GroupSim}_\mathrm{SimUI}(p, q) &amp;= \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{|\mathcal{A}_p \cup \mathcal{A}_q|} \\
+ \mathrm{GroupSim}_\mathrm{SimDB}(p, q) &amp;= \frac{2*|\mathcal{A}_p \cap \mathcal{A}_q|}{|\mathcal{A}_p| +  |\mathcal{A}_q|} \\
+ \mathrm{GroupSim}_\mathrm{SimUB}(p, q) &amp;= \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{\max\{|\mathcal{A}_p|,  |\mathcal{A}_q|\}} \\
+ \mathrm{GroupSim}_\mathrm{SimNTO}(p, q) &amp;= \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{\min\{|\mathcal{A}_p|,  |\mathcal{A}_q|\}}
+\end{align*}
+\]</span></p>
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_SimUI")
 </pre>
 </div>
 <div class="section level3">
