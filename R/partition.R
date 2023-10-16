@@ -48,19 +48,19 @@ partition_by_level = function(dag, level = 0, from = NULL, term_pos = NULL) {
 		} else {
 			tree = dag_treelize(dag)
 		}
-		term_pos = cpp_term_pos_on_circle(tree, n_offspring(dag), 0, 360) ## in polar coordinate
+		term_pos = cpp_node_pos_in_tree(tree, n_offspring(dag), 1, 360) ## in polar coordinate
 	}
 
-	from = from[order(term_pos[from, "rho"])]
-	range = data.frame(left = term_pos[from, "theta"] - term_pos[from, "width"]/2,
-		               right = term_pos[from, "theta"] + term_pos[from, "width"]/2)
+	from = from[order(term_pos[from, "h"])]
+	range = data.frame(left = term_pos[from, "x"] - term_pos[from, "width"]/2,
+		               right = term_pos[from, "x"] + term_pos[from, "width"]/2)
 
 	partition = rep(NA_character_, dag@n_terms)
 	all_offspring = setdiff(seq_len(dag@n_terms), dag_ancestors(dag, from, in_labels = FALSE))
 	l_offspring = rep(FALSE, dag@n_terms)
 	l_offspring[all_offspring] =  TRUE
 	for(i in seq_along(from)) {
-		l = term_pos$theta >= range$left[i] & term_pos$theta <= range$right[i] & l_offspring
+		l = term_pos$x >= range$left[i] & term_pos$x <= range$right[i] & l_offspring
 		partition[l] =  dag@terms[ from[i] ]
 	}
 

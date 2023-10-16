@@ -12,7 +12,7 @@ calc_n_neighbours_on_circle = function(theta, width = 1) {
 	od = order(order(theta))
 	theta2 = sort(theta)
 
-	k = cpp_calc_n_neighbours_on_circle(theta2, width)
+	k = cpp_calc_n_neighbours(theta2, width)
 	k[od]
 }
 
@@ -22,7 +22,6 @@ calc_n_neighbours_on_circle = function(theta, width = 1) {
 #' @param highlight A vector of terms to be highlighted on the DAG.
 #' @param start Start of the circle, measured in degree.
 #' @param end End of the circle, measured in degree.
-#' @param reorder_level Whether to reorder child terms. See [`dag_reorder()`].
 #' @param partition_by_level If `node_col` is not set, users can cut the DAG into clusters with different node colors. The partitioning is applied by [`partition_by_level()`].
 #' @param partition_by_size Similar as `partition_by_level`, but the partitioning is applied by [`partition_by_size()`].
 #' @param node_col Colors of nodes. If the value is a vector, the order should correspond to terms in [`dag_all_terms()`].
@@ -53,8 +52,8 @@ calc_n_neighbours_on_circle = function(theta, width = 1) {
 #' dag_circular_viz(dag)
 #' }
 #' 1
-dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
-	reorder_level = NA, partition_by_level = 1, partition_by_size = NULL,
+dag_circular_viz = function(dag, highlight = NULL, start = 1, end = 360,
+	partition_by_level = 1, partition_by_size = NULL,
 	node_col = NULL, node_transparency = 0.5, node_size = NULL, 
 	edge_col = NULL, edge_transparency = 0.96,
 	legend_labels_from = NULL, legend_labels_max_width = 50,
@@ -65,11 +64,6 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 	}
 
 	n_terms = dag@n_terms
-
-	if(!is.na(reorder_level)) {
-		if(verbose) message(qq("reordering children on depth <= @{reorder_level} in DAG..."))
-		dag = dag_reorder(dag, max_level = reorder_level, verbose = verbose)
-	}
 
 	has_highlight = FALSE
 	if(!is.null(highlight)) {
@@ -84,16 +78,28 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 		tree = dag_treelize(dag, verbose = verbose)
 	}
 	if(verbose) message("calculating term positions on the DAG...")
-	term_pos = cpp_term_pos_on_circle(tree, n_offspring(tree), start, end) ## in polar coordinate
+
+	tree@lt_children = lapply(tree@lt_children, function(x) x[sample(length(x))])
+	
+	term_pos = exec_under_message_condition({
+		cpp_node_pos_in_tree(tree, n_connected_leaves(tree), start, end) ## in polar coordinate
+	}, verbose = verbose)
+
+	# if(!dag_is_tree(dag) && !test) {  ## reordering is only applied when DAG is not a tree
+	# 	lt_counterpart = cpp_get_force_counterpart(dag@lt_children, dag@lt_parents, tree@lt_children, tree@lt_parents, dag@root)
+
+	# 	theta = cpp_reorder_tree_x(tree, lt_counterpart, term_pos$x, term_pos$width, times)
+	# 	term_pos$x = theta
+	# }
 
 	term_pos$n_neighbours = 0
-	all_levels = sort(unique(term_pos$rho))
+	all_levels = sort(unique(term_pos$h))
 	all_levels = all_levels[!is.na(all_levels)]
 	for(level in all_levels) {
-		l = term_pos$rho == level
+		l = term_pos$h == level
 		if(verbose) message(strrep("\b", 100), appendLF = FALSE)
 		if(verbose) message(qq("calculating numbers of neighbours within 1 degree neighbourhood on level @{level}/@{max(all_levels)}, @{sum(l)} terms..."), appendLF = FALSE)
-		term_pos[l, "n_neighbours"] = calc_n_neighbours_on_circle(term_pos$theta[l], width = 0.5)
+		# term_pos[l, "n_neighbours"] = cpp_calc_n_neighbours(term_pos$x[l], width = 0.5)
 	}
 	if(verbose) message("")
 
@@ -108,7 +114,7 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 		n_levels = length(level1)
 		
 		ind = which( dag@terms %in% level1)
-		level1 = dag@terms[ind][order(term_pos[ind, "theta"])]
+		level1 = dag@terms[ind][order(term_pos[ind, "x"])]
 
 		if(n_levels <= 7) {
 			default_col = c("#DF536B", "#61D04F", "#2297E6", "#28E2E5", "#CD0BBC", "#F5C710", "#9E9E9E")
@@ -138,7 +144,7 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 		stop_wrap(qq("Length of `node_size` should be one or @{n_terms} (number of terms in the DAG)."))
 	}
 
-	node_transparency = .scale(term_pos$n_neighbours, c(1, quantile(term_pos$n_neighbours, 0.9)+1), c(0.9, 0.5))
+	# node_transparency = .scale(term_pos$n_neighbours, c(1, quantile(term_pos$n_neighbours, 0.9)+1), c(0.9, 0.5))
 
 	node_col = add_transparency(node_col, node_transparency)
 
@@ -195,10 +201,12 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 	n = dag@n_terms
 	df_edge = data.frame(from = rep(seq_len(n), times = vapply(lt_children, length, FUN.VALUE = integer(1))),
 		                 to = unlist(lt_children))
+	# df_edge2 = data.frame(from = rep(seq_len(n), times = vapply(tree@lt_children, length, FUN.VALUE = integer(1))),
+	# 	                 to = unlist(tree@lt_children))
 	# adjust rho
-	tb = log(table(term_pos$rho))
-	rho2 = cumsum(tb - tb["0"])/sum(tb - tb["0"])
-	term_pos$rho = rho2[as.character(term_pos$rho)]
+	tb = log(table(term_pos$h)+1); tb = tb[names(tb) != "0"]
+	rho2 = cumsum(tb)/sum(tb); rho2["0"] = 0
+	term_pos$h = rho2[as.character(term_pos$h)]
 
 	term_pos2 = polar2Cartesian(term_pos) ## xy coordinate
 
@@ -207,7 +215,12 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 	x2 = term_pos2[df_edge$to, 1]
 	y2 = term_pos2[df_edge$to, 2]
 
-	max_depth = max(abs(term_pos$rho))
+	# x10 = term_pos2[df_edge2$from, 1]
+	# y10 = term_pos2[df_edge2$from, 2]
+	# x20 = term_pos2[df_edge2$to, 1]
+	# y20 = term_pos2[df_edge2$to, 2]
+
+	max_depth = max(abs(term_pos$h))
 
 	if(verbose) message("making plot...")
 	grid.newpage()
@@ -216,10 +229,15 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 	if(!is.null(node_col_map)) {
 		for(nm in names(node_col_map)) {
 			i = which(dag@terms == nm)
-			draw_sector(term_pos[i, "theta"] - term_pos[i, "width"]/2,
-				        term_pos[i, "theta"] + term_pos[i, "width"]/2,
+			draw_sector(term_pos[i, "x"] - term_pos[i, "width"]/2,
+				        term_pos[i, "x"] + term_pos[i, "width"]/2,
 				        max_depth, gp = gpar(fill = add_transparency(node_col_map[[nm]], 0.9, FALSE), col = NA))
 		}
+	}
+
+	theta = seq(0, pi*2, length = 50)
+	for(i in unique(term_pos$rho)) {
+		grid.lines(cos(theta)*i, sin(theta)*i, default.units = "native", gp = gpar(col = "#CCCCCC", lty = 3))
 	}
 
 	if(has_highlight) {
@@ -230,10 +248,12 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 			gp = gpar(col = node_col[l_highlight]), size = unit(node_size[l_highlight], "pt"))
 	} else {
 		if(verbose) message("adding links...")
+		# grid.segments(x1, y1, x2, y2, default.units = "native", gp = gpar(col = "red"))
 		grid.segments(x1, y1, x2, y2, default.units = "native", gp = gpar(col = edge_col_v))
 		if(verbose) message("adding terms...")
 		grid.points(term_pos2[, 1], term_pos2[, 2], default.units = "native", pch = 16, 
 			gp = gpar(col = node_col), size = unit(node_size, "pt"))
+		# grid.text(1:nrow(term_pos2), term_pos2[, 1], term_pos2[, 2], default.units = "native")
 	}
 
 	lgd_list = list()
@@ -284,6 +304,7 @@ dag_circular_viz = function(dag, highlight = NULL, start = 0, end = 360,
 		lgd = packLegend(list = lgd_list)
 		draw(lgd, x = unit(1, "snpc") + unit(2, "mm"), just = "left")
 	}
+	popViewport()
 
 }
 

@@ -9,9 +9,8 @@
 dag_circular_viz(
   dag,
   highlight = NULL,
-  start = 0,
+  start = 1,
   end = 360,
-  reorder_level = NA,
   partition_by_level = 1,
   partition_by_size = NULL,
   node_col = NULL,
@@ -54,8 +53,6 @@ dag_graphviz(
 \item{start}{Start of the circle, measured in degree.}
 
 \item{end}{End of the circle, measured in degree.}
-
-\item{reorder_level}{Whether to reorder child terms. See \code{\link[=dag_reorder]{dag_reorder()}}.}
 
 \item{partition_by_level}{If \code{node_col} is not set, users can cut the DAG into clusters with different node colors. The partitioning is applied by \code{\link[=partition_by_level]{partition_by_level()}}.}
 

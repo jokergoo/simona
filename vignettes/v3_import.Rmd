@@ -167,7 +167,7 @@ function `import_ttl()` which can recognize `.ttl` file with `owl:Class` as
 objects. The internal parsing script is written in Perl, so you need to make sure
 Perl is installed on your machine.
 
-```{r}
+```{r, eval = FALSE}
 # https://bioportal.bioontology.org/ontologies/MSTDE
 dag4 = import_ttl("https://jokergoo.github.io/simona/MSTDE.ttl")
 dag4

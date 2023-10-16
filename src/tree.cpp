@@ -58,3 +58,42 @@ List cpp_mark_tree_links(S4 dag) {
 
 	return lt_children2;
 }
+
+// lt_children: returned by cpp_mark_tree_links()
+// [[Rcpp::export]]
+List cpp_tree_lt_parents_from_children(List lt_children) {
+	int n = lt_children.size();
+
+	IntegerVector n_parents(n);
+	int ic;
+	for(int i = 0; i < n; i ++)  {
+		IntegerVector children = lt_children[i];
+		for(int j = 0; j < children.size(); j ++) {
+			if(children[j] < 0) {
+				ic = -children[j]-1;
+				n_parents[ic] ++;
+			}
+		}
+	}
+
+	List lt_parents(n);
+	for(int i = 0; i < n; i ++) {
+		IntegerVector parents(n_parents[i]);
+		lt_parents[i] = parents;
+	}
+
+	IntegerVector ip(n);
+	for(int i = 0; i < n; i ++)  {
+		IntegerVector children = lt_children[i];
+		for(int j = 0; j < children.size(); j ++) {
+			if(children[j] < 0) {
+				ic = -children[j] - 1;
+				IntegerVector parents = lt_parents[ic];
+				parents[ ip[ic] ] = i + 1;
+				ip[ic] ++;
+			}
+		}
+	}
+
+	return lt_parents;
+}

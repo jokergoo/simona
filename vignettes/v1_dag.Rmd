@@ -362,7 +362,7 @@ annotated_terms(dag, c("t1", "t2", "t3"), return = "matrix")
 ## Pseudo root
 
 The DAG should be lead by a single root term. If in an ontology there are
-multiple root terms, a pseudo root named `"_all_"` is automatically added.
+multiple root terms, a pseudo root named `"~all~"` is automatically added.
 You can see this process from the message of the function call.
 
 ```{r, message = TRUE}

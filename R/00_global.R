@@ -4,6 +4,7 @@
 .ALL_TERM_SIM_METHODS = NULL
 .ALL_GROUP_SIM_METHODS = NULL
 
+SUPER_ROOT = "~~all~~"  # make sure it is always the last term after sorting
 
 ADD_IC_METHOD = function(method, require_anno = FALSE) {
 	fun = get(method, envir = topenv(), inherits = FALSE)

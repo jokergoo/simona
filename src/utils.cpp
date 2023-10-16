@@ -101,3 +101,39 @@ void message(String s, bool appendLF = true) {
 	_message(s, Named("appendLF", appendLF));
 	return;
 }
+
+
+LogicalVector merge_two_logical_vectors_by_or(LogicalVector l1, LogicalVector l2) {
+	int n = l1.size();
+	LogicalVector l(n);
+	for(int i = 0; i < n; i ++) {
+		l[i] = l1[i] || l2[i];
+	}
+
+	return l;
+}
+
+LogicalVector merge_two_logical_vectors_by_and(LogicalVector l1, LogicalVector l2) {
+	int n = l1.size();
+	LogicalVector l(n);
+	for(int i = 0; i < n; i ++) {
+		l[i] = l1[i] && l2[i];
+	}
+
+	return l;
+}
+
+// https://stackoverflow.com/questions/21609934/ordering-permutation-in-rcpp-i-e-baseorder
+IntegerVector _order(NumericVector x) {
+	NumericVector x2 = clone(x);
+	for(int i = 0; i < x2.size(); i ++) {
+		x2[i] += (i+1)*1e-8;  // to get rid of duplicated values
+	}
+	NumericVector sorted = clone(x2).sort();
+	return match(sorted, x2) - 1;
+}
+
+IntegerVector _order(IntegerVector x) {
+	IntegerVector sorted = clone(x).sort();
+	return match(sorted, x) - 1;
+}

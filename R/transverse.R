@@ -62,7 +62,7 @@ dag_ancestors = function(dag, term, in_labels = TRUE, include_self = FALSE) {
 	} else {
 		i = term_to_node_id(dag, term)
 
-		ancestors = cpp_ancestors_of_a_group(dag, i, include_self)
+		ancestors = cpp_ancestors_of_a_group(dag, i, include_self = include_self)
 		if(in_labels) {
 			dag@terms[ancestors]
 		} else {
@@ -86,7 +86,7 @@ dag_offspring = function(dag, term, in_labels = TRUE, include_self = FALSE) {
 	} else {
 		i = term_to_node_id(dag, term)
 
-		offspring = cpp_offspring_of_a_group(dag, i, include_self)
+		offspring = cpp_offspring_of_a_group(dag, i, include_self = include_self)
 		if(in_labels) {
 			dag@terms[offspring]
 		} else {

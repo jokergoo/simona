@@ -252,29 +252,118 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cpp_term_pos_on_circle
-DataFrame cpp_term_pos_on_circle(S4 dag, IntegerVector n_offspring, double start, double end);
-RcppExport SEXP _simona_cpp_term_pos_on_circle(SEXP dagSEXP, SEXP n_offspringSEXP, SEXP startSEXP, SEXP endSEXP) {
+// cpp_node_pos_in_tree
+DataFrame cpp_node_pos_in_tree(S4 tree, IntegerVector bin_size, double start, double end);
+RcppExport SEXP _simona_cpp_node_pos_in_tree(SEXP treeSEXP, SEXP bin_sizeSEXP, SEXP startSEXP, SEXP endSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type n_offspring(n_offspringSEXP);
+    Rcpp::traits::input_parameter< S4 >::type tree(treeSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type bin_size(bin_sizeSEXP);
     Rcpp::traits::input_parameter< double >::type start(startSEXP);
     Rcpp::traits::input_parameter< double >::type end(endSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_term_pos_on_circle(dag, n_offspring, start, end));
+    rcpp_result_gen = Rcpp::wrap(cpp_node_pos_in_tree(tree, bin_size, start, end));
     return rcpp_result_gen;
 END_RCPP
 }
-// cpp_calc_n_neighbours_on_circle
-IntegerVector cpp_calc_n_neighbours_on_circle(NumericVector theta, double range);
-RcppExport SEXP _simona_cpp_calc_n_neighbours_on_circle(SEXP thetaSEXP, SEXP rangeSEXP) {
+// cpp_calc_n_neighbours
+IntegerVector cpp_calc_n_neighbours(NumericVector x, double range);
+RcppExport SEXP _simona_cpp_calc_n_neighbours(SEXP xSEXP, SEXP rangeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type range(rangeSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_calc_n_neighbours_on_circle(theta, range));
+    rcpp_result_gen = Rcpp::wrap(cpp_calc_n_neighbours(x, range));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_get_force_counterpart
+List cpp_get_force_counterpart(List lt_children_dag, List lt_parents_dag, List lt_children_tree, List lt_parents_tree, int root);
+RcppExport SEXP _simona_cpp_get_force_counterpart(SEXP lt_children_dagSEXP, SEXP lt_parents_dagSEXP, SEXP lt_children_treeSEXP, SEXP lt_parents_treeSEXP, SEXP rootSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type lt_children_dag(lt_children_dagSEXP);
+    Rcpp::traits::input_parameter< List >::type lt_parents_dag(lt_parents_dagSEXP);
+    Rcpp::traits::input_parameter< List >::type lt_children_tree(lt_children_treeSEXP);
+    Rcpp::traits::input_parameter< List >::type lt_parents_tree(lt_parents_treeSEXP);
+    Rcpp::traits::input_parameter< int >::type root(rootSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_get_force_counterpart(lt_children_dag, lt_parents_dag, lt_children_tree, lt_parents_tree, root));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_get_force
+NumericVector cpp_get_force(List lt_counterpart, NumericVector x, IntegerVector depth, bool on_circle);
+RcppExport SEXP _simona_cpp_get_force(SEXP lt_counterpartSEXP, SEXP xSEXP, SEXP depthSEXP, SEXP on_circleSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type lt_counterpart(lt_counterpartSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type depth(depthSEXP);
+    Rcpp::traits::input_parameter< bool >::type on_circle(on_circleSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_get_force(lt_counterpart, x, depth, on_circle));
+    return rcpp_result_gen;
+END_RCPP
+}
+// move_index
+IntegerVector move_index(NumericVector x, IntegerVector sorted_od, int k, bool decreasing);
+RcppExport SEXP _simona_move_index(SEXP xSEXP, SEXP sorted_odSEXP, SEXP kSEXP, SEXP decreasingSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type sorted_od(sorted_odSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< bool >::type decreasing(decreasingSEXP);
+    rcpp_result_gen = Rcpp::wrap(move_index(x, sorted_od, k, decreasing));
+    return rcpp_result_gen;
+END_RCPP
+}
+// calc_x_offset
+NumericVector calc_x_offset(IntegerVector children, IntegerVector prev_od, IntegerVector new_od, NumericVector width);
+RcppExport SEXP _simona_calc_x_offset(SEXP childrenSEXP, SEXP prev_odSEXP, SEXP new_odSEXP, SEXP widthSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type children(childrenSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type prev_od(prev_odSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type new_od(new_odSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type width(widthSEXP);
+    rcpp_result_gen = Rcpp::wrap(calc_x_offset(children, prev_od, new_od, width));
+    return rcpp_result_gen;
+END_RCPP
+}
+// reorder_children
+IntegerVector reorder_children(IntegerVector children, IntegerVector n_cp, NumericVector force, NumericVector width, IntegerVector depth, NumericVector new_x, List lt_children);
+RcppExport SEXP _simona_reorder_children(SEXP childrenSEXP, SEXP n_cpSEXP, SEXP forceSEXP, SEXP widthSEXP, SEXP depthSEXP, SEXP new_xSEXP, SEXP lt_childrenSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type children(childrenSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type n_cp(n_cpSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type force(forceSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type width(widthSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type depth(depthSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type new_x(new_xSEXP);
+    Rcpp::traits::input_parameter< List >::type lt_children(lt_childrenSEXP);
+    rcpp_result_gen = Rcpp::wrap(reorder_children(children, n_cp, force, width, depth, new_x, lt_children));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_reorder_tree_x
+NumericVector cpp_reorder_tree_x(S4 tree, List lt_counterpart, NumericVector x, NumericVector width, int times);
+RcppExport SEXP _simona_cpp_reorder_tree_x(SEXP treeSEXP, SEXP lt_counterpartSEXP, SEXP xSEXP, SEXP widthSEXP, SEXP timesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< S4 >::type tree(treeSEXP);
+    Rcpp::traits::input_parameter< List >::type lt_counterpart(lt_counterpartSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type width(widthSEXP);
+    Rcpp::traits::input_parameter< int >::type times(timesSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_reorder_tree_x(tree, lt_counterpart, x, width, times));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -767,6 +856,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_tree_lt_parents_from_children
+List cpp_tree_lt_parents_from_children(List lt_children);
+RcppExport SEXP _simona_cpp_tree_lt_parents_from_children(SEXP lt_childrenSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type lt_children(lt_childrenSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_tree_lt_parents_from_children(lt_children));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_match_index
 IntegerVector cpp_match_index(IntegerVector ind1, IntegerVector ind2);
 RcppExport SEXP _simona_cpp_match_index(SEXP ind1SEXP, SEXP ind2SEXP) {
@@ -800,8 +900,14 @@ static const R_CallMethodDef CallEntries[] = {
     {"_simona_cpp_tpl_shortest_path_sum_value", (DL_FUNC) &_simona_cpp_tpl_shortest_path_sum_value, 4},
     {"_simona_cpp_tpl_longest_path_sum_value", (DL_FUNC) &_simona_cpp_tpl_longest_path_sum_value, 4},
     {"_simona_intersectToList_logical", (DL_FUNC) &_simona_intersectToList_logical, 2},
-    {"_simona_cpp_term_pos_on_circle", (DL_FUNC) &_simona_cpp_term_pos_on_circle, 4},
-    {"_simona_cpp_calc_n_neighbours_on_circle", (DL_FUNC) &_simona_cpp_calc_n_neighbours_on_circle, 2},
+    {"_simona_cpp_node_pos_in_tree", (DL_FUNC) &_simona_cpp_node_pos_in_tree, 4},
+    {"_simona_cpp_calc_n_neighbours", (DL_FUNC) &_simona_cpp_calc_n_neighbours, 2},
+    {"_simona_cpp_get_force_counterpart", (DL_FUNC) &_simona_cpp_get_force_counterpart, 5},
+    {"_simona_cpp_get_force", (DL_FUNC) &_simona_cpp_get_force, 4},
+    {"_simona_move_index", (DL_FUNC) &_simona_move_index, 4},
+    {"_simona_calc_x_offset", (DL_FUNC) &_simona_calc_x_offset, 4},
+    {"_simona_reorder_children", (DL_FUNC) &_simona_reorder_children, 7},
+    {"_simona_cpp_reorder_tree_x", (DL_FUNC) &_simona_cpp_reorder_tree_x, 5},
     {"_simona_n_links_from_two_groups_of_nodes", (DL_FUNC) &_simona_n_links_from_two_groups_of_nodes, 3},
     {"_simona_cpp_sim_aic", (DL_FUNC) &_simona_cpp_sim_aic, 3},
     {"_simona_cpp_sim_wang", (DL_FUNC) &_simona_cpp_sim_wang, 4},
@@ -841,6 +947,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_simona_cpp_check_cyclic_node", (DL_FUNC) &_simona_cpp_check_cyclic_node, 2},
     {"_simona_cpp_dag_shortest_path_to_offspring_sum_value", (DL_FUNC) &_simona_cpp_dag_shortest_path_to_offspring_sum_value, 4},
     {"_simona_cpp_mark_tree_links", (DL_FUNC) &_simona_cpp_mark_tree_links, 1},
+    {"_simona_cpp_tree_lt_parents_from_children", (DL_FUNC) &_simona_cpp_tree_lt_parents_from_children, 1},
     {"_simona_cpp_match_index", (DL_FUNC) &_simona_cpp_match_index, 2},
     {NULL, NULL, 0}
 };

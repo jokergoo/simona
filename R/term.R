@@ -99,10 +99,10 @@ IC_annotation = function(dag, uniquify = simona_opt$anno_uniquify, use_cache = s
 	if(verbose) {
 		message("IC_method: ", "IC_annotation")
 	}
-	
+
 	if(!uniquify && is.null(dag@term_env$IC_annotation)) {
 		use_cache = FALSE
-	} else if(uniquify && is.null(dag@term_env$IC_annotations_unique)) {
+	} else if(uniquify && is.null(dag@term_env$IC_annotation_unique)) {
 		use_cache = FALSE
 	}
 	if(!use_cache) {

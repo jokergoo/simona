@@ -101,44 +101,6 @@ head(mcols(dag))
 dag_circular_viz(dag, legend_labels_from = "name")
 ```
 
-Especially for the GO DAG, we can observe that there are many links connecting
-sub-DAGs. To reduce such disturbance from cross-DAG links, on different levels
-of terms, we can reorder their child terms so that sub-DAGs are places closer to
-each other if there exist a large number of cross-DAG links. Normally, such reordering
-on child terms should be not applied too deep in the DAG because the effect of deeper
-terms are very subtile. In the following example, the reordering is only applied untile level 3.
-
-The reordering is applied as follows, Denote a term $x$ has several child
-terms, and $t_i$, $t_j$ are its two child terms. Denote $\mathcal{D}^+_i$ and
-$\mathcal{D}^+_j$ are the sets of $t_i$ and $t_j$'s offspring terms including
-$t_i$, $t_j$ themselves. First calculate the number of links denoted as
-$k_{i,j}$ connecting terms in $\mathcal{D}^+_i$ and $\mathcal{D}^+_j$.
-
-$$ k_{i,j} = \sum_{a \in \mathcal{D}^+_i, b \in \mathcal{D}^+_j}{I(\mathrm{pa}(a, b))} $$
-
-where $I(\mathrm{pa}(a, b)) = 1$ when $a$ is a parent of $b$, or $b$ is a parent of $a$,
-or else $I(\mathrm{pa}(a, b)) = 0$.
-
-Next convert to a distance measure:
-
-$$ d_{i,j} = \lambda_\mathrm{edge} - k_{i,j} $$
-
-where $\lambda_\mathrm{edge}$ is the total number of edges in the DAG. In this way,
-$d_{i,j}$ is a non-negative value and measures the closeness of two terms with
-regards to how close the two sub-DAGs are. Finally, with the distance matrix of all 
-child terms, TSP (travel salesman problem) is applied to reorder the child terms.
-
-```{r, fig.width = 10, fig.height = 7}
-dag_circular_viz(dag, reorder_level = 3, legend_labels_from = "name")
-```
-
-Or you can do reordering explicitly:
-
-```r
-dag = reorder(dag, reorder_level = 3)
-dag_circular_viz(dag, legend_labels_from = "name")
-```
-
 `dag_treelize()` can convert a DAG to a tree where a term only has one parent.
 The circular visualization on the reduced tree is as follows:
 
@@ -153,8 +115,7 @@ contains 249 significant GO terms from an enrichment analysis.
 
 ```{r, fig.width = 10, fig.height = 7}
 sig_go_ids = readRDS(system.file("extdata", "sig_go_ids.rds", package = "simona"))
-dag_circular_viz(dag, highlight = sig_go_ids, reorder_level = 3, 
-  legend_labels_from = "name")
+dag_circular_viz(dag, highlight = sig_go_ids, legend_labels_from = "name")
 ```
 
 ## Session Info

@@ -807,6 +807,11 @@ void _go_child(List lt_children, int node, IntegerVector path, CharacterVector t
 				}
 				path2.push_back(node);
 				cyclic_paths.push_back(path2);
+				Rcout << path2 << "\n";
+
+				if(cyclic_paths.size() > 1000) {
+					stop("Too many cyclic paths (> 1000).");
+				}
 
 				return;
 			}

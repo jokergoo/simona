@@ -10,6 +10,10 @@ IntegerVector _which(LogicalVector l);
 LogicalVector integer_to_logical_vector(IntegerVector i, int n);
 IntegerVector cpp_match_index(IntegerVector ind1, IntegerVector ind2);
 void message(String s, bool appendLF = true);
+LogicalVector merge_two_logical_vectors_by_or(LogicalVector l1, LogicalVector l2);
+LogicalVector merge_two_logical_vectors_by_and(LogicalVector l1, LogicalVector l2);
+IntegerVector _order(NumericVector x);
+IntegerVector _order(IntegerVector x);
 
 #endif
 

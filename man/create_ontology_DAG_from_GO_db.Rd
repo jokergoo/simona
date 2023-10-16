@@ -8,6 +8,7 @@ create_ontology_DAG_from_GO_db(
   namespace = "BP",
   relations = "part of",
   org_db = NULL,
+  evidence_code = NULL,
   verbose = simona_opt$verbose
 )
 }
@@ -22,6 +23,8 @@ are also selected. Note "is_a" is always included.}
 \item{org_db}{The name of the organism package or the corresponding database object, e.g. \code{"org.Hs.eg.db"} or
 directly the \code{\link[org.Hs.eg.db:org.Hs.egBASE]{org.Hs.eg.db::org.Hs.eg.db}} object for human, then the gene annotation to GO terms will be added
 to the object. For other non-model organisms, consider to use the \strong{AnnotationHub} package to find one.}
+
+\item{evidence_code}{A vector of evidence codes for gene annotation to GO terms. See \url{https://geneontology.org/docs/guide-go-evidence-codes/}.}
 
 \item{verbose}{Whether to print messages.}
 }

@@ -123,12 +123,25 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 		stop("`children` should be in character mode.")
 	}
 
+	l = parents == children
+	if(any(l)) {
+		if(verbose) {
+			message("removed ", sum(l), " relations where parents are the same as children.")
+		}
+		parents = parents[!l]
+		children = children[!l]
+	}
+
 	if(length(parents) == 0 || length(children) == 0) {
 		stop("There is no relation.")
 	}
 
 	has_relations = !is.null(relations)
 	lt_relations = list()
+
+	if(has_relations && any(l)) {
+		relations = relations[!l]
+	}
 
 	terms = sort(unique(c(parents, children)))
 	n_terms = length(terms)
@@ -171,7 +184,7 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 		}
 		txt = paste(paste0("  ", txt), collapse = "\n")
 		if(verbose) {
-			message("There are more than one root:\n", txt, "\n  A super root (_all_) is added.")
+			message("There are more than one root:\n", txt, "\n  A super root (", SUPER_ROOT, ") is added.")
 		}
 		
 		super_root = n_terms + 1L
@@ -182,7 +195,7 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 
 		lt_children[[super_root]] = root
 		if(has_relations) lt_relations[[super_root]] = rep(which(relation_levels == "is_a"), length(root))
-		terms = c(terms, "_all_")
+		terms = c(terms, SUPER_ROOT)
 		root = super_root
 		n_terms = n_terms + 1
 	}
@@ -387,6 +400,7 @@ setMethod("show",
 	}
 )
 
+
 #' Create the ontology_DAG object from the GO.db package
 #' 
 #' @param namespace One of "BP", "CC" and "MF".
@@ -397,6 +411,7 @@ setMethod("show",
 #' @param org_db The name of the organism package or the corresponding database object, e.g. `"org.Hs.eg.db"` or 
 #'            directly the [`org.Hs.eg.db::org.Hs.eg.db`] object for human, then the gene annotation to GO terms will be added
 #'            to the object. For other non-model organisms, consider to use the **AnnotationHub** package to find one.
+#' @param evidence_code A vector of evidence codes for gene annotation to GO terms. See \url{https://geneontology.org/docs/guide-go-evidence-codes/}.
 #' @param verbose Whether to print messages.
 #' 
 #' @return An `ontology_DAG` object.
@@ -405,7 +420,8 @@ setMethod("show",
 #' @examples
 #' dag = create_ontology_DAG_from_GO_db()
 #' dag
-create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = "part of", org_db = NULL, verbose = simona_opt$verbose) {
+create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = "part of", org_db = NULL, 
+	evidence_code = NULL, verbose = simona_opt$verbose) {
 
 	check_pkg("GO.db", bioc = TRUE)
 
@@ -448,8 +464,14 @@ create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = "part of
 			org_db = getFromNamespace(org_db, ns = org_db)
 		}
 	
-		suppressMessages(tb <- AnnotationDbi::select(org_db, keys = AnnotationDbi::keys(org_db), columns = c("GO", "ONTOLOGY")))
+		suppressMessages(tb <- AnnotationDbi::select(org_db, keys = AnnotationDbi::keys(org_db), columns = c("GO", "EVIDENCE", "ONTOLOGY")))
 		tb = tb[tb$ONTOLOGY == namespace, , drop = FALSE]
+		if(!is.null(evidence_code)) {
+			tb = tb[tb$EVIDENCE %in% evidence_code, , drop = FALSE]
+			if(row(tb) == 0) {
+				stop("No annotation left after filtering by the evidence codes.")
+			}
+		}
 		tb = tb[, c(1, which(colnames(tb) == "GO")), drop = FALSE]
 		annotation = split(tb[, 1], tb[, 2])
 		annotation = lapply(annotation, unique)

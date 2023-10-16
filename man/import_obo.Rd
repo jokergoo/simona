@@ -7,9 +7,21 @@
 \alias{import_ttl}
 \title{Import ontology file to an ontology_DAG object}
 \usage{
-import_obo(file, relation_type = "part_of", verbose = simona_opt$verbose, ...)
+import_obo(
+  file,
+  relation_type = character(0),
+  inherit_relations = TRUE,
+  verbose = simona_opt$verbose,
+  ...
+)
 
-import_owl(file, relation_type = "part_of", verbose = simona_opt$verbose, ...)
+import_owl(
+  file,
+  relation_type = character(0),
+  inherit_relations = TRUE,
+  verbose = simona_opt$verbose,
+  ...
+)
 
 import_ontology(
   file,
@@ -25,6 +37,8 @@ import_ttl(file, relation_type = "part_of", verbose = simona_opt$verbose, ...)
 \item{file}{Path of the ontology file or an URL.}
 
 \item{relation_type}{Semantic relation types to include. Note \code{is_a} relation is always included.}
+
+\item{inherit_relations}{Relations may also be structured as a DAG. It controls whether to merge with a relations's offspring relations.}
 
 \item{verbose}{Whether to print messages.}
 
@@ -47,6 +61,9 @@ Public bio-ontologies can be obtained from \href{http://obofoundry.org/}{Ontolog
 
 The \code{import_obo()} function parses the ontology file in \code{.obo} format. To parse other formats, external tool \code{robot.jar} is required.
 
+\code{import_owl()} only recognizes \verb{<owl:Class>} and \verb{<owl:ObjectProperty>}. If the .owl file does not contain these tags,
+please use \code{import_ontology()} directly.
+
 \code{robot.jar} can automatically recognize the following formats:
 \itemize{
 \item \code{json}: OBO Graphs JSON
@@ -58,7 +75,7 @@ The \code{import_obo()} function parses the ontology file in \code{.obo} format.
 \item \code{ttl}: Turtle
 }
 
-The description of the ROBOT tool is at http://robot.obolibrary.org/convert.
+The description of the ROBOT tool is at \url{http://robot.obolibrary.org/convert}.
 
 \code{import_ttl()} is a simple parser for the \code{.ttl} format files. It only recognizes
 terms that have the \code{owl:Class} object. The "is_a" relation is recognized by the predicate \code{rdfs:subClassOf}

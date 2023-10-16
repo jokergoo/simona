@@ -30,16 +30,16 @@ NumericVector _get_breaks(double left, double right, int n, NumericVector weight
 }
 
 // [[Rcpp::export]]
-DataFrame cpp_term_pos_on_circle(S4 dag, IntegerVector n_offspring, double start = 0, double end = 360) {
+DataFrame cpp_node_pos_in_tree(S4 tree, IntegerVector bin_size, double start = 1, double end = 360) {
 
-	int root = dag.slot("root");
-	List lt_children = dag.slot("lt_children");
-	IntegerVector depth = _dag_depth(dag);
+	int root = tree.slot("root");
+	List lt_children = tree.slot("lt_children");
+	IntegerVector depth = _dag_depth(tree);
 	int max_depth = max(depth);
 	int n = lt_children.size();
 
-	NumericVector theta(n);  // in degree
-	NumericVector rho(n);    // radius
+	NumericVector x(n);  // horizontal direction if the tree is top-down
+	NumericVector h(n);    // vertical direction
 	NumericVector width(n);   // width of each term
 
 	// root
@@ -56,13 +56,12 @@ DataFrame cpp_term_pos_on_circle(S4 dag, IntegerVector n_offspring, double start
 
 	int current_depth = 0;
 
-	// polar coordinates of root
-	theta[i_root] = (end + start)*0.5;
-	rho[i_root] = 0;
+	x[i_root] = (end + start)*0.5;
+	h[i_root] = 0;
 	width[i_root] = end - start;
 
-	if(max_depth == 1) {
-		DataFrame df = DataFrame::create(Named("theta") = theta, Named("rho") = rho, Named("level1_group") = -1, Named("width") = width);
+	if(max_depth == 0) {
+		DataFrame df = DataFrame::create(Named("x") = x, Named("h") = h, Named("level1_group") = -1, Named("width") = width);
 
 		return df;
 	}
@@ -90,16 +89,16 @@ DataFrame cpp_term_pos_on_circle(S4 dag, IntegerVector n_offspring, double start
 				int n_children2 = children2.size();
 				NumericVector weight(n_children2);
 				for(int j = 0; j < n_children2; j ++) {
-					if(n_offspring[children2[j]-1] == 0) {
+					if(bin_size[children2[j]-1] == 0) {
 						weight[j] = 1;
 					} else {
-						weight[j] = n_offspring[children2[j]-1];
+						weight[j] = bin_size[children2[j]-1];
 					}
 				}
 				NumericVector breaks = _get_breaks(parent_range_left[i], parent_range_right[i], n_children2, weight);
 				for(int j = 0; j < n_children2; j ++) {
-					theta[ children2[j]-1 ] = (breaks[j] + breaks[j+1])/2;
-					rho[ children2[j]-1 ] = current_depth;
+					x[ children2[j]-1 ] = (breaks[j] + breaks[j+1])/2;
+					h[ children2[j]-1 ] = current_depth;
 					width[ children2[j]-1 ] = breaks[j+1] - breaks[j];
 
 					parent_range_left[ children2[j]-1 ] = breaks[j];
@@ -132,16 +131,16 @@ DataFrame cpp_term_pos_on_circle(S4 dag, IntegerVector n_offspring, double start
 	message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
 	message("going through " + std::to_string(n) + " / " + std::to_string(n) + " nodes ... Done.", true);
 
-	DataFrame df = DataFrame::create(Named("theta") = theta, Named("rho") = rho, Named("width") = width);
+	DataFrame df = DataFrame::create(Named("x") = x, Named("h") = h, Named("width") = width);
 
 	return df;
 }
 
 // [[Rcpp::export]]
-IntegerVector cpp_calc_n_neighbours_on_circle(NumericVector theta, double range) {
+IntegerVector cpp_calc_n_neighbours(NumericVector x, double range) {
 
-	 // theta is sorted and in [0, 360], range is small
-	int n = theta.size();
+	 // x is sorted and in [0, 360], range is small
+	int n = x.size();
 
 	IntegerVector k(n);
 
@@ -164,9 +163,9 @@ IntegerVector cpp_calc_n_neighbours_on_circle(NumericVector theta, double range)
 			}
 
 			if(flag) {
-				diff = theta[i] - theta[prev_i] + 360;
+				diff = x[i] - x[prev_i] + 360;
 			} else {
-				diff = theta[i] - theta[prev_i];
+				diff = x[i] - x[prev_i];
 			}
 			if(diff < range) {
 				k[i] ++;
@@ -187,9 +186,9 @@ IntegerVector cpp_calc_n_neighbours_on_circle(NumericVector theta, double range)
 			}
 
 			if(flag) {
-				diff = theta[next_i] - theta[i] + 360;
+				diff = x[next_i] - x[i] + 360;
 			} else {
-				diff = theta[next_i] - theta[i];
+				diff = x[next_i] - x[i];
 			}
 			if(diff < range) {
 				k[i] ++;

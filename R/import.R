@@ -4,6 +4,7 @@
 #' 
 #' @param file Path of the ontology file or an URL.
 #' @param relation_type Semantic relation types to include. Note `is_a` relation is always included.
+#' @param inherit_relations Relations may also be structured as a DAG. It controls whether to merge with a relations's offspring relations.
 #' @param verbose Whether to print messages.
 #' @param ... Pass to [`create_ontology_DAG()`].
 #' 
@@ -21,7 +22,7 @@
 #' # The plant ontology: http://obofoundry.org/ontology/po.html 
 #' import_obo("https://raw.githubusercontent.com/Planteome/plant-ontology/master/po.obo")
 #' }
-import_obo = function(file, relation_type = "part_of", verbose = simona_opt$verbose, ...) {
+import_obo = function(file, relation_type = character(0), inherit_relations = TRUE, verbose = simona_opt$verbose, ...) {
 	
 	if(grepl("^(http|https|ftp)://.*\\.gz$", file)) {
 		con = url(file)
@@ -78,7 +79,9 @@ import_obo = function(file, relation_type = "part_of", verbose = simona_opt$verb
 
 		suppressWarnings(suppressMessages(relations_DAG <- create_ontology_DAG(relation_relations$parent, relation_relations$child)))
 
-		relation_type = merge_offspring_relation_types(relations_DAG, relation_type)
+		if(inherit_relations) {
+			relation_type = merge_offspring_relation_types(relations_DAG, relation_type)
+		}
 	} else {
 		relations_DAG = NULL
 	}
@@ -123,23 +126,25 @@ import_obo = function(file, relation_type = "part_of", verbose = simona_opt$verb
 		term_meta$namespace[is.na(term_meta$namespace)] = default_namespace
 	}
 
-	dag = create_ontology_DAG(parents = term_relations$parent, children = term_relations$child, relations = term_relations$relation,
+	term_meta = term_meta[term_meta$id %in% c(term_relations$parent, term_relations$child), , drop = FALSE]
+	internal_id = term_meta$short_id
+	dd = internal_id[duplicated(internal_id)]
+	ldd = internal_id %in% dd
+	internal_id[ldd] = term_meta$id[ldd]
+	idmap = structure(internal_id, names = term_meta$id)
+	
+	dag = create_ontology_DAG(parents = idmap[term_relations$parent], children = idmap[term_relations$child], relations = term_relations$relation,
 		source = paste0(ontology, ", ", version), relations_DAG = relations_DAG, verbose = verbose, ...)
+	rownames(term_meta) = internal_id
 
-	rownames(term_meta) = term_meta$id
 	term_meta = term_meta[dag@terms, , drop = FALSE]
 	
-	if(dag_root(dag) == "_all_") {
-		term_meta$id[dag@root] = "_all_"
-		term_meta$short_id[dag@root] = "_all_"
+	if(dag_root(dag) == SUPER_ROOT) {
+		term_meta$id[dag@root] = SUPER_ROOT
+		term_meta$short_id[dag@root] = SUPER_ROOT
 	}
 
 	mcols(dag) = term_meta
-
-	if(!any(duplicated(term_meta$short_id))) {
-		dag@terms = term_meta$short_id
-		rownames(dag@elementMetadata) = dag@terms
-	}
 
 	dag
 }
@@ -323,6 +328,8 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 }
 
 #' @rdname import_obo
+#' @details `import_owl()` only recognizes `<owl:Class>` and `<owl:ObjectProperty>`. If the .owl file does not contain these tags,
+#'     please use `import_ontology()` directly.
 #' @export
 #' @importFrom xml2 read_xml xml_find_all xml_attr xml_text
 #' @export
@@ -330,14 +337,14 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 #' \donttest{
 #' import_owl("http://purl.obolibrary.org/obo/po.owl") 
 #' }
-import_owl = function(file, relation_type = "part_of", verbose = simona_opt$verbose, ...) {
+import_owl = function(file, relation_type = character(0), inherit_relations = TRUE, verbose = simona_opt$verbose, ...) {
 	
 	owl = read_xml(file, options = "HUGE")
 
 	####### relation / ObjectProperty ########
-	if(verbose) message("Parsing <owl:ObjectProperty> ...")
 	ObjectProperty = xml_find_all(owl, ".//owl:ObjectProperty")
 	
+	if(verbose) message("Parsing ", length(ObjectProperty), " <owl:ObjectProperty> ...")
 	id = xml_attr(ObjectProperty, "about")
 	short_id = .owl_get_text(ObjectProperty, ".//*[local-name()='id']", NA_character_)
 	short_id = ifelse(is.na(short_id), gsub("^.*#", "", basename(id)), short_id)
@@ -371,9 +378,10 @@ import_owl = function(file, relation_type = "part_of", verbose = simona_opt$verb
 		relation_relations = data.frame()
 	}
 
-	relations_id_to_name = structure(ifelse(is.na(relation_meta$name), relation_meta$id, relation_meta$name), names = relation_meta$id)
+	relations_id_to_name = structure(ifelse(is.na(relation_meta$name), relation_meta$short_id, relation_meta$name), names = relation_meta$id)
+	relations_id_to_name[is.na(relations_id_to_name)] = relation_meta$id[is.na(relations_id_to_name)]
 	relations_id_to_name["is_a"] = "is_a"
-	
+
 	if(nrow(relation_relations)) {
 		
 		relation_relations$parent = unname(relations_id_to_name[relation_relations$parent])
@@ -381,7 +389,9 @@ import_owl = function(file, relation_type = "part_of", verbose = simona_opt$verb
 
 		suppressWarnings(suppressMessages(relations_DAG <- create_ontology_DAG(relation_relations$parent, relation_relations$child)))
 
-		relation_type = merge_offspring_relation_types(relations_DAG, relation_type)
+		if(inherit_relations) {
+			relation_type = merge_offspring_relation_types(relations_DAG, relation_type)
+		}
 	} else {
 		relations_DAG = NULL
 	}
@@ -398,10 +408,10 @@ import_owl = function(file, relation_type = "part_of", verbose = simona_opt$verb
 	n = length(Class)
 
 	if(n == 0) {
-		stop("Cannot find any owl:Class.")
+		stop("Cannot find any owl:Class. Consider to use `import_ontology()` directly.")
 	}
 
-	if(verbose) message("Parsing <owl:Class> ...")
+	if(verbose) message("Parsing ", length(Class), " <owl:Class> ...")
 	id = xml_attr(Class, "about")
 	short_id = .owl_get_text(Class, ".//*[local-name()='id']", NA_character_)
 	short_id = ifelse(is.na(short_id), gsub("^.*#", "", basename(id)), short_id)
@@ -442,61 +452,39 @@ import_owl = function(file, relation_type = "part_of", verbose = simona_opt$verb
 	Description = xml_find_all(owl, ".//rdf:Description")
 
 	if(length(Description)) {
-		if(verbose) message("Parsing <rdf:Description> ...")
+		if(verbose) message("Parsing ", length(Description), " <rdf:Description> ...")
 		id = xml_attr(Description, "about")
 		name = .owl_get_text(Description, ".//*[local-name()='prefLabel']", NA_character_)
 		def = .owl_get_text(Description, ".//*[local-name()='definition']", NA_character_)
 
-		lt_description = vector("list", length(id))
-		for(i in seq_along(id)) {
-			lt_description[[i]]$id = id[i]
-			lt_description[[i]]$name = name[i]
-			lt_description[[i]]$def = def[i]
-		}
-		names(lt_description) = id
+		df_description = data.frame(id = id, name = name, def = def)
+		df_description = df_description[!is.na(df_description$id), , drop = FALSE]
+		df_description = df_description[!duplicated(df_description$id), , drop = FALSE]
+		rownames(df_description) = df_description$id
 	} else {
-		lt_description = list()
+		df_description = data.frame()
 	}
 
-	###### fill name and def in `lt_terms` #######
-	if(length(lt_description)) {
-		lt_terms = lapply(lt_terms, function(x) {
-			if(is.na(x$name)) {
-				v = lt_description[[x$id]]$name
-				if(length(v) > 0) {
-					x$name = v
-				}
-			}
-			if(is.na(x$def)) {
-				v = lt_description[[x$id]]$def
-				if(length(v) > 0) {
-					x$def = v
-				}
-			}
-			x
-		})
-
-		lt_relations = lapply(lt_relations, function(x) {
-			if(is.na(x$name)) {
-				v = lt_description[[x$id]]$name
-				if(length(v) > 0) {
-					x$name = v
-				}
-			}
-			if(is.na(x$def)) {
-				v = lt_description[[x$id]]$def
-				if(length(v) > 0) {
-					x$def = v
-				}
-			}
-			x
-		})
-	}
 
 	## terms
 	lt = .wrap_relations(lt_terms, "term")
 	term_meta = lt$meta
 	term_relations = lt$relations
+
+	if(nrow(df_description) > 0) {
+		ind = which(is.na(term_meta$name) & term_meta$id %in% df_description$id)
+		if(length(ind)) {
+			term_meta[ind, "name"] = df_description[ term_meta$id[ind], "name"]
+			term_meta[ind, "definition"] = df_description[ term_meta$id[ind], "def"]
+		}
+
+		ind = which(is.na(term_relations$name) & term_meta$id %in% df_description$id)
+		if(length(ind)) {
+			term_relations[ind, "name"] = df_description[ term_relations$id[ind], "name"]
+			term_relations[ind, "definition"] = df_description[ term_relations$id[ind], "def"]
+		}
+	}
+	
 
 	## some meta for the whole ontology
 	version = xml_text(xml_find_all(owl, ".//owl:Ontology/owl:versionInfo"))
@@ -508,26 +496,25 @@ import_owl = function(file, relation_type = "part_of", verbose = simona_opt$verb
 		ontology = xml_attr(xml_find_all(owl, ".//owl:Ontology"), "about")
 	}
 
-	dag = create_ontology_DAG(parents = term_relations$parent, children = term_relations$child, relations = term_relations$relation,
+	term_meta = term_meta[term_meta$id %in% c(term_relations$parent, term_relations$child), , drop = FALSE]
+	internal_id = term_meta$short_id
+	dd = internal_id[duplicated(internal_id)]
+	ldd = internal_id %in% dd
+	internal_id[ldd] = term_meta$id[ldd]
+	idmap = structure(internal_id, names = term_meta$id)
+
+	dag = create_ontology_DAG(parents = idmap[term_relations$parent], children = idmap[term_relations$child], relations = term_relations$relation,
 		source = paste0(ontology, ", ", version), relations_DAG = relations_DAG, verbose = verbose, ...)
+	rownames(term_meta) = internal_id
 
-
-	rownames(term_meta) = term_meta$id
 	term_meta = term_meta[dag@terms, , drop = FALSE]
 	
-	if(dag_root(dag) == "_all_") {
-		nr = nrow(term_meta)
-		term_meta$id[nr] = "_all_"
-		term_meta$short_id[nr] = "_all_"
+	if(dag_root(dag) == SUPER_ROOT) {
+		term_meta$id[dag@root] = SUPER_ROOT
+		term_meta$short_id[dag@root] = SUPER_ROOT
 	}
-
+	
 	mcols(dag) = term_meta
-
-
-	if(!any(duplicated(term_meta$short_id))) {
-		dag@terms = term_meta$short_id
-		rownames(dag@elementMetadata) = dag@terms
-	}
 
 	dag
 	
@@ -596,6 +583,11 @@ import_ontology = function(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "
 
 	code = system2(java_path, c(JAVA_ARGS, "-jar", robot_jar, "convert", "--input", file, "--format", "obo", "--output", output, "--check", "false"))
 	if(code != 0) {
+		if(grepl("\\.owl$", file, ignore.case = TRUE)) {
+			message("Consider to use `import_owl()`")
+		} else if(grepl("\\.ttl$", file, ignore.case = TRUE)) {
+			message("Consider to use `import_ttl()`")
+		}
 		stop("Executing 'robot.jar' failed.")
 	}
 
@@ -666,19 +658,13 @@ import_ttl = function(file, relation_type = "part_of", verbose = simona_opt$verb
 
 	rownames(term_meta) = term_meta$id
 	term_meta = term_meta[dag@terms, , drop = FALSE]
+
+	if(dag_root(dag) == SUPER_ROOT) {
+		term_meta$id[dag@root] = SUPER_ROOT
+		term_meta$short_id[dag@root] = SUPER_ROOT
+	}
 	
-	if(dag_root(dag) == "_all_") {
-		nr = nrow(term_meta)
-		term_meta$id[nr] = "_all_"
-		term_meta$short_id[nr] = "_all_"
-	}
-
 	mcols(dag) = term_meta
-
-	if(!any(duplicated(term_meta$short_id))) {
-		dag@terms = term_meta$short_id
-		rownames(dag@elementMetadata) = dag@terms
-	}
 
 	dag
 }

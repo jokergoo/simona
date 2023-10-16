@@ -26,7 +26,7 @@ term_to_node_id = function(dag, term, strict = TRUE) {
 			}
 		}
 
-		unname(structure(i, names = dag@terms[i])[term])
+		unname(structure(i, names = dag@terms[i])[intersect(term, dag@terms[i])])
 	}
 }
 
@@ -115,6 +115,10 @@ dag_is_tree = function(dag) {
 
 
 merge_offspring_relation_types = function(relations_DAG, relations) {
+	if(length(relations) == 0) {
+		return(relations)
+	}
+	
 	r1 = relations_DAG@terms
 	rc = intersect(r1, relations)
 

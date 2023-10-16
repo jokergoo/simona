@@ -22,7 +22,6 @@ Sim_Lin_1998 = function(dag, terms, IC_method = "IC_annotation", verbose = simon
 	if(verbose) {
 		message("term_sim_method: ", "Sim_Lin_1998")
 	}
-	
 	id = term_to_node_id(dag, terms, strict = FALSE)
 	ic = term_IC(dag, IC_method, verbose = FALSE)[id]
 
@@ -33,7 +32,7 @@ Sim_Lin_1998 = function(dag, terms, IC_method = "IC_annotation", verbose = simon
 
 		if(verbose) {
 			if(any(!l)) {
-				message(sum(!l), "terms are removed because of on annotation.")
+				message(sum(!l), " terms are removed because of no annotation.")
 			}
 		}
 	}

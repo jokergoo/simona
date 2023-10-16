@@ -77,12 +77,36 @@ intersectToList_logical <- function(lt, x) {
     .Call(`_simona_intersectToList_logical`, lt, x)
 }
 
-cpp_term_pos_on_circle <- function(dag, n_offspring, start = 0, end = 360) {
-    .Call(`_simona_cpp_term_pos_on_circle`, dag, n_offspring, start, end)
+cpp_node_pos_in_tree <- function(tree, bin_size, start = 1, end = 360) {
+    .Call(`_simona_cpp_node_pos_in_tree`, tree, bin_size, start, end)
 }
 
-cpp_calc_n_neighbours_on_circle <- function(theta, range) {
-    .Call(`_simona_cpp_calc_n_neighbours_on_circle`, theta, range)
+cpp_calc_n_neighbours <- function(x, range) {
+    .Call(`_simona_cpp_calc_n_neighbours`, x, range)
+}
+
+cpp_get_force_counterpart <- function(lt_children_dag, lt_parents_dag, lt_children_tree, lt_parents_tree, root) {
+    .Call(`_simona_cpp_get_force_counterpart`, lt_children_dag, lt_parents_dag, lt_children_tree, lt_parents_tree, root)
+}
+
+cpp_get_force <- function(lt_counterpart, x, depth, on_circle = FALSE) {
+    .Call(`_simona_cpp_get_force`, lt_counterpart, x, depth, on_circle)
+}
+
+move_index <- function(x, sorted_od, k, decreasing = TRUE) {
+    .Call(`_simona_move_index`, x, sorted_od, k, decreasing)
+}
+
+calc_x_offset <- function(children, prev_od, new_od, width) {
+    .Call(`_simona_calc_x_offset`, children, prev_od, new_od, width)
+}
+
+reorder_children <- function(children, n_cp, force, width, depth, new_x, lt_children) {
+    .Call(`_simona_reorder_children`, children, n_cp, force, width, depth, new_x, lt_children)
+}
+
+cpp_reorder_tree_x <- function(tree, lt_counterpart, x, width, times = 1L) {
+    .Call(`_simona_cpp_reorder_tree_x`, tree, lt_counterpart, x, width, times)
 }
 
 n_links_from_two_groups_of_nodes <- function(dag, nodes1, nodes2) {
@@ -239,6 +263,10 @@ cpp_dag_shortest_path_to_offspring_sum_value <- function(dag, from_node, value, 
 
 cpp_mark_tree_links <- function(dag) {
     .Call(`_simona_cpp_mark_tree_links`, dag)
+}
+
+cpp_tree_lt_parents_from_children <- function(lt_children) {
+    .Call(`_simona_cpp_tree_lt_parents_from_children`, lt_children)
 }
 
 cpp_match_index <- function(ind1, ind2) {

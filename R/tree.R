@@ -33,21 +33,47 @@ dag_treelize = function(dag, verbose = simona_opt$verbose) {
 		return(dag)
 	}
 
-	lt_children2 = cpp_mark_tree_links(dag)
+	lt_children2 = exec_under_message_condition({
+		cpp_mark_tree_links(dag)
+	}, verbose = verbose)
+
+	lt_parents2 = cpp_tree_lt_parents_from_children(lt_children2)
 	lt_children2 = lapply(lt_children2, function(x) {
 		abs(x[x < 0])
 	})
+	
+	tree = dag
 
-	n = length(lt_children2)
-	parents = rep(seq_len(n), times = vapply(lt_children2, length, FUN.VALUE = integer(1)))
-	children = unlist(lt_children2)
+	tree@lt_children = lt_children2
+	tree@lt_parents = lt_parents2
 
-	tree = create_ontology_DAG(dag@terms[parents], dag@terms[children], verbose = verbose)
-	tree@annotation = dag@annotation
+	tree@lt_children_relations = list()
+	tree@relations_DAG = NULL
+	tree@source = paste0(tree@source, ", treelized")
 
-	if(!is.null(mcols(dag))) {
-		mcols(tree) = mcols(dag)[tree@terms, , drop = FALSE]
-	}
+	n_terms = dag@n_terms
+
+	tree@leaves = which(vapply(lt_children2, length, FUN.VALUE = integer(1)) == 0)
+
+	tree@term_env = new.env(parent = emptyenv())
+
+	tree@term_env$n_parents = vapply(lt_parents2, length, FUN.VALUE = integer(1))
+	tree@term_env$n_children = vapply(lt_children2, length, FUN.VALUE = integer(1))
+
+	tpl_order = order(dag_depth(tree), tree@term_env$n_children, tree@term_env$n_parents, tree@terms)
+	tree@tpl_sorted = seq_len(n_terms)[tpl_order]
+	tree@tpl_pos = seq_len(n_terms)
+	
+	# pos has the same order as terms, but the value are the positions on `sorted`, i.e. the rank
+	tree@tpl_pos[tpl_order] = seq_len(n_terms)
+
+	depth = dag_depth(tree)
+	tb1 = table(depth)
+	aspect_ratio1 = max(tb1)/quantile(depth, 0.99)
+	aspect_ratio1 = round(aspect_ratio1, 2)
+
+	tree@aspect_ratio = c(aspect_ratio1, aspect_ratio1)
+
 	tree
 }
 
