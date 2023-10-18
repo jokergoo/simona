@@ -439,8 +439,11 @@ NumericMatrix cpp_common_ancestor_mean_IC_XGraSM(S4 dag, IntegerVector nodes, Nu
 							
 						if(id2 >= 0) {
 							score(id1, id2) += ic[all_ancestors[k] - 1];
+							score(id2, id1) = score(id1, id2);
+
 							if(ic[all_ancestors[k] - 1] > 0) {
 								na(id1, id2) += 1;
+								na(id2, id1) = na(id1, id2);
 							}
 						}
 					}

@@ -501,9 +501,9 @@ IntegerVector cpp_ancestors_of_two_groups(S4 dag, IntegerVector nodes1, IntegerV
 	} else if(type == SET_INTERSECT) {
 		l_ancestors = l_ancestors1 & l_ancestors2;
 	} else if(type == SET_UNIQU_IN_1) {
-		l_ancestors = l_ancestors1 & !l_ancestors2;
+		l_ancestors = l_ancestors1 & (!l_ancestors2);
 	} else if(type == SET_UNIQU_IN_2) {
-		l_ancestors = !l_ancestors1 & l_ancestors2;
+		l_ancestors = (!l_ancestors1) & l_ancestors2;
 	}
 
 	IntegerVector aid = _which(l_ancestors);
