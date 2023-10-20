@@ -101,7 +101,7 @@ n_ancestors(dag)
 
 `n_connected_leaves()` returns numbers of
 leaves that every term can reach (or has a finite directed distance to). Leaf
-terms have value of zero.
+terms have value of 1.
 
 ```{r}
 n_connected_leaves(dag)

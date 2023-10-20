@@ -1,7 +1,7 @@
 
-term_to_node_id = function(dag, term, strict = TRUE) {
+term_to_node_id = function(dag, term, strict = TRUE, add_name = FALSE) {
 	if(is.numeric(term)) {
-		term
+		id = term
 	} else if(length(term) == 1) {
 		i = which(dag@terms == term)
 
@@ -9,7 +9,7 @@ term_to_node_id = function(dag, term, strict = TRUE) {
 			stop("Cannot find term: ", term)
 		}
 
-		i
+		id = i
 	} else if(length(term) > 1) {
 		unique_term = unique(term)
 		i = which(dag@terms %in% unique_term)
@@ -26,7 +26,12 @@ term_to_node_id = function(dag, term, strict = TRUE) {
 			}
 		}
 
-		unname(structure(i, names = dag@terms[i])[intersect(term, dag@terms[i])])
+		id = unname(structure(i, names = dag@terms[i])[intersect(term, dag@terms[i])])
+	}
+	if(add_name) {
+		structure(id, names = dag@terms[id])
+	} else {
+		id
 	}
 }
 
