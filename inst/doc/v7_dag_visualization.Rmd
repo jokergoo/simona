@@ -1,0 +1,161 @@
+---
+title: "Visualize DAGs"
+author: "Zuguang Gu ( z.gu@dkfz.de )"
+date: '`r Sys.Date()`'
+output: 
+  html_vignette:
+    css: main.css
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{7. Visualize DAGs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo = FALSE}
+knitr::knit_hooks$set(pngquant = knitr::hook_pngquant)
+
+knitr::opts_chunk$set(
+  message = FALSE,
+  dev = "ragg_png",
+  fig.align = "center",
+  pngquant = "--speed=10 --quality=30"
+)
+```
+
+There are two functions for visualizing DAGs. `dag_graphviz()` uses the **DiagrammeR** package to visualize
+small DAGs as HTML widgets. `dag_circular_viz()` uses a circular layout for huge DAGs.
+
+## Small DAGs
+
+```{r}
+library(simona)
+parents  = c("a", "a", "b", "b", "c", "d")
+children = c("b", "c", "c", "d", "e", "f")
+dag_small = create_ontology_DAG(parents, children)
+```
+
+```{r}
+dag_graphviz(dag_small)
+```
+
+There are several graphical parameters for controlling nodes in the DAG.
+
+```{r}
+color = sample(colors(), 6)
+shape = c("polygon", "box", "oval", "egg", "diamond", "parallelogram")
+dag_graphviz(dag_small, color = color, shape = shape)
+```
+
+The DOT code can be obtained with `dag_as_DOT()`:
+
+```{r, comment = ''}
+dag_as_DOT(dag_small, color = color, shape = shape) |> cat()
+```
+
+You can paste the DOT code to http://magjac.com/graphviz-visual-editor/ to generate the graph.
+
+Following is an example of visualizing all upstream terms of a GO term. Note `dag[, "GO:0010228"]`
+returns a sub-DAG of all upstream terms of `GO:0010228`.
+
+```{r}
+dag = create_ontology_DAG_from_GO_db()
+dag_graphviz(dag[, "GO:0010228"])
+```
+
+Edge attributes should be set as a named vector where names correspond to all relation types.
+
+```{r}
+dag_graphviz(dag[, "GO:0010228"], 
+  edge_color = c("is_a" = "purple", "part_of" = "darkgreen"),
+  edge_style = c("is_a" = "solid", "part_of" = "dashed"), width = 800, height = 800)
+```
+
+## Huge DAGs
+
+Visualizing huge DAGs is not an easy job because a term can have more than one parents. Here
+the `dag_circular_viz()` uses a circular layout to visualize huge DAGs.
+
+```{r, fig.width = 10, fig.height = 7}
+dag_circular_viz(dag)
+```
+
+In the circular layout, each circle correspond to a specific depth (maximal
+distance to root). The distance of a circle to the circle center is
+proportional to the logorithm of the number of terms with depth equal to or
+less than the current depth of this circle. On each circle, each term has a
+width (or a sector on the circle) associated where offspring terms are only
+drawn within that section. The width is proportional to the number of
+offspring terms of the term. Dot size corresponds to the number of child
+terms. If colors are not set, let's say root term is on level 0, the DAG is
+cut at level-0 terms (links between level-1 terms and level-0 terms are all
+cut), and each sub-DAG is assigned with a different color. A legend of top
+terms of sub-DAGs is also added in the plot.
+
+The term IDs are not informative in the plot. If there are additional information of terms stored
+in the meta data frame of the DAG object, the column name can be set with the `legend_labels_from` argument.
+
+
+```{r, fig.width = 10, fig.height = 7}
+head(mcols(dag))
+dag_circular_viz(dag, legend_labels_from = "name")
+```
+
+`dag_treelize()` can convert a DAG to a tree where a term only has one parent.
+The circular visualization on the reduced tree is as follows:
+
+```{r, fig.width = 10, fig.height = 7}
+tree = dag_treelize(dag)
+dag_circular_viz(tree, legend_labels_from = "name", edge_transparency = 0.95)
+```
+
+One useful application is to map GO terms of interest (e.g. significant GO terms
+from function enrichment analysis) to the DAG. In the following example, `sig_go_ids`
+contains 249 significant GO terms from an enrichment analysis.
+
+```{r, fig.width = 10, fig.height = 7}
+sig_go_ids = readRDS(system.file("extdata", "sig_go_ids.rds", package = "simona"))
+dag_circular_viz(dag, highlight = sig_go_ids, legend_labels_from = "name")
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
+
+
+<script src="jquery.min.js"></script>
+<script src="jquery.sticky.js"></script>
+<script>
+$(document).ready(function(){
+    $("#TOC").sticky({
+        topSpacing: 0,
+        zIndex:1000    
+    })
+    $("#TOC").on("sticky-start", function() {
+
+        $("<p style='font-size:1.2em; padding-left:4px;'><a id='TOC-click'>Table of Content</a></p>").insertBefore($("#TOC ul:first-child"));
+        $("#TOC-click").hover(function() {
+            $(this).css("color", "#0033dd").css("cursor", "pointer");
+            $("#TOC").children().first().next().show();
+            $("#TOC").hover(function() {
+                $(this).children().first().next().show();
+            }, function() {
+                $(this).children().first().next().hide();
+                $("body").off("hover", "#TOC");
+            })
+        }, function() {
+            $(this).css("color", "#0033dd");
+        })
+        $("#TOC").children().first().next().hide();
+
+    })
+    $("#TOC").on("sticky-end", function() {
+        $("#TOC").children().first().remove();
+        $("#TOC").children().first().show();
+    })
+});
+</script>
+

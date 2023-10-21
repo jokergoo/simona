@@ -1,0 +1,159 @@
+---
+title: "Gene Ontology"
+author: "Zuguang Gu ( z.gu@dkfz.de )"
+date: '`r Sys.Date()`'
+output: 
+  html_vignette:
+    css: main.css
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{2. Gene Ontology}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo = FALSE, message = FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+    error = FALSE,
+    tidy  = FALSE,
+    message = FALSE,
+    warning = FALSE,
+    fig.align = "center")
+```
+
+
+Gene Ontology is the most widely used bio-ontologies. On Bioconductor, there
+are standard packages for GO (**GO.db**) and organism-specific GO annotation packages
+(**org.\*.db**). In **simona**, there is a helper function
+`create_ontology_DAG_from_GO_db()` which makes use of the Biocoductor standard
+GO packages and constructs a DAG object automatically.
+
+## Create the GO DAG object
+
+GO has three namespaces (or ontologies): biological process (BP), molecular
+function (MF) and celullar component (CC). The three GO namespaces are
+mutually exclusive, so the first argument of
+`create_ontology_DAG_from_GO_db()` is the GO namespace.
+
+```{r}
+library(simona)
+dag = create_ontology_DAG_from_GO_db("BP")
+dag
+```
+
+There are three main GO relations: "is_a", "part_of" and "regulates".
+"regulates" has two child relation types in GO: "negatively_regulates" and
+"positively_regulates". So when "regulates" is selected, the two child
+relation types are automatically selected. By default only "is_a" and "part_of" are selected.
+
+You can set a subset of relation types with the argument `relations`.
+
+```{r}
+create_ontology_DAG_from_GO_db("BP", relations = c("part of", "regulates"))  # "part_of" is also OK
+```
+
+"is_a" is always selected because this is primary semantic relation type. So
+if you only want to include "is_a" relation, you can assign an empty vector to
+`relations`:
+
+<pre class="r">
+create_ontology_DAG_from_GO_db("BP", relations = character(0)) # or NULL, NA
+</pre>
+
+Or you can apply `dag_filter()` after DAG is generated.
+
+<pre class="r">
+dag = create_ontology_DAG_from_GO_db("BP")
+dag_filter(dag, relations = "is_a")
+</pre>
+
+## Add gene annotation
+
+Gene annotation can be set with the argument `org_db`. The value is an
+`OrgDb` object of the corresponding organism. The primary gene ID type in the __org.*.db__
+package is internally used (which is normally the EntreZ ID type).
+
+```{r}
+library(org.Hs.eg.db)
+dag = create_ontology_DAG_from_GO_db("BP", org_db = org.Hs.eg.db)
+dag
+```
+
+For standard organism packages on Biocoductor, the `OrgDb` object always has
+the same name as the package, so the name of the organism package can also be
+set to `org_db`:
+
+<pre class="r">
+create_ontology_DAG_from_GO_db("BP", org_db = "org.Hs.eg.db")
+</pre>
+
+Similarly, if the analysis is applied on mouse, the mouse organism package can
+be set to `org_db`. If the mouse organism package is not installed yet, it
+will be installed automatically.
+
+<pre class="r">
+create_ontology_DAG_from_GO_db("BP", org_db = "org.Mm.eg.db")
+</pre>
+
+Genes that are annotated to GO terms can be obtained by `term_annotations()`. Note
+the genes are automatically merged from offspring terms.
+
+```{r}
+term_annotations(dag, c("GO:0000002", "GO:0000012"))
+```
+
+## Meta data frame
+
+There are additional meta columns attached to the DAG object. They can be accessed by `mcols()`.
+
+```{r}
+head(mcols(dag))
+```
+
+The additional information of GO terms is from the **GO.db** package. The row
+order of the meta data frame is the same as in `dag_all_terms(dag)`.
+
+
+## Session info
+
+```{r}
+sessionInfo()
+```
+
+
+
+<script src="jquery.min.js"></script>
+<script src="jquery.sticky.js"></script>
+<script>
+$(document).ready(function(){
+    $("#TOC").sticky({
+        topSpacing: 0,
+        zIndex:1000    
+    })
+    $("#TOC").on("sticky-start", function() {
+
+        $("<p style='font-size:1.2em; padding-left:4px;'><a id='TOC-click'>Table of Content</a></p>").insertBefore($("#TOC ul:first-child"));
+        $("#TOC-click").hover(function() {
+            $(this).css("color", "#0033dd").css("cursor", "pointer");
+            $("#TOC").children().first().next().show();
+            $("#TOC").hover(function() {
+                $(this).children().first().next().show();
+            }, function() {
+                $(this).children().first().next().hide();
+                $("body").off("hover", "#TOC");
+            })
+        }, function() {
+            $(this).css("color", "#0033dd");
+        })
+        $("#TOC").children().first().next().hide();
+
+    })
+    $("#TOC").on("sticky-end", function() {
+        $("#TOC").children().first().remove();
+        $("#TOC").children().first().show();
+    })
+});
+</script>
+
+

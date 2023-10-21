@@ -1,0 +1,1016 @@
+---
+title: "Term similarity"
+author: "Zuguang Gu ( z.gu@dkfz.de )"
+date: '`r Sys.Date()`'
+output: 
+  html_vignette:
+    css: main.css
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{5. Term similarity}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo = FALSE, message = FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+    error = FALSE,
+    tidy  = FALSE,
+    message = FALSE,
+    warning = FALSE,
+    fig.align = "center")
+```
+
+```{r, echo = FALSE}
+knitr::knit_hooks$set(pngquant = knitr::hook_pngquant)
+
+knitr::opts_chunk$set(
+  dev = "ragg_png",
+  fig.align = "center",
+  pngquant = "--speed=10 --quality=30"
+)
+```
+
+The methods of semantic similarity implemented in **simona** are mainly from
+the [supplementary file](https://academic.oup.com/bib/article/18/5/886/2562801#supplementary-data)
+of the paper ["Mazandu et al., Gene Ontology semantic similarity tools: survey
+on features and challenges for biological knowledge discovery. Briefings in
+Bioinformatics 2017"](https://doi.org/10.1093/bib/bbw067). Original
+denotations have been slightly modified to make them more consistent. Also
+more explanations have been added in this vignette. 
+
+## Denotations
+
+The following denotations will be used throughout the vignette. The denotations are mainly from
+_Mazandu 2017_ only with small modifications.
+
+|  Denotation |  Description    |
+| :----- | :------------------------ |
+| $r$ | The root term of the DAG. In **simona** there is always one root term.  |
+| $\delta(x)$ | The depth of a term $x$ in the DAG, which is the longest distance from root $r$. |
+| $\delta_s(x)$ | The length of the longest path from root $r$ to a term $x$ via term $s$. |
+| $\delta_\max$ | The maximal depth in the DAG. |
+| $\eta(x)$ | The height of term $x$ in the DAG, which is the longest finite distance to leaf terms. |
+| $\mathcal{C}_s$ | The set of child terms of term $s$. |
+| $\mathcal{P}_s$ | The set of parent terms of term $s$. |
+| $\mathcal{A}_s$ | The set of ancestor terms of term $s$. |
+| $\mathcal{A}_s^+$ | The set of ancestor terms of term $s$, including $s$ itself. |
+| $\mathcal{D}_s$ | The set of offspring terms of term $s$. |
+| $\mathcal{D}_s^+$ | The set of offspring terms of term $s$, including $s$ itself. |
+| $\mathcal{L}_s$ | The set of leaf terms that term $s$ can reach. |
+| $\left| A \right|$ | Number of elements in set $A$. |
+| $D_\mathrm{sp}(a, b)$ | The shortest distance bewteen $a$ and $b$. | 
+| $\mathrm{len}(a, b)$ | The longest distance bewteen $a$ and $b$. |
+| $\mathrm{len}_s(a, b)$ | The length of the longest path from $a$ and $b$ via $s$. |
+| $\mathrm{CA}(a, b)$ | The set of common ancestors of term $a$ and $b$, i.e. $\mathrm{CA}(a, b) = \mathcal{A}_a^+ \cap \mathcal{A}_b^+$. |
+| $\mathrm{LCA}(a, b)$ | Lowest common ancestor of $a$ and $b$, which is the common ancestor with the largest depth in DAG, i.e. $$\operatorname*{argmax}_{t \in \mathrm{CA}(a, b)} \delta(t)$$ There might be more than one LCA terms for given two terms, to simplify the calculation, the one with the longest distance (the default) to $a$ and $b$ is used. |
+| $\mathrm{NCA}(a, b)$ | Nearest common ancestor of $a$ and $b$, i.e. $$\operatorname*{argmin}_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t, a) + D_\mathrm{sp}(t, b) \right)$$ If there are more than one NCA terms, the one with the largest depth (the lowest one) is used. |
+| $\mathrm{MICA}(a, b)$ | Most informative common ancestor of $a$ and $b$, i.e. $$\operatorname*{argmax}_{t \in \mathrm{CA}(a, b)} \left( \mathrm{IC}(t) \right )$$ There might be more than one MICA terms for given two terms, the one with the longest distance (the default) to $a$ and $b$ is used.|
+| $G_s$ | The set of annotated items on term $s$. |
+
+
+Assume term $a$ is an ancestor of term $b$, $D_\mathrm{sp}(a, b)$ (the order
+of $a$ and $b$ does not matter) is the normal shortest distance from $a$ to
+$b$ in a directed graph. The definition is similar for $\mathrm{len}(a, b)$.
+
+If term $a$ and $b$ are not in offspring/ancestor relationship, i.e. $a$ is
+not an ancestor of $b$, and $b$ is not an ancestor of $a$, then
+
+$$
+\begin{align*}
+D_\mathrm{sp}(a, b) &= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t, a) + D_\mathrm{sp}(t, b) \right) \\
+\mathrm{len}(a, b) &= \max_{t \in \mathrm{CA}(a, b)} \left( \mathrm{len}(t, a) + \mathrm{len}(t, b) \right)
+\end{align*}
+$$
+
+## General
+
+The wrapper function `term_sim()` calculates semantic similarities between terms in
+the DAG with a specific method. Note the method name can be partially matched.
+`control` argument controls parameters for specific methods.
+
+<pre class="r">
+term_sim(dag, terms, method = ..., control = list(...))
+</pre>
+
+All supported term similarity methods are:
+
+```{r}
+library(simona)
+all_term_sim_methods()
+```
+
+
+## IC-based or node-based methods
+
+This type of methods consider a special ancestor term $c$ of terms $a$ and
+$b$, which has the highest IC among all $a$ and $b$'s ancestor terms. Term $c$
+is called the most informative common ancestor (MICA) which can be given by:
+
+$$ \mathrm{IC}(c) = \max_{t \in \mathcal{A}_a^+ \cap \mathcal{A}_b^+} \mathrm{IC}(t)  $$
+
+So if two terms are identical, MICA is the term itself, and if two terms have
+ancestor/offspring relationship, MICA is the ancestor term.
+
+In the following sections, if not specially mentioned, $c$ is always referred
+to the MICA of $a$ and $b$.
+
+### Sim_Lin_1998
+
+The similarity is calculated as the IC of the MICA term $c$ normalized by the
+average of the IC of the two terms:
+
+$$ \mathrm{Sim}(a, b) = \frac{\mathrm{IC}(c)}{(\mathrm{IC}(a) + \mathrm{IC}(b))/2} = \frac{2 * \mathrm{IC}(c)}{\mathrm{IC}(a) + \mathrm{IC}(b)} $$
+
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Lin_1998")
+</pre>
+
+Paper link: https://dl.acm.org/doi/10.5555/645527.657297.
+
+
+### Sim_Resnik_1999
+
+IC of the MICA term itself $\mathrm{IC}(c)$ can be a measure of how similar
+two terms are, but its range is not in `[0, 1]`. There are several ways to
+normalize $\mathrm{IC}(c)$ to the range of `[0, 1]`. Note some of the
+normalization methods are restricted to _IC_annotation_ as the IC method.
+
+#### Nunif
+
+It is normalized to the possible maximal IC value where a term only has one
+item annotated.
+
+$$ \mathrm{Sim}(a, b) = \frac{\mathrm{IC}(c)}{-\log(1/N)} = \frac{\mathrm{IC}(c)}{\log N} $$
+
+
+where $N$ is the total number of items annotated to the whole DAG.
+
+#### Nmax
+
+It is similar to _Nunif_, but normalized to the maximal IC of all terms in the
+DAG. If there is a term with only one item annotated, _Nmax_ is identical to
+the _Nunif_ method.
+
+$$ \mathrm{Sim}(a, b) = \frac{\mathrm{IC}(c)}{\mathrm{IC}_\mathrm{max}} $$
+
+
+#### Nunivers
+
+$\mathrm{IC}(c)$ is normalized by the maximal IC of term $a$ and $b$.
+
+$$ \mathrm{Sim}(a, b) = \frac{\mathrm{IC}(c)}{\max \{ \mathrm{IC}(a), \mathrm{IC}(b) \}} $$
+
+Paper link: https://doi.org/10.1613/jair.514, https://doi.org/10.1186/1471-2105-9-S5-S4, https://doi.org/10.1186/1471-2105-11-562, https://doi.org/10.1155/2013/292063.
+
+
+The normalization method can be set with the `norm_method` parameter:
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Resnik_1999", control = list(norm_method = "Nunif"))
+term_sim(dag, terms, method = "Sim_Resnik_1999", control = list(norm_method = "Nmax"))
+term_sim(dag, terms, method = "Sim_Resnik_1999", control = list(norm_method = "Nunivers"))
+</pre>
+
+### Sim_FaITH_2010
+
+It is calculated as:
+
+$$ \mathrm{Sim}(a, b) = \frac{\mathrm{IC}(c)}{\mathrm{IC}(a) + \mathrm{IC}(b) - \mathrm{IC}(c)} $$
+
+
+The relation between the _FaITH_2010_ similarity and _Lin_1998_ similarity is:
+
+$$ \mathrm{Sim}_\mathrm{FaITH} = \frac{\mathrm{Sim}_\mathrm{Lin}}{2 - \mathrm{Sim}_\mathrm{Lin}} $$
+
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_FaITH_2010")
+</pre>
+
+Paper link: https://doi.org/10.1007/978-3-642-17746-0_39.
+
+### Sim_Relevance_2006
+
+If thinking _Lin_1998_ is a measure of how close term $a$ and $b$ are to their
+MICA term $c$, the relevance method corrects it by multiplying a factor which
+considers the specificity of how $c$ brings the information. The factor is
+calculated as $1-p(c)$ where $p(c)$ is the annotation-based probability $p(c)
+= k/N$ where $k$ is the number of items annotated to $c$ and $N$ is the total
+number of items annotated to the DAG. Then under the Relevance method, the
+corrected IC of $c$ is:
+
+$$ \mathrm{IC}_\mathrm{corrected}(c) = (1-p(c)) * \mathrm{IC}(c) $$
+
+If using _Lin_1998_ as the similarity method, the corrected version Relevance
+similarity is:
+
+$$ 
+\begin{align*}
+\mathrm{Sim}(a, b) & = \frac{2*\mathrm{IC}_\mathrm{corrected}(c)}{\mathrm{IC}(a) + \mathrm{IC}(b)} \\
+                   & = (1-p(c)) * \frac{2 * \mathrm{IC}(c)}{\mathrm{IC}(a) + \mathrm{IC}(b)} \\
+                   & = (1-p(c)) * \mathrm{Sim}_\mathrm{Lin}(a, b)
+\end{align*} $$
+
+The term $p(c)$ requires that terms should be annotated to items. However, it can be extended
+to more general scenarios:
+
+$$ \mathrm{IC}_\mathrm{corrected}(c) = \left(1 - \exp(-\mathrm{IC}(x))\right) * \mathrm{IC}(c) $$
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Relevance_2006")
+</pre>
+
+Paper link: https://doi.org/10.1186/1471-2105-7-302
+
+### Sim_SimIC_2010
+
+
+The _SimIC_2010_ method is an improved correction method of the Relevance
+method because the latter works badly when $p(c)$ is very small. E.g., when
+$1-p(c)$ is used as a correction factor, it cannot nicely distinguish $p(c) = 0.01$ and $p(c) = 0.001$ because for both $1 - p(c)$ are very close to 1.
+
+The _SimIC_2010_ correction factor for MICA term $c$ is:
+
+
+$$ \mathrm{IC}_\mathrm{corrected}(c) = 1 - \frac{1}{1 - \log(p(c))} * \mathrm{IC}(c) $$
+
+
+Then the similarity (if using _Lin_1998_ as the original similarity method) is:
+
+$$ \mathrm{Sim}(a, b) = \left( 1 - \frac{1}{1 - \log(p(c))} \right) * \mathrm{Sim}_\mathrm{Lin}(a, b) $$
+
+Similarly, it can be generalized to:
+
+$$ \mathrm{Sim}(a, b) = \frac{\mathrm{IC}(x)}{1 + \mathrm{IC}(x)} * \mathrm{Sim}_\mathrm{Lin}(a, b) $$
+
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_SimIC_2010")
+</pre>
+
+Paper link: https://doi.org/10.48550/arXiv.1001.0958.
+
+
+### Sim_XGraSM_2013
+
+Being different from the _Relevance_ and _SimIC_2010_ methods that only use
+the IC of the MICA term, the _XGraSM_2013_ method as well as the next method use
+IC of a subset of common ancestor terms of $a$ and $b$, and it uses the mean
+IC of them. The subset of common ancestor may have different names for
+different methods.
+
+_XGraSM_2013_ is the simplest one which uses informative common ancestors
+(ICA) where IC of the common ancestor is positive.
+
+$$ \mathrm{ICA}(a, b) = \{c \in \mathcal{A}_a^+ \cap \mathcal{A}_b^+: \mathrm{IC}(c) > 0\} $$
+
+And mean IC among all ICA terms:
+
+$$ \mathrm{IC}_\mathrm{mean} = \frac{1}{|\mathrm{ICA}(a, b)|} \sum_{\mathrm{t \in \mathrm{ICA}(a, b)}} \mathrm{IC}(t) $$
+
+And applying _Lin_1998_ method, the semantic similarity is:
+
+$$ \mathrm{Sim}(a, b) = 2 * \frac{\mathrm{IC}_\mathrm{mean}}{\mathrm{IC}(a) + \mathrm{IC}(b)} $$
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_XGraSM_2013")
+</pre>
+
+Paper link: https://doi.org/10.1186/1471-2105-14-284
+
+
+### Sim_EISI_2015
+
+It selects a specific subset of common ancestors of terms $a$ and $b$. It
+only selects a common ancestor $c$ which can reach $a$ or $b$ via one of its
+child terms that does not belong to the common ancestors (mutual exclusively
+in $a$'s ancestors or in $b$'s ancestors). The set of the selected common
+ancestors is called the exclusively inherited common ancestors (EICA).
+
+$$ \mathrm{EICA}(a, b) = \{c \in \mathcal{A}_a \cap \mathcal{A}_b: \mathcal{C}_c \cap \left( (\mathcal{A}_a \cup \mathcal{A}_b) - (\mathcal{A}_a \cap \mathcal{A}_b) \neq \emptyset \right) \}  $$
+
+And mean IC among all EICA terms:
+
+$$ \mathrm{IC}_\mathrm{mean} = \frac{1}{|\mathrm{EICA}(a, b)|} \sum_{\mathrm{t \in \mathrm{EICA}(a, b)}} \mathrm{IC}(t) $$
+
+And applying _Lin_1998_ method, the semantic similarit is:
+
+$$ \mathrm{Sim}(a, b) = 2 * \frac{\mathrm{IC}_\mathrm{mean}}{\mathrm{IC}(a) + \mathrm{IC}(b)} $$
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_EISI_2015")
+</pre>
+
+Paper link: https://doi.org/10.1016/j.gene.2014.12.062
+
+### Sim_AIC_2014
+
+It uses the aggregate information content from ancestors. First define the
+semantic weight denoted as $S_w$ of a term $t$ in the DAG:
+
+
+$$ S_w(t) = \frac{1}{1 + \exp \left(-\frac{1}{\mathrm{IC}(t)} \right)} $$
+
+Then the similarity is calculated as the fraction of aggegation from common
+ancestors and the average aggregation from ancestors of $a$ and $b$ separately.
+
+$$ \mathrm{Sim}(a, b) = \frac{2*\sum\limits_{t \in \mathcal{A}_a^+ \cap \mathcal{A}_b^+} S_w(t) }{ \sum\limits_{t \in \mathcal{A}_a^+} S_w(t) + \sum\limits_{t \in \mathcal{A}_b^+} S_w(t) }  $$
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_AIC_2014")
+</pre>
+
+Paper link: https://doi.org/10.1109/tcbb.2013.176.
+
+### Sim_Zhang_2006
+
+It uses the _IC_Zhang_2006_ IC method and uses _Lin_1998_ similarity method to calculate similarities:
+
+$$ \mathrm{Sim}(a, b) = \frac{2*\mathrm{IC}_\mathrm{Zhang}(c)}{\mathrm{IC}_\mathrm{Zhang}(a) + \mathrm{IC}_\mathrm{Zhang}(b)} $$
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Zhang_2006")
+</pre>
+
+
+### Sim_universal
+
+It uses the _IC_universal_ IC method and uses the _Nunivers_ method to calculate similarities:
+
+$$ \mathrm{Sim}(a, b) = \frac{2*\mathrm{IC}_\mathrm{Univers}(c)}{\max \{ \mathrm{IC}_\mathrm{Univers}(a), \mathrm{IC}_\mathrm{Univers}(b) \}} $$
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_universal")
+</pre>
+
+
+### Sim_Wang_2007
+
+Similar as the _Sim_AIC_2014_ method, it is also aggregation from ancestors, but it uses the "S-value"
+introduced in the _IC_Wang_2007_ sectionn in [4. Information content](v4_information_content.html).
+
+$$ \mathrm{Sim}(a, b) = \frac{\sum\limits_{t \in \mathcal{A}_a^+ \cap \mathcal{A}_b^+} (S_a(t) + S_b(t)) }{ \sum\limits_{t \in \mathcal{A}_a^+} S_a(t) + \sum\limits_{t \in \mathcal{A}_b^+} S_b(t) }  $$
+
+
+The contribution of different semantic relations can be set with the
+`contribution_factor` parameter. The value should be a named numeric vector
+where names should cover the relations defined in relations set in
+`create_ontology_DAG()`. For example, if there are two relations "relation_a"
+and "relation_b" set in the DAG, the value for contribution_factor can be set
+as:
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Wang_2007", 
+    control = list(contribution_factor = c("relation_a" = 0.8, "relation_b" = 0.6)))
+</pre>
+
+By default 0.8 is set for "is_a" and 0.6 for "part_of".
+
+If you are not sure what types of relations have been set, simply type the
+`dag` object. The relation types will be printed there.
+
+Paper link: https://doi.org/10.1093/bioinformatics/btm087.
+
+### Sim_GOGO_2018
+
+It is very similar as _Sim_Wang_2007_ except there is a correction for the contribution factor. When calculating 
+the "S-value" introduced in the _IC_Wang_2007_ sectionn in [4. Information content](v4_information_content.html),
+for a parent and a child, the weight variable $w_e$ is directly determined by the relation type, e.g, 0.8 for "is_a".
+In _Sim_GOGO_2018_, the number of child terms is also considered for $w_e$:
+
+$$ w_e = \frac{1}{c + |\mathcal{C}_t|} + w_0 $$
+
+where $|\mathcal{C}_t|$ is the number of child terms of the parent $t$, $w_0$
+is the original contribution factor directly assigned for each relation type.
+$c$ is selected to ensure $w_e \leq 1$ (assuming minimal number of children is
+1), which is normally:
+
+$$ c = \frac{\max \{w_0\}}{1 - \max \{w_0\}} $$
+
+By default, 0.4 is assigned for "is_a" and 0.3 is assigned for "part_of", $c$ is set to 2/3 (solve `1 = 1/(c + 1) + 0.4`).
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_GOGO_2018", 
+    control = list(contribution_factor = c("relation_a" = 0.4, "relation_b" = 0.3)))
+</pre>
+
+Paper link: https://doi.org/10.1038/s41598-018-33219-y.
+
+# Edge-based methods
+
+Methods introduced in this section relies on the distance between terms. Many
+methods are defined originally based on the shortest distance between two
+terms. This section extends them to also support their longest distance via
+the LCA term.
+
+### Sim_Rada_1989
+
+It is based on the distance between term $a$ and $b$. It is defined as:
+
+$$ \mathrm{Sim}(a, b) = \frac{1}{1 + D_\mathrm{sp}(a, b)} $$
+
+which is based on the shortest distance between $a$ and $b$. Optionally,
+the distance can also be the longest distance via the LCA term $c$.
+
+$$ \mathrm{Sim}(a, b) = \frac{1}{1 + \mathrm{len}_c(a, b)} = \frac{1}{1 + \mathrm{len}(c, a) + \mathrm{len}(c, b)} $$
+
+There is a parameter distance which takes value of `"longest_distances_via_LCA"`
+(the default) or `"shortest_distances_via_NCA"`:
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Rada_1989",
+    control = list(distance = "shortest_distances_via_NCA"))
+</pre>
+
+Paper link: https://doi.org/10.1109/21.24528.
+
+
+### Sim_Resnik_edge_2005
+
+It is a normalized distance:
+
+$$ \mathrm{Sim}(a, b) = 1 - \frac{D_\mathrm{sp}(a, b)}{2*\delta_\mathrm{max}} $$
+
+where $2*\delta_\mathrm{max}$ can be thought as the possible maximal distance
+between two terms in the DAG.
+
+Similarly, the distance can also be the longest distance via LCA, then it is
+consistent with the definition of $\delta_\mathrm{max}$ which are both based
+on the longest distance.
+
+$$ \mathrm{Sim}(a, b) = 1 - \frac{\mathrm{len}_c(a, b)}{2*\delta_\mathrm{max}} $$
+
+
+There is a parameter distance which takes value of `"longest_distances_via_LCA"`
+(the default) or `"shortest_distances_via_NCA"`:
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Resnik_edge_2005",
+    control = list(distance = "shortest_distances_via_NCA"))
+</pre>
+
+Paper link: https://doi.org/10.1145/1097047.1097051.
+
+
+### Sim_Leocock_1998
+
+It is similar as the _Sim_Resnik_edge_2005_ method, but it applies
+log-transformation on the distance and the depth:
+
+$$ \mathrm{Sim}(a, b) = 1 - \frac{\log(D_\mathrm{sp}(a, b))}{\log(2*\delta_\mathrm{max})} $$
+
+where $2*\delta_\mathrm{max}$ can be thought as the possible maximal distance
+between two terms in the DAG.
+
+Similarly, the distance can also be the longest distance via LCA, then it is
+consistent with the definition of $\delta_\mathrm{max}$ which are both based
+on the longest distance.
+
+$$ \mathrm{Sim}(a, b) = 1 - \frac{\log(\mathrm{len}_c(a, b))}{\log(2*\delta_\mathrm{max})} $$
+
+
+There is a parameter distance which takes value of `"longest_distances_via_LCA"`
+(the default) or `"shortest_distances_via_NCA"`:
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Leocock_1998",
+    control = list(distance = "shortest_distances_via_NCA"))
+</pre>
+
+Paper link: https://ieeexplore.ieee.org/document/6287675.
+
+
+### Sim_WP_1994
+
+It is based on the depth of the LCA term $c$ and the longest distance between
+term $a$ and $b$ via $c$:
+
+$$
+\begin{align*}
+ \mathrm{Sim}(a, b) & = \frac{2*\delta(c)}{\mathrm{len}(c, a) + \mathrm{len}(c, b) + 2*\delta(c)} \\
+   & =  \frac{2*\delta(c)}{\mathrm{len}_c(a, b) + 2*\delta(c)}
+\end{align*}
+$$
+
+And it can also be written in the *Lin_1998* form:
+
+$$
+\begin{align*}
+ \mathrm{Sim}(a, b) & = \frac{2*\delta(c)}{\delta(c) + \mathrm{len}(c, a) + \delta(c) + \mathrm{len}(c, b)} \\
+   & =  \frac{2*\delta(c)}{\delta_c(a) + \delta_c(b)}
+\end{align*}
+$$
+
+where in the denominator are the depths of $a$ and $b$ via $c$.
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_WP_1994")
+</pre>
+
+Paper link: https://doi.org/10.3115/981732.981751.
+
+### Sim_Slimani_2006
+
+It is a correction of the *Sim_WP_1994* method. The correction factor for term $a$ and $b$ regarding to their LCA term $c$ is:
+
+$$ \mathrm{Sim}(a, b) = \mathrm{CF}(a, b) * \mathrm{Sim}_\mathrm{WP}(a, b) $$
+
+The correction factor $\mathrm{CF}(a, b)$ is based whether $a$ and $b$ are in
+ancestor/offspring relationship or not.
+
+$$ \mathrm{CF}(a, b) = \left\{ \begin{array}{ll}
+\min\{ \delta(a), \delta(b)\} - \delta(c) = \min\{\mathrm{len}(c, a), \mathrm{len}(c, b)\} & \textit{a} \text{ and } \textit{b} \text{ are not ancestor-offspring} \\
+\frac{1}{1 + |\delta(a) - \delta(b)|} = \frac{1}{1 + \mathrm{len}(a,b)} & \textit{a} \text{ and } \textit{b} \text{ are ancestor-offspring}
+\end{array} \right. 
+$$
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Slimani_2006")
+</pre>
+
+Paper link: https://zenodo.org/record/1075130.
+
+### Sim_Shenoy_2012
+
+It is also a correction of the *Sim_WP_1994* method. The correction factor for term $a$ and $b$ is:
+
+$$  \mathrm{CF}(a, b) = \left\{ \begin{array}{ll}
+1 & \textit{a} \text{ and } \textit{b} \text{ are not ancestor-offspring} \\
+\exp(-\frac{D_\mathrm{sp}(a, b)}{\delta_\mathrm{max}})) & \textit{a} \text{ and } \textit{b} \text{ are ancestor-offspring}
+\end{array} \right. $$
+
+$D_\mathrm{sp}$ can be replaced with $\mathrm{len}(a, b)$ if the longest distance is used.
+
+
+There is a parameter distance which takes value of
+`"longest_distances_via_LCA"` (the default) or `"shortest_distances_via_NCA"`:
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Shenoy_2012",
+    control = list(distance = "shortest_distances_via_NCA"))
+</pre>
+
+Paper link: https://doi.org/10.48550/arXiv.1211.4709.
+
+
+### Sim_Pekar_2002
+
+It is very similar to the _Sim_WP_1994_ method:
+
+$$
+\begin{align*}
+\mathrm{Sim}(a, b) &= \frac{\delta(c)}{\mathrm{len}(c, a) + \mathrm{len}(c, b) + \delta(c)} \\
+                   &= \frac{\delta(c)}{\delta(c) + \mathrm{len}(c, a) + \delta(c) + \mathrm{len}(c, b) - \delta(c)} \\
+                   &= \frac{\delta(c)}{\delta_c(a) + \delta_c(b) - \delta(c)}
+\end{align*}
+$$
+
+
+And the relationship to $\mathrm{Sim}_\mathrm{WP}$ is:
+
+$$ \mathrm{Sim}_\mathrm{Pekar}(a, b) = \frac{\mathrm{Sim}_\mathrm{WP}(a, b)}{2 - \mathrm{Sim}_\mathrm{WP}(a, b)} $$
+
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Pekar_2002")
+</pre>
+
+Paper link: https://aclanthology.org/C02-1090/.
+
+### Sim_Stojanovic_2001
+
+It is purely based on the depth of term $a$, $b$ and their LCA term $c$.
+
+
+$$ \mathrm{Sim}(a, b) = \frac{\delta(c)}{\delta(a) + \delta(b) - \delta(c)} $$
+
+The similarity value might be negative because there is no restrction that the
+path from root to $a$ or $b$ must pass $c$.
+
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Stojanovic_2001")
+</pre>
+
+Paper link: https://doi.org/10.1145/500737.500762.
+
+
+### Sim_Wang_edge_2012
+
+It is calculated as:
+
+$$ 
+\begin{align*}
+\mathrm{Sim}(a, b) & = \frac{\mathrm{len}(r, c)^2}{\mathrm{len}_c(r, a)*\mathrm{len}_c(r, b)} \\ 
+   & = \frac{\delta(c)^2}{\delta_c(a)*\delta_c(b)}
+\end{align*}
+$$
+
+where $r$ is the root term.
+
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Wang_edge_2012")
+</pre>
+
+Paper link: https://doi.org/10.1186/1477-5956-10-s1-s18.
+
+
+### Sim_Zhong_2002
+
+For a term $x$, it first calculates a "mile-stone" value based on the depth as
+
+$$ m(x) = 2^{-\delta(x) - 1} $$
+
+The the distance bewteen term $a$ and $b$ via LCA term $c$ is:
+
+$$ 
+\begin{align*}
+D(a, b) & = D(c, a) + D(c, b) \\
+   & = m(c) - m(a) + m(c) + m(b) \\
+   & = 2^{-\delta(c)} - 2^{-\delta(a) - 1} - 2^{-\delta(b) - 1}
+\end{align*}
+$$
+
+We can change original $\delta(a)$ and $\delta(b)$ to $\delta_c(a)$
+and $\delta_c(b)$ to require that the depth to reach $a$ and $b$ should go through $c$. Then above
+equation becomes
+
+
+$$ 
+\begin{align*}
+D(a, b) & = 2^{-\delta(c)} - 2^{-\delta_c(a) - 1} - 2^{-\delta_c(b) - 1} \\
+    & = 2^{-\delta(c)} - 2^{-\delta(c)-\mathrm{len}(c,a)-1} - 2^{-\delta(c)-\mathrm{len}(c,b)-1} \\
+    & = 2^{-\delta(c)} \left( 1 - 2^{-\mathrm{len}(c,a)-1} - 2^{-\mathrm{len}(c,b)-1} \right)
+\end{align*}
+$$
+
+Then when $a = b$ (the two terms are identical), $D(a, b) = 0$ and when $c = r$ (common ancestor only includes root) and $\mathrm{len}(r, a) \to \infty$, $\mathrm{len}(r, b) \to \infty$ (root has infinite distance to the terms), $D(a, b)$ reaches maximal of 1. So the similarity
+
+$$ \mathrm{Sim}(a, b) = 1 - D(a, b)$$
+
+ranges between 0 and 1.
+
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Zhong_2002")
+</pre>
+
+Paper link: https://doi.org/10.1007/3-540-45483-7_8.
+
+
+### Sim_AlMubaid_2006
+
+It also takes accout of the distance between term $a$ and $b$, as well as the
+depth of the LCA term $c$ in the DAG. The distance is calculated as:
+
+$$ D(a, b) = \log(1 + D_\mathrm{sp}(a, b)*(\sigma_\mathrm{max} - \sigma(c))) $$
+
+To scale $D(a, b)$ into the range of `[0, 1]`, we can calculate the smallest value as zero when $a = b$.
+$D(a, b)$ reaches maximal when $D_\mathrm{sp}(a, b)$ reach possible maximal which is $2*\delta_\mathrm{max}$. Then we can define the maximal of $D(a, b)$ as
+
+$$ D_\mathrm{max} = \log(1 + 2*\delta_\mathrm{max} * \delta_\mathrm{max}) $$
+
+And the similarity is:
+
+$$ \mathrm{Sim}(a, b) = 1 - D(a, b)/D_\mathrm{max} $$
+
+
+There is a parameter distance which takes value of
+`"longest_distances_via_LCA"` (the default) or `"shortest_distances_via_NCA"`:
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_AlMubaid_2006",
+    control = list(distance = "shortest_distances_via_NCA"))
+</pre>
+
+Paper link: https://doi.org/10.1109/IEMBS.2006.259235.
+
+
+### Sim_Li_2003
+
+It is similar to the *Sim_AlMubaid_2006* method, but uses a non-linear form:
+
+$$ \mathrm{Sim}(a, b) = \exp(-0.2*D_\mathrm{sp}(a, b)) * \tanh(0.6*\delta(c)) $$
+
+
+There is a parameter distance which takes value of `"longest_distances_via_LCA"`
+(the default) or `"shortest_distances_via_NCA"`:
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Li_2003",
+    control = list(distance = "shortest_distances_via_NCA"))
+</pre>
+
+Paper link: https://doi.org/10.1109/TKDE.2003.1209005.
+
+## Hybrid methods
+
+Hybrid methods use both DAG structure information and IC.
+
+### Sim_RSS_2013
+
+The similarity is adjusted by the positions of term $a$, $b$ and the LCA term $c$ in the DAG. The similarity is defined as:
+
+$$ \mathrm{Sim}(a, b) = \frac{\delta_\mathrm{max}}{\delta_\mathrm{max} + D_\mathrm{sp}(a, b)} * \frac{\alpha}{\alpha + \beta} $$
+
+where $D_\mathrm{sp}(a, b)$ can also be the longest distance via LCA. $\alpha$ and $\beta$ in the second term are defined as:
+
+$$
+\begin{align*}
+\alpha & = \delta(c) \\
+\beta & = \min\{ \eta(a), \eta(b) \}
+\end{align*}
+$$
+
+where $\alpha$ is the depth of LCA, $\beta$ corresponds to the distance to
+leaves, which is the smaller height of $a$ and $b$ in the DAG.
+
+
+There is a parameter distance which takes value of
+`"longest_distances_via_LCA"` (the default) or `"shortest_distances_via_NCA"`:
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_RSS_2013",
+    control = list(distance = "shortest_distances_via_NCA"))
+</pre>
+
+Paper link: https://doi.org/10.1371/journal.pone.0066745.
+
+
+### Sim_HRSS_2013
+
+It is similar to the *Sim_RSS_2013* method, but it uses information content
+instead of the distance to adjust the similarity.
+
+It first defines the semantic distance between term $a$ and $b$ as the sum of
+the distance to their MICA term $c$:
+
+$$ D(a, b) = D(c, a) + D(c, b) $$
+
+And the distance between an ancestor to a term is:
+
+$$ 
+\begin{align*}
+D(c, a) & = \mathrm{IC}(a) - \mathrm{IC}(c) \\
+D(a, b) & = D(c, a) + D(c, b) = \mathrm{IC}(a) + \mathrm{IC}(b) - 2*\mathrm{IC}(c)
+\end{align*}
+$$
+
+Similarly, the similarity is also corrected by the position of MICA term and $a$, $b$ in the DAG:
+
+$$ \mathrm{Sim}(a, b) = \frac{1}{1 + D(a, b)} * \frac{\alpha}{\alpha + \beta} $$
+
+where
+
+$$ \alpha = \mathrm{IC}(c) $$
+
+And beta is the average of the maximal semantic distance of $a$ and $b$ to leaves.
+
+$$ \beta = \frac{D(a, l_a) + D(b, l_b)}{2} = \frac{\mathrm{IC}(l_a) - \mathrm{IC}(a) + \mathrm{IC}(l_b) - \mathrm{IC}(b)}{2} $$
+
+where $l_a$ or $l_b$ is the leaf with the highest IC that $a$ or $b$ can reach (i.e. the most
+informative leaf)
+
+$$ \mathrm{IC}(l_a) = \max_{z \in \mathcal{L}(a)} \mathrm{IC}(z) $$
+
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_HRSS_2013")
+</pre>
+
+Paper link: https://doi.org/10.1371/journal.pone.0066745.
+
+
+### Sim_Shen_2010
+
+It is based on the information content of terms on the path connecting term $a$
+and $b$ via their MICA term $c$.
+
+Denote a list of terms `a, ..., c, ..., b` which are composed by the shortest
+path from $c$ to $a$ and from $c$ to $b$, the distance between $a$ and $b$
+is the sum of $1/\mathrm{IC}$ of the terms on the path. Denote $L_c(a, b)$ as the set of terms on the shortest path connecting $a$ and
+$b$ via the MICA term $c$, the similarity is:
+
+$$ \mathrm{Sim}(a, b) = 1 - \frac{\arctan \left( \sum\limits_{x \in L_c(a, b)} \frac{1}{\mathrm{IC}(x)} \right)}{\pi/2} $$
+
+The path $L_c(a, b)$ can also be defined as the longest path via MICA. The `distance` parameter
+controls which type of paths to use.
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Shen_2010",
+    control = list(distance = "longest_distances_via_LCA"))
+</pre>
+
+Paper link: https://doi.org/10.1109/BIBM.2010.5706623.
+
+
+### Sim_SSDD_2013
+
+It is similar to the _Sim_Shen_2010_ method which also sums information along the
+path passing through the LCA term. Instead of summing the information
+contents, the _Sim_SSDD_2013_ method sums up a so-called "T-value" which relies on the
+DAG structure.
+
+Denote $L_c(a, b)$ as the set of terms on the shortest path connecting $a$ and $b$ via the LCA term $c$,
+the similarity is calculated as:
+
+$$ \mathrm{Sim}(a, b) = 1 - \frac{\arctan \left( \sum\limits_{x \in L_c(a, b)} T(x) \right) }{\pi/2} $$
+
+The T-value $T(x)$ depends on the DAG structure which considers both parents and children of $x$. The
+definition of $T(x)$ is:
+
+$$
+T(x) = \left\{ \begin{array}{ll}
+1 & \text{if }\textit{x}\text{ is a root} \\
+\frac{1}{|\mathcal{P}_x|} \sum\limits_{t \in \mathcal{P}_x}(w * T(t)) & \text{otherwise}
+\end{array} \right.
+$$
+
+which means T-value of a term is an average of the weighted T-values of its parents. The
+weight $w$ measures the fraction of information a parent $t$ transmitting to downstream of the DAG via $x$, defined as:
+
+$$ w = \frac{|D_x^+|}{|D_t^+|} $$
+
+$w \leq 1$ as all offsprings of $x$ are also offspring of its parent $t$.
+
+The path $L_c(a, b)$ can also be defined as the longest path via MICA. The `distance` parameter
+controls which type of paths to use.
+
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_SSDD_2013",
+    control = list(distance = "longest_distances_via_LCA"))
+</pre>
+
+Paper link: https://doi.org/10.1016/j.ygeno.2013.04.010.
+
+
+### Sim_Jiang_1997
+
+First semantic distance between term $a$ and $b$ via MICA term $c$ is defined as:
+
+$$ D(a, b) = \mathrm{IC}(a) + \mathrm{IC}(b) - 2*\mathrm{IC}(c) $$ 
+
+Then there are several normalization methods to change the distance to similarity and to scale it into the range of `[0, 1]`.
+
+- `"max"`: $1 - \frac{D(a, b)}{2*\mathrm{IC}_\mathrm{max}}$
+- `"Couto"`: $\min\{ 1, \frac{D(a, b)}{\mathrm{IC}_\mathrm{max}} \}$
+- `"Lin"`: $1 - \frac{D(a, b)}{\mathrm{IC}(a) + \mathrm{IC}(b)}$ which is the same as the *Sim_Lin_1998* method
+- `"Garla"`: $1 - \frac{\log(D(a, b) + 1)}{\log(2*\mathrm{IC}_\mathrm{max} + 1)}$
+- `"log-Lin"`: $1 - \frac{\log(D(a, b) + 1)}{\log(\mathrm{IC}(a) + \mathrm{IC}(b) + 1)}$
+- `"Rada"`: $\frac{1}{1 + D(a, b)}$
+
+The normalization methods can be set via the parameter `norm_method`:
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Jiang_1997", control = list(norm_method = "max"))
+term_sim(dag, terms, method = "Sim_Jiang_1997", control = list(norm_method = "Couto"))
+term_sim(dag, terms, method = "Sim_Jiang_1997", control = list(norm_method = "Lin"))
+term_sim(dag, terms, method = "Sim_Jiang_1997", control = list(norm_method = "Garla"))
+term_sim(dag, terms, method = "Sim_Jiang_1997", control = list(norm_method = "log-Lin"))
+term_sim(dag, terms, method = "Sim_Jiang_1997", control = list(norm_method = "Rada"))
+</pre>
+
+Paper link: https://aclanthology.org/O97-1002/.
+
+
+## Annotation-count based methods
+
+Denote $A$ and $B$ as the sets of items annotated to term $a$ and $b$, and $U$ as the universe set
+of all items annotated to the DAG.
+
+### Sim_Kappa
+
+The definition of kappa coeffient is a little bit complex. First let's format the two sets
+into a contigency table:
+
+<style>
+table.contigency-table {
+    border-collapse: collapse;
+}
+table.contigency-table td {
+    border: 1px solid black;
+    padding: 2px 5px;
+}
+.symbol {
+    font-family: Times;
+    font-style: italic;
+}
+</style>
+<center>
+<table class="contigency-table">
+    <tr><td rowspan='2' colspan='2'></td><td colspan='2'>In set <b><i>B</i></b></td></tr>
+    <tr><td>Yes</td><td>No</td></tr>
+    <tr><td rowspan='2'>In set <b><i>A</i></b></td><td>Yes</td><td class="symbol">a</td><td class="symbol">b</td></tr>
+    <tr><td>No</td><td class="symbol">c</td><td class="symbol">d</td></tr>
+</table>
+</center>
+
+where $a$, $b$, $c$, $d$ are the numbers of items that fall in each category.
+
+Let's calculate $p_\mathrm{obs}$ (probability of observed agreement, both yes or both no) and $p_\mathrm{exp}$ (probability of expected agreement) as: 
+
+$$
+\begin{align*}
+p_\mathrm{obs} & = \frac{a+d}{a+b+c+d} \\
+p_\mathrm{Yes} & = \frac{a+b}{a+b+c+d} * \frac{a+c}{a+b+c+d} \\
+p_\mathrm{No} & = \frac{c+d}{a+b+c+d} * \frac{b+d}{a+b+c+d} \\
+p_\mathrm{exp} & = p_\mathrm{Yes} + p_\mathrm{No}
+\end{align*}
+$$
+
+where $p_\mathrm{obs}$ is the probability of an item in both sets or neither in both sets,
+$p_\mathrm{Yes}$ is the probability of an item in both sets by random (by assuming the events of an item in set $A$ and set $B$ are independent), $p_\mathrm{No}$ is the probability of an item
+not in the two sets by random, and $p_\mathrm{exp}$ is the probability of an item either both in 
+the two sets or not in the two sets by random.
+
+The kappa coeffcient is calculated as:
+
+$$ \mathrm{Sim}(a, b) = \mathrm{Kappa}(a, b) = \frac{p_\mathrm{obs} - p_\mathrm{exp}}{1 - p_\mathrm{exp}}$$
+
+Note the Kappa coeffcient is possible to be negative.
+
+The universe set can be set via the parameter `anno_universe`. By default it
+is the total items annotated to the whole DAG.
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_kappa",
+    control = list(anno_universe = ...))
+</pre>
+
+### Sim_Jaccard, Sim_Dice and Sim_Overlap
+
+Definitions of the Jaccard, Dice and overlap coeffcients are similar. 
+The Jaccard coeffcient is:
+
+$$ \mathrm{Jaccard}(a, b) = \frac{|A \cap B|}{|A \cup B|} $$
+
+The Dice coeffcient is:
+
+$$ \mathrm{Dice}(a, b) = \frac{2*|A \cap B|}{|A| + |B|} $$
+
+The overlap coeffcient is:
+
+$$ \mathrm{Overlap}(a, b) = \frac{|A \cap B|}{\min\{|A|, |B|\}} $$
+
+
+Dice and Jaccard coeffcients have a relation of:
+
+$$ \mathrm{Jaccard} = \frac{\mathrm{Dice}}{2 - \mathrm{Dice}} $$
+
+The universe set can be set via the parameter `anno_universe`. By default it
+is the total items annotated to the whole DAG.
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Jaccard",
+    control = list(anno_universe = ...))
+term_sim(dag, terms, method = "Sim_Dice",
+    control = list(anno_universe = ...))
+term_sim(dag, terms, method = "Sim_Overlap",
+    control = list(anno_universe = ...))
+</pre>
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
+
+<script src="jquery.min.js"></script>
+<script src="jquery.sticky.js"></script>
+<script>
+$(document).ready(function(){
+    $("#TOC").sticky({
+        topSpacing: 0,
+        zIndex:1000    
+    })
+    $("#TOC").on("sticky-start", function() {
+
+        $("<p style='font-size:1.2em; padding-left:4px;'><a id='TOC-click'>Table of Content</a></p>").insertBefore($("#TOC ul:first-child"));
+        $("#TOC-click").hover(function() {
+            $(this).css("color", "#0033dd").css("cursor", "pointer");
+            $("#TOC").children().first().next().show();
+            $("#TOC").hover(function() {
+                $(this).children().first().next().show();
+            }, function() {
+                $(this).children().first().next().hide();
+                $("body").off("hover", "#TOC");
+            })
+        }, function() {
+            $(this).css("color", "#0033dd");
+        })
+        $("#TOC").children().first().next().hide();
+
+    })
+    $("#TOC").on("sticky-end", function() {
+        $("#TOC").children().first().remove();
+        $("#TOC").children().first().show();
+    })
+});
+</script>
+

@@ -1,0 +1,539 @@
+---
+title: "Similarity between two groups of terms"
+author: "Zuguang Gu ( z.gu@dkfz.de )"
+date: '`r Sys.Date()`'
+output: 
+  html_vignette:
+    css: main.css
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{6. Similarity between two groups of terms}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo = FALSE, message = FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+    error = FALSE,
+    tidy  = FALSE,
+    message = FALSE,
+    warning = FALSE,
+    fig.align = "center")
+```
+
+
+
+The methods of group similarity implemented in **simona** are mainly from
+the [supplementary file](https://academic.oup.com/bib/article/18/5/886/2562801#supplementary-data)
+of the paper ["Mazandu et al., Gene Ontology semantic similarity tools: survey
+on features and challenges for biological knowledge discovery. Briefings in
+Bioinformatics 2017"](https://doi.org/10.1093/bib/bbw067). Original
+denotations have been slightly modified to make them more consistent. Also
+more explanations have been added in this vignette. 
+
+
+There are two groups of terms denoted as $T_p$ and $T_q$ represented as two sets:
+
+$$ T_p = \{ a_1, a_2, ...\} \\
+   T_q = \{ b_1, b_2, ... \} $$
+
+where $a_i$ is a term in set $T_p$ and $b_j$ is a term in set $T_q$.
+
+
+The wrapper function `group_sim()` calculates semantic similarities between two groups
+of terms with a specific method. Note the method name can be partially matched.
+
+
+<pre class="r">
+group_sim(dag, group1, group2, method = ..., control = list(...))
+</pre>
+
+Some of the group similarity methods have no assumption of which similarity
+measure between single terms to use. If there are annotation already provided
+in the DAG object, by default *Sim_Lin_1998* is used, or else *Sim_WP_1994* is
+used. The term similarity method can be set via the `term_sim_method`
+parameter in `control`. Additionally parameters for a specific `term_sim_method`
+can also be set in `control`.
+
+<pre class="r">
+group_sim(dag, group1, group2, method = ..., 
+    control = list(term_sim_method = ...))
+</pre>
+
+
+All supported group similarity methods are:
+
+```{r}
+library(simona)
+all_group_sim_methods()
+```
+
+
+## Pairwise term similarity-based methods
+
+### GroupSim_pairwise_avg
+
+Denote $S(a, b)$ as the semantic similarity between term $a$ and $b$ where $a$
+is from group $p$ and $b$ is from group $q$, The similarity between group $p$
+and group $q$ is the average similarity of every pair of individual terms in
+the two groups:
+
+$$ \mathrm{GroupSim}(p, q) = \frac{1}{|T_p|*|T_q|} \sum_{a \in T_p, b \in T_q}S(a, b) $$
+
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_avg"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+</pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
+
+Paper link: https://doi.org/10.1093/bioinformatics/btg153.
+
+### GroupSim_pairwise_max
+
+The similarity is defined as the maximal $S(a, b)$ among all pairs of terms in group $p$ and $q$:
+
+$$ \mathrm{GroupSim}(p, q) = \max_{a \in T_p, b \in T_q}S(a, b) $$
+
+
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_max"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+</pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
+
+Paper link: https://doi.org/10.1109/TCBB.2005.50.
+
+### GroupSim_pairwise_BMA
+
+BMA stands for "best-match average". First define similarity of a term $x$ to a group of terms $T$ as
+
+$$ S(x, T) = \max_{y \in T} S(x, y) $$
+
+which corresponds to the most similar term in $T$ to $x$. Then the BMA similarity is calculated as:
+
+$$ \mathrm{GroupSim}(p, q) = \frac{1}{2}\left( \frac{1}{|T_p|}\sum_{a \in T_p} S(a, T_q) + \frac{1}{|T_q|}\sum_{b \in T_q} S(b, T_p) \right) $$
+
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_BMA"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+</pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
+
+Paper link: https://doi.org/10.1155/2012/975783.
+
+### GroupSim_pairwise_BMM
+
+BMM stands for "best-match max". It is defined as:
+
+$$ \mathrm{GroupSim}(p, q) = \max \left \{ \frac{1}{|T_p|}\sum_{a \in T_p} S(a, T_q), \frac{1}{|T_q|}\sum_{b \in T_q} S(b, T_p) \right \} $$
+
+
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_BMM"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+</pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
+
+Paper link: https://doi.org/10.1186/1471-2105-7-302.
+
+
+### GroupSim_pairwise_ABM
+
+ABM stands for "average best-match". It is defined as:
+
+$$ \mathrm{GroupSim}(p, q) = \frac{1}{|T_q| + |T_q|} \left( \sum_{a \in T_p} S(a, T_q) + \sum_{b \in T_q} S(b, T_p) \right)  $$
+
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_ABM"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+</pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
+
+Paper link: https://doi.org/10.1186/1471-2105-14-284.
+
+### GroupSim_pairwise_HDF
+
+First define the distance of a term $x$ to a group of terms $T$:
+
+$$D(x, T) = 1 - S(x, T)$$
+
+Then the Hausdorff distance between two groups are:
+
+$$ \mathrm{HDF}(p, q) = \max \left\{ \max_{a \in T_p} D(a, T_q), \max_{b \in T_q} D(b, T_q) \right\} $$
+
+
+This final similarity is:
+
+$$ \mathrm{GroupSim}(p, q) = 1 - \mathrm{HDF}(p, q) $$
+
+
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_HDF"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+</pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
+
+
+### GroupSim_pairwise_MHDF
+
+Instead of using the maximal distance from a group to the other group, MHDF uses mean distance:
+
+
+$$ \mathrm{MHDF}(p, q) = \max \left\{ \frac{1}{|T_p|} \sum_{a \in T_p} D(a, T_q), \frac{1}{|T_q|} \sum_{b \in T_q} D(b, T_q) \right\} $$
+
+This final similarity is:
+
+$$ \mathrm{GroupSim}(p, q) = 1 - \mathrm{MHDF}(p, q) $$
+
+
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_MHDF"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+</pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
+
+Paper link: https://doi.org/10.1109/ICPR.1994.576361.
+
+### GroupSim_pairwise_VHDF
+
+It is defined as:
+
+
+$$ \mathrm{VHDF}(p, q) = \frac{1}{2} \left( \sqrt{\frac{1}{|T_p|} \sum_{a \in T_p} D^2(a, T_q)} + \sqrt{\frac{1}{|T_q|} \sum_{b \in T_q} D^2(b, T_q)} \right) $$
+
+
+This final similarity is:
+
+$$ \mathrm{GroupSim}(p, q) = 1 - \mathrm{VHDF}(p, q) $$
+
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_VHDF"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+</pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
+
+Paper link: https://doi.org/10.1073/pnas.0702965104.
+
+### GroupSim_pairwise_Froehlich_2007
+
+The similarity is:
+
+
+$$ \mathrm{GroupSim}(p, q) = \exp(-\mathrm{HDF}(p, q)) $$
+
+
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_Froehlich_2007"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+</pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
+
+
+Paper link: https://doi.org/10.1186/1471-2105-8-166.
+
+
+### GroupSim_pairwise_Joeng_2014
+
+Similar to VHDF, but it directly uses the similarity:
+
+$$ \mathrm{GroupSim}(p, q) = \frac{1}{2} \left( \sqrt{\frac{1}{|T_p|} \sum_{a \in T_p} S^2(a, T_q)} + \sqrt{\frac{1}{|T_q|} \sum_{b \in T_q} S^2(b, T_q)} \right) $$
+
+
+The term semantic similarity method and the IC method can be set via `control` argument, for example:
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_pairwise_Joeng_2014"
+    control = list(term_sim_method = "Sim_Lin_1998", IC_method = "IC_annotation")`.
+</pre>
+
+Other parameters for the `term_sim_method` can also be set in the `control` list.
+
+
+Paper link: https://doi.org/10.1109/tcbb.2014.2343963.
+
+## Pairwise edge-based methods
+
+### GroupSim_SimALN
+
+It is based on the average distance between every pair of terms in the two groups:
+
+$$ \mathrm{GroupSim}(p, q) = \exp\left(-\frac{1}{|T_p|*|T_q|} \sum_{a \in T_p, b \in T_q} D_\mathrm{sp}(a, b)\right) $$
+
+Or use the longest distance between two terms:
+
+$$ \mathrm{GroupSim}(p, q) = \exp\left(-\frac{1}{|T_p|*|T_q|} \sum_{a \in T_p, b \in T_q} \mathrm{len}(a, b)\right) $$
+
+
+There is a parameter distance which takes value of `"longest_distances_via_LCA"`
+(the default) or `"shortest_distances_via_NCA"`:
+
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_SimALN",
+    control = list(distance = "shortest_distances_via_NCA"))
+</pre>
+
+Paper link: https://doi.org/10.1109/CBMS.2008.27.
+
+
+## Groupwise IC-based methods
+
+This category of methods depend on the IC of terms in the two groups as well as their ancestor terms.
+
+### GroupSim_SimGIC, GroupSim_SimDIC and GroupSim_SimUIC, 
+
+Denote $A$ and $B$ as the two sets of ancestors of terms in group $p$ and $q$ respectively:
+
+
+$$
+\begin{align*}
+ \mathcal{A}_p &= \bigcup_{a \in T_p} \mathcal{A}_a \\
+ \mathcal{A}_q &= \bigcup_{b \in T_q} \mathcal{A}_b \\
+\end{align*}
+$$
+
+The _GroupSim_SimGIC_, _GroupSim_SimDIC_ and _GroupSim_SimUIC_ are very similar. They are
+based on the IC of the ancestor terms, defined as:
+
+
+$$
+\begin{align*}
+ \mathrm{GroupSim}_\mathrm{SimGIC}(p, q) &= \frac{\sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q} \mathrm{IC}(x)}{\sum\limits_{x \in \mathcal{A}_p \cup \mathcal{A}_q} \mathrm{IC}(x)} \\
+ \mathrm{GroupSim}_\mathrm{SimDIC}(p, q) &= \frac{2 * \sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q} \mathrm{IC}(x)}{\sum\limits_{x \in \mathcal{A}_p} \mathrm{IC}(x) + \sum\limits_{x \in \mathcal{A}_q} \mathrm{IC}(x)} \\
+ \mathrm{GroupSim}_\mathrm{SimUIC}(p, q) &= \frac{2 * \sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q} \mathrm{IC}(x)}{\max\left\{\sum\limits_{x \in \mathcal{A}_p} \mathrm{IC}(x), \sum\limits_{x \in \mathcal{A}_q} \mathrm{IC}(x) \right\}}  \\
+\end{align*}
+$$
+
+IC method can be set via the `control` argument. By default if there is annotation associated, _IC_annotation_ is used, or else _IC_offspring_ is used.
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_SimGIC",
+    control = list(IC_method = ...))
+</pre>
+
+
+### GroupSim_SimUI, GroupSim_SimDB, GroupSim_SimUB and GroupSim_SimNTO
+
+These four methods are based on the counts of ancestor terms:
+
+$$
+\begin{align*}
+ \mathrm{GroupSim}_\mathrm{SimUI}(p, q) &= \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{|\mathcal{A}_p \cup \mathcal{A}_q|} \\
+ \mathrm{GroupSim}_\mathrm{SimDB}(p, q) &= \frac{2*|\mathcal{A}_p \cap \mathcal{A}_q|}{|\mathcal{A}_p| +  |\mathcal{A}_q|} \\
+ \mathrm{GroupSim}_\mathrm{SimUB}(p, q) &= \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{\max\{|\mathcal{A}_p|,  |\mathcal{A}_q|\}} \\
+ \mathrm{GroupSim}_\mathrm{SimNTO}(p, q) &= \frac{|\mathcal{A}_p \cap \mathcal{A}_q|}{\min\{|\mathcal{A}_p|,  |\mathcal{A}_q|\}}
+\end{align*}
+$$
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_SimUI")
+</pre>
+
+### GroupSim_SimCOU
+
+Let's write $\mathcal{A}_p$ and $\mathcal{A}_q$ as two vectors $\mathbf{v_p}$
+and $\mathbf{v_q}$. Taking $\mathbf{v_p}$ as an example, it is $\mathbf{v_p} = (w_1, ..., w_n)$ where $n$
+is the number of total terms in the DAG. The value $w_i$ is assigned to the corresponding term $t_i$
+and is defined as:
+
+$$
+\mathcal{w}_{i} = \left\{ \begin{array}{ll}
+\mathrm{IC}(t_i) & \textrm{if} t_i \in \mathcal{A}_p \\
+0 & \textrm{otherwise}
+\end{array} \right.
+$$
+
+The semantic similarity is defined as the cosine similarity between the two vectors:
+
+$$ \mathrm{GroupSim}(a, b) = \frac{ \mathbf{v_p} \cdot \mathbf{v_q} }{\left \| \mathbf{v_p} \right \| \cdot  \left \| \mathbf{v_q} \right \|} $$
+
+It can also be written as:
+
+$$ \mathrm{GroupSim}(a, b) = \frac{\sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q}\mathrm{IC}(x)^2}{\sqrt{\sum\limits_{x \in \mathcal{A}_p}\mathrm{IC}(x)^2} \cdot \sqrt{\sum\limits_{x \in \mathcal{A}_q}\mathrm{IC}(x)^2}} $$
+
+IC method can be set via the `control` argument. By default if there is annotation associated, _IC_annotation_ is used, or else _IC_offspring_ is used.
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_SimCOU",
+    control = list(IC_method = ...))
+</pre>
+
+### GroupSim_SimCOT
+
+The semantic similarity is defined as:
+
+$$
+\begin{align*}
+ \mathrm{GroupSim}(a, b) &= \frac{ \mathbf{v_p} \cdot \mathbf{v_q} }{\left \| \mathbf{v_p} \right \|^2 +  \left \| \mathbf{v_q} \right \|^2 - \mathbf{v_p} \cdot \mathbf{v_q}} \\
+     &=  \frac{\sum\limits_{x \in \mathcal{A}_p \cap \mathcal{A}_q}\mathrm{IC}(x)^2}{\sum\limits_{x \in \mathcal{A}_p \cup \mathcal{A}_q}\mathrm{IC}(x)^2}
+\end{align*}
+$$
+
+IC method can be set via the `control` argument. By default if there is annotation associated, _IC_annotation_ is used, or else _IC_offspring_ is used.
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_SimCOT",
+    control = list(IC_method = ...))
+</pre>
+
+## Groupwise edge-based methods
+
+### GroupSim_SimLP
+
+It is the largest depth of terms in $\mathcal{A}_p \cap \mathcal{A}_q$.
+
+$$ \mathrm{GroupSim}(p, q) = \max\{\delta(t): t \in \mathcal{A}_p \cap \mathcal{A}_q\} $$
+
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_SimLP")
+</pre>
+
+
+Link: https://bioconductor.org/packages/release/bioc/vignettes/GOstats/inst/doc/GOvis.html#go-induced-distances.
+
+
+### GroupSim_Ye_2005
+
+It is a normalized version of *GroupSim_SimLP*:
+
+$$
+\begin{align*}
+\mathrm{GroupSim}(p, q) &= \max\left\{\frac{\delta(t) - \delta_\mathrm{min}}{\delta_\mathrm{max} - \delta_\mathrm{min}}: t \in \mathcal{A}_p \cap \mathcal{A}_q\right\} \\
+    &= \max\left\{\frac{\delta(t) }{\delta_\mathrm{max}}: t \in \mathcal{A}_p \cap \mathcal{A}_q\right\}
+\end{align*}
+$$
+
+Since the minimal depth is zero for root. 
+
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_Ye_2005")
+</pre>
+
+Paper link: https://doi.org/10.1038/msb4100034.
+
+## Annotated items-based methods
+
+This category of methods consider the items annotated to the two groups of terms. 
+
+
+### GroupSim_SimCHO
+
+It is based on the annotated items. Denote $\sigma(t)$ as the total number of
+annotated items of $t$ (after merging all its offspring terms). The similarity
+is calculated as:
+
+$$
+\mathrm{GroupSim}(p, q) = \frac{\log(C_{pq})}{\log(C_\mathrm{min}/C_\mathrm{max})}
+$$
+
+where $C_{pq} = \min\{\sigma(t): t \in T_p \cap T_q \}$, $C_\mathrm{min}$ is the minimal number of annotated items in the DAG which in most cases is 1, $C_\mathrm{max}$ is the maximal number of annotated items, which is the total number of items annotated to the complete DAG.
+
+The similarity can also be written in form of $\mathrm{IC}_\mathrm{anno}$:
+
+$$
+\mathrm{GroupSim}(p, q) = \frac{\max\limits_{x \in T_p \cup T_q}\mathrm{IC}(x)}{\mathrm{IC}_\mathrm{max}}
+$$
+
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_SimCHO")
+</pre>
+
+
+### GroupSim_SimALD
+
+The similarity is calculated as:
+
+$$ \mathrm{GroupSim}(p, q) = \max\left\{ 1 - \frac{\sigma(x)}{C_\mathrm{max}}: x \in T_p \cap T_q \right\} $$
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_SimALD")
+</pre>
+
+## Set-based methods
+
+Since $T_p$ and $T_q$ are two sets, the Kappa coeffcient, Jaccard coeffcient, Dice coeffcient and overlap coeffcient
+can be naturally used.
+
+<pre class="r">
+group_sim(dag, group1, group2, method = "GroupSim_Jaccard", 
+    control = list(universe = ...))
+group_sim(dag, group1, group2, method = "GroupSim_Dice", 
+    control = list(universe = ...))
+group_sim(dag, group1, group2, method = "GroupSim_Overlap", 
+    control = list(universe = ...))
+group_sim(dag, group1, group2, method = "GroupSim_Kappa", 
+    control = list(universe = ...))
+</pre>
+
+
+## Session info
+
+```{r}
+sessionInfo()
+```
+
+
+<script src="jquery.min.js"></script>
+<script src="jquery.sticky.js"></script>
+<script>
+$(document).ready(function(){
+    $("#TOC").sticky({
+        topSpacing: 0,
+        zIndex:1000    
+    })
+    $("#TOC").on("sticky-start", function() {
+
+        $("<p style='font-size:1.2em; padding-left:4px;'><a id='TOC-click'>Table of Content</a></p>").insertBefore($("#TOC ul:first-child"));
+        $("#TOC-click").hover(function() {
+            $(this).css("color", "#0033dd").css("cursor", "pointer");
+            $("#TOC").children().first().next().show();
+            $("#TOC").hover(function() {
+                $(this).children().first().next().show();
+            }, function() {
+                $(this).children().first().next().hide();
+                $("body").off("hover", "#TOC");
+            })
+        }, function() {
+            $(this).css("color", "#0033dd");
+        })
+        $("#TOC").children().first().next().hide();
+
+    })
+    $("#TOC").on("sticky-end", function() {
+        $("#TOC").children().first().remove();
+        $("#TOC").children().first().show();
+    })
+});
+</script>
+

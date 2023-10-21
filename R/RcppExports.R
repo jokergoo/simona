@@ -205,10 +205,6 @@ cpp_n_leaves <- function(dag) {
     .Call(`_simona_cpp_n_leaves`, dag)
 }
 
-cpp_n_leaves_on_tree <- function(dag) {
-    .Call(`_simona_cpp_n_leaves_on_tree`, dag)
-}
-
 cpp_ancestors_of_a_group <- function(dag, nodes, type = 1L, include_self = FALSE) {
     .Call(`_simona_cpp_ancestors_of_a_group`, dag, nodes, type, include_self)
 }

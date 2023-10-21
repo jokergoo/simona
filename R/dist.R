@@ -104,5 +104,5 @@ longest_distances_directed = function(dag, terms, verbose = simona_opt$verbose) 
 longest_distances_from_LCA = function(dag, id, verbose = simona_opt$verbose) {
 	exec_under_message_condition({
 		cpp_longest_distances_from_LCA(dag, id)
-	}, verbose = verbose)
+	})
 }

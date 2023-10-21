@@ -17,6 +17,8 @@ Bioinformatics 2017"](https://doi.org/10.1093/bib/bbw067).
 
 ## Install
 
+https://bioconductor.org/packages/devel/bioc/html/simona.html
+
 ```r
 devtools::install_github("jokergoo/simona")
 # or

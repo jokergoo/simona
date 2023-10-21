@@ -668,17 +668,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cpp_n_leaves_on_tree
-IntegerVector cpp_n_leaves_on_tree(S4 dag);
-RcppExport SEXP _simona_cpp_n_leaves_on_tree(SEXP dagSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_n_leaves_on_tree(dag));
-    return rcpp_result_gen;
-END_RCPP
-}
 // cpp_ancestors_of_a_group
 IntegerVector cpp_ancestors_of_a_group(S4 dag, IntegerVector nodes, int type, bool include_self);
 RcppExport SEXP _simona_cpp_ancestors_of_a_group(SEXP dagSEXP, SEXP nodesSEXP, SEXP typeSEXP, SEXP include_selfSEXP) {
@@ -943,7 +932,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_simona_cpp_n_offspring_on_tree", (DL_FUNC) &_simona_cpp_n_offspring_on_tree, 2},
     {"_simona_cpp_n_offspring_with_intersect", (DL_FUNC) &_simona_cpp_n_offspring_with_intersect, 3},
     {"_simona_cpp_n_leaves", (DL_FUNC) &_simona_cpp_n_leaves, 1},
-    {"_simona_cpp_n_leaves_on_tree", (DL_FUNC) &_simona_cpp_n_leaves_on_tree, 1},
     {"_simona_cpp_ancestors_of_a_group", (DL_FUNC) &_simona_cpp_ancestors_of_a_group, 4},
     {"_simona_cpp_ancestors_of_two_groups", (DL_FUNC) &_simona_cpp_ancestors_of_two_groups, 5},
     {"_simona_cpp_offspring_of_a_group", (DL_FUNC) &_simona_cpp_offspring_of_a_group, 3},

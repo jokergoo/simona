@@ -143,8 +143,8 @@ n_offspring = function(dag, terms = NULL, use_cache = TRUE, include_self = FALSE
 	}
 
 	if(!is.null(terms)) {
-		id = term_to_node_id(dag, terms, add_name = TRUE)
-		n[id[terms]]
+		i = term_to_node_id(dag, terms)
+		n[i]
 	} else {
 		n
 	}
@@ -169,30 +169,26 @@ n_ancestors = function(dag, terms = NULL, use_cache = TRUE, include_self = FALSE
 	}
 
 	if(!is.null(terms)) {
-		id = term_to_node_id(dag, terms, add_name = TRUE)
-		n[id[terms]]
+		i = term_to_node_id(dag, terms)
+		n[i]
 	} else {
 		n
 	}
 }
 
 #' @rdname n_terms
-#' @details For `n_connected_leaves()`, leaf nodes have value of 1.
+#' @details For `n_connected_leaves()`, leaf nodes have value of zero, so you can identify leaf terms based on the values.
 #' @export
 n_connected_leaves = function(dag, terms = NULL, use_cache = TRUE) {
 	if(is.null(dag@term_env$n_leaves) || !use_cache) {
-		if(dag_is_tree(dag)) {
-			dag@term_env$n_leaves = cpp_n_leaves_on_tree(dag)
-		} else {
-			dag@term_env$n_leaves = cpp_n_leaves(dag)
-		}
+		dag@term_env$n_leaves = cpp_n_leaves(dag)
 	}
 	n = dag@term_env$n_leaves
 	names(n) = dag@terms
 
 	if(!is.null(terms)) {
-		id = term_to_node_id(dag, terms, add_name = TRUE)
-		n[id[terms]]
+		i = term_to_node_id(dag, terms)
+		n[i]
 	} else {
 		n
 	}
@@ -205,8 +201,8 @@ n_parents = function(dag, terms = NULL, use_cache = TRUE) {
 	names(n) = dag@terms
 
 	if(!is.null(terms)) {
-		id = term_to_node_id(dag, terms, add_name = TRUE)
-		n[id[terms]]
+		i = term_to_node_id(dag, terms)
+		n[i]
 	} else {
 		n
 	}
@@ -219,8 +215,8 @@ n_children = function(dag, terms = NULL, use_cache = TRUE) {
 	names(n) = dag@terms
 
 	if(!is.null(terms)) {
-		id = term_to_node_id(dag, terms, add_name = TRUE)
-		n[id[terms]]
+		i = term_to_node_id(dag, terms)
+		n[i]
 	} else {
 		n
 	}
@@ -276,8 +272,8 @@ dag_depth = function(dag, terms = NULL, use_cache = TRUE) {
 	d = structure(dag@term_env$dag_depth, names = dag@terms)
 
 	if(!is.null(terms)) {
-		id = term_to_node_id(dag, terms, add_name = TRUE)
-		d[id[terms]]
+		i = term_to_node_id(dag, terms)
+		d[i]
 	} else {
 		d
 	}
@@ -293,8 +289,8 @@ dag_height = function(dag, terms = NULL, use_cache = TRUE) {
 	d = structure(dag@term_env$dag_height, names = dag@terms)
 
 	if(!is.null(terms)) {
-		id = term_to_node_id(dag, terms, add_name = TRUE)
-		d[id[terms]]
+		i = term_to_node_id(dag, terms)
+		d[i]
 	} else {
 		d
 	}
@@ -310,8 +306,8 @@ dag_shortest_dist_from_root = function(dag, terms = NULL, use_cache = TRUE) {
 	d = structure(dag@term_env$dag_dist_to_root, names = dag@terms)
 
 	if(!is.null(terms)) {
-		id = term_to_node_id(dag, terms, add_name = TRUE)
-		d[id[terms]]
+		i = term_to_node_id(dag, terms)
+		d[i]
 	} else {
 		d
 	}
@@ -327,8 +323,8 @@ dag_shortest_dist_to_leaves = function(dag, terms = NULL, use_cache = TRUE) {
 	d = structure(dag@term_env$dag_dist_to_leaves, names = dag@terms)
 
 	if(!is.null(terms)) {
-		id = term_to_node_id(dag, terms, add_name = TRUE)
-		d[id[terms]]
+		i = term_to_node_id(dag, terms)
+		d[i]
 	} else {
 		d
 	}

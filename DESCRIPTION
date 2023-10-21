@@ -1,16 +1,16 @@
 Package: simona
 Type: Package
 Title: Semantic Similarity in Bio-Ontologies
-Version: 0.99.10
-Date: 2023-10-18
+Version: 0.99.8
+Date: 2023-10-16
 Authors@R: person("Zuguang", "Gu", email = "z.gu@dkfz.de", role = c("aut", "cre"),
                   comment = c('ORCID'="0000-0002-7395-8709"))
 Depends: R (>= 4.1.0)
 Imports: methods, Rcpp, matrixStats, GetoptLong, grid, GlobalOptions,
-         igraph, Polychrome, S4Vectors, xml2 (>= 1.3.3), circlize, ComplexHeatmap,
-         grDevices, stats, utils
-Suggests: knitr, testthat, BiocManager, GO.db, org.Hs.eg.db, proxyC, AnnotationDbi,
-          Matrix, DiagrammeR, ragg
+        igraph, Polychrome, S4Vectors, xml2 (>= 1.3.3), circlize,
+        ComplexHeatmap, grDevices, stats, utils
+Suggests: knitr, testthat, BiocManager, GO.db, org.Hs.eg.db, proxyC,
+        AnnotationDbi, Matrix, DiagrammeR
 LinkingTo: Rcpp
 VignetteBuilder: knitr
 Description: The package implements a rich set of methods for semantic similarity 
@@ -25,3 +25,7 @@ License: MIT + file LICENSE
 RoxygenNote: 7.2.3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
+NeedsCompilation: yes
+Packaged: 2023-10-16 18:54:32 UTC; guz
+Author: Zuguang Gu [aut, cre] (<https://orcid.org/0000-0002-7395-8709>)
+Maintainer: Zuguang Gu <z.gu@dkfz.de>

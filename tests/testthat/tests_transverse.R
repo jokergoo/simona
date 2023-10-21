@@ -1,15 +1,6 @@
 
 library(testthat)
 
-## export all functions
-if(!identical(topenv(), .GlobalEnv)) {
-	pkg_env = asNamespace("simona")
-	all_objs = ls(envir = pkg_env)
-	for(obj in all_objs) {
-		assign(obj, get(obj, envir = pkg_env, inherits = FALSE))
-	}
-}
-
 
 #### test a small dag
 
@@ -168,7 +159,7 @@ test_that("test n_children/n_parents/n_connected_leaves", {
 	)
 	expect_equal(
 		unname(n_connected_leaves(dag)),
-		c(2, 2, 1, 1, 1, 1)
+		c(2, 2, 1, 1, 0, 0)
 	)
 
 	expect_equal(
@@ -179,22 +170,5 @@ test_that("test n_children/n_parents/n_connected_leaves", {
 	expect_equal(
 		simona:::cpp_n_offspring(dag_treelize(dag)),
 		simona:::cpp_n_offspring_on_tree(dag_treelize(dag))
-	)
-})
-
-
-tree = dag_treelize(dag)
-test_that("test n_ancestors/n_offspring/n_connected_leaves on trees", {
-	expect_equal(
-		cpp_n_ancestors(tree),
-		cpp_n_ancestors_on_tree(tree)
-	)
-	expect_equal(
-		cpp_n_offspring(tree),
-		cpp_n_offspring_on_tree(tree)
-	)
-	expect_equal(
-		cpp_n_leaves(tree),
-		cpp_n_leaves_on_tree(tree)
 	)
 })
