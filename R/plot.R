@@ -77,10 +77,7 @@ dag_circular_viz = function(dag, highlight = NULL, start = 1, end = 360,
 		if(verbose) message("converting DAG to a tree...")
 		tree = dag_treelize(dag, verbose = verbose)
 	}
-	if(verbose) message("calculating term positions on the DAG...")
-
-	tree@lt_children = lapply(tree@lt_children, function(x) x[sample(length(x))])
-	
+	if(verbose) message("calculating term positions on the DAG...")	
 	term_pos = exec_under_message_condition({
 		cpp_node_pos_in_tree(tree, n_connected_leaves(tree), start, end) ## in polar coordinate
 	}, verbose = verbose)
@@ -315,6 +312,28 @@ dag_circular_viz = function(dag, highlight = NULL, start = 1, end = 360,
 	(map[2] - map[1])/(range[2] - range[1])*(v - range[1]) + map[1]
 }
 
+.normalize_graphics_parameter = function(value, default, all_terms, name) {
+	n = length(all_terms)
+	if(!is.null(names(value))) {
+		value2 = rep(default, n)
+		names(value2) = all_terms
+
+		cn = intersect(names(value), names(value2))
+		if(length(cn) == 0) {
+			stop_wrap(qq("Since `@{name}` is a named vector, the names should correspond to the term names in the DAG."))
+		}
+		value2[cn] = value[cn]
+
+		value = value2
+	}
+
+	if(!length(value) %in% c(1, n)) {
+		stop_wrap(qq("Length of `@{name}` should be one or @{n} (number of terms in the DAG)."))
+	}
+
+	value
+}
+
 #' @param color A vector of colors. If the value is a vector, the order should correspond to terms in [`dag_all_terms()`].
 #' @param style Style of the nodes. See https://graphviz.org/docs/attr-types/style/ for possible values.
 #' @param fontcolor Color of labels.
@@ -334,23 +353,11 @@ dag_as_DOT = function(dag, color = "black", style = "solid",
 	fontcolor = "black", fontsize = 10, shape = "box",
 	edge_color = NULL, edge_style = NULL) {
 
-	n_terms = dag@n_terms
-
-	if(!length(color) %in% c(1, n_terms)) {
-		stop_wrap(qq("Length of `color` should be one or @{n_terms} (number of terms in the DAG)."))
-	}
-	if(!length(style) %in% c(1, n_terms)) {
-		stop_wrap(qq("Length of `style` should be one or @{n_terms} (number of terms in the DAG)."))
-	}
-	if(!length(fontcolor) %in% c(1, n_terms)) {
-		stop_wrap(qq("Length of `fontcolor` should be one or @{n_terms} (number of terms in the DAG)."))
-	}
-	if(!length(fontsize) %in% c(1, n_terms)) {
-		stop_wrap(qq("Length of `fontsize` should be one or @{n_terms} (number of terms in the DAG)."))
-	}
-	if(!length(shape) %in% c(1, n_terms)) {
-		stop_wrap(qq("Length of `shape` should be one or @{n_terms} (number of terms in the DAG)."))
-	}
+	color = .normalize_graphics_parameter(color, "black", dag@terms, "color")
+	style = .normalize_graphics_parameter(style, "solid", dag@terms, "style")
+	fontcolor = .normalize_graphics_parameter(fontcolor, "black", dag@terms, "fontcolor")
+	fontsize = .normalize_graphics_parameter(fontsize, "10", dag@terms, "fontsize")
+	shape = .normalize_graphics_parameter(shape, "box", dag@terms, "shape")
 
 	name = NULL
 	if(!is.null(mcols(dag))) {

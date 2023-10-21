@@ -60,7 +60,7 @@ dag
 ```
 
 Aspect ratio is calculated as `width/height`, where `width` is the largest
-number of terms on a specific height (i.e. `max(table(height(dag)))`).
+number of terms on a specific depth (i.e. `max(table(depth(dag)))`).
 Definition of the height of a term in the DAG depends on whether using the
 longest or the shortest distance from root. The aspect ratio gives an
 impression of how the shape of the  DAG looks like (fat or slim).
@@ -101,7 +101,7 @@ n_ancestors(dag)
 
 `n_connected_leaves()` returns numbers of
 leaves that every term can reach (or has a finite directed distance to). Leaf
-terms have value of zero.
+terms have value of 1.
 
 ```{r}
 n_connected_leaves(dag)

@@ -335,7 +335,7 @@ IntegerVector cpp_n_offspring_on_tree(S4 dag, bool include_self = false) {
 	int n = lt_children.size();
 	IntegerVector num(n, 0);
 
-	for(int i_depth = max_depth-1; i_depth >= 0; i_depth --) {
+	for(int i_depth = max_depth; i_depth >= 0; i_depth --) {
 
 		for(int i = 0; i < n; i ++) {
 			if(depth[i] == i_depth) {
@@ -403,11 +403,43 @@ IntegerVector cpp_n_leaves(S4 dag) {
 			num[i] = sum(l_leaf);
 
 			reset_logical_vector_to_false(l_leaf);
+		} else {
+			num[i] = 1;
 		}
 	}
 	return num;
 }
 
+// [[Rcpp::export]]
+IntegerVector cpp_n_leaves_on_tree(S4 dag) {
+	
+	// faster than treating it as a DAG
+	List lt_children = dag.slot("lt_children");
+	IntegerVector depth = _dag_depth(dag);
+
+	int max_depth = max(depth);
+
+	int n = lt_children.size();
+	IntegerVector num(n, 0);
+
+	for(int i_depth = max_depth; i_depth >= 0; i_depth --) {
+
+		for(int i = 0; i < n; i ++) {
+			if(depth[i] == i_depth) {
+				IntegerVector children = lt_children[i];
+				if(children.size() == 0) {
+					num[i] = 1;
+				} else {
+					for(int j = 0; j < children.size(); j ++) {
+						num[ i ] += num[ children[j]-1 ];
+					}
+				}
+			}
+		}
+	}
+	
+	return num;
+}
 
 const int SET_UNION = 1;
 const int SET_INTERSECT = 2;
@@ -501,9 +533,9 @@ IntegerVector cpp_ancestors_of_two_groups(S4 dag, IntegerVector nodes1, IntegerV
 	} else if(type == SET_INTERSECT) {
 		l_ancestors = l_ancestors1 & l_ancestors2;
 	} else if(type == SET_UNIQU_IN_1) {
-		l_ancestors = l_ancestors1 & !l_ancestors2;
+		l_ancestors = l_ancestors1 & (!l_ancestors2);
 	} else if(type == SET_UNIQU_IN_2) {
-		l_ancestors = !l_ancestors1 & l_ancestors2;
+		l_ancestors = (!l_ancestors1) & l_ancestors2;
 	}
 
 	IntegerVector aid = _which(l_ancestors);
@@ -807,7 +839,6 @@ void _go_child(List lt_children, int node, IntegerVector path, CharacterVector t
 				}
 				path2.push_back(node);
 				cyclic_paths.push_back(path2);
-				Rcout << path2 << "\n";
 
 				if(cyclic_paths.size() > 1000) {
 					stop("Too many cyclic paths (> 1000).");

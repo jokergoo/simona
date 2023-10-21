@@ -299,11 +299,11 @@ Sim_XGraSM_2013 = function(dag, terms, IC_method = "IC_annotation", verbose = si
 	}
 
 	id = term_to_node_id(dag, terms, strict = FALSE)
-	ic = term_IC(dag, IC_method, verbose = verbose)[id]
-
+	ic = term_IC(dag, IC_method, verbose = verbose)
+	ic[is.na(ic)] = 0
+	
 	l = validate_annotated_terms(dag, id)
 	id = id[l]
-	ic = ic[l]
 	
 	mean_ic = exec_under_message_condition({
 		cpp_common_ancestor_mean_IC_XGraSM(dag, id, ic)
@@ -342,11 +342,11 @@ Sim_EISI_2015 = function(dag, terms, IC_method = "IC_annotation", verbose = simo
 	}
 	
 	id = term_to_node_id(dag, terms, strict = FALSE)
-	ic = term_IC(dag, IC_method, verbose = verbose)[id]
+	ic = term_IC(dag, IC_method, verbose = verbose)
+	ic[is.na(ic)] = 0
 
 	l = validate_annotated_terms(dag, id)
 	id = id[l]
-	ic = ic[l]
 
 	mean_ic = exec_under_message_condition({
 		cpp_common_ancestor_mean_IC_EISI(dag, id, ic)
@@ -397,11 +397,10 @@ Sim_AIC_2014 = function(dag, terms, IC_method = "IC_annotation", verbose = simon
 	}
 
 	id = term_to_node_id(dag, terms, strict = FALSE)
-	ic = term_IC(dag, IC_method, verbose = verbose)[id]
+	ic = term_IC(dag, IC_method, verbose = verbose)
 	
 	l = validate_annotated_terms(dag, id)
 	id = id[l]
-	ic = ic[l]
 	ic[ic == 0] = 0  # get rid of -0
 
 	sim = exec_under_message_condition({
