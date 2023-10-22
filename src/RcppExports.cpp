@@ -252,6 +252,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_random_aggregatioin
+NumericMatrix cpp_random_aggregatioin(IntegerVector size, NumericVector value, int perm);
+RcppExport SEXP _simona_cpp_random_aggregatioin(SEXP sizeSEXP, SEXP valueSEXP, SEXP permSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type size(sizeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type value(valueSEXP);
+    Rcpp::traits::input_parameter< int >::type perm(permSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_random_aggregatioin(size, value, perm));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_node_pos_in_tree
 DataFrame cpp_node_pos_in_tree(S4 tree, IntegerVector bin_size, double start, double end);
 RcppExport SEXP _simona_cpp_node_pos_in_tree(SEXP treeSEXP, SEXP bin_sizeSEXP, SEXP startSEXP, SEXP endSEXP) {
@@ -721,6 +734,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_offspring_aggregate
+NumericVector cpp_offspring_aggregate(S4 dag, NumericVector value);
+RcppExport SEXP _simona_cpp_offspring_aggregate(SEXP dagSEXP, SEXP valueSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< S4 >::type dag(dagSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type value(valueSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_offspring_aggregate(dag, value));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_is_reachable
 LogicalMatrix cpp_is_reachable(S4 dag, IntegerVector nodes, bool directed);
 RcppExport SEXP _simona_cpp_is_reachable(SEXP dagSEXP, SEXP nodesSEXP, SEXP directedSEXP) {
@@ -911,6 +936,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_simona_cpp_tpl_shortest_path_sum_value", (DL_FUNC) &_simona_cpp_tpl_shortest_path_sum_value, 4},
     {"_simona_cpp_tpl_longest_path_sum_value", (DL_FUNC) &_simona_cpp_tpl_longest_path_sum_value, 4},
     {"_simona_intersectToList_logical", (DL_FUNC) &_simona_intersectToList_logical, 2},
+    {"_simona_cpp_random_aggregatioin", (DL_FUNC) &_simona_cpp_random_aggregatioin, 3},
     {"_simona_cpp_node_pos_in_tree", (DL_FUNC) &_simona_cpp_node_pos_in_tree, 4},
     {"_simona_cpp_calc_n_neighbours", (DL_FUNC) &_simona_cpp_calc_n_neighbours, 2},
     {"_simona_cpp_get_force_counterpart", (DL_FUNC) &_simona_cpp_get_force_counterpart, 5},
@@ -947,6 +973,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_simona_cpp_ancestors_of_a_group", (DL_FUNC) &_simona_cpp_ancestors_of_a_group, 4},
     {"_simona_cpp_ancestors_of_two_groups", (DL_FUNC) &_simona_cpp_ancestors_of_two_groups, 5},
     {"_simona_cpp_offspring_of_a_group", (DL_FUNC) &_simona_cpp_offspring_of_a_group, 3},
+    {"_simona_cpp_offspring_aggregate", (DL_FUNC) &_simona_cpp_offspring_aggregate, 2},
     {"_simona_cpp_is_reachable", (DL_FUNC) &_simona_cpp_is_reachable, 3},
     {"_simona_cpp_dag_depth", (DL_FUNC) &_simona_cpp_dag_depth, 1},
     {"_simona_cpp_dag_dist_from_root", (DL_FUNC) &_simona_cpp_dag_dist_from_root, 1},

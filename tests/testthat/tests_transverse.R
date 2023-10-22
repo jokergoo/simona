@@ -198,3 +198,14 @@ test_that("test n_ancestors/n_offspring/n_connected_leaves on trees", {
 		cpp_n_leaves_on_tree(tree)
 	)
 })
+
+test_that("test dag_distinct_ancestors", {
+	expect_equal(
+		dag_distinct_ancestors(dag, c("c", "d", "e", "f")), 
+		c("c", "d")
+	)
+	expect_equal(
+		dag_distinct_ancestors(dag, c("a", "b", "c", "d", "e", "f")), 
+		c("a")
+	)
+})

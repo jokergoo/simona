@@ -565,6 +565,34 @@ IntegerVector cpp_offspring_of_a_group(S4 dag, IntegerVector nodes, bool include
 	return aid;
 }
 
+// [[Rcpp::export]]
+NumericVector cpp_offspring_aggregate(S4 dag, NumericVector value) {
+	int n = dag.slot("n_terms");
+	List lt_children = dag.slot("lt_children");
+
+	NumericVector s(n);
+	LogicalVector l_offspring(n);
+	NumericVector v2;
+	for(int i = 0; i < n; i ++) {
+		if(i % 1000 == 0) {
+			message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+			message("going through " + std::to_string(i) + " / " + std::to_string(n) + " terms ...", false);
+		}
+
+		_find_offspring(lt_children, i, l_offspring, true);
+		v2 = value[l_offspring];
+		s[i] = sum(v2)/sum(l_offspring);
+
+		reset_logical_vector_to_false(l_offspring);
+	}
+
+	message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
+	message("going through " + std::to_string(n) + " / " + std::to_string(n) + " terms ... Done.", true);
+
+
+	return s;
+}
+
 
 // whether node i and node j are ancestor/offspring
 // [[Rcpp::export]]

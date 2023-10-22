@@ -34,7 +34,11 @@ dag_random = function(n_children = c(2, 5), max = 1000, p = 0.1, power = 0.5) {
 		current_nodes2 = NULL
 		for(ni in current_nodes) {
 			if(runif(1) < 1/depth^power) {
-				nc = sample(seq(n_children[1], n_children[2]), 1)
+				if(length(n_children) == 1) {
+					nc = n_children
+				} else {
+					nc = sample(seq(n_children[1], n_children[2]), 1)
+				}
 				
 				if(current_i + nc > max) {
 					break

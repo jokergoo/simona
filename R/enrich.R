@@ -6,6 +6,8 @@
 #' 
 #' @param dag An `ontology_DAG` object.
 #' @param terms A vector of term names.
+#' @param min_hits Minimal number of terms in an offspring set.
+#' @param min_offspring Minimal size of the offspring set.
 #' 
 #' @details
 #' Given a list of terms in `terms`, the function tests whether they are enriched in a term's offspring terms.
@@ -33,6 +35,8 @@
 #' - `n_offspring`: Number of offspring terms of `t` (including `t` itself).
 #' - `n_terms`: Number of terms in `term` intersecting to all terms in the DAG.
 #' - `n_all`: Number of all terms in the DAG.
+#' - `log2_fold_enrichment`: Defined as log2(observation/expected).
+#' - `z_score`: Defined as (observed-expected)/sd.
 #' - `p_value`: P-values from hypergeometric test.
 #' - `p_adjust`: Adjusted p-values from the BH method.
 #' 
@@ -47,17 +51,27 @@
 #' df = dag_enrich_terms(dag, terms)
 #' }
 #' 1
-dag_enrich_terms = function(dag, terms) {
+dag_enrich_terms = function(dag, terms, min_hits = 3, min_offspring = 10) {
 	n = dag@n_terms
 	ind = which(dag@terms %in% terms)
 	m = length(ind)
 
 	n_offspring = n_offspring(dag, include_self = TRUE)
 	n_hits = cpp_n_offspring_with_intersect(dag, ind, include_self = TRUE)
+	all_terms = dag@terms
+
+	l = n_offspring >= min_offspring & n_hits >= min_hits
+	n_offspring = n_offspring[l]
+	n_hits = n_hits[l]
+	all_terms = all_terms[l]
 
 	p = phyper(n_hits-1, m, n - m, n_offspring, lower.tail = FALSE)
 	padj = p.adjust(p, "BH")
-	df = data.frame(term = dag@terms, n_hits = n_hits, n_offspring = n_offspring, n_terms = m, n_all = n, p_value = p, p_adjust = padj)
+	df = data.frame(term = all_terms, n_hits = n_hits, n_offspring = n_offspring, n_terms = m, n_all = n, 
+		log2_fold_enrichment = log2(n_hits/(m*n_offspring/n)), 
+		z_score = (n_hits - (m*n_offspring/n)) / sqrt(m*n_offspring/n * (n-n_offspring)/n * (n-m)/(n-1)),
+		p_value = p, p_adjust = padj)
+	df$depth = dag_depth(dag, all_terms)
 	df
 }
 
@@ -65,7 +79,9 @@ dag_enrich_terms = function(dag, terms) {
 #' 
 #' @param dag An `ontology_DAG` object.
 #' @param value A numeric value. The value should correspond to terms in `dag@terms`.
-#' @param n Number of permutations.
+#' @param min_offspring Minimal size of the offspring set.
+#' @param perm Number of permutations.
+#' @param verbose Whether to print messages.
 #' 
 #' @details
 #' In the function [`dag_enrich_terms()`], the statistic for testing is the number of terms in each category. Here
@@ -96,8 +112,8 @@ dag_enrich_terms = function(dag, terms) {
 #' - `term`: Term names.
 #' - `stats`: The statistics of terms.
 #' - `n_offspring`: Number of offspring terms of `t` (including `t` itself).
-#' - `z_score`: Defined as `(s - mean)/sd` where `mean` and `sd` are calculated from random permutation.
 #' - `log2_fold_enrichment`: defined as `log2(s/mean)` where `mean` is calculated from random permutation.
+#' - `z_score`: Defined as `(s - mean)/sd` where `mean` and `sd` are calculated from random permutation.
 #' - `p_value`: P-values from permutation test.
 #' - `p_adjust`: Adjusted p-values from the BH method.
 #' 
@@ -107,34 +123,42 @@ dag_enrich_terms = function(dag, terms) {
 #' @examples
 #' \dontrun{
 #' dag = create_ontology_DAG_from_GO_db() 
-#' value = runif(dag_n_terms(dag))
+#' value = runif(dag_n_terms(dag)) # a set of random values
 #' df = dag_enrich_terms_by_permutation(dag, value)
 #' }
 #' 1
-dag_enrich_terms_by_permutation = function(dag, value, n = 1000) {
+dag_enrich_terms_by_permutation = function(dag, value, perm = 1000, min_offspring = 10, verbose = simona_opt$verbose) {
 	n = dag@n_terms
 
-	lt_offspring = dag_all_offspring(dag, include_self = TRUE, in_labels = FALSE)
-	n_offspring = vapply(lt_offspring, length, FUN.VALUE = integer(1))
-
-	s = vapply(lt_offspring, function(x) mean(value[x], na.rm = TRUE), FUN.VALUE = numeric(1))
-	sr = matrix(nrow = length(s), ncol = n)
-	p = numeric(n)
-	
-	for(i in seq_len(n)) {
-		message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\brandom sampling", i, "/", n, appendLF = FALSE)
-		sr[, i] = vapply(n_offspring, function(x) {
-			mean(sample(value, x), na.rm = TRUE)
-		}, FUN.VALUE = numeric(1))
+	if(length(value) != n) {
+		stop("Length of `value` should be the same as the total number of terms.")
 	}
-	message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\brandom sampling", n, "/", n, "\n")
 
-	p = vapply(seq_len(n), function(i) sum(sr[, i] > s[i])/length(s), FUN.VALUE = numeric(1))
+	n_offspring = n_offspring(dag)
+	s = exec_under_message_condition({
+		cpp_offspring_aggregate(dag, value)
+	}, verbose = verbose)
+	all_terms = dag@terms
+
+	l = n_offspring >= min_offspring
+	n_offspring = n_offspring[l]
+	s = s[l]
+	all_terms = all_terms[l]
+
+	sr = exec_under_message_condition({
+		cpp_random_aggregatioin(n_offspring, value, perm)  # columns are permutations
+	}, verbose = verbose)
+
+	p = vapply(seq_len(nrow(sr)), function(i) sum(sr[i, ] > s[i])/perm, FUN.VALUE = numeric(1))
 	padj = p.adjust(p, "BH")
-	z = vapply(seq_len(n), function(i) (s[i] - mean(sr[, i]))/sd(sr[, i]), FUN.VALUE = numeric(1))
-	log2fe = vapply(seq_len(n), function(i) log2(s[i]/mean(sr[, i])), FUN.VALUE = numeric(1))
+	z = vapply(seq_len(nrow(sr)), function(i) (s[i] - mean(sr[i, ]))/sd(sr[i, ]), FUN.VALUE = numeric(1))
+	log2fe = vapply(seq_len(nrow(sr)), function(i) log2(s[i]/mean(sr[i, ])), FUN.VALUE = numeric(1))
 
-	data.frame(term = dag@terms, stat = s, n_offspring = unname(n_offspring), z_score = z, log2_fold_enrichment = log2fe, p_value = p, p_adjust = padj)
+	df = data.frame(term = all_terms, stat = s, n_offspring = unname(n_offspring), 
+		log2_fold_enrichment = log2fe, z_score = z, 
+		p_value = p, p_adjust = padj)
+	df$depth = dag_depth(dag, all_terms)
+	df
 }
 
 #' Enrichment analysis on the number of annotated items
@@ -143,6 +167,8 @@ dag_enrich_terms_by_permutation = function(dag, value, n = 1000) {
 #' 
 #' @param dag An `ontology_DAG` object.
 #' @param items A vector of item names.
+#' @param min_hits Minimal number of items in the term set.
+#' @param min_items Minimal size of the term set.
 #' 
 #' @details
 #' The function tests whether the list of items are enriched in terms on the DAG.
@@ -170,6 +196,8 @@ dag_enrich_terms_by_permutation = function(dag, value, n = 1000) {
 #' - `n_anno`: Number of annotated items of `t`.
 #' - `n_items`: Number of items in `items` intersecting to all annotated items in the DAG.
 #' - `n_all`: Number of all annotated items in the DAG.
+#' - `log2_fold_enrichment`: Defined as log2(observation/expected).
+#' - `z_score`: Defined as (observed-expected)/sd.
 #' - `p_value`: P-values from hypergeometric test.
 #' - `p_adjust`: Adjusted p-values from the BH method.
 #' 
@@ -183,7 +211,7 @@ dag_enrich_terms_by_permutation = function(dag, value, n = 1000) {
 #' df = dag_enrich_items(dag, items)
 #' }
 #' 1
-dag_enrich_items = function(dag, items) {
+dag_enrich_items = function(dag, items, min_hits = 5, min_items = 10) {
 	validate_dag_has_annotation(dag)
 
 	n = length(dag@annotation$names)
@@ -192,12 +220,20 @@ dag_enrich_items = function(dag, items) {
 
 	n_anno = n_annotations(dag, uniquify = TRUE)
 	n_hits = cpp_n_annotations_with_intersect(dag, ind)
+	all_terms = dag@terms
+
+	l = n_anno >= min_items & n_hits >= min_hits
+	n_anno = n_anno[l]
+	n_hits = n_hits[l]
+	all_terms = all_terms[l]
 
 	p = phyper(n_hits-1, m, n - m, n_anno, lower.tail = FALSE)
 	padj = p.adjust(p, "BH")
-	df = data.frame(term = dag@terms, n_hits = n_hits, n_anno = n_anno, n_items = m, n_all = n, p_value = p, p_adjust = padj)
-	df$depth = dag_depth(dag)
-	df$height = dag_height(dag)
+	df = data.frame(term = all_terms, n_hits = n_hits, n_anno = n_anno, n_items = m, n_all = n, 
+		log2_fold_enrichment = log2(n_hits/(m*n_anno/n)), 
+		z_score = (n_hits - (m*n_anno/n)) / sqrt(m*n_anno/n * (n-n_anno)/n * (n-m)/(n-1)),
+		p_value = p, p_adjust = padj)
+	df$depth = dag_depth(dag, all_terms)
 	df
 }
 

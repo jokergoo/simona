@@ -77,6 +77,10 @@ intersectToList_logical <- function(lt, x) {
     .Call(`_simona_intersectToList_logical`, lt, x)
 }
 
+cpp_random_aggregatioin <- function(size, value, perm) {
+    .Call(`_simona_cpp_random_aggregatioin`, size, value, perm)
+}
+
 cpp_node_pos_in_tree <- function(tree, bin_size, start = 1, end = 360) {
     .Call(`_simona_cpp_node_pos_in_tree`, tree, bin_size, start, end)
 }
@@ -219,6 +223,10 @@ cpp_ancestors_of_two_groups <- function(dag, nodes1, nodes2, type, include_self 
 
 cpp_offspring_of_a_group <- function(dag, nodes, include_self = FALSE) {
     .Call(`_simona_cpp_offspring_of_a_group`, dag, nodes, include_self)
+}
+
+cpp_offspring_aggregate <- function(dag, value) {
+    .Call(`_simona_cpp_offspring_aggregate`, dag, value)
 }
 
 cpp_is_reachable <- function(dag, nodes, directed = FALSE) {
