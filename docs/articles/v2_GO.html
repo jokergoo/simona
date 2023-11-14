@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.12</span>
       </span>
     </div>
 
@@ -96,7 +96,7 @@
       <h1 data-toc-skip>Gene Ontology</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2023-10-05</h4>
+            <h4 data-toc-skip class="date">2023-11-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/vignettes/v2_GO.Rmd" class="external-link"><code>vignettes/v2_GO.Rmd</code></a></small>
       <div class="hidden name"><code>v2_GO.Rmd</code></div>
@@ -115,7 +115,7 @@
 <span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="../reference/create_ontology_DAG_from_GO_db.html">create_ontology_DAG_from_GO_db</a></span><span class="op">(</span><span class="st">"BP"</span><span class="op">)</span></span>
 <span><span class="va">dag</span></span></code></pre></div>
 <pre><code><span><span class="co">## An ontology_DAG object:</span></span>
-<span><span class="co">##   Source: GO BP / GO.db package </span></span>
+<span><span class="co">##   Source: GO BP / GO.db package 3.17.0 </span></span>
 <span><span class="co">##   27942 terms / 55956 relations</span></span>
 <span><span class="co">##   Root: GO:0008150 </span></span>
 <span><span class="co">##   Terms: GO:0000001, GO:0000002, GO:0000003, GO:0000011, ...</span></span>
@@ -132,7 +132,7 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/create_ontology_DAG_from_GO_db.html">create_ontology_DAG_from_GO_db</a></span><span class="op">(</span><span class="st">"BP"</span>, relations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"part of"</span>, <span class="st">"regulates"</span><span class="op">)</span><span class="op">)</span>  <span class="co"># "part_of" is also OK</span></span></code></pre></div>
 <pre><code><span><span class="co">## An ontology_DAG object:</span></span>
-<span><span class="co">##   Source: GO BP / GO.db package </span></span>
+<span><span class="co">##   Source: GO BP / GO.db package 3.17.0 </span></span>
 <span><span class="co">##   27942 terms / 64560 relations</span></span>
 <span><span class="co">##   Root: GO:0008150 </span></span>
 <span><span class="co">##   Terms: GO:0000001, GO:0000002, GO:0000003, GO:0000011, ...</span></span>
@@ -165,7 +165,7 @@ dag_filter(dag, relations = "is_a")
 <span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="../reference/create_ontology_DAG_from_GO_db.html">create_ontology_DAG_from_GO_db</a></span><span class="op">(</span><span class="st">"BP"</span>, org_db <span class="op">=</span> <span class="va">org.Hs.eg.db</span><span class="op">)</span></span>
 <span><span class="va">dag</span></span></code></pre></div>
 <pre><code><span><span class="co">## An ontology_DAG object:</span></span>
-<span><span class="co">##   Source: GO BP / GO.db package </span></span>
+<span><span class="co">##   Source: GO BP / GO.db package 3.17.0 </span></span>
 <span><span class="co">##   27942 terms / 55956 relations</span></span>
 <span><span class="co">##   Root: GO:0008150 </span></span>
 <span><span class="co">##   Terms: GO:0000001, GO:0000002, GO:0000003, GO:0000011, ...</span></span>
@@ -247,34 +247,33 @@ create_ontology_DAG_from_GO_db("BP", org_db = "org.Mm.eg.db")
 <span><span class="co">## other attached packages:</span></span>
 <span><span class="co">## [1] org.Hs.eg.db_3.17.0  AnnotationDbi_1.62.2 IRanges_2.34.1      </span></span>
 <span><span class="co">## [4] S4Vectors_0.38.2     Biobase_2.60.0       BiocGenerics_0.46.0 </span></span>
-<span><span class="co">## [7] simona_0.99.7        knitr_1.44          </span></span>
+<span><span class="co">## [7] simona_0.99.12       knitr_1.44          </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##  [1] KEGGREST_1.40.1         circlize_0.4.15         shape_1.4.6            </span></span>
 <span><span class="co">##  [4] rjson_0.2.21            xfun_0.40               bslib_0.5.1            </span></span>
-<span><span class="co">##  [7] GlobalOptions_0.1.2     bitops_1.0-7            vctrs_0.6.3            </span></span>
+<span><span class="co">##  [7] GlobalOptions_0.1.2     bitops_1.0-7            vctrs_0.6.4            </span></span>
 <span><span class="co">## [10] tools_4.3.1             parallel_4.3.1          Polychrome_1.5.1       </span></span>
 <span><span class="co">## [13] RSQLite_2.3.1           cluster_2.1.4           blob_1.2.4             </span></span>
 <span><span class="co">## [16] pkgconfig_2.0.3         RColorBrewer_1.1-3      desc_1.4.2             </span></span>
 <span><span class="co">## [19] scatterplot3d_0.3-44    GenomeInfoDbData_1.2.10 lifecycle_1.0.3        </span></span>
 <span><span class="co">## [22] compiler_4.3.1          stringr_1.5.0           Biostrings_2.68.1      </span></span>
-<span><span class="co">## [25] textshaping_0.3.6       codetools_0.2-19        ComplexHeatmap_2.16.0  </span></span>
-<span><span class="co">## [28] clue_0.3-65             GenomeInfoDb_1.36.4     htmltools_0.5.6        </span></span>
+<span><span class="co">## [25] textshaping_0.3.7       codetools_0.2-19        ComplexHeatmap_2.16.0  </span></span>
+<span><span class="co">## [28] clue_0.3-65             GenomeInfoDb_1.36.4     htmltools_0.5.6.1      </span></span>
 <span><span class="co">## [31] sass_0.4.7              RCurl_1.98-1.12         yaml_2.3.7             </span></span>
 <span><span class="co">## [34] pkgdown_2.0.7           crayon_1.5.2            jquerylib_0.1.4        </span></span>
 <span><span class="co">## [37] GO.db_3.17.0            cachem_1.0.8            iterators_1.0.14       </span></span>
-<span><span class="co">## [40] TSP_1.2-4               foreach_1.5.2           digest_0.6.33          </span></span>
-<span><span class="co">## [43] stringi_1.7.12          purrr_1.0.2             rprojroot_2.0.3        </span></span>
-<span><span class="co">## [46] fastmap_1.1.1           grid_4.3.1              colorspace_2.1-0       </span></span>
-<span><span class="co">## [49] cli_3.6.1               magrittr_2.0.3          bit64_4.0.5            </span></span>
-<span><span class="co">## [52] XVector_0.40.0          httr_1.4.7              rmarkdown_2.25         </span></span>
-<span><span class="co">## [55] matrixStats_1.0.0       igraph_1.5.1            bit_4.0.5              </span></span>
-<span><span class="co">## [58] ragg_1.2.5              png_0.1-8               GetoptLong_1.0.5       </span></span>
-<span><span class="co">## [61] memoise_2.0.1           evaluate_0.22           doParallel_1.0.17      </span></span>
-<span><span class="co">## [64] rlang_1.1.1             Rcpp_1.0.11             glue_1.6.2             </span></span>
-<span><span class="co">## [67] DBI_1.1.3               xml2_1.3.5              jsonlite_1.8.7         </span></span>
-<span><span class="co">## [70] R6_2.5.1                zlibbioc_1.46.0         systemfonts_1.0.4      </span></span>
-<span><span class="co">## [73] fs_1.6.3</span></span></code></pre>
+<span><span class="co">## [40] foreach_1.5.2           digest_0.6.33           stringi_1.7.12         </span></span>
+<span><span class="co">## [43] purrr_1.0.2             rprojroot_2.0.3         fastmap_1.1.1          </span></span>
+<span><span class="co">## [46] grid_4.3.1              colorspace_2.1-0        cli_3.6.1              </span></span>
+<span><span class="co">## [49] magrittr_2.0.3          bit64_4.0.5             XVector_0.40.0         </span></span>
+<span><span class="co">## [52] httr_1.4.7              rmarkdown_2.25          matrixStats_1.0.0      </span></span>
+<span><span class="co">## [55] igraph_1.5.1            bit_4.0.5               ragg_1.2.6             </span></span>
+<span><span class="co">## [58] png_0.1-8               GetoptLong_1.0.5        memoise_2.0.1          </span></span>
+<span><span class="co">## [61] evaluate_0.22           doParallel_1.0.17       rlang_1.1.1            </span></span>
+<span><span class="co">## [64] Rcpp_1.0.11             glue_1.6.2              DBI_1.1.3              </span></span>
+<span><span class="co">## [67] xml2_1.3.5              jsonlite_1.8.7          R6_2.5.1               </span></span>
+<span><span class="co">## [70] zlibbioc_1.46.0         systemfonts_1.0.5       fs_1.6.3</span></span></code></pre>
 <script src="jquery.min.js"></script><script src="jquery.sticky.js"></script><script>
 $(document).ready(function(){
     $("#TOC").sticky({

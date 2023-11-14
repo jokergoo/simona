@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.12</span>
       </span>
     </div>
 
@@ -81,16 +81,15 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dag_circular_viz</span><span class="op">(</span></span>
 <span>  <span class="va">dag</span>,</span>
 <span>  highlight <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  start <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  start <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  end <span class="op">=</span> <span class="fl">360</span>,</span>
-<span>  reorder_level <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  partition_by_level <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  partition_by_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  node_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  node_transparency <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  node_transparency <span class="op">=</span> <span class="fl">0.4</span>,</span>
 <span>  node_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  edge_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  edge_transparency <span class="op">=</span> <span class="fl">0.96</span>,</span>
+<span>  edge_transparency <span class="op">=</span> <span class="fu">default_edge_transparency</span><span class="op">(</span><span class="va">dag</span><span class="op">)</span>,</span>
 <span>  legend_labels_from <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  legend_labels_max_width <span class="op">=</span> <span class="fl">50</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span></span>
@@ -98,23 +97,14 @@
 <span></span>
 <span><span class="fu">dag_as_DOT</span><span class="op">(</span></span>
 <span>  <span class="va">dag</span>,</span>
-<span>  color <span class="op">=</span> <span class="st">"black"</span>,</span>
-<span>  style <span class="op">=</span> <span class="st">"solid"</span>,</span>
-<span>  fontcolor <span class="op">=</span> <span class="st">"black"</span>,</span>
-<span>  fontsize <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  shape <span class="op">=</span> <span class="st">"box"</span>,</span>
-<span>  edge_color <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  edge_style <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  node_param <span class="op">=</span> <span class="va">default_node_param</span>,</span>
+<span>  edge_param <span class="op">=</span> <span class="va">default_edge_param</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">dag_graphviz</span><span class="op">(</span></span>
 <span>  <span class="va">dag</span>,</span>
-<span>  color <span class="op">=</span> <span class="st">"black"</span>,</span>
-<span>  fontcolor <span class="op">=</span> <span class="st">"black"</span>,</span>
-<span>  fontsize <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  shape <span class="op">=</span> <span class="st">"box"</span>,</span>
-<span>  edge_color <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  edge_style <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  node_param <span class="op">=</span> <span class="va">default_node_param</span>,</span>
+<span>  edge_param <span class="op">=</span> <span class="va">default_edge_param</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -135,10 +125,6 @@
 
 <dt>end</dt>
 <dd><p>End of the circle, measured in degree.</p></dd>
-
-
-<dt>reorder_level</dt>
-<dd><p>Whether to reorder child terms. See <code><a href="dag_reorder.html">dag_reorder()</a></code>.</p></dd>
 
 
 <dt>partition_by_level</dt>
@@ -177,7 +163,7 @@ legend labels.</p></dd>
 
 
 <dt>legend_labels_max_width</dt>
-<dd><p>Maximal width of legend labels. Labels are wrapped into
+<dd><p>Maximal width of legend labels measured by the number of characters per line. Labels are wrapped into
 multiple lines if the widths exceed it.</p></dd>
 
 
@@ -185,32 +171,19 @@ multiple lines if the widths exceed it.</p></dd>
 <dd><p>Whether to print messages.</p></dd>
 
 
-<dt>color</dt>
-<dd><p>A vector of colors. If the value is a vector, the order should correspond to terms in <code><a href="dag_all_terms.html">dag_all_terms()</a></code>.</p></dd>
+<dt>node_param</dt>
+<dd><p>A list of parameters. Each parameter has the same format. The value can be
+a single scalar, a full length vector with the same order as in <code><a href="dag_all_terms.html">dag_all_terms()</a></code>,
+or a named vector that contains a subset of terms that need to be customized.
+The full set of parameters can be found at <a href="https://graphviz.org/docs/nodes/" class="external-link">https://graphviz.org/docs/nodes/</a>.</p></dd>
 
 
-<dt>style</dt>
-<dd><p>Style of the nodes. See https://graphviz.org/docs/attr-types/style/ for possible values.</p></dd>
-
-
-<dt>fontcolor</dt>
-<dd><p>Color of labels.</p></dd>
-
-
-<dt>fontsize</dt>
-<dd><p>Font size of labels.</p></dd>
-
-
-<dt>shape</dt>
-<dd><p>Shape of nodes. See https://graphviz.org/doc/info/shapes.html#polygon for possible values.</p></dd>
-
-
-<dt>edge_color</dt>
-<dd><p>A named vector where names correspond to relation types.</p></dd>
-
-
-<dt>edge_style</dt>
-<dd><p>A named vector where names correspond to relation types. See https://graphviz.org/docs/attr-types/style/ for possible values for edges.</p></dd>
+<dt>edge_param</dt>
+<dd><p>A list of parameters. Each parameter has the same format. The value can be a single
+scalar, or a named vector that contains a subset of terms that need to be customized.
+The full set of parameters can be found at <a href="https://graphviz.org/docs/edges/" class="external-link">https://graphviz.org/docs/edges/</a>.
+If the parameter is set to a named vector, it can be named by relation types <code>c("is_a" = ...)</code>,
+or directly relations <code>c("a -&gt; b" = ...)</code>. Please see the vignette for details.</p></dd>
 
 
 <dt>...</dt>
@@ -355,52 +328,25 @@ uses a hierarchical layout for visualizing small DAGs.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> going through 27000 / 27942 nodes ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> going through 27942 / 27942 nodes ... Done.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 0/18, 1 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 1/18, 19 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 2/18, 153 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 3/18, 543 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 4/18, 1293 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 5/18, 2685 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 6/18, 4122 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 7/18, 4731 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 8/18, 4692 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 9/18, 3792 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 10/18, 2701 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 11/18, 1639 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 12/18, 921 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 13/18, 397 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 14/18, 145 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 15/18, 66 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 16/18, 19 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 17/18, 20 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> calculating numbers of neighbours within 1 degree neighbourhood on level 18/18, 3 terms...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> making plot...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> adding links...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> adding terms...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Best device size: 9.49 x 6.67 inches.</span>
 <span class="r-plt img"><img src="dag_viz-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="fl">1</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="create_ontology_DAG_from_GO_db.html">create_ontology_DAG_from_GO_db</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">dag_graphviz</span><span class="op">(</span><span class="va">dag</span><span class="op">[</span>, <span class="st">"GO:0010228"</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">dag_graphviz</span><span class="op">(</span><span class="va">dag</span><span class="op">[</span>, <span class="st">"GO:0010228"</span><span class="op">]</span>, </span></span>
+<span class="r-in"><span>    edge_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"is_a"</span> <span class="op">=</span> <span class="st">"purple"</span>, <span class="st">"part_of"</span> <span class="op">=</span> <span class="st">"darkgreen"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                      style <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"is_a"</span> <span class="op">=</span> <span class="st">"solid"</span>, <span class="st">"part_of"</span> <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    width <span class="op">=</span> <span class="fl">800</span>, height <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># the DOT code for graphviz</span></span></span>
+<span class="r-in"><span><span class="fu">dag_as_DOT</span><span class="op">(</span><span class="va">dag</span><span class="op">[</span>, <span class="st">"GO:0010228"</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>

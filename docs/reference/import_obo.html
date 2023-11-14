@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.12</span>
       </span>
     </div>
 
@@ -78,9 +78,21 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">import_obo</span><span class="op">(</span><span class="va">file</span>, relation_type <span class="op">=</span> <span class="st">"part_of"</span>, verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">import_obo</span><span class="op">(</span></span>
+<span>  <span class="va">file</span>,</span>
+<span>  relation_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
+<span>  inherit_relations <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">import_owl</span><span class="op">(</span><span class="va">file</span>, relation_type <span class="op">=</span> <span class="st">"part_of"</span>, verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">import_owl</span><span class="op">(</span></span>
+<span>  <span class="va">file</span>,</span>
+<span>  relation_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
+<span>  inherit_relations <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">import_ontology</span><span class="op">(</span></span>
 <span>  <span class="va">file</span>,</span>
@@ -101,6 +113,10 @@
 
 <dt>relation_type</dt>
 <dd><p>Semantic relation types to include. Note <code>is_a</code> relation is always included.</p></dd>
+
+
+<dt>inherit_relations</dt>
+<dd><p>Relations may also be structured as a DAG. It controls whether to merge with a relations's offspring relations.</p></dd>
 
 
 <dt>verbose</dt>
@@ -131,6 +147,8 @@ set as a global option <code>simona_opt$robot_jar = ...</code>.</p></dd>
     <h2>Details</h2>
     <p>Public bio-ontologies can be obtained from <a href="http://obofoundry.org/" class="external-link">Ontology Foundry</a> or <a href="https://bioportal.bioontology.org/" class="external-link">BioPortal</a>.</p>
 <p>The <code>import_obo()</code> function parses the ontology file in <code>.obo</code> format. To parse other formats, external tool <code>robot.jar</code> is required.</p>
+<p><code>import_owl()</code> only recognizes <code>&lt;owl:Class&gt;</code> and <code>&lt;owl:ObjectProperty&gt;</code>. If the .owl file does not contain these tags,
+please use <code>import_ontology()</code> directly.</p>
 <p><code>robot.jar</code> can automatically recognize the following formats:</p><ul><li><p><code>json</code>: OBO Graphs JSON</p></li>
 <li><p><code>obo</code>: OBO Format</p></li>
 <li><p><code>ofn</code>: OWL Functional</p></li>
@@ -138,7 +156,7 @@ set as a global option <code>simona_opt$robot_jar = ...</code>.</p></dd>
 <li><p><code>owl</code>: RDF/XML</p></li>
 <li><p><code>owx</code>: OWL/XML</p></li>
 <li><p><code>ttl</code>: Turtle</p></li>
-</ul><p>The description of the ROBOT tool is at http://robot.obolibrary.org/convert.</p>
+</ul><p>The description of the ROBOT tool is at <a href="http://robot.obolibrary.org/convert" class="external-link">http://robot.obolibrary.org/convert</a>.</p>
 <p><code>import_ttl()</code> is a simple parser for the <code>.ttl</code> format files. It only recognizes
 terms that have the <code>owl:Class</code> object. The "is_a" relation is recognized by the predicate <code>rdfs:subClassOf</code>
 or an ontology-specific predicate that contains <code>.*/isa</code>. Other relation types are defined with
@@ -156,41 +174,40 @@ the predicate <code>owl:ObjectProperty</code>. The format is parsed by a Perl sc
 <span class="r-msg co"><span class="r-pr">#&gt;</span> remove 135 obsolete terms</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> There are more than one root:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   PO:0009012, PO:0025131</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   A super root (_all_) is added.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   A super root (~~all~~) is added.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An ontology_DAG object:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Source: po, releases/2023-07-13 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1656 terms / 2512 relations</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Root: _all_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1656 terms / 1776 relations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Root: ~~all~~ </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Terms: PO:0000001, PO:0000002, PO:0000003, PO:0000004, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Max depth: 13 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Avg number of parents: 1.52</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Aspect ratio: 25.08:1 (based on the longest distance to root)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 39.6:1 (based on the shortest distance to root)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Relations: is_a, part_of</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Max depth: 11 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Avg number of parents: 1.07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Aspect ratio: 39:1 (based on the longest distance to root)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 38.2:1 (based on the shortest distance to root)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Relations: is_a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> With the following columns in the metadata data frame:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   id, short_id, name, namespace, definition</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu">import_owl</span><span class="op">(</span><span class="st">"http://purl.obolibrary.org/obo/po.owl"</span><span class="op">)</span> </span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Parsing &lt;owl:ObjectProperty&gt; ...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Parsing &lt;owl:Class&gt; ...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Parsing &lt;rdf:Description&gt; ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Parsing 13 &lt;owl:ObjectProperty&gt; ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Parsing 1995 &lt;owl:Class&gt; ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Parsing 81 &lt;rdf:Description&gt; ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> remove 338 obsolete terms</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> There are more than one root:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   http://purl.obolibrary.org/obo/PO_0009012,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   http://purl.obolibrary.org/obo/PO_0025131</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   A super root (_all_) is added.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   PO:0009012, PO:0025131</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   A super root (~~all~~) is added.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An ontology_DAG object:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Source: Plant Ontology, http://purl.obolibrary.org/obo/po/releases/2023-07-13/po.owl </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1656 terms / 2512 relations</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Root: _all_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1656 terms / 1776 relations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Root: ~~all~~ </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Terms: PO:0000001, PO:0000002, PO:0000003, PO:0000004, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Max depth: 13 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Avg number of parents: 1.52</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Aspect ratio: 25.08:1 (based on the longest distance to root)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 39.6:1 (based on the shortest distance to root)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Relations: is_a, part_of</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Max depth: 11 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Avg number of parents: 1.07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Aspect ratio: 39:1 (based on the longest distance to root)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 38.2:1 (based on the shortest distance to root)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Relations: is_a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> With the following columns in the metadata data frame:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   id, short_id, name, namespace, definition</span>
@@ -212,12 +229,15 @@ the predicate <code>owl:ObjectProperty</code>. The format is parsed by a Perl sc
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   http://purl.bioontology.org/ontology/MSTDE/MT050008,</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   http://purl.bioontology.org/ontology/MSTDE/MT050027,</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     and other 272 terms ...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   A super root (_all_) is added.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   A super root (~~all~~) is added.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An ontology_DAG object:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Source: file1084331e860d6_MSTDE.ttl </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Source: file13c284601b97a_MSTDE.ttl </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1411 terms / 1415 relations</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Root: _all_ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Terms: MT010001, MT010002, MT010003, MT010004, ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Root: ~~all~~ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Terms: http://purl.bioontology.org/ontology/MSTDE/MT010001,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          http://purl.bioontology.org/ontology/MSTDE/MT010002,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          http://purl.bioontology.org/ontology/MSTDE/MT010003,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          http://purl.bioontology.org/ontology/MSTDE/MT010004, ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Max depth: 6 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Avg number of parents: 1.00</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Aspect ratio: 161.4:1 (based on the longest distance to root)</span>

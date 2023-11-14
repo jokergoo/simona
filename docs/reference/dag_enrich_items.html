@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.12</span>
       </span>
     </div>
 
@@ -78,7 +78,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dag_enrich_items</span><span class="op">(</span><span class="va">dag</span>, <span class="va">items</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dag_enrich_items</span><span class="op">(</span><span class="va">dag</span>, <span class="va">items</span>, min_hits <span class="op">=</span> <span class="fl">5</span>, min_items <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -90,6 +90,14 @@
 <dt>items</dt>
 <dd><p>A vector of item names.</p></dd>
 
+
+<dt>min_hits</dt>
+<dd><p>Minimal number of items in the term set.</p></dd>
+
+
+<dt>min_items</dt>
+<dd><p>Minimal size of the term set.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -100,6 +108,8 @@
 <li><p><code>n_anno</code>: Number of annotated items of <code>t</code>.</p></li>
 <li><p><code>n_items</code>: Number of items in <code>items</code> intersecting to all annotated items in the DAG.</p></li>
 <li><p><code>n_all</code>: Number of all annotated items in the DAG.</p></li>
+<li><p><code>log2_fold_enrichment</code>: Defined as log2(observation/expected).</p></li>
+<li><p><code>z_score</code>: Defined as (observed-expected)/sd.</p></li>
 <li><p><code>p_value</code>: P-values from hypergeometric test.</p></li>
 <li><p><code>p_adjust</code>: Adjusted p-values from the BH method.</p></li>
 </ul><p>The number of rows in the data frame is the same as the number of terms in the DAG.</p>
