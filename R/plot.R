@@ -16,6 +16,17 @@ calc_n_neighbours_on_circle = function(theta, width = 1) {
 	k[od]
 }
 
+default_edge_transparency = function(dag) {
+	n_relations = sum(sapply(dag@lt_children, length))
+	if(n_relations < 3000) {
+		0.5
+	} else if(n_relations > 50000) {
+		0.95
+	} else {
+		(0.95-0.5)/(50000 - 3000)*(n_relations - 5000) + 0.5
+	}
+}
+
 #' Visualize the DAG
 #' 
 #' @param dag An `ontology_Dag` object.
@@ -33,8 +44,8 @@ calc_n_neighbours_on_circle = function(theta, width = 1) {
 #'         terms. By default, the legend labels are the term IDs. If there are additionally column stored
 #'         in the meta data frame of the DAG object, the column name can be set here to replace the term IDs as
 #'         legend labels.
-#' @param legend_labels_max_width Maximal width of legend labels. Labels are wrapped into
-#'        multiple lines if the widths exceed it.
+#' @param legend_labels_max_width Maximal width of legend labels measured by the number of characters per line. Labels are wrapped into
+#'        multiple lines if the widths exceed it. 
 #' @param verbose Whether to print messages.
 #' 
 #' @details
@@ -44,6 +55,7 @@ calc_n_neighbours_on_circle = function(theta, width = 1) {
 #' @import grid
 #' @importFrom Polychrome alphabet.colors
 #' @import ComplexHeatmap
+#' @importFrom grDevices dev.size
 #' @rdname dag_viz
 #' @export
 #' @examples
@@ -54,8 +66,8 @@ calc_n_neighbours_on_circle = function(theta, width = 1) {
 #' 1
 dag_circular_viz = function(dag, highlight = NULL, start = 1, end = 360,
 	partition_by_level = 1, partition_by_size = NULL,
-	node_col = NULL, node_transparency = 0.5, node_size = NULL, 
-	edge_col = NULL, edge_transparency = 0.96,
+	node_col = NULL, node_transparency = 0.4, node_size = NULL, 
+	edge_col = NULL, edge_transparency = default_edge_transparency(dag),
 	legend_labels_from = NULL, legend_labels_max_width = 50,
 	verbose = simona_opt$verbose) {
 
@@ -89,16 +101,16 @@ dag_circular_viz = function(dag, highlight = NULL, start = 1, end = 360,
 	# 	term_pos$x = theta
 	# }
 
-	term_pos$n_neighbours = 0
-	all_levels = sort(unique(term_pos$h))
-	all_levels = all_levels[!is.na(all_levels)]
-	for(level in all_levels) {
-		l = term_pos$h == level
-		if(verbose) message(strrep("\b", 100), appendLF = FALSE)
-		if(verbose) message(qq("calculating numbers of neighbours within 1 degree neighbourhood on level @{level}/@{max(all_levels)}, @{sum(l)} terms..."), appendLF = FALSE)
-		# term_pos[l, "n_neighbours"] = cpp_calc_n_neighbours(term_pos$x[l], width = 0.5)
-	}
-	if(verbose) message("")
+	# term_pos$n_neighbours = 0
+	# all_levels = sort(unique(term_pos$h))
+	# all_levels = all_levels[!is.na(all_levels)]
+	# for(level in all_levels) {
+	# 	l = term_pos$h == level
+	# 	if(verbose) message(strrep("\b", 100), appendLF = FALSE)
+	# 	if(verbose) message(qq("calculating numbers of neighbours within 1 degree neighbourhood on level @{level}/@{max(all_levels)}, @{sum(l)} terms..."), appendLF = FALSE)
+	# 	term_pos[l, "n_neighbours"] = cpp_calc_n_neighbours(term_pos$x[l], width = 0.5)
+	# }
+	# if(verbose) message("")
 
 	node_col_map = NULL
 	if(is.null(node_col)) {
@@ -126,9 +138,13 @@ dag_circular_viz = function(dag, highlight = NULL, start = 1, end = 360,
 		node_col = node_col_map[as.character(group)]
 		node_col[is.na(node_col)] = "black"
 	}
+
 	if(is.null(node_size)) {
 		n_children = dag@term_env$n_children
 		node_size = .scale(n_children, c(0, quantile(n_children, 0.99)+1), c(2, 10))
+		node_size_by_n_children = TRUE
+	} else {
+		node_size_by_n_children = FALSE
 	}
 
 	if(!length(node_col) %in% c(1, n_terms)) {
@@ -220,8 +236,84 @@ dag_circular_viz = function(dag, highlight = NULL, start = 1, end = 360,
 	max_depth = max(abs(term_pos$h))
 
 	if(verbose) message("making plot...")
+
+
+	lgd_list = list()
+	if(!is.null(node_col_map)) {
+
+		if(has_highlight) {
+			node_col_map = node_col_map[intersect(names(node_col_map), group[l_highlight])]
+		} else {
+			sector_width = term_pos[vapply(names(node_col_map), function(x) which(dag@terms == x), FUN.VALUE = integer(1)), "width"]
+			if(sum(sector_width > 1) > 0) {
+				node_col_map = node_col_map[sector_width > 1]
+			}
+		}
+		if(length(node_col_map) > 20) {
+			n_offspring = n_offspring(dag)
+			node_col_map = node_col_map[ order(-n_offspring[names(node_col_map)])[seq_len(20)] ]
+		}
+		if(is.null(legend_labels_from)) {
+			if("name" %in% colnames(mcols(dag))) {
+				legend_labels = mcols(dag)[names(node_col_map), "name"]
+			} else {
+				legend_labels = names(node_col_map)
+			}
+		} else {
+			legend_labels = mcols(dag)[names(node_col_map), legend_labels_from]
+		}
+		legend_labels = vapply(legend_labels, function(x) {
+			x = strwrap(x, width = legend_labels_max_width)
+			if(length(x) > 1) {
+				x[-1] = paste0("  ", x[-1])
+			}
+			paste(x, collapse = "\n")
+		}, FUN.VALUE = character(1))
+		lgd_list = c(lgd_list, list(Legend(title = "Top terms", labels = legend_labels,
+			type = "points", pch = 16,
+			background = add_transparency(node_col_map, 0.9, FALSE), 
+			legend_gp = gpar(col = node_col_map))))
+	}
+	if(!is.null(edge_col)) {
+		legend_labels = names(edge_col)
+		legend_labels = vapply(legend_labels, function(x) {
+			x = strwrap(x, width = legend_labels_max_width)
+			if(length(x) > 1) {
+				x[-1] = paste0("  ", x[-1])
+			}
+			paste(x, collapse = "\n")
+		}, FUN.VALUE = character(1))
+		lgd_list = c(lgd_list, list(Legend(title = "Relations", labels = legend_labels, type = "lines", legend_gp = gpar(col = edge_col))))
+	}
+	if(node_size_by_n_children) {
+		n_children = dag@term_env$n_children
+		lgd_breaks = grid.pretty(c(1, quantile(n_children, 0.99)+1), n = 3)
+		lgd_node_size = .scale(lgd_breaks, c(0, quantile(n_children, 0.99)+1), c(2, 10))
+		lgd_labels = lgd_breaks
+		if(max(lgd_breaks) != max(n_children)) {
+			lgd_labels[length(lgd_labels)] = paste0(">= ", max(lgd_breaks), ", max = ", max(n_children))
+		}
+		lgd_list = c(lgd_list, list(Legend(title = "Number of child terms", labels = lgd_labels, type = "points", size = unit(lgd_node_size, "pt"))))
+	}
+
+	if(length(lgd_list)) {
+		lgd = packLegend(list = lgd_list)
+		lgd_width = width.Legends(lgd)
+	} else {
+		lgd_width = unit(0, "pt")
+	}
 	grid.newpage()
-	pushViewport(viewport(x = unit(0, "npc"), just = "left", width = unit(1, "snpc"), height = unit(1, "snpc"), 
+
+	# legend
+	if(length(lgd_list)) {
+		pushViewport(viewport(x = unit(1, "npc"), width = lgd_width + unit(4, "pt"), just = "right"))
+		draw(lgd, x = unit(0, "npc"), just = "left")
+		popViewport()
+	}
+
+	pushViewport(viewport(x = unit(0, "npc"), width = unit(1, "npc") - lgd_width - unit(4, "pt"), just = "left"))
+
+	pushViewport(viewport(width = unit(1, "snpc") - unit(8, "pt"), height = unit(1, "snpc") - unit(8, "pt"), 
 		xscale = c(-max_depth, max_depth), yscale = c(-max_depth, max_depth)))
 	if(!is.null(node_col_map)) {
 		for(nm in names(node_col_map)) {
@@ -253,55 +345,16 @@ dag_circular_viz = function(dag, highlight = NULL, start = 1, end = 360,
 		# grid.text(1:nrow(term_pos2), term_pos2[, 1], term_pos2[, 2], default.units = "native")
 	}
 
-	lgd_list = list()
-	if(!is.null(node_col_map)) {
-
-		if(has_highlight) {
-			node_col_map = node_col_map[intersect(names(node_col_map), group[l_highlight])]
-		} else {
-			sector_width = term_pos[vapply(names(node_col_map), function(x) which(dag@terms == x), FUN.VALUE = integer(1)), "width"]
-			if(sum(sector_width > 1) > 0) {
-				node_col_map = node_col_map[sector_width > 1]
-			}
-		}
-		if(length(node_col_map) > 20) {
-			n_offspring = n_offspring(dag)
-			node_col_map = node_col_map[ order(-n_offspring[names(node_col_map)])[seq_len(20)] ]
-		}
-		if(is.null(legend_labels_from)) {
-			legend_labels = names(node_col_map)
-		} else {
-			legend_labels = mcols(dag)[names(node_col_map), legend_labels_from]
-		}
-		legend_labels = vapply(legend_labels, function(x) {
-			x = strwrap(x, width = legend_labels_max_width)
-			if(length(x) > 1) {
-				x[-1] = paste0("  ", x[-1])
-			}
-			paste(x, collapse = "\n")
-		}, FUN.VALUE = character(1))
-		lgd_list = c(lgd_list, list(Legend(title = "Top terms", labels = legend_labels,
-			type = "points", pch = 16,
-			background = add_transparency(node_col_map, 0.9, FALSE), 
-			legend_gp = gpar(col = node_col_map))))
-	}
-	if(!is.null(edge_col)) {
-		legend_labels = names(edge_col)
-		legend_labels = vapply(legend_labels, function(x) {
-			x = strwrap(x, width = legend_labels_max_width)
-			if(length(x) > 1) {
-				x[-1] = paste0("  ", x[-1])
-			}
-			paste(x, collapse = "\n")
-		}, FUN.VALUE = character(1))
-		lgd_list = c(lgd_list, list(Legend(title = "Relations", labels = legend_labels, type = "lines", legend_gp = gpar(col = edge_col))))
-	}
-
-	if(length(lgd_list)) {
-		lgd = packLegend(list = lgd_list)
-		draw(lgd, x = unit(1, "snpc") + unit(2, "mm"), just = "left")
-	}
 	popViewport()
+	popViewport()
+
+	if(verbose) {
+		ds = dev.size()
+		w = unit(ds[2], "in") + lgd_width + unit(4, "pt")
+		w = convertWidth(w, "in", valueOnly = TRUE)
+
+		message(qq("Best device size: @{round(w, 2)} x @{round(ds[2], 2)} inches."))
+	}
 
 }
 
@@ -312,7 +365,7 @@ dag_circular_viz = function(dag, highlight = NULL, start = 1, end = 360,
 	(map[2] - map[1])/(range[2] - range[1])*(v - range[1]) + map[1]
 }
 
-.normalize_graphics_parameter = function(value, default, all_terms, name) {
+.normalize_node_graphics_parameter = function(value, default, all_terms, name) {
 	n = length(all_terms)
 	if(!is.null(names(value))) {
 		value2 = rep(default, n)
@@ -324,7 +377,7 @@ dag_circular_viz = function(dag, highlight = NULL, start = 1, end = 360,
 		}
 		value2[cn] = value[cn]
 
-		value = value2
+		value = unname(value2)
 	}
 
 	if(!length(value) %in% c(1, n)) {
@@ -334,13 +387,63 @@ dag_circular_viz = function(dag, highlight = NULL, start = 1, end = 360,
 	value
 }
 
-#' @param color A vector of colors. If the value is a vector, the order should correspond to terms in [`dag_all_terms()`].
-#' @param style Style of the nodes. See https://graphviz.org/docs/attr-types/style/ for possible values.
-#' @param fontcolor Color of labels.
-#' @param fontsize Font size of labels.
-#' @param shape Shape of nodes. See https://graphviz.org/doc/info/shapes.html#polygon for possible values.
-#' @param edge_color A named vector where names correspond to relation types.
-#' @param edge_style A named vector where names correspond to relation types. See https://graphviz.org/docs/attr-types/style/ for possible values for edges.
+.normalize_edge_graphics_parameter = function(value, default, parents, children, v_relations, name) {
+	n = length(parents)
+
+	# name can use the relation type or "parent -> child"
+	if(!is.null(names(value))) {
+		value2 = rep(default, n)
+
+		lt = strsplit(names(value), " +<?->? +")
+		len = sapply(lt, length)
+
+		l = len == 1
+		if(any(l)) {
+			for(i in which(l)) {
+				value2[ v_relations == names(value)[i] ] = value[i]
+			}
+		}
+
+		for(i in which(!l)) {
+			value2[ parents == lt[[i]][1] & children == lt[[i]][2] ] = value[i]
+			value2[ children == lt[[i]][1] & parents == lt[[i]][2] ] = value[i]
+		}
+
+		value = value2
+	}
+
+	if(!length(value) %in% c(1, n)) {
+		stop_wrap(qq("Length of `@{name}` should be one or @{n} (number of edges in the DAG)."))
+	}
+
+	value
+}
+
+
+default_node_param = list(
+	color = "black", 
+	fillcolor = "lightgrey", 
+	style = "solid",
+	fontcolor = "black", 
+	fontsize = 10, 
+	shape = "box"
+)
+
+default_edge_param = list(
+	color = "black",
+	style = "solid",
+	dir = "back"
+)
+
+#' @param node_param A list of parameters. Each parameter has the same format. The value can be
+#'      a single scalar, a full length vector with the same order as in [`dag_all_terms()`],
+#'             or a named vector that contains a subset of terms that need to be customized. 
+#'        The full set of parameters can be found at \url{https://graphviz.org/docs/nodes/}.
+#' @param edge_param A list of parameters. Each parameter has the same format. The value can be a single
+#'     scalar, or a named vector that contains a subset of terms that need to be customized. 
+#'        The full set of parameters can be found at \url{https://graphviz.org/docs/edges/}.
+#'     If the parameter is set to a named vector, it can be named by relation types `c("is_a" = ...)`,
+#'     or directly relations `c("a -> b" = ...)`. Please see the vignette for details.
 #'
 #' @seealso \url{http://magjac.com/graphviz-visual-editor/} is nice place to try the DOT code.
 #' @details `dag_as_DOT()` generates the DOT code of the DAG.
@@ -349,15 +452,21 @@ dag_circular_viz = function(dag, highlight = NULL, start = 1, end = 360,
 #' @returns
 #' `dag_as_DOT()` returns a vector of DOT code.
 #' @rdname dag_viz
-dag_as_DOT = function(dag, color = "black", style = "solid",
-	fontcolor = "black", fontsize = 10, shape = "box",
-	edge_color = NULL, edge_style = NULL) {
+dag_as_DOT = function(dag, node_param = default_node_param,
+	edge_param = default_edge_param) {
 
-	color = .normalize_graphics_parameter(color, "black", dag@terms, "color")
-	style = .normalize_graphics_parameter(style, "solid", dag@terms, "style")
-	fontcolor = .normalize_graphics_parameter(fontcolor, "black", dag@terms, "fontcolor")
-	fontsize = .normalize_graphics_parameter(fontsize, "10", dag@terms, "fontsize")
-	shape = .normalize_graphics_parameter(shape, "box", dag@terms, "shape")
+	for(nm in names(default_node_param)) {
+		if(is.null(node_param[[nm]])) {
+			node_param[[nm]] = default_node_param[[nm]]
+		}
+	}
+	for(nm in names(node_param)) {
+		if(is.null(default_node_param[[nm]])) {
+			node_param[[nm]] = .normalize_node_graphics_parameter(node_param[[nm]], NA, dag@terms, nm)
+		} else {
+			node_param[[nm]] = .normalize_node_graphics_parameter(node_param[[nm]], default_node_param[[nm]], dag@terms, nm)
+		}
+	}
 
 	name = NULL
 	if(!is.null(mcols(dag))) {
@@ -369,18 +478,26 @@ dag_as_DOT = function(dag, color = "black", style = "solid",
 		}
 	}
 
-	if(is.null(name)) {
-		nodes = paste0(
-			qq("  node [fontname=Helvetical]\n"),
-			qq("  \"@{dag@terms}\" [color=\"@{color}\", style=\"@{style}\", shape=\"@{shape}\", fontsize=@{fontsize}, fontcolor=\"@{fontcolor}\"];\n", collapse = TRUE)
-		)
-	} else {
-		nodes = paste0(
-			qq("  node [fontname=Helvetical]\n"),
-			qq("  \"@{dag@terms}\" [color=\"@{color}\", style=\"@{style}\", shape=\"@{shape}\", tooltip=\"@{name}\", fontsize=@{fontsize}, fontcolor=\"@{fontcolor}\"];\n", collapse = TRUE)
-		)
+	n_nodes = dag_n_terms(dag)
+	nodes = "  node [fontname = \"Helvetical\"]"
+	for(i in seq_len(n_nodes)) {
+		nodes = c(nodes, qq("  \"@{dag@terms[i]}\" ["))
+	
+		for(nm in names(node_param)) {
+			v = node_param[[nm]]
+			if(length(v) != 1) {
+				v = v[i]
+			}
+			if(!is.na(v)) {
+				nodes = c(nodes, qq("    @{nm} = \"@{v}\","))
+			}
+		}
+		if(!is.null(name)) {
+			nodes = c(nodes, qq("    tooltip = \"@{name[i]}\","))
+		}
+		nodes = c(nodes, "  ];")
 	}
-
+	
 	lt_children = dag@lt_children
 	children = unlist(lt_children)
 	parents = rep(seq_along(dag@terms), times = vapply(lt_children, length, FUN.VALUE = integer(1)))
@@ -393,55 +510,55 @@ dag_as_DOT = function(dag, color = "black", style = "solid",
 		v_relations = relation_levels[v_relations]
 		n_levels = length(relation_levels)
 
-		if(is.null(edge_color)) {
-			if(n_levels <= 8) {
-				default_col = c("#000000", "#DF536B", "#61D04F", "#2297E6", "#28E2E5", "#CD0BBC", "#F5C710", "#9E9E9E")
-				edge_color = structure(default_col[seq_len(n_levels)], names = relation_levels)
-			} else if(n_levels <= 26) {
-				edge_color = structure(alphabet.colors(n_levels), names = relation_levels)	
-			} else {
-				edge_color = structure(rand_color(n_levels), names = relation_levels)
-			}
-		}
-
-		if(length(setdiff(names(edge_color), relation_levels))) {
-			stop("names in `edge_color` should cover all relation types.")
-		}
-
-		if(is.null(edge_style)) {
-			edge_style = structure(rep("solid", n_levels), names = relation_levels)
-		}
-
-		if(length(setdiff(names(edge_style), relation_levels))) {
-			stop("names in `edge_type` should cover all relation types.")	
-		}
 	} else {
 		v_relations = NULL
 	}
 
-	if(is.null(v_relations)) {
-		edges = paste0(
-			"  edge [dir=\"back\"]\n",
-			qq("  \"@{parents}\" -> \"@{children}\";\n", collapse = TRUE)
-		)
-	} else {
-		edges = paste0(
-			"  edge [dir=\"back\"]\n",
-			qq("  \"@{parents}\" -> \"@{children}\" [color=\"@{edge_color[v_relations]}\", style=\"@{edge_style[v_relations]}\", tooltip=\"@{v_relations}\"];\n", collapse = TRUE)
-		)
+	for(nm in names(default_edge_param)) {
+		if(is.null(edge_param[[nm]])) {
+			edge_param[[nm]] = default_edge_param[[nm]]
+		}
+	}
+	for(nm in names(edge_param)) {
+		if(is.null(default_edge_param[[nm]])) {
+			edge_param[[nm]] = .normalize_edge_graphics_parameter(edge_param[[nm]], NA, parents, children, v_relations, nm)
+		} else {
+			edge_param[[nm]] = .normalize_edge_graphics_parameter(edge_param[[nm]], default_edge_param[[nm]], parents, children, v_relations, nm)
+		}
 	}
 
-	DOT = paste0(
-		"digraph {\n",
-		"  graph [overlap = true]\n",
-		"\n",
+	n_edges = length(children)
+	edges = "  # edges"
+	for(i in seq_len(n_edges)) {
+		edges = c(edges, qq("  \"@{parents[i]}\" -> \"@{children[i]}\" ["))
+	
+		for(nm in names(edge_param)) {
+			v = edge_param[[nm]]
+			if(length(v) != 1) {
+				v = v[i]
+			}
+			if(!is.na(v)) {
+				edges = c(edges, qq("    @{nm} = \"@{v}\","))
+			}
+		}
+		if(!is.null(v_relations)) {
+			edges = c(edges, qq("    tooltip = \"@{v_relations[i]}\","))
+		}
+		edges = c(edges, "  ];")
+	}
+
+	DOT = c(
+		"digraph {",
+		"  graph [overlap = true]",
+		"",
 		nodes,
-		"\n",
+		"",
 		edges,
-		"}\n"
+		"}",
+		""
 	)
 
-	DOT
+	paste(DOT, collapse = "\n")
 }
 
 #' @param ... Pass to [`DiagrammeR::grViz()`].
@@ -449,9 +566,20 @@ dag_as_DOT = function(dag, color = "black", style = "solid",
 #' @details
 #' `dag_graphviz()` visualizes the DAG with the **DiagrammeR** package.
 #' @export
-dag_graphviz = function(dag, color = "black", 
-	fontcolor = "black", fontsize = 10, shape = "box",
-	edge_color = NULL, edge_style = NULL, ...) {
+#' @examples
+#' if(interactive()) {
+#' dag = create_ontology_DAG_from_GO_db()
+#' dag_graphviz(dag[, "GO:0010228"])
+#' dag_graphviz(dag[, "GO:0010228"], 
+#'     edge_param = list(color = c("is_a" = "purple", "part_of" = "darkgreen"),
+#'                       style = c("is_a" = "solid", "part_of" = "dashed")),
+#'     width = 800, height = 800)
+#' 
+#' # the DOT code for graphviz
+#' dag_as_DOT(dag[, "GO:0010228"])
+#' }
+dag_graphviz = function(dag, 
+	node_param = default_node_param, edge_param = default_edge_param, ...) {
 
 	if(dag@n_terms > 100) {
 		warning("graphviz is only efficient for visualizing small graphs.")
@@ -461,7 +589,7 @@ dag_graphviz = function(dag, color = "black",
 	}
 	check_pkg("DiagrammeR", bioc = FALSE)
 
-	dot = dag_as_DOT(dag, color = color, fontcolor = fontcolor, fontsize = fontsize, shape = shape, edge_color = edge_color, edge_style = edge_style)
+	dot = dag_as_DOT(dag, node_param = node_param, edge_param = edge_param)
 	DiagrammeR::grViz(dot, ...)
 }
 

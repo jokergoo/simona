@@ -482,8 +482,9 @@ create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = "part of
 
 	relations_DAG = create_ontology_DAG(c("regulates", "regulates"), c("negatively regulates", "positively regulates"))
 
+	go_db_version = read.dcf(system.file("DESCRIPTION", package = "GO.db"))[1, "Version"]
 	dag = create_ontology_DAG(parents = df[, 2], children = df[, 1], relations = df[, 3], relations_DAG = relations_DAG,
-		annotation = annotation, source = paste0("GO ", namespace, " / GO.db package"))
+		annotation = annotation, source = paste0("GO ", namespace, " / GO.db package ", go_db_version))
 
 	go = GO.db::GOTERM[dag@terms]
 	meta = data.frame(id = AnnotationDbi::GOID(go),

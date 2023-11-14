@@ -24,9 +24,11 @@ knitr::opts_chunk$set(
 ```
 
 There are two functions for visualizing DAGs. `dag_graphviz()` uses the **DiagrammeR** package to visualize
-small DAGs as HTML widgets. `dag_circular_viz()` uses a circular layout for huge DAGs.
+small DAGs as HTML widgets. `dag_circular_viz()` uses a circular layout for large DAGs.
 
 ## Small DAGs
+
+Let's first create a small DAG.
 
 ```{r}
 library(simona)
@@ -39,44 +41,105 @@ dag_small = create_ontology_DAG(parents, children)
 dag_graphviz(dag_small)
 ```
 
-There are several graphical parameters for controlling nodes in the DAG.
+The argument `node_param` can be set to a list of graphical parameters.
 
 ```{r}
 color = sample(colors(), 6)
 shape = c("polygon", "box", "oval", "egg", "diamond", "parallelogram")
-dag_graphviz(dag_small, color = color, shape = shape)
+dag_graphviz(dag_small, node_param = list(color = color, shape = shape))
 ```
 
-The DOT code can be obtained with `dag_as_DOT()`:
+The graphical parameters are not necessary to be a vector. It can be a single
+value which affects all nodes, or a named vector that contains a subset of
+nodes to be customized.
+
+
+```{r}
+color = c("a" = "red", "d" = "blue")
+dag_graphviz(dag_small, node_param = list(color = color))
+```
+
+The full set of node-level parameters can be found at: https://graphviz.org/docs/nodes/. They can all
+be set in the same format as `color` demonstrated above.
+
+
+The argument `edge_param` can be set to a list of graphical parameters for
+configuring edges. There are two ways to control edge colors. In the following
+code, we additionally add the relation types to the DAG.
+
+```{r}
+parents  = c("a", "a", "b", "b", "c", "d")
+children = c("b", "c", "c", "d", "e", "f")
+relations = c("is_a", "is_a", "part_of", "part_of", "is_a", "is_a")
+dag_small = create_ontology_DAG(parents, children, relations = relations)
+```
+
+Now since each edge is associated with a relation type, the color can be set
+by a vector with relation types as names:
+
+```{r}
+edge_color = c("is_a" = "red", "part_of" = "blue")
+dag_graphviz(dag_small, edge_param = list(color = edge_color))
+```
+
+To highlight specific edges, the parameter can be set to a named vector where
+names directly contain relations.
+
+```{r}
+edge_color = c("a -> b" = "red", "c -> e" = "blue")
+dag_graphviz(dag_small, edge_param = list(color = edge_color))
+```
+
+The direction in the specification does not matter. The following ways are all
+the same, but there must be spaces before and after the arrow.
+
+```
+"a -> b"  = "red"
+"a <- b"  = "red"
+"b -> a"  = "red"
+"b <- a". = "red"
+"a <-> b" = "red"
+"a - b"   = "red"
+```
+
+The full set of edge-level parameters can be found at
+https://graphviz.org/docs/edges/. They can all be set in the same format as
+`edge_color` demonstrated above.
+
+
+Internally, `dag_graphviz()` generates the "DOT" code for graphiviz
+visualization. The DOT code can be obtained with `dag_as_DOT()`:
 
 ```{r, comment = ''}
-dag_as_DOT(dag_small, color = color, shape = shape) |> cat()
+dag_as_DOT(dag_small, node_param = list(color = color, shape = shape)) |> cat()
 ```
 
-You can paste the DOT code to http://magjac.com/graphviz-visual-editor/ to generate the graph.
+You can paste the DOT code to http://magjac.com/graphviz-visual-editor/ to generate the diagram.
 
-Following is an example of visualizing all upstream terms of a GO term. Note `dag[, "GO:0010228"]`
-returns a sub-DAG of all upstream terms of `GO:0010228`.
+`dag_graphviz()` is very useful for visualizing a sub-DAG derived from the
+global DAG. For example, all upstream terms of a GO term. Recall in the following example, `dag[,
+"GO:0010228"]` returns a sub-DAG of all upstream terms of `GO:0010228`.
 
 ```{r}
 dag = create_ontology_DAG_from_GO_db()
-dag_graphviz(dag[, "GO:0010228"])
-```
-
-Edge attributes should be set as a named vector where names correspond to all relation types.
-
-```{r}
 dag_graphviz(dag[, "GO:0010228"], 
-  edge_color = c("is_a" = "purple", "part_of" = "darkgreen"),
-  edge_style = c("is_a" = "solid", "part_of" = "dashed"), width = 800, height = 800)
+    node_param = list(
+        fillcolor = c("GO:0010228" = "pink"),
+        style = c("GO:0010228" = "filled")
+    ),
+    edge_param = list(
+        color = c("is_a" = "purple", "part_of" = "darkgreen"),
+        style = c("is_a" = "solid", "part_of" = "dashed")
+    ), width = 600, height = 600)
 ```
 
-## Huge DAGs
+## Large DAGs
 
-Visualizing huge DAGs is not an easy job because a term can have more than one parents. Here
-the `dag_circular_viz()` uses a circular layout to visualize huge DAGs.
+Visualizing large DAGs is not an easy job because a term can have more than
+one parents. Here the `dag_circular_viz()` uses a circular layout to visualize
+large DAGs.
 
-```{r, fig.width = 10, fig.height = 7}
+```{r, fig.width = 9, fig.height = 7}
 dag_circular_viz(dag)
 ```
 
@@ -86,27 +149,21 @@ proportional to the logorithm of the number of terms with depth equal to or
 less than the current depth of this circle. On each circle, each term has a
 width (or a sector on the circle) associated where offspring terms are only
 drawn within that section. The width is proportional to the number of
-offspring terms of the term. Dot size corresponds to the number of child
-terms. If colors are not set, let's say root term is on level 0, the DAG is
-cut at level-0 terms (links between level-1 terms and level-0 terms are all
-cut), and each sub-DAG is assigned with a different color. A legend of top
-terms of sub-DAGs is also added in the plot.
+leaf terms in the corresponding sub-DAG. Dot size corresponds to the number of child
+terms. 
 
-The term IDs are not informative in the plot. If there are additional information of terms stored
-in the meta data frame of the DAG object, the column name can be set with the `legend_labels_from` argument.
+By default, the DAG is cut after the root term, and each sub-DAG is assigned
+with a different color. Child terms of root is added in the legend in the
+plot. If there is a "name" column in the meta data frame, texts in the "name" column
+are used as the legend labels, or else term IDs are used.
 
-
-```{r, fig.width = 10, fig.height = 7}
-head(mcols(dag))
-dag_circular_viz(dag, legend_labels_from = "name")
-```
 
 `dag_treelize()` can convert a DAG to a tree where a term only has one parent.
 The circular visualization on the reduced tree is as follows:
 
 ```{r, fig.width = 10, fig.height = 7}
 tree = dag_treelize(dag)
-dag_circular_viz(tree, legend_labels_from = "name", edge_transparency = 0.95)
+dag_circular_viz(tree)
 ```
 
 One useful application is to map GO terms of interest (e.g. significant GO terms
@@ -115,7 +172,7 @@ contains 249 significant GO terms from an enrichment analysis.
 
 ```{r, fig.width = 10, fig.height = 7}
 sig_go_ids = readRDS(system.file("extdata", "sig_go_ids.rds", package = "simona"))
-dag_circular_viz(dag, highlight = sig_go_ids, legend_labels_from = "name")
+dag_circular_viz(dag, highlight = sig_go_ids)
 ```
 
 ## Session Info

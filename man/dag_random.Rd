@@ -4,7 +4,14 @@
 \alias{dag_random}
 \title{Generate a random DAG}
 \usage{
-dag_random(n_children = c(2, 5), max = 1000, p = 0.1, power = 0.5)
+dag_random(
+  n_children = c(2, 5),
+  max = 1000,
+  p = 0.1,
+  power = 0.2,
+  tree = FALSE,
+  depth = NULL
+)
 }
 \arguments{
 \item{n_children}{Range of the numbers of children on a term to sample.}
@@ -14,6 +21,12 @@ dag_random(n_children = c(2, 5), max = 1000, p = 0.1, power = 0.5)
 \item{p}{Probability to connect to other terms.}
 
 \item{power}{The power.}
+
+\item{tree}{Whether the dag is a tree.}
+
+\item{depth}{Depth of the tree. Note \code{tree} and \code{depth} should be both set. \code{dag(n_children = nc, tree = TRUE, depth = d)}
+is a shortcut of \code{dag(n_children = c(nc, nc), max = nc^(d+1)/(nc-1), p = 0)}. The setting of \code{dag(n_children = 2, tree = TRUE, depth = d)}
+generates a binary tree with max depth \code{d} and \code{2^d} leaf nodes all have the same depth \code{d}.}
 }
 \value{
 An \code{ontology_DAG} object.

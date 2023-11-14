@@ -4,12 +4,16 @@
 \alias{dag_enrich_items}
 \title{Enrichment analysis on the number of annotated items}
 \usage{
-dag_enrich_items(dag, items)
+dag_enrich_items(dag, items, min_hits = 5, min_items = 10)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
 
 \item{items}{A vector of item names.}
+
+\item{min_hits}{Minimal number of items in the term set.}
+
+\item{min_items}{Minimal size of the term set.}
 }
 \value{
 A data frame with the following columns:
@@ -19,6 +23,8 @@ A data frame with the following columns:
 \item \code{n_anno}: Number of annotated items of \code{t}.
 \item \code{n_items}: Number of items in \code{items} intersecting to all annotated items in the DAG.
 \item \code{n_all}: Number of all annotated items in the DAG.
+\item \code{log2_fold_enrichment}: Defined as log2(observation/expected).
+\item \code{z_score}: Defined as (observed-expected)/sd.
 \item \code{p_value}: P-values from hypergeometric test.
 \item \code{p_adjust}: Adjusted p-values from the BH method.
 }

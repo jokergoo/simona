@@ -399,6 +399,16 @@ term_sim(dag, terms, method = "Sim_GOGO_2018",
 
 Paper link: https://doi.org/10.1038/s41598-018-33219-y.
 
+### Sim_Ancestor
+
+This is Jaccard-like coeffcient
+
+$$ \mathrm{Sim}(a, b) = \frac{\left| \mathcal{A}^+_a \cap \mathcal{A}^+_b \right|}{\left| \mathcal{A}^+_a \cup \mathcal{A}^+_b \right|} $$
+
+<pre class="r">
+term_sim(dag, terms, method = "Sim_Ancestor")
+</pre>
+
 # Edge-based methods
 
 Methods introduced in this section relies on the distance between terms. Many

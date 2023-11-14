@@ -481,7 +481,7 @@ dag_distinct_ancestors = function(dag, terms, in_labels = TRUE, verbose = simona
 	if(in_labels) {
 		names(ind)
 	} else {
-		unnames(ind)
+		unname(ind)
 	}
 }
 

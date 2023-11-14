@@ -4,12 +4,16 @@
 \alias{dag_enrich_terms}
 \title{Enrichment analysis on offspring terms}
 \usage{
-dag_enrich_terms(dag, terms)
+dag_enrich_terms(dag, terms, min_hits = 3, min_offspring = 10)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
 
 \item{terms}{A vector of term names.}
+
+\item{min_hits}{Minimal number of terms in an offspring set.}
+
+\item{min_offspring}{Minimal size of the offspring set.}
 }
 \value{
 A data frame with the following columns:
@@ -19,6 +23,8 @@ A data frame with the following columns:
 \item \code{n_offspring}: Number of offspring terms of \code{t} (including \code{t} itself).
 \item \code{n_terms}: Number of terms in \code{term} intersecting to all terms in the DAG.
 \item \code{n_all}: Number of all terms in the DAG.
+\item \code{log2_fold_enrichment}: Defined as log2(observation/expected).
+\item \code{z_score}: Defined as (observed-expected)/sd.
 \item \code{p_value}: P-values from hypergeometric test.
 \item \code{p_adjust}: Adjusted p-values from the BH method.
 }

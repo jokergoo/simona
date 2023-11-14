@@ -14,10 +14,10 @@ dag_circular_viz(
   partition_by_level = 1,
   partition_by_size = NULL,
   node_col = NULL,
-  node_transparency = 0.5,
+  node_transparency = 0.4,
   node_size = NULL,
   edge_col = NULL,
-  edge_transparency = 0.96,
+  edge_transparency = default_edge_transparency(dag),
   legend_labels_from = NULL,
   legend_labels_max_width = 50,
   verbose = simona_opt$verbose
@@ -25,23 +25,14 @@ dag_circular_viz(
 
 dag_as_DOT(
   dag,
-  color = "black",
-  style = "solid",
-  fontcolor = "black",
-  fontsize = 10,
-  shape = "box",
-  edge_color = NULL,
-  edge_style = NULL
+  node_param = default_node_param,
+  edge_param = default_edge_param
 )
 
 dag_graphviz(
   dag,
-  color = "black",
-  fontcolor = "black",
-  fontsize = 10,
-  shape = "box",
-  edge_color = NULL,
-  edge_style = NULL,
+  node_param = default_node_param,
+  edge_param = default_edge_param,
   ...
 )
 }
@@ -73,24 +64,21 @@ terms. By default, the legend labels are the term IDs. If there are additionally
 in the meta data frame of the DAG object, the column name can be set here to replace the term IDs as
 legend labels.}
 
-\item{legend_labels_max_width}{Maximal width of legend labels. Labels are wrapped into
+\item{legend_labels_max_width}{Maximal width of legend labels measured by the number of characters per line. Labels are wrapped into
 multiple lines if the widths exceed it.}
 
 \item{verbose}{Whether to print messages.}
 
-\item{color}{A vector of colors. If the value is a vector, the order should correspond to terms in \code{\link[=dag_all_terms]{dag_all_terms()}}.}
+\item{node_param}{A list of parameters. Each parameter has the same format. The value can be
+a single scalar, a full length vector with the same order as in \code{\link[=dag_all_terms]{dag_all_terms()}},
+or a named vector that contains a subset of terms that need to be customized.
+The full set of parameters can be found at \url{https://graphviz.org/docs/nodes/}.}
 
-\item{style}{Style of the nodes. See https://graphviz.org/docs/attr-types/style/ for possible values.}
-
-\item{fontcolor}{Color of labels.}
-
-\item{fontsize}{Font size of labels.}
-
-\item{shape}{Shape of nodes. See https://graphviz.org/doc/info/shapes.html#polygon for possible values.}
-
-\item{edge_color}{A named vector where names correspond to relation types.}
-
-\item{edge_style}{A named vector where names correspond to relation types. See https://graphviz.org/docs/attr-types/style/ for possible values for edges.}
+\item{edge_param}{A list of parameters. Each parameter has the same format. The value can be a single
+scalar, or a named vector that contains a subset of terms that need to be customized.
+The full set of parameters can be found at \url{https://graphviz.org/docs/edges/}.
+If the parameter is set to a named vector, it can be named by relation types \code{c("is_a" = ...)},
+or directly relations \code{c("a -> b" = ...)}. Please see the vignette for details.}
 
 \item{...}{Pass to \code{\link[DiagrammeR:grViz]{DiagrammeR::grViz()}}.}
 }
@@ -114,6 +102,17 @@ dag = create_ontology_DAG_from_GO_db()
 dag_circular_viz(dag)
 }
 1
+if(interactive()) {
+dag = create_ontology_DAG_from_GO_db()
+dag_graphviz(dag[, "GO:0010228"])
+dag_graphviz(dag[, "GO:0010228"], 
+    edge_param = list(color = c("is_a" = "purple", "part_of" = "darkgreen"),
+                      style = c("is_a" = "solid", "part_of" = "dashed")),
+    width = 800, height = 800)
+
+# the DOT code for graphviz
+dag_as_DOT(dag[, "GO:0010228"])
+}
 }
 \seealso{
 \url{http://magjac.com/graphviz-visual-editor/} is nice place to try the DOT code.

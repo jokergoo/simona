@@ -4,14 +4,24 @@
 \alias{dag_enrich_terms_by_permutation}
 \title{Enrichment analysis on offspring terms by permutation test}
 \usage{
-dag_enrich_terms_by_permutation(dag, value, n = 1000)
+dag_enrich_terms_by_permutation(
+  dag,
+  value,
+  perm = 1000,
+  min_offspring = 10,
+  verbose = simona_opt$verbose
+)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
 
 \item{value}{A numeric value. The value should correspond to terms in \code{dag@terms}.}
 
-\item{n}{Number of permutations.}
+\item{perm}{Number of permutations.}
+
+\item{min_offspring}{Minimal size of the offspring set.}
+
+\item{verbose}{Whether to print messages.}
 }
 \value{
 A data frame with the following columns:
@@ -19,8 +29,8 @@ A data frame with the following columns:
 \item \code{term}: Term names.
 \item \code{stats}: The statistics of terms.
 \item \code{n_offspring}: Number of offspring terms of \code{t} (including \code{t} itself).
-\item \code{z_score}: Defined as \code{(s - mean)/sd} where \code{mean} and \code{sd} are calculated from random permutation.
 \item \code{log2_fold_enrichment}: defined as \code{log2(s/mean)} where \code{mean} is calculated from random permutation.
+\item \code{z_score}: Defined as \code{(s - mean)/sd} where \code{mean} and \code{sd} are calculated from random permutation.
 \item \code{p_value}: P-values from permutation test.
 \item \code{p_adjust}: Adjusted p-values from the BH method.
 }
@@ -54,7 +64,7 @@ where index \code{i} represents the i^th sampling. If we sample \code{k} times, 
 \examples{
 \dontrun{
 dag = create_ontology_DAG_from_GO_db() 
-value = runif(dag_n_terms(dag))
+value = runif(dag_n_terms(dag)) # a set of random values
 df = dag_enrich_terms_by_permutation(dag, value)
 }
 1
