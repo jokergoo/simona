@@ -22,7 +22,9 @@ void _add_leaves(List lt_children, int i_node, LogicalVector& l_offspring);
 void _find_connected_leaves(List lt_children, int i_node, LogicalVector& l_offspring);
 
 IntegerVector cpp_n_ancestors(S4 dag, bool include_self = false);
+IntegerVector cpp_n_ancestors_on_tree(S4 dag, bool include_self = false);
 IntegerVector cpp_n_offspring(S4 dag, bool include_self = false);
+IntegerVector cpp_n_offspring_on_tree(S4 dag, bool include_self = false);
 IntegerVector cpp_n_leaves(S4 dag);
 IntegerVector cpp_ancestors_of_a_group(S4 dag, IntegerVector nodes, int type = 1, bool include_self = false);
 IntegerVector cpp_ancestors_of_a_group_within_background(S4 dag, IntegerVector nodes, IntegerVector background, int type = 1, bool include_self = false);

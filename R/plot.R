@@ -46,6 +46,9 @@ default_edge_transparency = function(dag) {
 #'         legend labels.
 #' @param legend_labels_max_width Maximal width of legend labels measured by the number of characters per line. Labels are wrapped into
 #'        multiple lines if the widths exceed it. 
+#' @param use_raster Whether to first write the circular image into a temporary png file, then add to the plot
+#'      as a raster object?
+#' @param newpage Whether call [`grid::grid.newpage()`] to create a new plot?
 #' @param verbose Whether to print messages.
 #' 
 #' @details
@@ -68,8 +71,13 @@ dag_circular_viz = function(dag, highlight = NULL, start = 1, end = 360,
 	partition_by_level = 1, partition_by_size = NULL,
 	node_col = NULL, node_transparency = 0.4, node_size = NULL, 
 	edge_col = NULL, edge_transparency = default_edge_transparency(dag),
-	legend_labels_from = NULL, legend_labels_max_width = 50,
+	legend_labels_from = NULL, legend_labels_max_width = 50, 
+	use_raster = dag_n_terms(dag) > 10000, newpage = TRUE,
 	verbose = simona_opt$verbose) {
+
+	if(use_raster) {
+		check_pkg("png", bioc = FALSE)
+	}
 
 	if(end < start) {
 		stop_wrap("`end` should be larger than `start`.")
@@ -269,6 +277,11 @@ dag_circular_viz = function(dag, highlight = NULL, start = 1, end = 360,
 			}
 			paste(x, collapse = "\n")
 		}, FUN.VALUE = character(1))
+		ii = which(is.na(legend_labels) | legend_labels == "NA")
+		if(length(ii)) {
+			legend_labels[ii] = names(node_col_map)[ii]
+		}
+
 		lgd_list = c(lgd_list, list(Legend(title = "Top terms", labels = legend_labels,
 			type = "points", pch = 16,
 			background = add_transparency(node_col_map, 0.9, FALSE), 
@@ -302,7 +315,9 @@ dag_circular_viz = function(dag, highlight = NULL, start = 1, end = 360,
 	} else {
 		lgd_width = unit(0, "pt")
 	}
-	grid.newpage()
+	if(newpage) {
+		grid.newpage()
+	}
 
 	# legend
 	if(length(lgd_list)) {
@@ -313,39 +328,68 @@ dag_circular_viz = function(dag, highlight = NULL, start = 1, end = 360,
 
 	pushViewport(viewport(x = unit(0, "npc"), width = unit(1, "npc") - lgd_width - unit(4, "pt"), just = "left"))
 
-	pushViewport(viewport(width = unit(1, "snpc") - unit(8, "pt"), height = unit(1, "snpc") - unit(8, "pt"), 
-		xscale = c(-max_depth, max_depth), yscale = c(-max_depth, max_depth)))
-	if(!is.null(node_col_map)) {
-		for(nm in names(node_col_map)) {
-			i = which(dag@terms == nm)
-			draw_sector(term_pos[i, "x"] - term_pos[i, "width"]/2,
-				        term_pos[i, "x"] + term_pos[i, "width"]/2,
-				        max_depth, gp = gpar(fill = add_transparency(node_col_map[[nm]], 0.9, FALSE), col = NA))
+	if(use_raster) {
+		if(verbose) {
+			message("saving the circular plot into a temporary png file...")
 		}
+		temp_png = tempfile()
+		vp_width = convertWidth(unit(1, "snpc") - unit(8, "pt"), "in", valueOnly = TRUE)
+		vp_height = convertHeight(unit(1, "snpc") - unit(8, "pt"), "in", valueOnly = TRUE)
+		if(vp_width < 1) {
+			vp_width = vp_height = 1
+		}
+		png(temp_png, width = vp_width*1.5, height = vp_height*1.5, units = "in", res = 72*1.5)
+	}
+	oe = try({
+		pushViewport(viewport(width = unit(1, "snpc") - unit(8, "pt"), height = unit(1, "snpc") - unit(8, "pt"), 
+			xscale = c(-max_depth, max_depth), yscale = c(-max_depth, max_depth)))
+		if(!is.null(node_col_map)) {
+			for(nm in names(node_col_map)) {
+				i = which(dag@terms == nm)
+				draw_sector(term_pos[i, "x"] - term_pos[i, "width"]/2,
+					        term_pos[i, "x"] + term_pos[i, "width"]/2,
+					        max_depth, gp = gpar(fill = add_transparency(node_col_map[[nm]], 0.9, FALSE), col = NA))
+			}
+		}
+
+		theta = seq(0, pi*2, length = 50)
+		for(i in unique(term_pos$rho)) {
+			grid.lines(cos(theta)*i, sin(theta)*i, default.units = "native", gp = gpar(col = "#CCCCCC", lty = 3))
+		}
+
+		if(has_highlight) {
+			grid.segments(x1, y1, x2, y2, default.units = "native", gp = gpar(col = edge_col_v))
+			grid.points(term_pos2[!l_highlight, 1], term_pos2[!l_highlight, 2], default.units = "native", pch = 16, 
+				gp = gpar(col = node_col[!l_highlight]), size = unit(node_size[!l_highlight], "pt"))
+			grid.points(term_pos2[l_highlight, 1], term_pos2[l_highlight, 2], default.units = "native", pch = 16, 
+				gp = gpar(col = node_col[l_highlight]), size = unit(node_size[l_highlight], "pt"))
+		} else {
+			if(verbose) message("adding links...")
+			# grid.segments(x1, y1, x2, y2, default.units = "native", gp = gpar(col = "red"))
+			grid.segments(x1, y1, x2, y2, default.units = "native", gp = gpar(col = edge_col_v))
+			if(verbose) message("adding terms...")
+			grid.points(term_pos2[, 1], term_pos2[, 2], default.units = "native", pch = 16, 
+				gp = gpar(col = node_col), size = unit(node_size, "pt"))
+			# grid.text(1:nrow(term_pos2), term_pos2[, 1], term_pos2[, 2], default.units = "native")
+		}
+
+		popViewport()
+	}, silent = TRUE)
+
+	if(use_raster) {
+		dev.off()
+
+		image = png::readPNG(temp_png)
+		file.remove(temp_png)
+
+		grid.raster(image, width = unit(1, "snpc") - unit(8, "pt"), height = unit(1, "snpc") - unit(8, "pt"))
+
 	}
 
-	theta = seq(0, pi*2, length = 50)
-	for(i in unique(term_pos$rho)) {
-		grid.lines(cos(theta)*i, sin(theta)*i, default.units = "native", gp = gpar(col = "#CCCCCC", lty = 3))
+	if(inherits(oe, "try-error")) {
+		stop(oe)
 	}
 
-	if(has_highlight) {
-		grid.segments(x1, y1, x2, y2, default.units = "native", gp = gpar(col = edge_col_v))
-		grid.points(term_pos2[!l_highlight, 1], term_pos2[!l_highlight, 2], default.units = "native", pch = 16, 
-			gp = gpar(col = node_col[!l_highlight]), size = unit(node_size[!l_highlight], "pt"))
-		grid.points(term_pos2[l_highlight, 1], term_pos2[l_highlight, 2], default.units = "native", pch = 16, 
-			gp = gpar(col = node_col[l_highlight]), size = unit(node_size[l_highlight], "pt"))
-	} else {
-		if(verbose) message("adding links...")
-		# grid.segments(x1, y1, x2, y2, default.units = "native", gp = gpar(col = "red"))
-		grid.segments(x1, y1, x2, y2, default.units = "native", gp = gpar(col = edge_col_v))
-		if(verbose) message("adding terms...")
-		grid.points(term_pos2[, 1], term_pos2[, 2], default.units = "native", pch = 16, 
-			gp = gpar(col = node_col), size = unit(node_size, "pt"))
-		# grid.text(1:nrow(term_pos2), term_pos2[, 1], term_pos2[, 2], default.units = "native")
-	}
-
-	popViewport()
 	popViewport()
 
 	if(verbose) {

@@ -157,6 +157,12 @@ with a different color. Child terms of root is added in the legend in the
 plot. If there is a "name" column in the meta data frame, texts in the "name" column
 are used as the legend labels, or else term IDs are used.
 
+By default the DAG is split on a certain level controlled by the argument `partition_by_level`.
+It can also be controlled by setting the possible number of terms in each sub-DAG.
+
+```{r, fig.width = 9, fig.height = 7}
+dag_circular_viz(dag, partition_by_size = 5000)
+```
 
 `dag_treelize()` can convert a DAG to a tree where a term only has one parent.
 The circular visualization on the reduced tree is as follows:

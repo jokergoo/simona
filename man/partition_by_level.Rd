@@ -5,9 +5,9 @@
 \alias{partition_by_size}
 \title{Partition the DAG}
 \usage{
-partition_by_level(dag, level = 0, from = NULL, term_pos = NULL)
+partition_by_level(dag, level = 1, from = NULL, term_pos = NULL)
 
-partition_by_size(dag, size = ceiling(dag_n_terms(dag)/10))
+partition_by_size(dag, size = round(dag_n_terms(dag)/5))
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}

@@ -22,4 +22,6 @@ tree2 = dag_treelize(dag)
 test_that("test dag_treelize", {
 	expect_identical(tree1@lt_children, tree2@lt_children)
 	expect_identical(tree1@lt_parents, tree2@lt_parents)
+	expect_identical(dag@terms, tree1@terms)
+	expect_identical(dag@terms, tree2@terms)
 })

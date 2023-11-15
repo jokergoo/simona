@@ -110,7 +110,12 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 	verbose = simona_opt$verbose) {
 
 	if(missing(children)) {
-		lt = strsplit(parents, "\\s*-\\s*")
+		if(any(grepl("\\s+-\\s+", parents))) {
+			lt = strsplit(parents, "\\s+-\\s+")
+		} else {
+			lt = strsplit(parents, "\\s*-\\s*")
+		}
+		
 		parents = sapply(lt, function(x) x[1])
 		children = sapply(lt, function(x) x[2])
 	}
@@ -178,7 +183,7 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 		if(length(root) > 5) {
 			txt = strwrap(paste(terms[root][seq_len(5)], collapse = ", "), width = 80)
 			txt[length(txt)] = paste0(txt[length(txt)], ",")
-			txt = c(txt, qq("  and other @{length(root)-5} terms ..."))
+			txt = c(txt, qq("  and other @{length(root)-5} term@{ifelse(length(root)-5 == 1, '', 's')} ..."))
 		} else {
 			txt = strwrap(paste(terms[root], collapse = ", "), width = 80)
 		}

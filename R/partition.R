@@ -29,7 +29,7 @@
 #' table(pa)
 #' }
 #' 1
-partition_by_level = function(dag, level = 0, from = NULL, term_pos = NULL) {
+partition_by_level = function(dag, level = 1, from = NULL, term_pos = NULL) {
 
 	if(is.null(from)) {
 		depth = dag_depth(dag)
@@ -71,45 +71,14 @@ partition_by_level = function(dag, level = 0, from = NULL, term_pos = NULL) {
 #' @rdname partition_by_level
 #' @importFrom stats dendrapply
 #' @export
-partition_by_size = function(dag, size = ceiling(dag_n_terms(dag)/10)) {
+partition_by_size = function(dag, size = round(dag_n_terms(dag)/5)) {
 	
 	tree = dag_treelize(dag)
-	dend = dag_as_dendrogram(tree)
+	
+	pa = cpp_partition_by_size(tree, as.integer(size))
+	pa[pa < 0] = NA
 
-	pa = rep(NA_integer_, dag@n_terms)
-
-	get_nodes_attr = function(dend, attr) {
-		v = vector("list", attr(dend, "n_nodes"))
-		i = 1
-		dendrapply(dend, function(d) {
-			v[[i]] <<- attr(d, attr)
-			i <<- i + 1
-		})
-
-		unlist(v)
-	}
-
-	scan_downstream = function(dend) {
-
-		group = attr(dend, "term_id")
-		if(attr(dend, "leaf")) {
-			pa[group] <<- group
-			return(NULL)
-		}
-
-		nn = vapply(dend, function(x) attr(x, "n_nodes"), FUN.VALUE = double(1))
-		for(i in seq_along(nn)) {
-			if(nn[i] > size) {
-				scan_downstream(dend[[i]])
-			} else {
-				pa[get_nodes_attr(dend[[i]], "term_id")] <<- group
-			}
-		}
-	}
-
-	scan_downstream(dend)
-
-	structure(tree@terms[pa], names = tree@terms)
+	tree@terms[pa]
 }
 
 

@@ -77,6 +77,10 @@ intersectToList_logical <- function(lt, x) {
     .Call(`_simona_intersectToList_logical`, lt, x)
 }
 
+cpp_partition_by_size <- function(tree, size) {
+    .Call(`_simona_cpp_partition_by_size`, tree, size)
+}
+
 cpp_random_aggregatioin <- function(size, value, perm) {
     .Call(`_simona_cpp_random_aggregatioin`, size, value, perm)
 }

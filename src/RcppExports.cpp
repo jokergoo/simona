@@ -252,6 +252,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_partition_by_size
+IntegerVector cpp_partition_by_size(S4 tree, int size);
+RcppExport SEXP _simona_cpp_partition_by_size(SEXP treeSEXP, SEXP sizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< S4 >::type tree(treeSEXP);
+    Rcpp::traits::input_parameter< int >::type size(sizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_partition_by_size(tree, size));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_random_aggregatioin
 NumericMatrix cpp_random_aggregatioin(IntegerVector size, NumericVector value, int perm);
 RcppExport SEXP _simona_cpp_random_aggregatioin(SEXP sizeSEXP, SEXP valueSEXP, SEXP permSEXP) {
@@ -936,6 +948,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_simona_cpp_tpl_shortest_path_sum_value", (DL_FUNC) &_simona_cpp_tpl_shortest_path_sum_value, 4},
     {"_simona_cpp_tpl_longest_path_sum_value", (DL_FUNC) &_simona_cpp_tpl_longest_path_sum_value, 4},
     {"_simona_intersectToList_logical", (DL_FUNC) &_simona_intersectToList_logical, 2},
+    {"_simona_cpp_partition_by_size", (DL_FUNC) &_simona_cpp_partition_by_size, 2},
     {"_simona_cpp_random_aggregatioin", (DL_FUNC) &_simona_cpp_random_aggregatioin, 3},
     {"_simona_cpp_node_pos_in_tree", (DL_FUNC) &_simona_cpp_node_pos_in_tree, 4},
     {"_simona_cpp_calc_n_neighbours", (DL_FUNC) &_simona_cpp_calc_n_neighbours, 2},
