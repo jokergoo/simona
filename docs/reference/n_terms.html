@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
       </span>
     </div>
 
@@ -52,6 +52,9 @@
     <li>
       <a href="../articles/v7_dag_visualization.html">Visualize DAGs</a>
     </li>
+    <li>
+      <a href="../articles/v8_random.html">Random DAGs</a>
+    </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/jokergoo/simona/" class="external-link">
@@ -84,9 +87,13 @@
 <span></span>
 <span><span class="fu">n_connected_leaves</span><span class="op">(</span><span class="va">dag</span>, terms <span class="op">=</span> <span class="cn">NULL</span>, use_cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">n_parents</span><span class="op">(</span><span class="va">dag</span>, terms <span class="op">=</span> <span class="cn">NULL</span>, use_cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">n_parents</span><span class="op">(</span><span class="va">dag</span>, terms <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">n_children</span><span class="op">(</span><span class="va">dag</span>, terms <span class="op">=</span> <span class="cn">NULL</span>, use_cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">n_children</span><span class="op">(</span><span class="va">dag</span>, terms <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">avg_parents</span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">avg_children</span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -116,6 +123,8 @@
     <div id="details">
     <h2>Details</h2>
     <p>For <code>n_connected_leaves()</code>, leaf nodes have value of 1.</p>
+<p>In <code>avg_parents()</code>, root term is removed.</p>
+<p>In <code>avg_children()</code>, leaf term is removed.</p>
     </div>
 
     <div id="ref-examples">

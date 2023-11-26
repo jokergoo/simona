@@ -31,6 +31,9 @@
     <loc>/articles/v7_dag_visualization.html</loc>
   </url>
   <url>
+    <loc>/articles/v8_random.html</loc>
+  </url>
+  <url>
     <loc>/authors.html</loc>
   </url>
   <url>
@@ -50,6 +53,9 @@
   </url>
   <url>
     <loc>/reference/create_ontology_DAG_from_GO_db.html</loc>
+  </url>
+  <url>
+    <loc>/reference/create_ontology_DAG_from_igraph.html</loc>
   </url>
   <url>
     <loc>/reference/dag_all_terms.html</loc>

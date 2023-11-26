@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
       </span>
     </div>
 
@@ -70,6 +70,9 @@
     <li>
       <a href="../articles/v7_dag_visualization.html">Visualize DAGs</a>
     </li>
+    <li>
+      <a href="../articles/v8_random.html">Random DAGs</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -96,7 +99,7 @@
       <h1 data-toc-skip>Information content</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2023-11-14</h4>
+            <h4 data-toc-skip class="date">2023-11-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/vignettes/v4_information_content.Rmd" class="external-link"><code>vignettes/v4_information_content.Rmd</code></a></small>
       <div class="hidden name"><code>v4_information_content.Rmd</code></div>
@@ -234,8 +237,9 @@ D_\mathrm{sp}(a, b) &amp;= \min_{t \in \mathrm{CA}(a, b)} \left( D_\mathrm{sp}(t
 <span><span class="co">##   Terms: GO:0000001, GO:0000002, GO:0000003, GO:0000011, ...</span></span>
 <span><span class="co">##   Max depth: 18 </span></span>
 <span><span class="co">##   Avg number of parents: 2.00</span></span>
-<span><span class="co">##   Aspect ratio: 363.92:1 (based on the longest distance to root)</span></span>
-<span><span class="co">##                 782.78:1 (based on the shortest distance to root)</span></span>
+<span><span class="co">##   Avg number of children: 1.88</span></span>
+<span><span class="co">##   Aspect ratio: 363.92:1 (based on the longest distance from root)</span></span>
+<span><span class="co">##                 782.78:1 (based on the shortest distance from root)</span></span>
 <span><span class="co">##   Relations: is_a, part_of</span></span>
 <span><span class="co">##   Annotations are available.</span></span>
 <span><span class="co">## </span></span>
@@ -480,7 +484,7 @@ term_IC(dag, method = "IC_Wang_2007",
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] simona_0.99.12 knitr_1.44    </span></span>
+<span><span class="co">## [1] simona_1.1.1 knitr_1.44  </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##  [1] KEGGREST_1.40.1         circlize_0.4.15         shape_1.4.6            </span></span>

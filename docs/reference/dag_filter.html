@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
       </span>
     </div>
 
@@ -51,6 +51,9 @@
     </li>
     <li>
       <a href="../articles/v7_dag_visualization.html">Visualize DAGs</a>
+    </li>
+    <li>
+      <a href="../articles/v8_random.html">Random DAGs</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -161,8 +164,9 @@ super root is automatically added.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Terms: a, b, c, ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Max depth: 2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Avg number of parents: 1.50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Aspect ratio: 0.51:1 (based on the longest distance to root)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 2:1 (based on the shortest distance to root)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Avg number of children: 0.50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Aspect ratio: 0.51:1 (based on the longest distance from root)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 2:1 (based on the shortest distance from root)</span>
 <span class="r-in"><span><span class="fu">dag_filter</span><span class="op">(</span><span class="va">dag</span>, root <span class="op">=</span> <span class="st">"b"</span>, leaves <span class="op">=</span> <span class="st">"e"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An ontology_DAG object:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Source: Ontology </span>
@@ -183,8 +187,9 @@ super root is automatically added.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Terms: GO:0000001, GO:0000002, GO:0000003, GO:0000011, ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Max depth: 16 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Avg number of parents: 1.82</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Aspect ratio: 385.17:1 (based on the longest distance to root)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 751.33:1 (based on the shortest distance to root)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Avg number of children: 1.76</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Aspect ratio: 385.17:1 (based on the longest distance from root)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 751.33:1 (based on the shortest distance from root)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Relations: is_a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> With the following columns in the metadata data frame:</span>
