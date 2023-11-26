@@ -6,6 +6,8 @@
 \alias{n_connected_leaves}
 \alias{n_parents}
 \alias{n_children}
+\alias{avg_parents}
+\alias{avg_children}
 \title{Number of parent/child/ancestor/offspring/leaf terms}
 \usage{
 n_offspring(dag, terms = NULL, use_cache = TRUE, include_self = FALSE)
@@ -14,9 +16,13 @@ n_ancestors(dag, terms = NULL, use_cache = TRUE, include_self = FALSE)
 
 n_connected_leaves(dag, terms = NULL, use_cache = TRUE)
 
-n_parents(dag, terms = NULL, use_cache = TRUE)
+n_parents(dag, terms = NULL)
 
-n_children(dag, terms = NULL, use_cache = TRUE)
+n_children(dag, terms = NULL)
+
+avg_parents(dag)
+
+avg_children(dag)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}
@@ -35,6 +41,10 @@ Number of parent/child/ancestor/offspring/leaf terms
 }
 \details{
 For \code{n_connected_leaves()}, leaf nodes have value of 1.
+
+In \code{avg_parents()}, root term is removed.
+
+In \code{avg_children()}, leaf term is removed.
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")

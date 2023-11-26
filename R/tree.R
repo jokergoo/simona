@@ -53,6 +53,8 @@ dag_treelize = function(dag, verbose = simona_opt$verbose) {
 
 	n_terms = dag@n_terms
 
+	tree@n_relations = sum(vapply(tree@lt_children, length, FUN.VALUE = integer(1)))
+
 	tree@leaves = which(vapply(lt_children2, length, FUN.VALUE = integer(1)) == 0)
 
 	tree@term_env = new.env(parent = emptyenv())

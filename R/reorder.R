@@ -1,4 +1,70 @@
 
+
+#' Reorder the DAG
+#' 
+#' @param dag An `ontology_Dag` object.
+#' @param value A vector of numeric values. See the **Details** section.
+#' @param verbose Whether to print messages.
+#' 
+#' @details
+#' There are two ways to set the `value` argument. It can be a vector corresponding
+#' to all terms (in the same order as in [`dag_all_terms()`]) or a vector corresponding
+#' to all leaf terms (in the same order as in [`dag_leaves()`]). If `value` corresponds
+#' to all terms, the score associates to each term is the average value of all its offspring terms.
+#' And if `value` corresponds to all leaf terms, the score for each term is the average of all its
+#' connectable leaves.
+#' 
+#' The reordering is simply applied on each term to reorder its child terms.
+#' 
+#' @return An `ontology_DAG` object.
+#' @export
+#' @examples
+#' parents  = c("a", "a", "b", "b", "c", "d")
+#' children = c("b", "c", "c", "d", "e", "f")
+#' # by default, c and e locate on the left side, d and f locate on the right side
+#' dag = create_ontology_DAG(parents, children)
+#' dag_children(dag, "b")
+#'
+#' # move c and e to the right side of the diagram
+#' dag2 = dag_reorder(dag, value = c(1, 1, 10, 1, 10, 1))
+#' dag_children(dag2, "b")
+#'
+#' # we can also only set values for leaf terms
+#' # there are two leaf terms c and e
+#' # we let v(c) > v(e) to move c to the right side of the diagram
+#' dag3 = dag_reorder(dag, value = c(10, 1))
+#' dag_children(dag3, "b")
+dag_reorder = function(dag, value, verbose = simona_opt$verbose) {
+	n_terms = dag_n_terms(dag)
+	n_leaves = dag_n_leaves(dag)
+
+
+	if(length(value) == n_terms) {
+		v = value
+		k = n_offspring(dag, include_self = TRUE)
+	} else if(length(value) == n_leaves) {
+		v = rep(0, n_terms)
+		v[dag@leaves] = value
+		k = n_connected_leaves(dag)
+	} else {
+		stop("Length of `value` should be the same as the total number of terms or the leaves.")
+	}
+
+	exec_under_message_condition({
+		s <- cpp_offspring_aggregate(dag, v, 2L)
+	}, verbose = verbose)
+
+	s = s/k
+	s[is.na(s)] = -Inf
+	dag@lt_children = cpp_reorder_by_score(dag@lt_children, s)
+
+	dag
+}
+
+
+
+#### will be implemented in the future ####
+
 # theta: in degree
 .calc_force = function(theta, rho) {
 	theta*rho

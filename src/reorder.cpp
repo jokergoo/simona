@@ -6,6 +6,24 @@ using namespace Rcpp;
 #include "traverse.h"
 
 
+// [[Rcpp::export]]
+List cpp_reorder_by_score(List lt_children, NumericVector score) {
+	int n = lt_children.size();
+	List lt_children2 = clone(lt_children);
+
+	for(int i = 0; i < n; i ++) {
+		IntegerVector children = lt_children2[i];
+		if(children.size() > 1) {
+			NumericVector s = score[children - 1];
+			IntegerVector od = _order(s);
+			children = children[od];
+			lt_children2[i] = children;
+		}
+	}
+
+	return lt_children2;
+}
+
 // we have a complete DAG and a reduced tree, the force comes from the additional links in DAG while not in tree,
 // the force on a node is defined as the total force from additional links applied to the sub-tree rooted by the node.
 //

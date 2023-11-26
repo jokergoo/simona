@@ -212,7 +212,7 @@ n_connected_leaves = function(dag, terms = NULL, use_cache = TRUE) {
 
 #' @rdname n_terms
 #' @export
-n_parents = function(dag, terms = NULL, use_cache = TRUE) {
+n_parents = function(dag, terms = NULL) {
 	n = dag@term_env$n_parents
 	names(n) = dag@terms
 
@@ -230,7 +230,7 @@ n_parents = function(dag, terms = NULL, use_cache = TRUE) {
 
 #' @rdname n_terms
 #' @export
-n_children = function(dag, terms = NULL, use_cache = TRUE) {
+n_children = function(dag, terms = NULL) {
 	n = dag@term_env$n_children
 	names(n) = dag@terms
 
@@ -244,6 +244,23 @@ n_children = function(dag, terms = NULL, use_cache = TRUE) {
 	} else {
 		n
 	}
+}
+
+#' @details
+#' In `avg_parents()`, root term is removed.
+#' @rdname n_terms
+#' @export
+avg_parents = function(dag) {
+	mean(n_parents(dag)[-dag_root(dag, in_labels = FALSE)])
+   
+}
+
+#' @details
+#' In `avg_children()`, leaf term is removed.
+#' @rdname n_terms
+#' @export
+avg_children = function(dag) {
+	mean(n_children(dag)[-dag_leaves(dag, in_labels = FALSE)])
 }
 
 dag_ancestors_of_two_groups = function(dag, group1, group2, type = "union", in_labels = FALSE, include_self = FALSE) {

@@ -93,6 +93,10 @@ cpp_calc_n_neighbours <- function(x, range) {
     .Call(`_simona_cpp_calc_n_neighbours`, x, range)
 }
 
+cpp_reorder_by_score <- function(lt_children, score) {
+    .Call(`_simona_cpp_reorder_by_score`, lt_children, score)
+}
+
 cpp_get_force_counterpart <- function(lt_children_dag, lt_parents_dag, lt_children_tree, lt_parents_tree, root) {
     .Call(`_simona_cpp_get_force_counterpart`, lt_children_dag, lt_parents_dag, lt_children_tree, lt_parents_tree, root)
 }
@@ -229,8 +233,8 @@ cpp_offspring_of_a_group <- function(dag, nodes, include_self = FALSE) {
     .Call(`_simona_cpp_offspring_of_a_group`, dag, nodes, include_self)
 }
 
-cpp_offspring_aggregate <- function(dag, value) {
-    .Call(`_simona_cpp_offspring_aggregate`, dag, value)
+cpp_offspring_aggregate <- function(dag, value, method = 1L) {
+    .Call(`_simona_cpp_offspring_aggregate`, dag, value, method)
 }
 
 cpp_is_reachable <- function(dag, nodes, directed = FALSE) {

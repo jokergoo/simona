@@ -1,9 +1,26 @@
 library(testthat)
 
 
+
+
+parents  = c("a", "a", "b", "b", "c", "d")
+children = c("b", "c", "c", "d", "e", "f")
+
+dag = create_ontology_DAG(parents, children)
+
+test_that("test dag_reorder", {
+	dag2 = dag_reorder(dag, value = c(1, 1, 10, 1, 10, 1))
+	expect_equal(dag2@lt_children[[2]], rev(dag@lt_children[[2]]))
+
+	dag3 = dag_reorder(dag, value = c(10, 1))
+	expect_equal(dag3@lt_children[[2]], rev(dag@lt_children[[2]]))
+})
+
+
+
+
 dag = create_ontology_DAG(c("a-h", "a-b", "a-c", "a-d", "b-e", "b-f", "c-g", "h-g", "d-e"))
 tree = dag_treelize(dag)
-
 lt = cpp_get_force_counterpart(dag@lt_children, dag@lt_parents, tree@lt_children, tree@lt_parents, dag@root)
 
 test_that("test cpp_get_force_counterpart", {

@@ -10,8 +10,10 @@ void _add_parents(List lt_parents, int i_node, LogicalVector& l_ancestors) {
 	if(parents.size() > 0) {
 		for(int i = 0; i < parents.size(); i ++) {
 			int i_parent = parents[i] - 1;
-			l_ancestors[i_parent] = true;
-			_add_parents(lt_parents, i_parent, l_ancestors);
+			if(!l_ancestors[i_parent]) {
+				l_ancestors[i_parent] = true;
+				_add_parents(lt_parents, i_parent, l_ancestors);
+			}
 		}
 	}
 }
@@ -32,7 +34,7 @@ void _add_parents_within_background(List lt_parents, int i_node, LogicalVector& 
 		if(parents.size() > 0) {
 			for(int i = 0; i < parents.size(); i ++) {
 				int i_parent = parents[i] - 1;
-				if(l_background[i_parent]) {
+				if(l_background[i_parent] && !l_ancestors[i_parent]) {
 					l_ancestors[i_parent] = true;
 					_add_parents_within_background(lt_parents, i_parent, l_ancestors, l_background);
 				}
@@ -86,8 +88,10 @@ void _add_children(List lt_children, int i_node, LogicalVector& l_offspring) {
 	if(children.size() > 0) {
 		for(int i = 0; i < children.size(); i ++) {
 			int i_child = children[i] - 1;
-			l_offspring[i_child] = true;
-			_add_children(lt_children, i_child, l_offspring);
+			if(!l_offspring[i_child]) {
+				l_offspring[i_child] = true;
+				_add_children(lt_children, i_child, l_offspring);
+			}
 		}
 	}
 }
@@ -106,7 +110,7 @@ void _add_children_within_background(List lt_children, int i_node, LogicalVector
 		if(children.size() > 0) {
 			for(int i = 0; i < children.size(); i ++) {
 				int i_child = children[i] - 1;
-				if(l_background[i_child]) {
+				if(l_background[i_child] && !l_offspring[i_child]) {
 					l_offspring[i_child] = true;
 					_add_children_within_background(lt_children, i_child, l_offspring, l_background);
 				}
@@ -566,7 +570,7 @@ IntegerVector cpp_offspring_of_a_group(S4 dag, IntegerVector nodes, bool include
 }
 
 // [[Rcpp::export]]
-NumericVector cpp_offspring_aggregate(S4 dag, NumericVector value) {
+NumericVector cpp_offspring_aggregate(S4 dag, NumericVector value, int method = 1) {
 	int n = dag.slot("n_terms");
 	List lt_children = dag.slot("lt_children");
 
@@ -581,7 +585,11 @@ NumericVector cpp_offspring_aggregate(S4 dag, NumericVector value) {
 
 		_find_offspring(lt_children, i, l_offspring, true);
 		v2 = value[l_offspring];
-		s[i] = sum(v2)/sum(l_offspring);
+		if(method == 1) {  // mean
+			s[i] = sum(v2)/sum(l_offspring);
+		} else {   // sum
+			s[i] = sum(v2);
+		}
 
 		reset_logical_vector_to_false(l_offspring);
 	}

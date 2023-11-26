@@ -38,7 +38,7 @@ test_that("test partition_by_level", {
 test_that("test partition_by_size", {
 	expect_equal(
 		partition_by_size(dag, size = 3),
-		c(NA, "b", NA, NA, "b", "b", NA, NA, "g", "g", "h", "h", "g", "g", "h", "h")
+		c(NA, "b", NA, NA, "b", "b", "g", "h", "g", "g", "h", "h", "g", "g", "h", "h")
 	)
 
 	expect_equal(

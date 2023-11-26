@@ -1,0 +1,181 @@
+---
+title: "Random DAGs"
+author: "Zuguang Gu ( z.gu@dkfz.de )"
+date: '`r Sys.Date()`'
+output: 
+  html_vignette:
+    css: main.css
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{8. Random DAGs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo = FALSE}
+knitr::knit_hooks$set(pngquant = knitr::hook_pngquant)
+
+knitr::opts_chunk$set(
+  message = FALSE,
+  fig.width = 7,
+  fig.height = 6,
+  dev = "ragg_png",
+  fig.align = "center",
+  pngquant = "--speed=10 --quality=30"
+)
+```
+
+**simona** provides functions for generating random DAGs. A random tree
+is first generated, later more links can be randomly added to form a more general DAG.
+
+## Random trees
+
+`dag_random_tree()` generates a random tree. By default it generates
+a binary tree where all leaf terms have depth = 9.
+
+```{r}
+library(simona)
+set.seed(123)
+tree1 = dag_random_tree()
+tree1
+dag_circular_viz(tree1)
+```
+
+Strictly speaking, `tree1` is not random. The tree is growing from the root.
+In `dag_random_tree()`, there are several arguments that can be used for
+generating random trees.
+
+- `n_children`: Number of child terms. It can be a single value where each term will
+  the same number of child terms. The value can also be a range, then the number of
+  child terms will be randomly picked in that range.
+- `p_stop`: A branch can stop growing based on this probability. On a certain step
+   of the tree growing, let's denote the set of leaf terms as `L`, then, in the next round,
+   `floor(length(L)*p_stop)` leaf terms will stop growing, while the remaining leaf terms will
+   continue to grow. If a leaf term continues to grow, it will be linked to `n_children` child
+   terms if `n_children` is a single value, or pick a number from the range of `[n_children[1], n_children[2]]`.
+
+The tree growing stops when the number of total terms exceeds `max`.
+
+So the default call of `dag_random_tree()` is identical to:
+
+```{r, eval = FALSE}
+dag_random_tree(n_children = 2, p_stop = 0, max = 2^10 - 1)
+```
+
+We can these arguments to some other values, such as:
+
+```{r}
+tree2 = dag_random_tree(n_children = c(2, 6), p_stop = 0.5, max = 2000)
+tree2
+dag_circular_viz(tree2)
+```
+
+## Random DAGs
+
+A more general random DAG is generated based on the random tree. Taking `tree1` which is already generated,
+the function `dag_add_random_children()` adds more random children to terms in `tree1`.
+
+```{r}
+dag1 = dag_add_random_children(tree1)
+dag1
+dag_circular_viz(dag1)
+```
+
+There are three arguments that controls new child terms. We first introduce two of them.
+
+- `p_add`: For each term, the probability that it is selected to add new child terms.
+- `new_children`: Once a term is selected, the number of new children it is linked to.
+
+Let's try to generate a more dense DAG:
+
+```{r}
+dag2 = dag_add_random_children(tree1, p_add = 0.6, new_children = c(2, 8))
+dag2
+dag_circular_viz(dag2)
+```
+
+By default, once a term `t` is going to add more child terms, it only selects new child terms from
+the terms that are:
+
+1. lower than `t`, i.e. with depths less than t's depth in the DAG.
+2. not the child terms that `t` already has.
+
+Then in this subset of candidate child terms, new child terms is randomly picked according to the numbers set in `new_children`.
+
+
+The way to randomly pick new child terms can be implemented as a self-defined function. This function
+accepts two arguments, the `dag` object and an integer index of "current term". In the following example,
+we implemented a function which only pick new child terms from term `t`'s offspring terms.
+
+```{r}
+add_new_children_from_offspring = function(dag, i, new_children = c(1, 8)) {
+
+    l = rep(FALSE, dag_n_terms(dag))
+    offspring = dag_offspring(dag, i, in_labels = FALSE)
+    if(length(offspring)) {
+        l[offspring] = TRUE
+
+        l[dag_children(dag, i, in_labels = FALSE)] = FALSE
+    }
+
+    candidates = which(l)
+    n_candidates = length(candidates)
+    if(n_candidates) {
+        if(n_candidates < new_children[1]) {
+            integer(0)
+        } else {
+            sample(candidates, min(n_candidates, sample(seq(new_children[1], new_children[2]), 1)))
+        }
+    } else {
+        integer(0)
+    }  
+}
+
+dag3 = dag_add_random_children(tree1, p_add = 0.6,
+    add_random_children_fun = add_new_children_from_offspring)
+dag3
+dag_circular_viz(dag3)
+```
+
+
+## Session info
+
+```{r}
+sessionInfo()
+```
+
+
+<script src="jquery.min.js"></script>
+<script src="jquery.sticky.js"></script>
+<script>
+$(document).ready(function(){
+    $("#TOC").sticky({
+        topSpacing: 0,
+        zIndex:1000    
+    })
+    $("#TOC").on("sticky-start", function() {
+
+        $("<p style='font-size:1.2em; padding-left:4px;'><a id='TOC-click'>Table of Content</a></p>").insertBefore($("#TOC ul:first-child"));
+        $("#TOC-click").hover(function() {
+            $(this).css("color", "#0033dd").css("cursor", "pointer");
+            $("#TOC").children().first().next().show();
+            $("#TOC").hover(function() {
+                $(this).children().first().next().show();
+            }, function() {
+                $(this).children().first().next().hide();
+                $("body").off("hover", "#TOC");
+            })
+        }, function() {
+            $(this).css("color", "#0033dd");
+        })
+        $("#TOC").children().first().next().hide();
+
+    })
+    $("#TOC").on("sticky-end", function() {
+        $("#TOC").children().first().remove();
+        $("#TOC").children().first().show();
+    })
+});
+</script>
+
+

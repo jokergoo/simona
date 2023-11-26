@@ -7,6 +7,7 @@
 #' 
 #' @slot terms A character vector of length `n` of all term names. Other slots that store term-level information use the integer indices of terms.
 #' @slot n_terms An integer scalar of the total number of terms in the DAG.
+#' @slot n_relations An integer scalar of the total number of relations in the DAG.
 #' @slot lt_parents A list of length `n`. Each element in the list is an integer index vector of the parent terms of the i^th term.
 #' @slot lt_children A list of length `n`. Each element in the list is an integer index vector of the child terms of the i^th term.
 #' @slot lt_children_relations A list of length `n`. Each element is a vector of the semantic relations between the i^th term and its child terms, e.g. a child "is_a" parent.
@@ -36,6 +37,7 @@
 ontology_DAG = setClass("ontology_DAG",
 	slots = c("terms" = "character",
 		      "n_terms" = "integer",
+		      "n_relations" = "integer",
 		      "lt_parents" = "list",
 		      "lt_children" = "list",
 		      "lt_children_relations" = "list",
@@ -214,6 +216,7 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 	dag = ontology_DAG(
 		terms = terms,
 		n_terms = length(terms),
+		n_relations = sum(vapply(lt_children, length, FUN.VALUE = integer(1))),
 		lt_parents = lt_parents,
 		lt_children = lt_children,
 		lt_children_relations = lt_relations, 
@@ -349,7 +352,7 @@ setMethod("show",
 	definition = function(object) {
 
 		n_terms = object@n_terms
-		n_relations = sum(vapply(object@lt_children, length, FUN.VALUE = integer(1)))
+		n_relations = object@n_relations
 
 		cat("An ontology_DAG object:\n")
 		cat("  Source:", object@source, "\n")
@@ -374,8 +377,9 @@ setMethod("show",
 			cat("  Aspect ratio: ", object@aspect_ratio[1], ":1\n", sep = "")
 		} else {
 			cat("  Avg number of parents: ", sprintf("%.2f", mean(n_parents(object)[-dag_root(object, in_labels = FALSE)])), "\n", sep = "")
-			cat("  Aspect ratio: ", object@aspect_ratio[1], ":1 (based on the longest distance to root)\n", sep = "")
-			cat("                ", object@aspect_ratio[2], ":1 (based on the shortest distance to root)\n", sep = "")
+			cat("  Avg number of children: ", sprintf("%.2f", mean(n_parents(object)[-dag_leaves(object, in_labels = FALSE)])), "\n", sep = "")
+			cat("  Aspect ratio: ", object@aspect_ratio[1], ":1 (based on the longest distance from root)\n", sep = "")
+			cat("                ", object@aspect_ratio[2], ":1 (based on the shortest distance from root)\n", sep = "")
 		}
 
 		if(length(object@lt_children_relations)) {
@@ -525,6 +529,18 @@ dag_n_terms = function(dag) {
 	dag@n_terms
 }
 
+#' @rdname dag_all_terms
+#' @export
+dag_n_relations = function(dag) {
+	sum(sapply(dag@lt_children, length))
+}
+
+#' @rdname dag_all_terms
+#' @export
+dag_n_leaves = function(dag) {
+	length(dag@leaves)
+}
+
 #' Root or leaves of the DAG
 #' 
 #' @param dag An `ontology_DAG` object.
@@ -672,4 +688,19 @@ dag_namespaces = function(dag) {
 	unique(df$namespace)
 }
 
+#' Create the ontology_DAG object from the igraph object
+#' 
+#' @param g An [`igraph::igraph`] object.
+#' @param relations A vector of relation types. The length of the vector should be the same as the number of edges in `g`.
+#' @param verbose Whether to print messages.
+#' 
+#' @return An `ontology_DAG` object.
+#' @export
+#' @import igraph
+create_ontology_DAG_from_igraph = function(g, relations = NULL, verbose = simona_opt$verbose) {
+	edges = get.edgelist(g)
+
+	create_ontology_DAG(as.character(edges[, 1]), as.character(edges[, 2]), relations = relations, 
+		source = "igraph object", verbose = verbose)
+}
 

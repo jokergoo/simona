@@ -24,6 +24,7 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 NumericMatrix cpp_max_ancestor_v(S4 dag, IntegerVector nodes, NumericVector v) {
 	List lt_children = dag.slot("lt_children");
+	int root = dag.slot("root");
 	
 	int n = lt_children.size();
 	int m = nodes.size();
@@ -51,8 +52,11 @@ NumericMatrix cpp_max_ancestor_v(S4 dag, IntegerVector nodes, NumericVector v) {
 			message("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", false);
 			message("going through " + std::to_string(k) + " / " + std::to_string(all_ancestors.size()) + " ancestors ...", false);
 		}
-
-		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
+		if(all_ancestors[k] == root) {
+			l_offspring = clone(l_all_ancestors);
+		} else {
+			_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
+		}
 
 		IntegerVector offspring = _which(l_offspring);
 		reset_logical_vector_to_false(l_offspring);
@@ -63,6 +67,8 @@ NumericMatrix cpp_max_ancestor_v(S4 dag, IntegerVector nodes, NumericVector v) {
 			continue;
 		}
 		offspring = offspring + 1;
+
+		// here can be optimized by first intersect offspring and nodes
 
 		if(noff > 1) {
 			for(int i = 0; i < noff - 1; i ++) {
@@ -96,6 +102,7 @@ IntegerMatrix cpp_max_ancestor_id(S4 dag, IntegerVector nodes, NumericVector v, 
 	// this function is very similar as `cpp_max_ancestor_v`, except here we capture the node that has the maximal value
 	// we also need to consider if there are multiple node with the maximal value, we take the one with the max distance to term a and b.
 	List lt_children = dag.slot("lt_children");
+	int root = dag.slot("root");
 	
 	int n = lt_children.size();
 	int m = nodes.size();
@@ -126,7 +133,11 @@ IntegerMatrix cpp_max_ancestor_id(S4 dag, IntegerVector nodes, NumericVector v, 
 			message("going through " + std::to_string(k) + " / " + std::to_string(all_ancestors.size()) + " ancestors ...", false);
 		}
 
-		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
+		if(all_ancestors[k] == root) {
+			l_offspring = clone(l_all_ancestors);
+		} else {
+			_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
+		}
 
 		IntegerVector offspring = _which(l_offspring);
 		reset_logical_vector_to_false(l_offspring);
@@ -197,6 +208,7 @@ IntegerMatrix cpp_max_ancestor_id(S4 dag, IntegerVector nodes, NumericVector v, 
 NumericMatrix cpp_max_ancestor_path_sum_value(S4 dag, IntegerVector nodes, NumericVector v, NumericVector addv, bool use_max_dist = true) {
 
 	List lt_children = dag.slot("lt_children");
+	int root = dag.slot("root");
 	
 	int n = lt_children.size();
 	int m = nodes.size();
@@ -227,7 +239,11 @@ NumericMatrix cpp_max_ancestor_path_sum_value(S4 dag, IntegerVector nodes, Numer
 			message("going through " + std::to_string(k) + " / " + std::to_string(all_ancestors.size()) + " ancestors ...", false);
 		}
 
-		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
+		if(all_ancestors[k] == root) {
+			l_offspring = clone(l_all_ancestors);
+		} else {
+			_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
+		}
 
 		IntegerVector offspring = _which(l_offspring);
 		reset_logical_vector_to_false(l_offspring);
@@ -303,6 +319,7 @@ const int USE_SHORTEST_DISTANCE = 2;
 // [[Rcpp::export]]
 List cpp_longest_distances_from_LCA(S4 dag, IntegerVector nodes) {
 	List lt_children = dag.slot("lt_children");
+	int root = dag.slot("root");
 	
 	int n = lt_children.size();
 	int m = nodes.size();
@@ -341,7 +358,11 @@ List cpp_longest_distances_from_LCA(S4 dag, IntegerVector nodes) {
 			message("going through " + std::to_string(k) + " / " + std::to_string(all_ancestors.size()) + " ancestors ...", false);
 		}
 
-		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
+		if(all_ancestors[k] == root) {
+			l_offspring = clone(l_all_ancestors);
+		} else {
+			_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
+		}
 
 		IntegerVector offspring = _which(l_offspring);
 		reset_logical_vector_to_false(l_offspring);
@@ -398,6 +419,7 @@ List cpp_longest_distances_from_LCA(S4 dag, IntegerVector nodes) {
 
 IntegerMatrix cpp_distances_directed(S4 dag, IntegerVector nodes, int type = 1) {
 	List lt_children = dag.slot("lt_children");
+	int root = dag.slot("root");
 	
 	int n = lt_children.size();
 	int m = nodes.size();
@@ -426,7 +448,11 @@ IntegerMatrix cpp_distances_directed(S4 dag, IntegerVector nodes, int type = 1) 
 			message("going through " + std::to_string(k) + " / " + std::to_string(m) + " nodes ...", false);
 		}
 
-		_find_offspring_within_background(lt_children, nodes[k]-1, l_offspring, l_all_ancestors, true);
+		if(all_ancestors[k] == root) {
+			l_offspring = clone(l_all_ancestors);
+		} else {
+			_find_offspring_within_background(lt_children, nodes[k]-1, l_offspring, l_all_ancestors, true);
+		}
 
 		IntegerVector offspring = _which(l_offspring);
 		reset_logical_vector_to_false(l_offspring);
@@ -476,6 +502,7 @@ IntegerMatrix cpp_shortest_distances_directed(S4 dag, IntegerVector nodes) {
 // [[Rcpp::export]]
 IntegerMatrix cpp_nearest_common_ancestor(S4 dag, IntegerVector nodes) {
 	List lt_children = dag.slot("lt_children");
+	int root = dag.slot("root");
 	
 	int n = lt_children.size();
 	int m = nodes.size();
@@ -509,7 +536,11 @@ IntegerMatrix cpp_nearest_common_ancestor(S4 dag, IntegerVector nodes) {
 			message("going through " + std::to_string(k) + " / " + std::to_string(all_ancestors.size()) + " ancestors ...", false);
 		}
 
-		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
+		if(all_ancestors[k] == root) {
+			l_offspring = clone(l_all_ancestors);
+		} else {
+			_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
+		}
 
 		IntegerVector offspring = _which(l_offspring);
 		reset_logical_vector_to_false(l_offspring);
@@ -560,6 +591,7 @@ IntegerMatrix cpp_nearest_common_ancestor(S4 dag, IntegerVector nodes) {
 // [[Rcpp::export]]
 IntegerMatrix cpp_shortest_distances_via_NCA(S4 dag, IntegerVector nodes) {
 	List lt_children = dag.slot("lt_children");
+	int root = dag.slot("root");
 	
 	int n = lt_children.size();
 	int m = nodes.size();
@@ -591,7 +623,11 @@ IntegerMatrix cpp_shortest_distances_via_NCA(S4 dag, IntegerVector nodes) {
 			message("going through " + std::to_string(k) + " / " + std::to_string(all_ancestors.size()) + " ancestors ...", false);
 		}
 
-		_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
+		if(all_ancestors[k] == root) {
+			l_offspring = clone(l_all_ancestors);
+		} else {
+			_find_offspring_within_background(lt_children, all_ancestors[k]-1, l_offspring, l_all_ancestors, true);
+		}
 
 		IntegerVector offspring = _which(l_offspring);
 		reset_logical_vector_to_false(l_offspring);

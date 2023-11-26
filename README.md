@@ -17,10 +17,20 @@ Bioinformatics 2017"](https://doi.org/10.1093/bib/bbw067).
 
 ## Install
 
+**simona** is available on [Bioconductor](https://bioconductor.org/packages/release/bioc/html/simona.html).
+It can be installed by:
+
+```r
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("simona")
+```
+
+Or the devel version:
+
 ```r
 devtools::install_github("jokergoo/simona")
-# or
-BiocManager::install("simona")
 ```
 
 ## Usage
@@ -40,8 +50,8 @@ An ontology_DAG object:
   Root: a 
   Terms: a, b, c, d, ...
   Max depth: 3 
-  Aspect ratio: 0.67:1 (based on the longest distance to root)
-                0.68:1 (based on the shortest distance to root)
+  Aspect ratio: 0.67:1 (based on the longest distance from root)
+                0.68:1 (based on the shortest distance from root)
 ```
 
 From GO:
@@ -58,8 +68,8 @@ An ontology_DAG object:
   Root: GO:0008150
   Terms: GO:0000001, GO:0000002, GO:0000003, GO:0000011, ...
   Max depth: 18
-  Aspect ratio: 342.43:1 (based on the longest distance to root)
-                780.22:1 (based on the shortest distance to root)
+  Aspect ratio: 342.43:1 (based on the longest distance from root)
+                780.22:1 (based on the shortest distance from root)
   Relations: is_a, part_of
   Annotations are available.
 
@@ -81,8 +91,8 @@ An ontology_DAG object:
   Root: _all_ 
   Terms: PO:0000001, PO:0000002, PO:0000003, PO:0000004, ...
   Max depth: 13 
-  Aspect ratio: 25.08:1 (based on the longest distance to root)
-                39.6:1 (based on the shortest distance to root)
+  Aspect ratio: 25.08:1 (based on the longest distance from root)
+                39.6:1 (based on the shortest distance from root)
   Relations: is_a, part_of
 
 With the following columns in the metadata data frame:

@@ -44,7 +44,7 @@ dag_graphviz(dag_small)
 The argument `node_param` can be set to a list of graphical parameters.
 
 ```{r}
-color = sample(colors(), 6)
+color = 2:7
 shape = c("polygon", "box", "oval", "egg", "diamond", "parallelogram")
 dag_graphviz(dag_small, node_param = list(color = color, shape = shape))
 ```

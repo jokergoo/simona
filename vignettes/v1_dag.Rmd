@@ -134,6 +134,42 @@ dag_offspring(dag, "b", include_self = TRUE)
 dag_ancestors(dag, "e", include_self = TRUE)
 ```
 
+## Reorder
+
+DAG can be reordered by adjusting the order of child terms under every term.
+There are two ways to reorder the DAG. 1. Reorder the DAG by a vector of
+numeric values that correspond to every term in the DAG; 2. Reorder by
+a vector of numeric values that correspond to every leaf term in the DAG.
+
+The two ways are very similar. If the vector corresponding to the complete set
+of terms is provided, each term in the DAG is associated to a score which is
+the mean value of all its offspring terms (including itself) in the DAG; while
+if the a vector of leaf-level value is provided, each term in the DAG is
+associated to a score which is the mean of all its connectable leaf terms in
+the DAG.
+
+Taking `dag` as an example, term `c` is on the left of term `d`
+
+```{r}
+dag_children(dag, "b")
+```
+
+First, a numeric vector for all terms in the DAG is provides to reorder `dag`.
+Note that the order of `value` should correspond to terms in `dag_all_terms(dag)`.
+
+```{r}
+dag2 = dag_reorder(dag, value = c(1, 1, 10, 1, 10, 1))
+dag_children(dag2, "b")
+```
+
+Or a numeric vector for all leaf terms.
+Note that the order of `value` here should correspond to terms in `dag_leaves(dag)`.
+
+```{r}
+dag3 = dag_reorder(dag, value = c(10, 1))
+dag_children(dag3, "b")
+```
+
 ## Distance
 
 The depth of a term is defined as the longest distance from root and is

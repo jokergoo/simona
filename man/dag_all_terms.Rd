@@ -3,11 +3,17 @@
 \name{dag_all_terms}
 \alias{dag_all_terms}
 \alias{dag_n_terms}
+\alias{dag_n_relations}
+\alias{dag_n_leaves}
 \title{Names of all terms}
 \usage{
 dag_all_terms(dag)
 
 dag_n_terms(dag)
+
+dag_n_relations(dag)
+
+dag_n_leaves(dag)
 }
 \arguments{
 \item{dag}{An \code{ontology_DAG} object.}

@@ -18,6 +18,8 @@ This class defines the DAG structure of an ontology.
 
 \item{\code{n_terms}}{An integer scalar of the total number of terms in the DAG.}
 
+\item{\code{n_relations}}{An integer scalar of the total number of relations in the DAG.}
+
 \item{\code{lt_parents}}{A list of length \code{n}. Each element in the list is an integer index vector of the parent terms of the i^th term.}
 
 \item{\code{lt_children}}{A list of length \code{n}. Each element in the list is an integer index vector of the child terms of the i^th term.}
