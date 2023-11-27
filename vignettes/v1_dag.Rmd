@@ -170,10 +170,14 @@ dag3 = dag_reorder(dag, value = c(10, 1))
 dag_children(dag3, "b")
 ```
 
-`dag_permutate_children()` randomly permute child terms under every term.
+`dag_permutate_children()` randomly permutes child terms under every term.
 
-```{r, eval = FALSE}
-dag4 = dag_permutate_children(dag)
+```{r}
+dag2 = create_ontology_DAG(c("a-b", "a-c", "a-d", "a-e", "a-f"))
+dag3 = dag_permutate_children(dag2)
+dag_children(dag3, "a")
+dag3 = dag_permutate_children(dag2)
+dag_children(dag3, "a")
 ```
 
 ## Distance

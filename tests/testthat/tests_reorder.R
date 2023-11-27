@@ -17,7 +17,10 @@ test_that("test dag_reorder", {
 })
 
 
-
+dag = create_ontology_DAG(c("a-b", "a-c", "a-d", "a-e", "a-f", "b-g", "b-h", "b-i", "b-j"))
+dag2 = dag_permutate_children(dag)
+dag_children(dag2, "a")
+dag_children(dag2, "b")
 
 dag = create_ontology_DAG(c("a-h", "a-b", "a-c", "a-d", "b-e", "b-f", "c-g", "h-g", "d-e"))
 tree = dag_treelize(dag)

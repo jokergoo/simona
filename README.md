@@ -3,13 +3,11 @@
 
 ## Introduction
 
-The package implements a rich set of methods for semantic similarity analysis
-on bio-ontologies. They include methods for information contents,
-similarities between two terms as well as similarities between two groups
-of terms. It also implements visualizations on DAGs.
+This package implements infrastructures for ontology analysis by offering 
+efficient data structures, fast ontology traversal methods, and elegant visualizations. 
+It provides a robust toolbox supporting over 70 methods for semantic similarity analysis.
 
-
-The methods of information content implemented in **simona** are mainly from
+Most methods implemented in **simona** are from
 the [supplementary file](https://academic.oup.com/bib/article/18/5/886/2562801#supplementary-data)
 of the paper ["Mazandu et al., Gene Ontology semantic similarity tools: survey
 on features and challenges for biological knowledge discovery. Briefings in
@@ -34,6 +32,8 @@ devtools::install_github("jokergoo/simona")
 ```
 
 ## Usage
+
+Creat an ontology object:
 
 ```r
 library(simona)
@@ -146,7 +146,7 @@ The following group similarity methods are provided:
 [27] "GroupSim_Overlap"                 "GroupSim_Kappa" 
 ```
 
-There is also a visualization on the complete huge DAG:
+There is also a visualization on the complete DAG:
 
 ```r
 sig_go_ids = readRDS(system.file("extdata", "sig_go_ids.rds", package = "simona"))
