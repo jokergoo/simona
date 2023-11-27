@@ -170,6 +170,12 @@ dag3 = dag_reorder(dag, value = c(10, 1))
 dag_children(dag3, "b")
 ```
 
+`dag_permutate_children()` randomly permute child terms under every term.
+
+```{r, eval = FALSE}
+dag4 = dag_permutate_children(dag)
+```
+
 ## Distance
 
 The depth of a term is defined as the longest distance from root and is

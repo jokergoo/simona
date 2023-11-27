@@ -315,6 +315,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_permutate_children
+List cpp_permutate_children(List lt_children);
+RcppExport SEXP _simona_cpp_permutate_children(SEXP lt_childrenSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type lt_children(lt_childrenSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_permutate_children(lt_children));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_get_force_counterpart
 List cpp_get_force_counterpart(List lt_children_dag, List lt_parents_dag, List lt_children_tree, List lt_parents_tree, int root);
 RcppExport SEXP _simona_cpp_get_force_counterpart(SEXP lt_children_dagSEXP, SEXP lt_parents_dagSEXP, SEXP lt_children_treeSEXP, SEXP lt_parents_treeSEXP, SEXP rootSEXP) {
@@ -966,6 +977,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_simona_cpp_node_pos_in_tree", (DL_FUNC) &_simona_cpp_node_pos_in_tree, 4},
     {"_simona_cpp_calc_n_neighbours", (DL_FUNC) &_simona_cpp_calc_n_neighbours, 2},
     {"_simona_cpp_reorder_by_score", (DL_FUNC) &_simona_cpp_reorder_by_score, 2},
+    {"_simona_cpp_permutate_children", (DL_FUNC) &_simona_cpp_permutate_children, 1},
     {"_simona_cpp_get_force_counterpart", (DL_FUNC) &_simona_cpp_get_force_counterpart, 5},
     {"_simona_cpp_get_force", (DL_FUNC) &_simona_cpp_get_force, 4},
     {"_simona_move_index", (DL_FUNC) &_simona_move_index, 4},

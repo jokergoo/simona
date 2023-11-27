@@ -97,6 +97,10 @@ cpp_reorder_by_score <- function(lt_children, score) {
     .Call(`_simona_cpp_reorder_by_score`, lt_children, score)
 }
 
+cpp_permutate_children <- function(lt_children) {
+    .Call(`_simona_cpp_permutate_children`, lt_children)
+}
+
 cpp_get_force_counterpart <- function(lt_children_dag, lt_parents_dag, lt_children_tree, lt_parents_tree, root) {
     .Call(`_simona_cpp_get_force_counterpart`, lt_children_dag, lt_parents_dag, lt_children_tree, lt_parents_tree, root)
 }

@@ -24,6 +24,21 @@ List cpp_reorder_by_score(List lt_children, NumericVector score) {
 	return lt_children2;
 }
 
+// [[Rcpp::export]]
+List cpp_permutate_children(List lt_children) {
+	int n = lt_children.size();
+	List lt_children2 = clone(lt_children);
+
+	for(int i = 0; i < n; i ++) {
+		IntegerVector children = lt_children2[i];
+		if(children.size() > 1) {
+			lt_children2[i] = sample(children, children.size());
+		}
+	}
+
+	return lt_children2;
+}
+
 // we have a complete DAG and a reduced tree, the force comes from the additional links in DAG while not in tree,
 // the force on a node is defined as the total force from additional links applied to the sub-tree rooted by the node.
 //

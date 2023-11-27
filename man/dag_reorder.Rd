@@ -2,9 +2,12 @@
 % Please edit documentation in R/reorder.R
 \name{dag_reorder}
 \alias{dag_reorder}
+\alias{dag_permutate_children}
 \title{Reorder the DAG}
 \usage{
 dag_reorder(dag, value, verbose = simona_opt$verbose)
+
+dag_permutate_children(dag, verbose = simona_opt$verbose)
 }
 \arguments{
 \item{dag}{An \code{ontology_Dag} object.}
@@ -20,7 +23,7 @@ An \code{ontology_DAG} object.
 Reorder the DAG
 }
 \details{
-There are two ways to set the \code{value} argument. It can be a vector corresponding
+In \code{dag_reorder()}, there are two ways to set the \code{value} argument. It can be a vector corresponding
 to all terms (in the same order as in \code{\link[=dag_all_terms]{dag_all_terms()}}) or a vector corresponding
 to all leaf terms (in the same order as in \code{\link[=dag_leaves]{dag_leaves()}}). If \code{value} corresponds
 to all terms, the score associates to each term is the average value of all its offspring terms.
@@ -28,6 +31,8 @@ And if \code{value} corresponds to all leaf terms, the score for each term is th
 connectable leaves.
 
 The reordering is simply applied on each term to reorder its child terms.
+
+\code{dag_permutate_children()} randomly permute child terms under a term.
 }
 \examples{
 parents  = c("a", "a", "b", "b", "c", "d")

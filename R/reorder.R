@@ -7,7 +7,7 @@
 #' @param verbose Whether to print messages.
 #' 
 #' @details
-#' There are two ways to set the `value` argument. It can be a vector corresponding
+#' In `dag_reorder()`, there are two ways to set the `value` argument. It can be a vector corresponding
 #' to all terms (in the same order as in [`dag_all_terms()`]) or a vector corresponding
 #' to all leaf terms (in the same order as in [`dag_leaves()`]). If `value` corresponds
 #' to all terms, the score associates to each term is the average value of all its offspring terms.
@@ -61,6 +61,16 @@ dag_reorder = function(dag, value, verbose = simona_opt$verbose) {
 	dag
 }
 
+#' @rdname dag_reorder
+#' 
+#' @details
+#' `dag_permutate_children()` randomly permute child terms under a term.
+#' @export
+dag_permutate_children = function(dag, verbose = simona_opt$verbose) {
+	dag@lt_children = cpp_permutate_children(dag@lt_children)
+
+	dag
+}
 
 
 #### will be implemented in the future ####
