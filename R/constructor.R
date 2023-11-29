@@ -383,8 +383,9 @@ setMethod("show",
 		}
 
 		if(length(object@lt_children_relations)) {
-			txt = strwrap(paste(attr(object@lt_children_relations, "levels"), collapse = ", "), width = 60)
-			txt[1] = paste0("  Relations: ", txt[1])
+			rel_levels = attr(object@lt_children_relations, "levels")
+			txt = strwrap(paste(rel_levels, collapse = ", "), width = 60)
+			txt[1] = paste0( "  Relations: ", txt[1])
 			txt[-1] = paste0("             ", txt[-1])
 			cat(txt, sep = "\n")
 
@@ -396,7 +397,10 @@ setMethod("show",
 		}
 
 		if(length(object@annotation$list)) {
-			cat("  Annotations are available.\n")
+			txt = strwrap(paste(c(object@annotation$names[seq_len(min(4, length(object@annotation$names)))], "..."), collapse = ", "), width = 60)
+			txt[1] = paste0( "  Annotations: ", txt[1])
+			txt[-1] = paste0("               ", txt[-1])
+			cat(txt, sep = "\n")
 		}
 
 		if(!is.null(object@elementMetadata)) {
