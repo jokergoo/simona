@@ -10,6 +10,36 @@
     <loc>/articles/index.html</loc>
   </url>
   <url>
+    <loc>/articles/v01_dag.html</loc>
+  </url>
+  <url>
+    <loc>/articles/v02_GO.html</loc>
+  </url>
+  <url>
+    <loc>/articles/v03_import.html</loc>
+  </url>
+  <url>
+    <loc>/articles/v04_information_content.html</loc>
+  </url>
+  <url>
+    <loc>/articles/v05_term_similarity.html</loc>
+  </url>
+  <url>
+    <loc>/articles/v06_group_similarity.html</loc>
+  </url>
+  <url>
+    <loc>/articles/v07_dag_visualization.html</loc>
+  </url>
+  <url>
+    <loc>/articles/v08_random.html</loc>
+  </url>
+  <url>
+    <loc>/articles/v09_shiny.html</loc>
+  </url>
+  <url>
+    <loc>/articles/v10_enrichment.html</loc>
+  </url>
+  <url>
     <loc>/articles/v1_dag.html</loc>
   </url>
   <url>
@@ -73,6 +103,15 @@
     <loc>/reference/dag_enrich_items.html</loc>
   </url>
   <url>
+    <loc>/reference/dag_enrich_on_items.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dag_enrich_on_offsprings.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dag_enrich_on_offsprings_by_permutation.html</loc>
+  </url>
+  <url>
     <loc>/reference/dag_enrich_terms.html</loc>
   </url>
   <url>
@@ -80,6 +119,9 @@
   </url>
   <url>
     <loc>/reference/dag_filter.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dag_has_terms.html</loc>
   </url>
   <url>
     <loc>/reference/dag_longest_dist_to_offspring.html</loc>
@@ -92,6 +134,9 @@
   </url>
   <url>
     <loc>/reference/dag_root.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dag_shiny.html</loc>
   </url>
   <url>
     <loc>/reference/dag_terms.html</loc>
@@ -131,6 +176,9 @@
   </url>
   <url>
     <loc>/reference/n_terms.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ontology.html</loc>
   </url>
   <url>
     <loc>/reference/ontology_DAG-class.html</loc>

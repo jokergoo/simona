@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.3</span>
       </span>
     </div>
 
@@ -32,28 +32,34 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
+      <a href="../articles/v01_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
-      <a href="../articles/v2_GO.html">Gene Ontology</a>
+      <a href="../articles/v02_GO.html">Gene Ontology</a>
     </li>
     <li>
-      <a href="../articles/v3_import.html">Import ontology files</a>
+      <a href="../articles/v03_import.html">Import ontology files</a>
     </li>
     <li>
-      <a href="../articles/v4_information_content.html">Information content</a>
+      <a href="../articles/v04_information_content.html">Information content</a>
     </li>
     <li>
-      <a href="../articles/v5_term_similarity.html">Term similarity</a>
+      <a href="../articles/v05_term_similarity.html">Term similarity</a>
     </li>
     <li>
-      <a href="../articles/v6_group_similarity.html">Similarity between two groups of terms</a>
+      <a href="../articles/v06_group_similarity.html">Similarity between two groups of terms</a>
     </li>
     <li>
-      <a href="../articles/v7_dag_visualization.html">Visualize DAGs</a>
+      <a href="../articles/v07_dag_visualization.html">Visualize DAGs</a>
     </li>
     <li>
-      <a href="../articles/v8_random.html">Random DAGs</a>
+      <a href="../articles/v08_random.html">Random DAGs</a>
+    </li>
+    <li>
+      <a href="../articles/v09_shiny.html">Shiny app</a>
+    </li>
+    <li>
+      <a href="../articles/v10_enrichment.html">Functional enrichment</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -119,21 +125,25 @@
         </td>
         <td><p>Distinct ancestors of a list of terms</p></td>
       </tr><tr><td>
-          <p><code><a href="dag_enrich_items.html">dag_enrich_items()</a></code> </p>
+          <p><code><a href="dag_enrich_on_items.html">dag_enrich_on_items()</a></code> <code><a href="dag_enrich_on_items.html">dag_enrich_on_genes()</a></code> </p>
         </td>
         <td><p>Enrichment analysis on the number of annotated items</p></td>
       </tr><tr><td>
-          <p><code><a href="dag_enrich_terms.html">dag_enrich_terms()</a></code> </p>
+          <p><code><a href="dag_enrich_on_offsprings.html">dag_enrich_on_offsprings()</a></code> </p>
         </td>
         <td><p>Enrichment analysis on offspring terms</p></td>
       </tr><tr><td>
-          <p><code><a href="dag_enrich_terms_by_permutation.html">dag_enrich_terms_by_permutation()</a></code> </p>
+          <p><code><a href="dag_enrich_on_offsprings_by_permutation.html">dag_enrich_on_offsprings_by_permutation()</a></code> </p>
         </td>
         <td><p>Enrichment analysis on offspring terms by permutation test</p></td>
       </tr><tr><td>
           <p><code><a href="dag_filter.html">dag_filter()</a></code> </p>
         </td>
         <td><p>Filter the DAG</p></td>
+      </tr><tr><td>
+          <p><code><a href="dag_has_terms.html">dag_has_terms()</a></code> </p>
+        </td>
+        <td><p>Whether the terms exist in the DAG</p></td>
       </tr><tr><td>
           <p><code><a href="dag_longest_dist_to_offspring.html">dag_longest_dist_to_offspring()</a></code> <code><a href="dag_longest_dist_to_offspring.html">dag_shortest_dist_to_offspring()</a></code> <code><a href="dag_longest_dist_to_offspring.html">dag_longest_dist_from_ancestors()</a></code> <code><a href="dag_longest_dist_to_offspring.html">dag_shortest_dist_from_ancestors()</a></code> </p>
         </td>
@@ -143,7 +153,7 @@
         </td>
         <td><p>Generate a random DAG</p></td>
       </tr><tr><td>
-          <p><code><a href="dag_reorder.html">dag_reorder()</a></code> </p>
+          <p><code><a href="dag_reorder.html">dag_reorder()</a></code> <code><a href="dag_reorder.html">dag_permutate_children()</a></code> </p>
         </td>
         <td><p>Reorder the DAG</p></td>
       </tr><tr><td>
@@ -151,7 +161,11 @@
         </td>
         <td><p>Root or leaves of the DAG</p></td>
       </tr><tr><td>
-          <p><code><a href="dag_terms.html">dag_parents()</a></code> <code><a href="dag_terms.html">dag_children()</a></code> <code><a href="dag_terms.html">dag_ancestors()</a></code> <code><a href="dag_terms.html">dag_offspring()</a></code> </p>
+          <p><code><a href="dag_shiny.html">dag_shiny()</a></code> </p>
+        </td>
+        <td><p>A shiny app for the DAG</p></td>
+      </tr><tr><td>
+          <p><code><a href="dag_terms.html">dag_parents()</a></code> <code><a href="dag_terms.html">dag_children()</a></code> <code><a href="dag_terms.html">dag_siblings()</a></code> <code><a href="dag_terms.html">dag_ancestors()</a></code> <code><a href="dag_terms.html">dag_offspring()</a></code> </p>
         </td>
         <td><p>Parent/child/ancestor/offspring terms</p></td>
       </tr><tr><td>
@@ -190,6 +204,10 @@
           <p><code><a href="n_terms.html">n_offspring()</a></code> <code><a href="n_terms.html">n_ancestors()</a></code> <code><a href="n_terms.html">n_connected_leaves()</a></code> <code><a href="n_terms.html">n_parents()</a></code> <code><a href="n_terms.html">n_children()</a></code> <code><a href="n_terms.html">avg_parents()</a></code> <code><a href="n_terms.html">avg_children()</a></code> </p>
         </td>
         <td><p>Number of parent/child/ancestor/offspring/leaf terms</p></td>
+      </tr><tr><td>
+          <p><code><a href="ontology.html">ontology_kw()</a></code> <code><a href="ontology.html">ontology_chebi()</a></code> <code><a href="ontology.html">ontology_hp()</a></code> <code><a href="ontology.html">ontology_pw()</a></code> <code><a href="ontology.html">ontology_rdo()</a></code> <code><a href="ontology.html">ontology_vt()</a></code> </p>
+        </td>
+        <td><p>Import ontologies already having gene annotations</p></td>
       </tr><tr><td>
           <p><code><a href="ontology_DAG-class.html">ontology_DAG-class</a></code> <code><a href="ontology_DAG-class.html">ontology_DAG</a></code> </p>
         </td>

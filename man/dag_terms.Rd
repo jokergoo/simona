@@ -3,6 +3,7 @@
 \name{dag_parents}
 \alias{dag_parents}
 \alias{dag_children}
+\alias{dag_siblings}
 \alias{dag_ancestors}
 \alias{dag_offspring}
 \title{Parent/child/ancestor/offspring terms}
@@ -10,6 +11,8 @@
 dag_parents(dag, term, in_labels = TRUE)
 
 dag_children(dag, term, in_labels = TRUE)
+
+dag_siblings(dag, term, in_labels = TRUE)
 
 dag_ancestors(dag, term, in_labels = TRUE, include_self = FALSE)
 
@@ -19,7 +22,8 @@ dag_offspring(dag, term, in_labels = TRUE, include_self = FALSE)
 \item{dag}{An \code{ontology_DAG} object.}
 
 \item{term}{The value can be a vector of multiple term names. If it is a vector, it returns
-union of the upstream/downstream terms of the selected set of terms.}
+union of the upstream/downstream terms of the selected set of terms. For \code{dag_siblings()},
+the value can only be a single term.}
 
 \item{in_labels}{Whether the terms are represented in their names or as integer indices?}
 
@@ -38,6 +42,7 @@ dag = create_ontology_DAG(parents, children)
 dag_parents(dag, "b")
 dag_parents(dag, "c", in_labels = FALSE)
 dag_children(dag, "b")
+dag_siblings(dag, "c")
 dag_ancestors(dag, "e")
 dag_ancestors(dag, "b")
 }

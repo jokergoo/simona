@@ -2,13 +2,15 @@ pandoc: 2.11.4
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  v1_dag: v1_dag.html
-  v2_GO: v2_GO.html
-  v3_import: v3_import.html
-  v4_information_content: v4_information_content.html
-  v5_term_similarity: v5_term_similarity.html
-  v6_group_similarity: v6_group_similarity.html
-  v7_dag_visualization: v7_dag_visualization.html
-  v8_random: v8_random.html
-last_built: 2023-11-26T21:16Z
+  v01_dag: v01_dag.html
+  v02_GO: v02_GO.html
+  v03_import: v03_import.html
+  v04_information_content: v04_information_content.html
+  v05_term_similarity: v05_term_similarity.html
+  v06_group_similarity: v06_group_similarity.html
+  v07_dag_visualization: v07_dag_visualization.html
+  v08_random: v08_random.html
+  v09_shiny: v09_shiny.html
+  v10_enrichment: v10_enrichment.html
+last_built: 2023-12-01T17:11Z
 

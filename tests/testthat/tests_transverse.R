@@ -31,6 +31,12 @@ test_that("test transverse", {
 })
 
 
+test_that("test dag_siblings", {
+	expect_equal(dag_siblings(dag, "b"), "c")
+	expect_equal(dag_siblings(dag, "c"), c("b", "d"))
+	expect_error(dag_siblings(dag, c("b", "c")), "only be length of one")
+})
+
 dag = create_ontology_DAG_from_GO_db()
 
 all_go_id = dag@terms

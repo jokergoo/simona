@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.3</span>
       </span>
     </div>
 
@@ -32,28 +32,34 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/v1_dag.html">ontology_DAG: a class for ontology data</a>
+      <a href="../articles/v01_dag.html">ontology_DAG: a class for ontology data</a>
     </li>
     <li>
-      <a href="../articles/v2_GO.html">Gene Ontology</a>
+      <a href="../articles/v02_GO.html">Gene Ontology</a>
     </li>
     <li>
-      <a href="../articles/v3_import.html">Import ontology files</a>
+      <a href="../articles/v03_import.html">Import ontology files</a>
     </li>
     <li>
-      <a href="../articles/v4_information_content.html">Information content</a>
+      <a href="../articles/v04_information_content.html">Information content</a>
     </li>
     <li>
-      <a href="../articles/v5_term_similarity.html">Term similarity</a>
+      <a href="../articles/v05_term_similarity.html">Term similarity</a>
     </li>
     <li>
-      <a href="../articles/v6_group_similarity.html">Similarity between two groups of terms</a>
+      <a href="../articles/v06_group_similarity.html">Similarity between two groups of terms</a>
     </li>
     <li>
-      <a href="../articles/v7_dag_visualization.html">Visualize DAGs</a>
+      <a href="../articles/v07_dag_visualization.html">Visualize DAGs</a>
     </li>
     <li>
-      <a href="../articles/v8_random.html">Random DAGs</a>
+      <a href="../articles/v08_random.html">Random DAGs</a>
+    </li>
+    <li>
+      <a href="../articles/v09_shiny.html">Shiny app</a>
+    </li>
+    <li>
+      <a href="../articles/v10_enrichment.html">Functional enrichment</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -81,7 +87,9 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dag_reorder</span><span class="op">(</span><span class="va">dag</span>, <span class="va">value</span>, verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dag_reorder</span><span class="op">(</span><span class="va">dag</span>, <span class="va">value</span>, verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">dag_permutate_children</span><span class="op">(</span><span class="va">dag</span>, verbose <span class="op">=</span> <span class="va">simona_opt</span><span class="op">$</span><span class="va">verbose</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -106,13 +114,14 @@
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>There are two ways to set the <code>value</code> argument. It can be a vector corresponding
+    <p>In <code>dag_reorder()</code>, there are two ways to set the <code>value</code> argument. It can be a vector corresponding
 to all terms (in the same order as in <code><a href="dag_all_terms.html">dag_all_terms()</a></code>) or a vector corresponding
 to all leaf terms (in the same order as in <code><a href="dag_root.html">dag_leaves()</a></code>). If <code>value</code> corresponds
 to all terms, the score associates to each term is the average value of all its offspring terms.
 And if <code>value</code> corresponds to all leaf terms, the score for each term is the average of all its
 connectable leaves.</p>
 <p>The reordering is simply applied on each term to reorder its child terms.</p>
+<p><code>dag_permutate_children()</code> randomly permute child terms under a term.</p>
     </div>
 
     <div id="ref-examples">

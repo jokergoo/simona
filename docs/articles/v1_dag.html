@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.3</span>
       </span>
     </div>
 
@@ -99,7 +99,7 @@
       <h1 data-toc-skip>ontology_DAG: a class for ontology data</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2023-11-26</h4>
+            <h4 data-toc-skip class="date">2023-11-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/vignettes/v1_dag.Rmd" class="external-link"><code>vignettes/v1_dag.Rmd</code></a></small>
       <div class="hidden name"><code>v1_dag.Rmd</code></div>
@@ -230,25 +230,35 @@
 <code class="sourceCode R"><span><span class="va">dag3</span> <span class="op">=</span> <span class="fu"><a href="../reference/dag_reorder.html">dag_reorder</a></span><span class="op">(</span><span class="va">dag</span>, value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/dag_terms.html">dag_children</a></span><span class="op">(</span><span class="va">dag3</span>, <span class="st">"b"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "d" "c"</span></span></code></pre>
+<p><code><a href="../reference/dag_reorder.html">dag_permutate_children()</a></code> randomly permutes child terms under every term.</p>
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dag2</span> <span class="op">=</span> <span class="fu"><a href="../reference/create_ontology_DAG.html">create_ontology_DAG</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a-b"</span>, <span class="st">"a-c"</span>, <span class="st">"a-d"</span>, <span class="st">"a-e"</span>, <span class="st">"a-f"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dag3</span> <span class="op">=</span> <span class="fu"><a href="../reference/dag_reorder.html">dag_permutate_children</a></span><span class="op">(</span><span class="va">dag2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/dag_terms.html">dag_children</a></span><span class="op">(</span><span class="va">dag3</span>, <span class="st">"a"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "d" "c" "e" "b" "f"</span></span></code></pre>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dag3</span> <span class="op">=</span> <span class="fu"><a href="../reference/dag_reorder.html">dag_permutate_children</a></span><span class="op">(</span><span class="va">dag2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/dag_terms.html">dag_children</a></span><span class="op">(</span><span class="va">dag3</span>, <span class="st">"a"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "c" "f" "e" "b" "d"</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="distance">Distance<a class="anchor" aria-label="anchor" href="#distance"></a>
 </h2>
 <p>The depth of a term is defined as the longest distance from root and is calculated by <code><a href="../reference/dag_depth.html">dag_depth()</a></code>. If you want the shortest distance from root, use <code><a href="../reference/dag_depth.html">dag_shortest_dist_from_root()</a></code>.</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/dag_depth.html">dag_depth</a></span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## a b c d e f </span></span>
 <span><span class="co">## 0 1 2 2 3 3</span></span></code></pre>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/dag_depth.html">dag_shortest_dist_from_root</a></span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## a b c d e f </span></span>
 <span><span class="co">## 0 1 1 2 2 3</span></span></code></pre>
 <p>Similarly, the “height” of a term is defined as the longest distance to its reachable leaf terms. <code><a href="../reference/dag_depth.html">dag_shortest_dist_to_leaves()</a></code> returns the shortest distance to leaves.</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/dag_depth.html">dag_height</a></span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## a b c d e f </span></span>
 <span><span class="co">## 3 2 1 1 0 0</span></span></code></pre>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/dag_depth.html">dag_shortest_dist_to_leaves</a></span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## a b c d e f </span></span>
 <span><span class="co">## 2 2 1 1 0 0</span></span></code></pre>
@@ -281,35 +291,35 @@
 <h3 id="to-an-igraph-object">To an igraph object<a class="anchor" aria-label="anchor" href="#to-an-igraph-object"></a>
 </h3>
 <p>DAG is a graph. <code><a href="../reference/dag_as_igraph.html">dag_as_igraph()</a></code> converts the DAG to an <code>igraph</code> object.</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">=</span> <span class="fu"><a href="../reference/dag_as_igraph.html">dag_as_igraph</a></span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span>
 <span><span class="va">g</span></span></code></pre></div>
-<pre><code><span><span class="co">## IGRAPH e477408 DN-- 6 6 -- </span></span>
+<pre><code><span><span class="co">## IGRAPH 4895b21 DN-- 6 6 -- </span></span>
 <span><span class="co">## + attr: name (v/c)</span></span>
-<span><span class="co">## + edges from e477408 (vertex names):</span></span>
+<span><span class="co">## + edges from 4895b21 (vertex names):</span></span>
 <span><span class="co">## [1] a-&gt;b a-&gt;c b-&gt;c b-&gt;d c-&gt;e d-&gt;f</span></span></code></pre>
 <p>Draw the graph with a hierarchical graph layout:</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r.igraph.org/" class="external-link">igraph</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, layout <span class="op">=</span> <span class="va">layout.sugiyama</span><span class="op">)</span></span></code></pre></div>
-<p><img src="v1_dag_files/figure-html/unnamed-chunk-17-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="v1_dag_files/figure-html/unnamed-chunk-18-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="to-a-dendrogram-object">To a dendrogram object<a class="anchor" aria-label="anchor" href="#to-a-dendrogram-object"></a>
 </h3>
 <p>In a DAG, a term can have multiple parents. A tree is a reduced form of a DAG where a term only has one parent. <code><a href="../reference/dag_treelize.html">dag_treelize()</a></code> simplifies a DAG to a tree. The reducing is applied in a breadth-first manner:</p>
 <p>Starting from root and on a certain depth, for every term <span class="math inline">\(a\)</span> on this depth, its child term <span class="math inline">\(c\)</span> and parent-child relation are kept only when <span class="math inline">\(\delta_c = \delta_a + 1\)</span>. If <span class="math inline">\(c\)</span> is selected, it is marked as visited and will not be checked again. In this way, depths of all terms in the orignal DAG are still identical to the depths in the tree.</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tree</span> <span class="op">=</span> <span class="fu"><a href="../reference/dag_treelize.html">dag_treelize</a></span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/dag_depth.html">dag_depth</a></span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## a b c d e f </span></span>
 <span><span class="co">## 0 1 2 2 3 3</span></span></code></pre>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/dag_depth.html">dag_depth</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## a b c d e f </span></span>
 <span><span class="co">## 0 1 2 2 3 3</span></span></code></pre>
 <p>Note, although we are talking about “a tree”, <code>tree</code> in the example is still an <code>ontology_DAG</code> object where only multi-parent relations are removed. If <code>n_relations + 1 == n_terms</code>, there is special mark of being a tree in the object.</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tree</span></span></code></pre></div>
 <pre><code><span><span class="co">## An ontology_DAG object:</span></span>
 <span><span class="co">##   Source: Ontology, treelized </span></span>
@@ -319,14 +329,14 @@
 <span><span class="co">##   Max depth: 3 </span></span>
 <span><span class="co">##   Aspect ratio: 0.67:1</span></span></code></pre>
 <p>When the DAG is a tree, it can be converted to a <code>dendrogram</code> object. Since some nodes may only have one child, I add labels on nodes to mark the nodes are there. You can see the link <code>a-&gt;c</code> is removed from the DAG.</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dend</span> <span class="op">=</span> <span class="fu"><a href="../reference/dag_treelize.html">dag_as_dendrogram</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span></span>
 <span><span class="va">dend</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/dendrapply.html" class="external-link">dendrapply</a></span><span class="op">(</span><span class="va">dend</span>, <span class="kw">function</span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">d</span>, <span class="st">"nodePar"</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>pch <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">d</span>, <span class="st">"label"</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="va">d</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dend</span>, leaflab <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="v1_dag_files/figure-html/unnamed-chunk-20-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="v1_dag_files/figure-html/unnamed-chunk-21-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>Note reducing DAG is mainly for visualization purpose.</p>
 </div>
 </div>
@@ -334,7 +344,7 @@
 <h2 id="add-relation-types">Add relation types<a class="anchor" aria-label="anchor" href="#add-relation-types"></a>
 </h2>
 <p>If <code>relations</code> argument is not set, all relations are treated as in “is_a” such that a child is a sub-class of a parent class. It is common in ontologies, besides the “is_a” relation, there are many other self-defined relation types. One typical relation type is “part_of”. A vector of relation types can be set via the <code>relations</code> argument. It might be used later when calculating semantic similarities where different relation types are assigned with different weights.</p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">relations</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"is_a"</span>, <span class="st">"is_a"</span>, <span class="st">"part_of"</span>, <span class="st">"part_of"</span>, <span class="st">"is_a"</span>, <span class="st">"is_a"</span><span class="op">)</span></span>
 <span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="../reference/create_ontology_DAG.html">create_ontology_DAG</a></span><span class="op">(</span><span class="va">parents</span>, <span class="va">children</span>, relations <span class="op">=</span> <span class="va">relations</span><span class="op">)</span></span>
 <span><span class="va">dag</span></span></code></pre></div>
@@ -355,7 +365,7 @@
 </h2>
 <p>Terms can have external items annotated. One typical example is that GO terms can have genes annotated. Later the annotated items can be used for calculating semantic similarities.</p>
 <p>The annotation should be set as a list of character vectors, where names of the element vectors should correspond to term names in the DAG so that annotations can be mapped to terms.</p>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">annotation</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    <span class="st">"a"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"t1"</span>, <span class="st">"t2"</span>, <span class="st">"t3"</span><span class="op">)</span>,</span>
 <span>    <span class="st">"b"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"t3"</span>, <span class="st">"t4"</span><span class="op">)</span>,</span>
@@ -376,21 +386,21 @@
 <span><span class="co">##   Avg number of children: 1.00</span></span>
 <span><span class="co">##   Aspect ratio: 0.67:1 (based on the longest distance from root)</span></span>
 <span><span class="co">##                 0.68:1 (based on the shortest distance from root)</span></span>
-<span><span class="co">##   Annotations are available.</span></span></code></pre>
+<span><span class="co">##   Annotations: t1, t2, t3, t4, ...</span></span></code></pre>
 <p>Due to the nature of DAG, if a child term is annotated to an item, all its ancestor terms are also associated with that item. The calculation of annotated items is applied in a recursive way.</p>
 <p>For a term <span class="math inline">\(x\)</span>, denote <span class="math inline">\(\mathcal{C}_x\)</span> is the set of its child terms, the items “directly” annotated to <span class="math inline">\(x\)</span> denoted as set <span class="math inline">\(G^*_x\)</span>, then the final set of items annotated to <span class="math inline">\(x\)</span> denoted as <span class="math inline">\(G_x\)</span> is the union of all items annotated to its child terms as well as <span class="math inline">\(x\)</span> itself.</p>
 <p><span class="math display">\[ G_x = \left( \bigcup_{z \in \mathcal{C}_x} G_z \right) \bigcup G^*_x \]</span></p>
 <p>Note above equation is applied resursively. If denoting <span class="math inline">\(\mathcal{D}^+_x\)</span> as the set of <span class="math inline">\(x\)</span>’s offspring terms plus <span class="math inline">\(x\)</span> itself, <span class="math inline">\(G^*_x\)</span> can also be written as:</p>
 <p><span class="math display">\[ G_x = \bigcup_{z \in \mathcal{D}^+_x} G_z^* \]</span></p>
 <p>The numbers of annotated items of DAG terms can be obtained via the function <code><a href="../reference/n_annotations.html">n_annotations()</a></code>. The attribute <code>attr(,"N")</code> is the maximal number of items annotated to the DAG (the same as <code>max(n_annotations(dag))</code>), which normally corresponds to the root term.</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/n_annotations.html">n_annotations</a></span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## a b c d e f </span></span>
 <span><span class="co">## 8 6 4 2 4 1 </span></span>
 <span><span class="co">## attr(,"N")</span></span>
 <span><span class="co">## [1] 8</span></span></code></pre>
 <p>The next two functions return the associations between terms and items.</p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/annotation.html">term_annotations</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $a</span></span>
 <span><span class="co">## [1] "t1" "t2" "t3" "t4" "t5" "t7" "t6" "t8"</span></span>
@@ -409,7 +419,7 @@
 <span><span class="co">## </span></span>
 <span><span class="co">## $f</span></span>
 <span><span class="co">## [1] "t8"</span></span></code></pre>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/annotation.html">annotated_terms</a></span><span class="op">(</span><span class="va">dag</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"t1"</span>, <span class="st">"t2"</span>, <span class="st">"t3"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $t1</span></span>
 <span><span class="co">## [1] "a"</span></span>
@@ -420,7 +430,7 @@
 <span><span class="co">## $t3</span></span>
 <span><span class="co">## [1] "a" "b"</span></span></code></pre>
 <p>Or return a binary matrix:</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/annotation.html">term_annotations</a></span><span class="op">(</span><span class="va">dag</span>, <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span>, return <span class="op">=</span> <span class="st">"matrix"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##   t1 t2 t3 t4 t5 t7 t6 t8</span></span>
 <span><span class="co">## a  1  1  1  1  1  1  1  1</span></span>
@@ -429,7 +439,7 @@
 <span><span class="co">## d  0  0  0  0  0  1  0  1</span></span>
 <span><span class="co">## e  0  0  0  1  1  1  1  0</span></span>
 <span><span class="co">## f  0  0  0  0  0  0  0  1</span></span></code></pre>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/annotation.html">annotated_terms</a></span><span class="op">(</span><span class="va">dag</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"t1"</span>, <span class="st">"t2"</span>, <span class="st">"t3"</span><span class="op">)</span>, return <span class="op">=</span> <span class="st">"matrix"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##    a b c d e f</span></span>
 <span><span class="co">## t1 1 0 0 0 0 0</span></span>
@@ -440,7 +450,7 @@
 <h2 id="pseudo-root">Pseudo root<a class="anchor" aria-label="anchor" href="#pseudo-root"></a>
 </h2>
 <p>The DAG should be lead by a single root term. If in an ontology there are multiple root terms, a pseudo root named <code>"~all~"</code> is automatically added. You can see this process from the message of the function call.</p>
-<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">parents</span>  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"x"</span>, <span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span></span>
 <span><span class="va">children</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"c"</span>, <span class="st">"z"</span>, <span class="st">"y"</span>, <span class="st">"z"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/create_ontology_DAG.html">create_ontology_DAG</a></span><span class="op">(</span><span class="va">parents</span>, <span class="va">children</span><span class="op">)</span></span></code></pre></div>
@@ -462,7 +472,7 @@
 <h2 id="sub-dag">Sub-DAG<a class="anchor" aria-label="anchor" href="#sub-dag"></a>
 </h2>
 <p>The following code returns a sub-DAG where the input term is picked as the root of the sub-DAG.</p>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># or with the double bracket: dag[["b"]]</span></span>
 <span><span class="va">dag</span><span class="op">[</span><span class="st">"b"</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## An ontology_DAG object:</span></span>
@@ -472,7 +482,7 @@
 <span><span class="co">##   Terms: b, c, d, e, ...</span></span>
 <span><span class="co">##   Max depth: 2 </span></span>
 <span><span class="co">##   Aspect ratio: 1:1</span></span>
-<span><span class="co">##   Annotations are available.</span></span></code></pre>
+<span><span class="co">##   Annotations: t3, t4, t5, t7, ...</span></span></code></pre>
 <p>Two indicies can be provided in the brackets where the first one corresponds to root terms and the second one corresponds to leaf terms:</p>
 <pre class="r">
 # the same as dag["b"], a sub-DAG where b is the root
@@ -503,7 +513,7 @@ dag_filter(dag, terms, relations, root, leaves)
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.3.1 (2023-06-16)</span></span>
 <span><span class="co">## Platform: x86_64-apple-darwin20 (64-bit)</span></span>
@@ -523,7 +533,7 @@ dag_filter(dag, terms, relations, root, leaves)
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] igraph_1.5.1 simona_1.1.1 knitr_1.44  </span></span>
+<span><span class="co">## [1] igraph_1.5.1 simona_1.1.3 knitr_1.44  </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##  [1] sass_0.4.7            xml2_1.3.5            shape_1.4.6          </span></span>
@@ -531,21 +541,24 @@ dag_filter(dag, terms, relations, root, leaves)
 <span><span class="co">##  [7] evaluate_0.22         grid_4.3.1            RColorBrewer_1.1-3   </span></span>
 <span><span class="co">## [10] iterators_1.0.14      circlize_0.4.15       fastmap_1.1.1        </span></span>
 <span><span class="co">## [13] foreach_1.5.2         doParallel_1.0.17     rprojroot_2.0.3      </span></span>
-<span><span class="co">## [16] jsonlite_1.8.7        GlobalOptions_0.1.2   ComplexHeatmap_2.16.0</span></span>
-<span><span class="co">## [19] purrr_1.0.2           codetools_0.2-19      textshaping_0.3.7    </span></span>
-<span><span class="co">## [22] jquerylib_0.1.4       cli_3.6.1             rlang_1.1.1          </span></span>
-<span><span class="co">## [25] crayon_1.5.2          scatterplot3d_0.3-44  cachem_1.0.8         </span></span>
-<span><span class="co">## [28] yaml_2.3.7            tools_4.3.1           parallel_4.3.1       </span></span>
-<span><span class="co">## [31] memoise_2.0.1         colorspace_2.1-0      GetoptLong_1.0.5     </span></span>
-<span><span class="co">## [34] BiocGenerics_0.46.0   vctrs_0.6.4           R6_2.5.1             </span></span>
-<span><span class="co">## [37] png_0.1-8             matrixStats_1.0.0     stats4_4.3.1         </span></span>
-<span><span class="co">## [40] lifecycle_1.0.3       stringr_1.5.0         S4Vectors_0.38.2     </span></span>
-<span><span class="co">## [43] fs_1.6.3              IRanges_2.34.1        clue_0.3-65          </span></span>
-<span><span class="co">## [46] cluster_2.1.4         ragg_1.2.6            pkgconfig_2.0.3      </span></span>
-<span><span class="co">## [49] desc_1.4.2            pkgdown_2.0.7         bslib_0.5.1          </span></span>
-<span><span class="co">## [52] Rcpp_1.0.11           glue_1.6.2            systemfonts_1.0.5    </span></span>
-<span><span class="co">## [55] xfun_0.40             rjson_0.2.21          htmltools_0.5.6.1    </span></span>
-<span><span class="co">## [58] rmarkdown_2.25        Polychrome_1.5.1      compiler_4.3.1</span></span></code></pre>
+<span><span class="co">## [16] jsonlite_1.8.7        GlobalOptions_0.1.2   promises_1.2.1       </span></span>
+<span><span class="co">## [19] ComplexHeatmap_2.16.0 purrr_1.0.2           codetools_0.2-19     </span></span>
+<span><span class="co">## [22] textshaping_0.3.7     jquerylib_0.1.4       shiny_1.6.0          </span></span>
+<span><span class="co">## [25] cli_3.6.1             rlang_1.1.1           crayon_1.5.2         </span></span>
+<span><span class="co">## [28] scatterplot3d_0.3-44  ellipsis_0.3.2        cachem_1.0.8         </span></span>
+<span><span class="co">## [31] yaml_2.3.7            tools_4.3.1           parallel_4.3.1       </span></span>
+<span><span class="co">## [34] memoise_2.0.1         colorspace_2.1-0      httpuv_1.6.11        </span></span>
+<span><span class="co">## [37] GetoptLong_1.0.5      BiocGenerics_0.46.0   mime_0.12            </span></span>
+<span><span class="co">## [40] vctrs_0.6.4           R6_2.5.1              png_0.1-8            </span></span>
+<span><span class="co">## [43] matrixStats_1.0.0     stats4_4.3.1          lifecycle_1.0.3      </span></span>
+<span><span class="co">## [46] stringr_1.5.0         S4Vectors_0.38.2      fs_1.6.3             </span></span>
+<span><span class="co">## [49] IRanges_2.34.1        clue_0.3-65           cluster_2.1.4        </span></span>
+<span><span class="co">## [52] ragg_1.2.6            pkgconfig_2.0.3       desc_1.4.2           </span></span>
+<span><span class="co">## [55] later_1.3.1           pkgdown_2.0.7         bslib_0.5.1          </span></span>
+<span><span class="co">## [58] Rcpp_1.0.11           glue_1.6.2            systemfonts_1.0.5    </span></span>
+<span><span class="co">## [61] xfun_0.40             xtable_1.8-4          rjson_0.2.21         </span></span>
+<span><span class="co">## [64] htmltools_0.5.6.1     rmarkdown_2.25        Polychrome_1.5.1     </span></span>
+<span><span class="co">## [67] compiler_4.3.1</span></span></code></pre>
 <script src="jquery.min.js"></script><script src="jquery.sticky.js"></script><script>
 $(document).ready(function(){
     $("#TOC").sticky({

@@ -4,7 +4,8 @@
 #' 
 #' @param dag An `ontology_DAG` object.
 #' @param term The value can be a vector of multiple term names. If it is a vector, it returns
-#'             union of the upstream/downstream terms of the selected set of terms.
+#'             union of the upstream/downstream terms of the selected set of terms. For `dag_siblings()`,
+#'             the value can only be a single term.
 #' @param in_labels Whether the terms are represented in their names or as integer indices?
 #' @param include_self For `dag_offspring()` and `dag_ancestors()`, this controls whether to also include the query term itself.
 #' 
@@ -18,6 +19,7 @@
 #' dag_parents(dag, "b")
 #' dag_parents(dag, "c", in_labels = FALSE)
 #' dag_children(dag, "b")
+#' dag_siblings(dag, "c")
 #' dag_ancestors(dag, "e")
 #' dag_ancestors(dag, "b")
 dag_parents = function(dag, term, in_labels = TRUE) {
@@ -44,6 +46,26 @@ dag_children = function(dag, term, in_labels = TRUE) {
 		dag@terms[children]
 	} else {
 		children
+	}
+}
+
+#' @rdname dag_terms
+#' @export
+dag_siblings = function(dag, term, in_labels = TRUE) {
+	i = term_to_node_id(dag, term)
+
+	if(length(i) != 1) {
+		stop("`term` can only be length of one.")
+	}
+
+	parents = unique(unlist(dag@lt_parents[i]))
+	siblings = dag_children(dag, parents, in_labels = FALSE)
+	siblings = setdiff(siblings, i)
+
+	if(in_labels) {
+		dag@terms[siblings]
+	} else {
+		siblings
 	}
 }
 

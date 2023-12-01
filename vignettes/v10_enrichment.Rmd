@@ -1,0 +1,205 @@
+---
+title: "Functional enrichment"
+author: "Zuguang Gu ( z.gu@dkfz.de )"
+date: '`r Sys.Date()`'
+output: 
+  html_vignette:
+    css: main.css
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{10. Functional enrichment}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo = FALSE, message = FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+    error = FALSE,
+    tidy  = FALSE,
+    message = FALSE,
+    warning = FALSE,
+    fig.align = "center")
+```
+
+```{r, echo = FALSE}
+knitr::knit_hooks$set(pngquant = knitr::hook_pngquant)
+
+knitr::opts_chunk$set(
+  dev = "ragg_png",
+  fig.align = "center",
+  pngquant = "--speed=10 --quality=50"
+)
+```
+
+In many applications, semantic similarity analysis is integerated with gene
+set enrichment analysis, especially taking GO as the source of gene sets.
+**simona** provides functions that import ontologies already integrated with
+gene annotations. **simona** also provides functions for over-representation analysis (ORA)
+and functions to integrate the ORA results with semantic similarity analysis.
+
+## GO
+
+
+To add gene annotations for GO, just set the name of the "org.db" package for the specific organism.
+For example "org.Hs.eg.db" for human and "org.Mm.eg.db" for mouse. The full list of supported
+"org.db" packages can be found at https://bioconductor.org/packages/release/BiocViews.html#___AnnotationData (search `org.`).
+
+```{r}
+library(simona)
+dag = create_ontology_DAG_from_GO_db(org_db = "org.Hs.eg.db")
+dag
+```
+
+As the object `dag` prints, the genes stored in `dag` are in the EntreZ ID type. So when doing ORA,
+the input gene list should also be in the EntreZ ID type.
+
+We generate a list of random genes for testing:
+
+```{r}
+set.seed(123)
+genes = random_items(dag, 500)
+head(genes)
+```
+
+To perform ORA, use the function `dag_enrich_on_genes()`.
+
+```{r}
+tb = dag_enrich_on_genes(dag, genes)
+tb = tb[order(tb$p_adjust), ]
+head(tb)
+```
+
+We can take the significant GO terms and look at their semantic similarities. 
+
+```{r}
+top_go_ids = tb$term[1:100]
+mat = term_sim(dag, top_go_ids)
+```
+
+```{r, fig.width = 6.5, fig.height = 6}
+library(ComplexHeatmap)
+Heatmap(mat, name = "similarity", 
+    show_row_names = FALSE, show_column_names = FALSE,
+    show_row_dend = FALSE, show_column_dend = FALSE)
+```
+
+And the significant GO terms on the global circular plot:
+
+```{r, fig.width = 9, fig.height = 7}
+dag_circular_viz(dag, top_go_ids)
+```
+
+One of the use of the semantic similarity matrix is to cluster GO terms in groups, to simplify the read of the results.
+Here the semantic similarity matrix can be directly sent to `simplifyEnrichment()` function from the **simplifyEnrichment**
+package. Since the terms are from GO, there will be word cloud associated with the heatmap to show their generl
+biological functions in each cluster.
+
+```{r, fig.width = 8.5, fig.height = 4.34}
+library(simplifyEnrichment)
+simplifyEnrichment(mat)
+```
+
+In the previous example, when setting the organism, we use the name of the
+`org.db` package. The value can also directly be an `OrgDb` object. This expands
+the use of the function since there are many `OrgDb` objects for less-studied organims available
+on **AnnotationHub**.
+
+The following code demonstrates the use of the delphin organism (Delphinus truncatus). `AH112417` is the ID of
+this dataset. Please refer to **AnnotationHub** for the usage of the package.
+
+```{r, eval = FALSE}
+library(AnnotationHub)
+ah = AnnotationHub()
+org_db = ah[["AH112417"]]
+dag = create_ontology_DAG_from_GO_db(org_db = org_db)
+```
+
+## Other ontologies
+
+Besides GO, there are also other ontologies that have gene annotations integrated. 
+
+### UniProt Keywords
+
+UniProt Keywords (https://www.uniprot.org/keywords) is a set of controlled vocabulary developed in UniProt to describe
+the biological functions of proteins. It is organised in a hierarchical way, thus in a form of the ontology. The function
+`ontology_kw()` can import the UniProt Keywords ontology with gene annotations from a specific organims.
+
+The function internally uses the **UniProtKeywords** package. All supported organisms can be found in the documentation
+of `UniProtKeywords::load_keyword_genesets()`.
+
+```{r}
+dag = ontology_kw("human")
+dag
+```
+
+As `dag` shows, the gene ID type is EntreZ ID. Similar as GO, we randomly generate a list of genes and perform ORA.
+
+```{r}
+genes = random_items(dag, 500)
+tb = dag_enrich_on_genes(dag, genes)
+tb = tb[order(tb$p_adjust), ]
+top_go_ids = tb$term[1:50]
+```
+
+Obtain the semantic similarity matrix and make plots:
+
+```{r, fig.width = 6.5, fig.height = 6}
+mat = term_sim(dag, top_go_ids)
+Heatmap(mat, name = "similarity", 
+    show_row_names = FALSE, show_column_names = FALSE,
+    show_row_dend = FALSE, show_column_dend = FALSE)
+```
+
+```{r, fig.width = 9, fig.height = 7}
+dag_circular_viz(dag, top_go_ids)
+```
+
+We also also use `simplifyEnrichment()` to cluster terms in `mat`, but there is no word cloud around the heatmap.
+
+```{r, fig.width = 5.5, fig.height = 4.34}
+cl = simplifyEnrichment(mat)
+head(cl)
+```
+
+
+### Ontologies from RGD
+
+The following ontologies as well as the gene annotations are from the Rat Genome Database (RGD).
+Although the RGD is a database for mouse, it also provides gene annotations for other oganisms.
+The specific files used in each function can be found at https://download.rgd.mcw.edu/ontology/.
+
+Note that the following functions may support different sets of organims. Please go to the documentations for the list.
+
+**Pathway Ontology**
+
+```{r}
+dag = ontology_pw("homo")
+dag
+```
+
+Note that, in the pathway ontology, genes are saved in gene symbols.
+
+**Chemical Entities of Biological Interest**
+
+```{r, eval = FALSE}
+dag = ontology_chebi("homo")
+```
+
+**Disease Ontology**
+
+```{r, eval = FALSE}
+dag = ontology_rdo("homo")
+```
+
+**Vertebrate Trait Ontology**
+
+```{r, eval = FALSE}
+dag = ontology_vt("homo")
+```
+
+## Session info
+
+```{r}
+sessionInfo()
+```

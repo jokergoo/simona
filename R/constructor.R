@@ -279,28 +279,8 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 	# pos has the same order as terms, but the value are the positions on `sorted`, i.e. the rank
 	dag@tpl_pos[tpl_order] = seq_len(n_terms)
 
-	if(!is.null(annotation)) {
-		annotation = lapply(annotation, as.character)
-		all_anno = unique(unlist(annotation))
-		n_all_anno = length(all_anno)
-		anno2ind = structure(seq_along(all_anno), names = all_anno)
-		annotation = lapply(annotation, function(x) unname(anno2ind[as.character(x)]))
-
-		n_terms = dag@n_terms
-		annotation2 = rep(list(integer(0)), n_terms)
-		term2ind = structure(seq_along(dag@terms), names = dag@terms)
-
-		cn = intersect(dag@terms, names(annotation))
-		if(length(cn) == 0) {
-			stop("No overlap between annotation names and terms.")
-		}
-		annotation2[ term2ind[cn] ] = annotation[cn]
-
-		dag@annotation = list(list = annotation2,
-			                  names = all_anno)
-	} else {
-		dag@annotation = list(list = vector("list", 0), names = character(0))
-	}
+	dag@annotation = list(list = vector("list", 0), names = character(0))
+	dag = add_annotation(dag, annotation)
 
 	depth = dag_depth(dag)
 	tb1 = table(depth)
@@ -331,6 +311,32 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 	}
 
 	return(dag)
+}
+
+add_annotation = function(dag, annotation) {
+	if(!is.null(annotation)) {
+		annotation = lapply(annotation, as.character)
+		all_anno = unique(unlist(annotation))
+		n_all_anno = length(all_anno)
+		anno2ind = structure(seq_along(all_anno), names = all_anno)
+		annotation = lapply(annotation, function(x) unname(anno2ind[as.character(x)]))
+
+		n_terms = dag@n_terms
+		annotation2 = rep(list(integer(0)), n_terms)
+		term2ind = structure(seq_along(dag@terms), names = dag@terms)
+
+		cn = intersect(dag@terms, names(annotation))
+		if(length(cn) == 0) {
+			stop("No overlap between annotation names and terms.")
+		}
+		annotation2[ term2ind[cn] ] = annotation[cn]
+
+		dag@annotation = list(list = annotation2,
+			                  names = all_anno)
+	} else {
+		dag@annotation = list(list = vector("list", 0), names = character(0))
+	}
+	dag
 }
 
 print_cyclic_paths = function(cyclic_paths, terms) {
@@ -397,9 +403,9 @@ setMethod("show",
 		}
 
 		if(length(object@annotation$list)) {
+			cat("  Annotations:", length(object@annotation$names), "items\n")
 			txt = strwrap(paste(c(object@annotation$names[seq_len(min(4, length(object@annotation$names)))], "..."), collapse = ", "), width = 60)
-			txt[1] = paste0( "  Annotations: ", txt[1])
-			txt[-1] = paste0("               ", txt[-1])
+			txt = paste0("               ", txt)
 			cat(txt, sep = "\n")
 		}
 
@@ -670,11 +676,25 @@ setMethod("mcols<-",
 	}
 	
 	df = as.data.frame(value)
+
 	if(nrow(df) != x@n_terms) {
-		stop("value should be a table with the same number of rows as the number of terms in DAG.")
+		if(dag_root(x) == SUPER_ROOT) {
+			df2 = df[seq_len(nrow(df)+1), , drop = FALSE]
+			rownames(df2)[nrow(df2)] = SUPER_ROOT
+			
+			if(! (nrow(df) == x@n_terms - 1 || nrow(df) == x@n_terms) ) {
+				stop("value should be a table with the same number of rows as the number of terms in DAG.")
+			}
+
+			df = df2
+		} else {
+			if(nrow(df) != x@n_terms) {
+				stop("value should be a table with the same number of rows as the number of terms in DAG.")
+			}
+		}
 	}
 
-	x@elementMetadata = value
+	x@elementMetadata = df
 	invisible(x)
 })
 
@@ -708,3 +728,14 @@ create_ontology_DAG_from_igraph = function(g, relations = NULL, verbose = simona
 		source = "igraph object", verbose = verbose)
 }
 
+
+#' Whether the terms exist in the DAG
+#' 
+#' @param dag An `ontology_DAG` object.
+#' @param terms A vector of term IDs.
+#' 
+#' @return A logical vector.
+#' @export
+dag_has_terms = function(dag, terms) {
+	terms %in% dag@terms
+}

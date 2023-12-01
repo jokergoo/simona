@@ -48,10 +48,10 @@
 #' \dontrun{
 #' dag = create_ontology_DAG_from_GO_db() 
 #' terms = random_terms(dag, 100)
-#' df = dag_enrich_terms(dag, terms)
+#' df = dag_enrich_on_offsprings(dag, terms)
 #' }
 #' 1
-dag_enrich_terms = function(dag, terms, min_hits = 3, min_offspring = 10) {
+dag_enrich_on_offsprings = function(dag, terms, min_hits = 3, min_offspring = 10) {
 	n = dag@n_terms
 	ind = which(dag@terms %in% terms)
 	m = length(ind)
@@ -67,10 +67,18 @@ dag_enrich_terms = function(dag, terms, min_hits = 3, min_offspring = 10) {
 
 	p = phyper(n_hits-1, m, n - m, n_offspring, lower.tail = FALSE)
 	padj = p.adjust(p, "BH")
-	df = data.frame(term = all_terms, n_hits = n_hits, n_offspring = n_offspring, n_terms = m, n_all = n, 
-		log2_fold_enrichment = log2(n_hits/(m*n_offspring/n)), 
-		z_score = (n_hits - (m*n_offspring/n)) / sqrt(m*n_offspring/n * (n-n_offspring)/n * (n-m)/(n-1)),
-		p_value = p, p_adjust = padj)
+	if("name" %in% colnames(mcols(dag))) {
+		df = data.frame(term = all_terms, name = mcols(dag)[l, "name"],
+			n_hits = n_hits, n_offspring = n_offspring, n_terms = m, n_all = n, 
+			log2_fold_enrichment = log2(n_hits/(m*n_offspring/n)), 
+			z_score = (n_hits - (m*n_offspring/n)) / sqrt(m*n_offspring/n * (n-n_offspring)/n * (n-m)/(n-1)),
+			p_value = p, p_adjust = padj)
+	} else {
+		df = data.frame(term = all_terms, n_hits = n_hits, n_offspring = n_offspring, n_terms = m, n_all = n, 
+			log2_fold_enrichment = log2(n_hits/(m*n_offspring/n)), 
+			z_score = (n_hits - (m*n_offspring/n)) / sqrt(m*n_offspring/n * (n-n_offspring)/n * (n-m)/(n-1)),
+			p_value = p, p_adjust = padj)
+	}
 	df$depth = dag_depth(dag, all_terms)
 	df
 }
@@ -84,7 +92,7 @@ dag_enrich_terms = function(dag, terms, min_hits = 3, min_offspring = 10) {
 #' @param verbose Whether to print messages.
 #' 
 #' @details
-#' In the function [`dag_enrich_terms()`], the statistic for testing is the number of terms in each category. Here
+#' In the function [`dag_enrich_on_offsprings()`], the statistic for testing is the number of terms in each category. Here
 #' this funtion makes the testing procedure more general
 #' 
 #' The function tests whether a term `t`'s offspring terms have an over-represented pattern on values in `value`.
@@ -124,10 +132,10 @@ dag_enrich_terms = function(dag, terms, min_hits = 3, min_offspring = 10) {
 #' \dontrun{
 #' dag = create_ontology_DAG_from_GO_db() 
 #' value = runif(dag_n_terms(dag)) # a set of random values
-#' df = dag_enrich_terms_by_permutation(dag, value)
+#' df = dag_enrich_on_offsprings_by_permutation(dag, value)
 #' }
 #' 1
-dag_enrich_terms_by_permutation = function(dag, value, perm = 1000, min_offspring = 10, verbose = simona_opt$verbose) {
+dag_enrich_on_offsprings_by_permutation = function(dag, value, perm = 1000, min_offspring = 10, verbose = simona_opt$verbose) {
 	n = dag@n_terms
 
 	if(length(value) != n) {
@@ -154,9 +162,16 @@ dag_enrich_terms_by_permutation = function(dag, value, perm = 1000, min_offsprin
 	z = vapply(seq_len(nrow(sr)), function(i) (s[i] - mean(sr[i, ]))/sd(sr[i, ]), FUN.VALUE = numeric(1))
 	log2fe = vapply(seq_len(nrow(sr)), function(i) log2(s[i]/mean(sr[i, ])), FUN.VALUE = numeric(1))
 
-	df = data.frame(term = all_terms, stat = s, n_offspring = unname(n_offspring), 
-		log2_fold_enrichment = log2fe, z_score = z, 
-		p_value = p, p_adjust = padj)
+	if("name" %in% colnames(mcols(dag))) {
+		df = data.frame(term = all_terms, name = mcols(dag)[l, "name"],
+			stat = s, n_offspring = unname(n_offspring), 
+			log2_fold_enrichment = log2fe, z_score = z, 
+			p_value = p, p_adjust = padj)
+	} else {
+		df = data.frame(term = all_terms, stat = s, n_offspring = unname(n_offspring), 
+			log2_fold_enrichment = log2fe, z_score = z, 
+			p_value = p, p_adjust = padj)
+	}
 	df$depth = dag_depth(dag, all_terms)
 	df
 }
@@ -208,10 +223,10 @@ dag_enrich_terms_by_permutation = function(dag, value, perm = 1000, min_offsprin
 #' \dontrun{
 #' dag = create_ontology_DAG_from_GO_db(org_db = "org.Hs.eg.db") 
 #' items = random_items(dag, 1000)
-#' df = dag_enrich_items(dag, items)
+#' df = dag_enrich_on_items(dag, items)
 #' }
 #' 1
-dag_enrich_items = function(dag, items, min_hits = 5, min_items = 10) {
+dag_enrich_on_items = function(dag, items, min_hits = 5, min_items = 10) {
 	validate_dag_has_annotation(dag)
 
 	n = length(dag@annotation$names)
@@ -229,12 +244,32 @@ dag_enrich_items = function(dag, items, min_hits = 5, min_items = 10) {
 
 	p = phyper(n_hits-1, m, n - m, n_anno, lower.tail = FALSE)
 	padj = p.adjust(p, "BH")
-	df = data.frame(term = all_terms, n_hits = n_hits, n_anno = n_anno, n_items = m, n_all = n, 
-		log2_fold_enrichment = log2(n_hits/(m*n_anno/n)), 
-		z_score = (n_hits - (m*n_anno/n)) / sqrt(m*n_anno/n * (n-n_anno)/n * (n-m)/(n-1)),
-		p_value = p, p_adjust = padj)
+	if("name" %in% colnames(mcols(dag))) {
+		df = data.frame(term = all_terms, name = mcols(dag)[l, "name"],
+			n_hits = n_hits, n_anno = n_anno, n_items = m, n_all = n, 
+			log2_fold_enrichment = log2(n_hits/(m*n_anno/n)), 
+			z_score = (n_hits - (m*n_anno/n)) / sqrt(m*n_anno/n * (n-n_anno)/n * (n-m)/(n-1)),
+			p_value = p, p_adjust = padj)
+	} else {
+		df = data.frame(term = all_terms, n_hits = n_hits, n_anno = n_anno, n_items = m, n_all = n, 
+			log2_fold_enrichment = log2(n_hits/(m*n_anno/n)), 
+			z_score = (n_hits - (m*n_anno/n)) / sqrt(m*n_anno/n * (n-n_anno)/n * (n-m)/(n-1)),
+			p_value = p, p_adjust = padj)
+	}
 	df$depth = dag_depth(dag, all_terms)
 	df
+}
+
+#' @param genes A vector of gene IDs. The gene ID type can be found by directly printing the `ontology_DAG` object.
+#' @param min_genes Minimal number of genes.
+#' 
+#' @details
+#' `dag_enrich_on_genes()` is the same as `dag_enrich_on_items()` which only changes the argument `item` to `gene`.
+#' 
+#' @rdname dag_enrich_on_items
+#' @export
+dag_enrich_on_genes = function(dag, genes, min_hits = 5, min_genes = 10) {
+	dag_enrich_on_items(dag, genes, min_hits = min_hits, min_items = min_genes)
 }
 
 #' Randomly sample terms/items

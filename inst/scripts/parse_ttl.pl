@@ -46,29 +46,31 @@ while(my $line = <FILE>) {
 					$section->{$id}->{definition} =~s/"/``/g;
 				}
 				if($line =~/rdfs:subClassOf/ or $line =~/\/is_?a/i) {
-					$line =~/<([^<]*?)> ;/;
-					if(!defined($section->{$id}->{parent})) {
-						$section->{$id}->{parent} = {};
-						$section->{$id}->{parent}->{$1} = 1;
-						$section->{$id}->{relation_type} = {};
-						$section->{$id}->{relation_type}->{$1} = "is_a";
-
-					} else {
-						$section->{$id}->{parent}->{$1} = 1;
-						$section->{$id}->{relation_type}->{$1} = "is_a";
-					}
-				}
-				foreach my $type (@relation_types) {
-					if($line =~/\/$type/i) {
-						$line =~/<([^<]*?)> ;/;
+					if($line =~/<([^<]+?)> ;/) {
 						if(!defined($section->{$id}->{parent})) {
 							$section->{$id}->{parent} = {};
 							$section->{$id}->{parent}->{$1} = 1;
 							$section->{$id}->{relation_type} = {};
-							$section->{$id}->{relation_type}->{$1} = $type;
+							$section->{$id}->{relation_type}->{$1} = "is_a";
+
 						} else {
 							$section->{$id}->{parent}->{$1} = 1;
-							$section->{$id}->{relation_type}->{$1} = $type;
+							$section->{$id}->{relation_type}->{$1} = "is_a";
+						}
+					}
+				}
+				foreach my $type (@relation_types) {
+					if($line =~/\/$type/i) {
+						if($line =~/<([^<]+?)> ;/) {
+							if(!defined($section->{$id}->{parent})) {
+								$section->{$id}->{parent} = {};
+								$section->{$id}->{parent}->{$1} = 1;
+								$section->{$id}->{relation_type} = {};
+								$section->{$id}->{relation_type}->{$1} = $type;
+							} else {
+								$section->{$id}->{parent}->{$1} = 1;
+								$section->{$id}->{relation_type}->{$1} = $type;
+							}
 						}
 					}
 				}

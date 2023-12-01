@@ -1,0 +1,30 @@
+---
+title: "Shiny app"
+author: "Zuguang Gu ( z.gu@dkfz.de )"
+date: '`r Sys.Date()`'
+output: 
+  html_vignette:
+    css: main.css
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{9. Shiny app}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+The function `dag_shiny()` generates a Shiny application that allows interactive analysis on the ontology.
+
+```{r, eval = FALSE}
+library(simona)
+dag = create_ontology_DAG_from_GO_db()
+dag_shiny(dag)
+```
+
+
+<p id="img"></p>
+
+
+<script>
+document.getElementById("img").innerHTML = "<img src='https://github.com/jokergoo/simona/assets/449218/999d2b33-2550-434e-a8cc-8a627b609c57' />"
+</script>
