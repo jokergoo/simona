@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.5</span>
       </span>
     </div>
 
@@ -105,7 +105,7 @@
       <h1 data-toc-skip>ontology_DAG: a class for ontology data</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2023-12-01</h4>
+            <h4 data-toc-skip class="date">2023-12-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/vignettes/v01_dag.Rmd" class="external-link"><code>vignettes/v01_dag.Rmd</code></a></small>
       <div class="hidden name"><code>v01_dag.Rmd</code></div>
@@ -241,11 +241,11 @@
 <code class="sourceCode R"><span><span class="va">dag2</span> <span class="op">=</span> <span class="fu"><a href="../reference/create_ontology_DAG.html">create_ontology_DAG</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a-b"</span>, <span class="st">"a-c"</span>, <span class="st">"a-d"</span>, <span class="st">"a-e"</span>, <span class="st">"a-f"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">dag3</span> <span class="op">=</span> <span class="fu"><a href="../reference/dag_reorder.html">dag_permutate_children</a></span><span class="op">(</span><span class="va">dag2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/dag_terms.html">dag_children</a></span><span class="op">(</span><span class="va">dag3</span>, <span class="st">"a"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "b" "c" "f" "d" "e"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "f" "c" "d" "e" "b"</span></span></code></pre>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dag3</span> <span class="op">=</span> <span class="fu"><a href="../reference/dag_reorder.html">dag_permutate_children</a></span><span class="op">(</span><span class="va">dag2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/dag_terms.html">dag_children</a></span><span class="op">(</span><span class="va">dag3</span>, <span class="st">"a"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "c" "b" "e" "f" "d"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "f" "b" "e" "c" "d"</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="distance">Distance<a class="anchor" aria-label="anchor" href="#distance"></a>
@@ -300,9 +300,9 @@
 <div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">=</span> <span class="fu"><a href="../reference/dag_as_igraph.html">dag_as_igraph</a></span><span class="op">(</span><span class="va">dag</span><span class="op">)</span></span>
 <span><span class="va">g</span></span></code></pre></div>
-<pre><code><span><span class="co">## IGRAPH a3f213c DN-- 6 6 -- </span></span>
+<pre><code><span><span class="co">## IGRAPH f116960 DN-- 6 6 -- </span></span>
 <span><span class="co">## + attr: name (v/c)</span></span>
-<span><span class="co">## + edges from a3f213c (vertex names):</span></span>
+<span><span class="co">## + edges from f116960 (vertex names):</span></span>
 <span><span class="co">## [1] a-&gt;b a-&gt;c b-&gt;c b-&gt;d c-&gt;e d-&gt;f</span></span></code></pre>
 <p>Draw the graph with a hierarchical graph layout:</p>
 <div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
@@ -541,7 +541,7 @@ dag_filter(dag, terms, relations, root, leaves)
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] igraph_1.5.1 simona_1.1.3 knitr_1.44  </span></span>
+<span><span class="co">## [1] igraph_1.5.1 simona_1.1.5 knitr_1.44  </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##  [1] sass_0.4.7            xml2_1.3.5            shape_1.4.6          </span></span>

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.5</span>
       </span>
     </div>
 
@@ -105,7 +105,7 @@
       <h1 data-toc-skip>Functional enrichment</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2023-12-01</h4>
+            <h4 data-toc-skip class="date">2023-12-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/vignettes/v10_enrichment.Rmd" class="external-link"><code>vignettes/v10_enrichment.Rmd</code></a></small>
       <div class="hidden name"><code>v10_enrichment.Rmd</code></div>
@@ -263,7 +263,7 @@
 <p>Note that the following functions may support different sets of organims. Please go to the documentations for the list.</p>
 <p><strong>Pathway Ontology</strong></p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="../reference/ontology.html">ontology_pw</a></span><span class="op">(</span><span class="st">"homo"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="../reference/ontology.html">ontology_pw</a></span><span class="op">(</span><span class="st">"human"</span><span class="op">)</span></span>
 <span><span class="va">dag</span></span></code></pre></div>
 <pre><code><span><span class="co">## An ontology_DAG object:</span></span>
 <span><span class="co">##   Source: pw, 7.82 </span></span>
@@ -284,13 +284,13 @@
 <p>Note that, in the pathway ontology, genes are saved in gene symbols.</p>
 <p><strong>Chemical Entities of Biological Interest</strong></p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="../reference/ontology.html">ontology_chebi</a></span><span class="op">(</span><span class="st">"homo"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="../reference/ontology.html">ontology_chebi</a></span><span class="op">(</span><span class="st">"human"</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Disease Ontology</strong></p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="../reference/ontology.html">ontology_rdo</a></span><span class="op">(</span><span class="st">"homo"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="../reference/ontology.html">ontology_rdo</a></span><span class="op">(</span><span class="st">"human"</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Vertebrate Trait Ontology</strong></p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="../reference/ontology.html">ontology_vt</a></span><span class="op">(</span><span class="st">"homo"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">dag</span> <span class="op">=</span> <span class="fu"><a href="../reference/ontology.html">ontology_vt</a></span><span class="op">(</span><span class="st">"human"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -318,7 +318,7 @@
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
 <span><span class="co">## [1] simplifyEnrichment_1.11.1 BiocGenerics_0.46.0      </span></span>
-<span><span class="co">## [3] ComplexHeatmap_2.16.0     simona_1.1.3             </span></span>
+<span><span class="co">## [3] ComplexHeatmap_2.16.0     simona_1.1.5             </span></span>
 <span><span class="co">## [5] knitr_1.44               </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
