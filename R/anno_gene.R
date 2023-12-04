@@ -19,16 +19,20 @@
 #' @export
 #' @importFrom utils data read.table
 #' @rdname ontology
-ontology_kw = function(organism = "human", ...) {
+ontology_kw = function(organism = "human", verbose = simona_opt$verbose, ...) {
 
 	check_pkg("UniProtKeywords", bioc = TRUE)
+
+	if(verbose) {
+		message("Obtaining ontology relations from the UniProtKeywords package...")
+	}
 	kw_parents = NULL
 	load(system.file("data", "kw_parents.rda", package = "UniProtKeywords"))
 
 	parents = unlist(kw_parents)
 	children = rep(names(kw_parents), times = sapply(kw_parents, length))
 
-	dag = create_ontology_DAG(parents, children, source = "UniProt Keywords", ...)
+	dag = create_ontology_DAG(parents, children, source = "UniProt Keywords", verbose = verbose, ...)
 
 	kw_terms = NULL
 	load(system.file("data", "kw_terms.rda", package = "UniProtKeywords"))
@@ -94,17 +98,34 @@ sus	vt	https://download.rgd.mcw.edu/ontology/annotated_rgd_objects_by_ontology/s
 "), header = TRUE)
 
 
+organism_map = c("human" = "homo",
+	             "mouse" = "mus",
+	             "rat" = "rattus",
+	             "pig" = "sus", 
+	             "dog" = "canis", 
+	             "chimpanzee" = "pan")
+
 #' @rdname ontology
 #' @export
 ontology_chebi = function(
-	organism = c("homo", "mus", "rattus", "sus", "canis"), ...) {
+	organism = c("human", "mouse", "rat", "pig", "dog"), 
+	verbose = simona_opt$verbose, ...) {
 	
 	organism = match.arg(organism)[1]
+	organism = organism_map[organism]
+
 	i = which(RGD_TB$org == organism & RGD_TB$onto == "chebi")
 	onto_url = RGD_TB$onto_url[i]
 	anno_url = RGD_TB$anno_url[i]
 
-	dag = import_ontology(onto_url, ...)
+	if(verbose) {
+		message(qq("Downloading ontology file from @{onto_url}..."))
+	}
+	dag = import_ontology(onto_url, verbose = verbose, ...)
+
+	if(verbose) {
+		message(qq("Downloading annotation file from @{anno_url}..."))
+	}
 	anno_tb = read.table(url(anno_url), comment.char = "!", sep = "\t", quote = "")
 	anno = split(anno_tb[[3]], anno_tb[[5]])
 
@@ -115,14 +136,23 @@ ontology_chebi = function(
 #' @rdname ontology
 #' @export
 ontology_hp = function(
-	organism = c("homo", "mus"), ...) {
+	organism = c("human", "mouse"), verbose = simona_opt$verbose, ...) {
 	
 	organism = match.arg(organism)[1]
+	organism = organism_map[organism]
+
 	i = which(RGD_TB$org == organism & RGD_TB$onto == "hp")
 	onto_url = RGD_TB$onto_url[i]
 	anno_url = RGD_TB$anno_url[i]
 
-	dag = import_ontology(onto_url, ...)
+	if(verbose) {
+		message(qq("Downloading ontology file from @{onto_url}..."))
+	}
+	dag = import_ontology(onto_url, verbose = verbose, ...)
+
+	if(verbose) {
+		message(qq("Downloading annotation file from @{anno_url}..."))
+	}
 	anno_tb = read.table(url(anno_url), comment.char = "!", sep = "\t", quote = "")
 	anno = split(anno_tb[[3]], anno_tb[[5]])
 
@@ -132,15 +162,24 @@ ontology_hp = function(
 #' @rdname ontology
 #' @export
 ontology_pw = function(
-	organism = c("homo", "mus", "rattus", "sus", "canis", "pan", "ictidomys",
-	             "chlorocebus", "heterocephalus", "chinchilla"), ...) {
+	organism = c("human", "mouse", "rat", "pig", "dog", "chimpanzee"),
+	verbose = simona_opt$verbose, ...) {
 	
 	organism = match.arg(organism)[1]
+	organism = organism_map[organism]
+
 	i = which(RGD_TB$org == organism & RGD_TB$onto == "pw")
 	onto_url = RGD_TB$onto_url[i]
 	anno_url = RGD_TB$anno_url[i]
 
-	dag = import_ontology(onto_url, ...)
+	if(verbose) {
+		message(qq("Downloading ontology file from @{onto_url}..."))
+	}
+	dag = import_ontology(onto_url, verbose = verbose, ...)
+
+	if(verbose) {
+		message(qq("Downloading annotation file from @{anno_url}..."))
+	}
 	anno_tb = read.table(url(anno_url), comment.char = "!", sep = "\t", quote = "")
 	anno = split(anno_tb[[3]], anno_tb[[5]])
 
@@ -150,15 +189,24 @@ ontology_pw = function(
 #' @rdname ontology
 #' @export
 ontology_rdo = function(
-	organism = c("homo", "mus", "rattus", "sus", "canis", "pan", "ictidomys",
-	             "chlorocebus", "heterocephalus", "chinchilla"), ...) {
+	organism = c("human", "mouse", "rat", "pig", "dog", "chimpanzee"),
+	verbose = simona_opt$verbose, ...) {
 	
 	organism = match.arg(organism)[1]
+	organism = organism_map[organism]
+
 	i = which(RGD_TB$org == organism & RGD_TB$onto == "rdo")
 	onto_url = RGD_TB$onto_url[i]
 	anno_url = RGD_TB$anno_url[i]
 
-	dag = import_ontology(onto_url, ...)
+	if(verbose) {
+		message(qq("Downloading ontology file from @{onto_url}..."))
+	}
+	dag = import_ontology(onto_url, verbose = verbose, ...)
+
+	if(verbose) {
+		message(qq("Downloading annotation file from @{anno_url}..."))
+	}
 	anno_tb = read.table(url(anno_url), comment.char = "!", sep = "\t", quote = "")
 	anno = split(anno_tb[[3]], anno_tb[[5]])
 
@@ -168,17 +216,34 @@ ontology_rdo = function(
 #' @rdname ontology
 #' @export
 ontology_vt = function(
-	organism = c("homo", "mus", "rattus", "sus", "canis", "pan", "ictidomys",
-	             "chlorocebus", "heterocephalus", "chinchilla"), ...) {
+	organism = c("human", "mouse", "rat", "pig", "dog", "chimpanzee"),
+	verbose = simona_opt$verbose, ...) {
 	
 	organism = match.arg(organism)[1]
+	organism = organism_map[organism]
+
 	i = which(RGD_TB$org == organism & RGD_TB$onto == "vt")
 	onto_url = RGD_TB$onto_url[i]
 	anno_url = RGD_TB$anno_url[i]
 
-	dag = import_ontology(onto_url, ...)
+	if(verbose) {
+		message(qq("Downloading ontology file from @{onto_url}..."))
+	}
+	dag = import_ontology(onto_url, verbose = verbose, ...)
+
+	if(verbose) {
+		message(qq("Downloading annotation file from @{anno_url}..."))
+	}
 	anno_tb = read.table(url(anno_url), comment.char = "!", sep = "\t", quote = "")
 	anno = split(anno_tb[[3]], anno_tb[[5]])
 
 	add_annotation(dag, anno)
+}
+
+#' @details
+#' `ontology_go()` is an alias of [`create_ontology_DAG_from_GO_db()`]. All arguments go there.
+#' @rdname ontology
+#' @export
+ontology_go = function(...) {
+	create_ontology_DAG_from_GO_db(...)
 }

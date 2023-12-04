@@ -7,7 +7,7 @@ output:
     css: main.css
     toc: true
 vignette: >
-  %\VignetteIndexEntry{4. Information content}
+  %\VignetteIndexEntry{04. Information content}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

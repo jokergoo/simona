@@ -7,7 +7,7 @@ output:
     css: main.css
     toc: true
 vignette: >
-  %\VignetteIndexEntry{8. Random DAGs}
+  %\VignetteIndexEntry{08. Random DAGs}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -7,7 +7,7 @@ output:
     css: main.css
     toc: true
 vignette: >
-  %\VignetteIndexEntry{9. Shiny app}
+  %\VignetteIndexEntry{09. Shiny app}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -7,7 +7,7 @@ output:
     css: main.css
     toc: true
 vignette: >
-  %\VignetteIndexEntry{6. Similarity between two groups of terms}
+  %\VignetteIndexEntry{06. Similarity between two groups of terms}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

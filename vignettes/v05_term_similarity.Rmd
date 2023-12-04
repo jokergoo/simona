@@ -7,7 +7,7 @@ output:
     css: main.css
     toc: true
 vignette: >
-  %\VignetteIndexEntry{5. Term similarity}
+  %\VignetteIndexEntry{05. Term similarity}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

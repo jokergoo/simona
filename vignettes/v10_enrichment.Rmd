@@ -174,7 +174,7 @@ Note that the following functions may support different sets of organims. Please
 **Pathway Ontology**
 
 ```{r}
-dag = ontology_pw("homo")
+dag = ontology_pw("human")
 dag
 ```
 
@@ -183,19 +183,19 @@ Note that, in the pathway ontology, genes are saved in gene symbols.
 **Chemical Entities of Biological Interest**
 
 ```{r, eval = FALSE}
-dag = ontology_chebi("homo")
+dag = ontology_chebi("human")
 ```
 
 **Disease Ontology**
 
 ```{r, eval = FALSE}
-dag = ontology_rdo("homo")
+dag = ontology_rdo("human")
 ```
 
 **Vertebrate Trait Ontology**
 
 ```{r, eval = FALSE}
-dag = ontology_vt("homo")
+dag = ontology_vt("human")
 ```
 
 ## Session info

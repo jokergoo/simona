@@ -7,7 +7,7 @@ output:
     css: main.css
     toc: true
 vignette: >
-  %\VignetteIndexEntry{1. ontology_DAG: a class for ontology data}
+  %\VignetteIndexEntry{01. ontology_DAG: a class for ontology data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

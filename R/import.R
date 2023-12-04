@@ -141,6 +141,7 @@ import_obo = function(file, relation_type = character(0), inherit_relations = TR
 	
 	if(dag_root(dag) == SUPER_ROOT) {
 		term_meta$id[dag@root] = SUPER_ROOT
+		term_meta$name[dag@root] = SUPER_ROOT
 		term_meta$short_id[dag@root] = SUPER_ROOT
 	}
 
@@ -511,6 +512,7 @@ import_owl = function(file, relation_type = character(0), inherit_relations = TR
 	
 	if(dag_root(dag) == SUPER_ROOT) {
 		term_meta$id[dag@root] = SUPER_ROOT
+		term_meta$name[dag@root] = SUPER_ROOT
 		term_meta$short_id[dag@root] = SUPER_ROOT
 	}
 	
@@ -661,6 +663,7 @@ import_ttl = function(file, relation_type = "part_of", verbose = simona_opt$verb
 
 	if(dag_root(dag) == SUPER_ROOT) {
 		term_meta$id[dag@root] = SUPER_ROOT
+		term_meta$name[dag@root] = SUPER_ROOT
 		term_meta$short_id[dag@root] = SUPER_ROOT
 	}
 	

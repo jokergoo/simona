@@ -7,31 +7,38 @@
 \alias{ontology_pw}
 \alias{ontology_rdo}
 \alias{ontology_vt}
+\alias{ontology_go}
 \title{Import ontologies already having gene annotations}
 \usage{
-ontology_kw(organism = "human", ...)
+ontology_kw(organism = "human", verbose = simona_opt$verbose, ...)
 
-ontology_chebi(organism = c("homo", "mus", "rattus", "sus", "canis"), ...)
+ontology_chebi(
+  organism = c("human", "mouse", "rat", "pig", "dog"),
+  verbose = simona_opt$verbose,
+  ...
+)
 
-ontology_hp(organism = c("homo", "mus"), ...)
+ontology_hp(organism = c("human", "mouse"), verbose = simona_opt$verbose, ...)
 
 ontology_pw(
-  organism = c("homo", "mus", "rattus", "sus", "canis", "pan", "ictidomys",
-    "chlorocebus", "heterocephalus", "chinchilla"),
+  organism = c("human", "mouse", "rat", "pig", "dog", "chimpanzee"),
+  verbose = simona_opt$verbose,
   ...
 )
 
 ontology_rdo(
-  organism = c("homo", "mus", "rattus", "sus", "canis", "pan", "ictidomys",
-    "chlorocebus", "heterocephalus", "chinchilla"),
+  organism = c("human", "mouse", "rat", "pig", "dog", "chimpanzee"),
+  verbose = simona_opt$verbose,
   ...
 )
 
 ontology_vt(
-  organism = c("homo", "mus", "rattus", "sus", "canis", "pan", "ictidomys",
-    "chlorocebus", "heterocephalus", "chinchilla"),
+  organism = c("human", "mouse", "rat", "pig", "dog", "chimpanzee"),
+  verbose = simona_opt$verbose,
   ...
 )
+
+ontology_go(...)
 }
 \arguments{
 \item{organism}{Organism.}
@@ -53,4 +60,6 @@ There are the following ontologies:
 }
 
 The source of the original files can be found with \code{simona:::RGD_TB}.
+
+\code{ontology_go()} is an alias of \code{\link[=create_ontology_DAG_from_GO_db]{create_ontology_DAG_from_GO_db()}}. All arguments go there.
 }
