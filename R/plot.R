@@ -631,7 +631,20 @@ dag_as_DOT = function(dag, node_param = default_node_param,
 		""
 	)
 
-	paste(DOT, collapse = "\n")
+	dot = paste(DOT, collapse = "\n")
+	class(dot) = "print_source"
+	dot
+}
+
+#' Print the source
+#' 
+#' @param x An object in the `print_source` class.
+#' @param ... Other arguments.
+#' 
+#' @details
+#' Internally used.
+print.print_source = function(x, ...) {
+	cat(x)
 }
 
 #' @param ... Pass to [`DiagrammeR::grViz()`].

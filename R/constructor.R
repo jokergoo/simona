@@ -313,6 +313,20 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 	return(dag)
 }
 
+singleton_ontology = function(term) {
+	ontology_DAG(
+		terms = term,
+		n_terms = 1L,
+		n_relations = 0L,
+		lt_parents = list(integer(0)),
+		lt_children = list(integer(0)),
+		source = "singleton",
+		root = 1L,
+		leaves = 1L,
+		term_env = new.env(parent = emptyenv())
+	)
+}
+
 add_annotation = function(dag, annotation) {
 	if(!is.null(annotation)) {
 		annotation = lapply(annotation, as.character)
@@ -379,13 +393,15 @@ setMethod("show",
 			cat("  Max depth:", max(depth), "\n")
 		}
 
-		if(n_terms == n_relations + 1) {
-			cat("  Aspect ratio: ", object@aspect_ratio[1], ":1\n", sep = "")
-		} else {
-			cat("  Avg number of parents: ", sprintf("%.2f", mean(n_parents(object)[-dag_root(object, in_labels = FALSE)])), "\n", sep = "")
-			cat("  Avg number of children: ", sprintf("%.2f", mean(n_parents(object)[-dag_leaves(object, in_labels = FALSE)])), "\n", sep = "")
-			cat("  Aspect ratio: ", object@aspect_ratio[1], ":1 (based on the longest distance from root)\n", sep = "")
-			cat("                ", object@aspect_ratio[2], ":1 (based on the shortest distance from root)\n", sep = "")
+		if(n_terms > 1) {
+			if(n_terms == n_relations + 1) {
+				cat("  Aspect ratio: ", object@aspect_ratio[1], ":1\n", sep = "")
+			} else {
+				cat("  Avg number of parents: ", sprintf("%.2f", mean(n_parents(object)[-dag_root(object, in_labels = FALSE)])), "\n", sep = "")
+				cat("  Avg number of children: ", sprintf("%.2f", mean(n_parents(object)[-dag_leaves(object, in_labels = FALSE)])), "\n", sep = "")
+				cat("  Aspect ratio: ", object@aspect_ratio[1], ":1 (based on the longest distance from root)\n", sep = "")
+				cat("                ", object@aspect_ratio[2], ":1 (based on the shortest distance from root)\n", sep = "")
+			}
 		}
 
 		if(length(object@lt_children_relations)) {
@@ -693,6 +709,8 @@ setMethod("mcols<-",
 			}
 		}
 	}
+
+	rownames(df) = x@terms
 
 	x@elementMetadata = df
 	invisible(x)

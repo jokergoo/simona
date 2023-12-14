@@ -49,7 +49,12 @@ test_that("test sub-DAG", {
 		c("b", "c", "d", "e", "f")
 	)
 	expect_error(
-		dag["f"]
+		dag["l"]
+	)
+
+	expect_identical(
+		dag["f"]@terms, 
+		"~~singleton~~"
 	)
 })
 

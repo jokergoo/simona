@@ -43,6 +43,8 @@ ontology_go(...)
 \arguments{
 \item{organism}{Organism.}
 
+\item{verbose}{Whether to print messages?}
+
 \item{...}{Pass to \code{\link[=create_ontology_DAG]{create_ontology_DAG()}}.}
 }
 \description{

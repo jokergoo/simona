@@ -13,7 +13,7 @@ vignette: >
 ---
 
 
-The function `dag_shiny()` generates a Shiny application that allows interactive analysis on the ontology.
+The function `dag_shiny()` generates a Shiny application that allows interactive manipulation on the ontology.
 
 ```{r, eval = FALSE}
 library(simona)

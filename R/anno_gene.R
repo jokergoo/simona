@@ -2,6 +2,7 @@
 #' Import ontologies already having gene annotations
 #' 
 #' @param organism Organism.
+#' @param verbose Whether to print messages?
 #' @param ... Pass to [`create_ontology_DAG()`].
 #' 
 #' @details

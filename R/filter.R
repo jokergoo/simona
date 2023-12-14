@@ -106,6 +106,10 @@ dag_filter = function(dag, terms = NULL, relations = NULL, root = NULL, leaves =
 		}
 	}
 
+	if(!any(l)) {
+		return(singleton_ontology("~~singleton~~"))
+	}
+
 	parents = parents[l]
 	children = children[l]
 	if(!is.null(v_relations)) {

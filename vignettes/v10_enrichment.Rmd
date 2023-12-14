@@ -43,7 +43,7 @@ and functions to integrate the ORA results with semantic similarity analysis.
 
 To add gene annotations for GO, just set the name of the "org.db" package for the specific organism.
 For example "org.Hs.eg.db" for human and "org.Mm.eg.db" for mouse. The full list of supported
-"org.db" packages can be found at https://bioconductor.org/packages/release/BiocViews.html#___AnnotationData (search `org.`).
+"org.db" packages can be found at https://bioconductor.org/packages/release/BiocViews.html#___AnnotationData (search `"org."`).
 
 ```{r}
 library(simona)
@@ -57,7 +57,7 @@ the input gene list should also be in the EntreZ ID type.
 We generate a list of random genes for testing:
 
 ```{r}
-set.seed(123)
+set.seed(888)
 genes = random_items(dag, 500)
 head(genes)
 ```
@@ -73,7 +73,7 @@ head(tb)
 We can take the significant GO terms and look at their semantic similarities. 
 
 ```{r}
-top_go_ids = tb$term[1:100]
+top_go_ids = tb$term[1:200]
 mat = term_sim(dag, top_go_ids)
 ```
 
@@ -180,10 +180,25 @@ dag
 
 Note that, in the pathway ontology, genes are saved in gene symbols.
 
+To perform enrichment analysis on the pathway ontology:
+
+```{r, eval = FALSE}
+# `genes` must be in symbols
+tb = dag_enrich_on_genes(dag, genes)
+```
+
+
 **Chemical Entities of Biological Interest**
 
 ```{r, eval = FALSE}
 dag = ontology_chebi("human")
+```
+
+To perform enrichment analysis on CheBi:
+
+```{r, eval = FALSE}
+# `genes` must be in symbols
+tb = dag_enrich_on_genes(dag, genes)
 ```
 
 **Disease Ontology**
@@ -192,10 +207,24 @@ dag = ontology_chebi("human")
 dag = ontology_rdo("human")
 ```
 
+To perform enrichment analysis on the disease ontology:
+
+```{r, eval = FALSE}
+# `genes` must be in symbols
+tb = dag_enrich_on_genes(dag, genes)
+```
+
 **Vertebrate Trait Ontology**
 
 ```{r, eval = FALSE}
 dag = ontology_vt("human")
+```
+
+To perform enrichment analysis on the vertebrate trait ontology:
+
+```{r, eval = FALSE}
+# `genes` must be in symbols
+tb = dag_enrich_on_genes(dag, genes)
 ```
 
 ## Session info
