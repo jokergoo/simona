@@ -62,7 +62,7 @@ So the default call of `dag_random_tree()` is identical to:
 dag_random_tree(n_children = 2, p_stop = 0, max = 2^10 - 1)
 ```
 
-We can these arguments to some other values, such as:
+We can change these arguments to some other values, such as:
 
 ```{r}
 tree2 = dag_random_tree(n_children = c(2, 6), p_stop = 0.5, max = 2000)

@@ -157,6 +157,19 @@ dag_circular_viz(dag, highlight = sig_go_ids, reorder_level = 3,
 ![image](https://github.com/jokergoo/simona/assets/449218/ada30534-182e-4513-93bf-9819e84b8604)
 
 
+## Vignettes
+
+- [01. ontology_DAG: a class for ontology data](https://jokergoo.github.io/simona/articles/v01_dag.html)
+- [02. Gene Ontology](https://jokergoo.github.io/simona/articles/v02_GO.html)
+- [03. Import ontology files](https://jokergoo.github.io/simona/articles/v03_import.html)
+- [04. Information content](https://jokergoo.github.io/simona/articles/v04_information_content.html)
+- [05. Term similarity](https://jokergoo.github.io/simona/articles/v05_term_similarity.html)
+- [06. Similarity between two groups of terms](https://jokergoo.github.io/simona/articles/v06_group_similarity.html)
+- [07. Visualize DAGs](https://jokergoo.github.io/simona/articles/v07_dag_visualization.html)
+- [08. Random DAGs](https://jokergoo.github.io/simona/articles/v08_random.html)
+- [09. Shiny app](https://jokergoo.github.io/simona/articles/v09_shiny.html)
+- [10. Functional enrichment](https://jokergoo.github.io/simona/articles/v10_enrichment.html)
+
 ## License
 
 MIT @ Zuguang Gu

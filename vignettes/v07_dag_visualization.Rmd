@@ -97,7 +97,7 @@ the same, but there must be spaces before and after the arrow.
 "a -> b"  = "red"
 "a <- b"  = "red"
 "b -> a"  = "red"
-"b <- a". = "red"
+"b <- a"  = "red"
 "a <-> b" = "red"
 "a - b"   = "red"
 ```
