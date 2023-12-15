@@ -39,6 +39,8 @@ List cpp_permutate_children(List lt_children) {
 	return lt_children2;
 }
 
+
+// ---------------------------------------------------------
 // we have a complete DAG and a reduced tree, the force comes from the additional links in DAG while not in tree,
 // the force on a node is defined as the total force from additional links applied to the sub-tree rooted by the node.
 //
