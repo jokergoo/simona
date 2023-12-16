@@ -13,6 +13,11 @@ of the paper ["Mazandu et al., Gene Ontology semantic similarity tools: survey
 on features and challenges for biological knowledge discovery. Briefings in
 Bioinformatics 2017"](https://doi.org/10.1093/bib/bbw067).
 
+## Citation
+
+simona: a Comprehensive R package for Semantic Similarity Analysis on Bio-Ontologies
+Z Gu - bioRxiv, 2023. https://doi.org/10.1101/2023.12.03.569758
+
 ## Install
 
 **simona** is available on [Bioconductor](https://bioconductor.org/packages/release/bioc/html/simona.html).

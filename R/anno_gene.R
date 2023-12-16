@@ -33,10 +33,16 @@ ontology_kw = function(organism = "human", verbose = simona_opt$verbose, ...) {
 	parents = unlist(kw_parents)
 	children = rep(names(kw_parents), times = sapply(kw_parents, length))
 
-	dag = create_ontology_DAG(parents, children, source = "UniProt Keywords", verbose = verbose, ...)
-
 	kw_terms = NULL
 	load(system.file("data", "kw_terms.rda", package = "UniProtKeywords"))
+
+	id = sapply(kw_terms, function(x) x$Identifier)
+	accession = sapply(kw_terms, function(x) x$Accession)
+	map = structure(accession, names = id)
+	parents = map[parents]
+	children = map[children]
+
+	dag = create_ontology_DAG(parents, children, source = "UniProt Keywords", verbose = verbose, ...)
 
 	meta = data.frame(
 		id = sapply(kw_terms, function(x) x$Identifier),
@@ -45,13 +51,14 @@ ontology_kw = function(organism = "human", verbose = simona_opt$verbose, ...) {
 		description = sapply(kw_terms, function(x) x$Description),
 		category = sapply(kw_terms, function(x) paste(x$Category, collapse = "; "))
 	)
-	rownames(meta) = meta$id
+	rownames(meta) = meta$accession
 	meta = meta[dag@terms, ]
 	rownames(meta)[nrow(meta)] = SUPER_ROOT
 
 	mcols(dag) = meta
 
 	annotation = UniProtKeywords::load_keyword_genesets(organism)
+	names(annotation) = map[names(annotation)]
 	add_annotation(dag, annotation)
 
 }

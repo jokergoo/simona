@@ -208,8 +208,10 @@ dag_enrich_on_offsprings_by_permutation = function(dag, value, perm = 1000, min_
 #' 
 #' - `term`: Term names.
 #' - `n_hits`: Number of items in `items` intersecting to `t`'s annotated items.
-#' - `n_anno`: Number of annotated items of `t`.
-#' - `n_items`: Number of items in `items` intersecting to all annotated items in the DAG.
+#' - `n_anno`: Number of annotated items of `t`. Specifically for `dag_enrich_on_genes()`, this column
+#'             is renamed to `n_gs`.
+#' - `n_items`: Number of items in `items` intersecting to all annotated items in the DAG. Specifically
+#'             for `dag_enrich_on_genes()`, this column is renamed to `n_genes`.
 #' - `n_all`: Number of all annotated items in the DAG.
 #' - `log2_fold_enrichment`: Defined as log2(observation/expected).
 #' - `z_score`: Defined as (observed-expected)/sd.
@@ -269,7 +271,10 @@ dag_enrich_on_items = function(dag, items, min_hits = 5, min_items = 10) {
 #' @rdname dag_enrich_on_items
 #' @export
 dag_enrich_on_genes = function(dag, genes, min_hits = 5, min_genes = 10) {
-	dag_enrich_on_items(dag, genes, min_hits = min_hits, min_items = min_genes)
+	df = dag_enrich_on_items(dag, genes, min_hits = min_hits, min_items = min_genes)
+	colnames(df)[colnames(df) == "n_items"]  = "n_genes"
+	colnames(df)[colnames(df) == "n_anno"]  = "n_gs"
+	df
 }
 
 #' Randomly sample terms/items
