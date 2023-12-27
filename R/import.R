@@ -564,11 +564,13 @@ import_ontology = function(file, robot_jar = simona_opt$robot_jar, JAVA_ARGS = "
 	}
 
 	if(is.null(robot_jar)) {
-		stop_wrap("'robot.jar' has not been set. It can be downloaded from https://github.com/ontodev/robot/releases and set by simona_opt$robot_jar = ...")
+		message("`robot_jar` was not set. Download `robot.jar` from GitHub...")
+		download_robot()
+		# stop_wrap("'robot.jar' has not been set. It can be downloaded from https://github.com/ontodev/robot/releases and set by simona_opt$robot_jar = ...")
 	}
 
 	if(!file.exists(robot_jar)) {
-		stop_wrap("Cannot find 'robot.jar'. It can be downloaded from https://github.com/ontodev/robot/releases and set by simona_opt$robot_jar = ...")
+		stop_wrap(paste0("Cannot find '", robot_jar, "'. It can be downloaded from https://github.com/ontodev/robot/releases and set by simona_opt$robot_jar = ..."))
 	}
 	robot_jar = normalizePath(robot_jar)
 
@@ -680,3 +682,21 @@ import_ttl = function(file, relation_type = "part_of", verbose = simona_opt$verb
 
 	dag
 }
+
+
+download_robot = function() {
+
+	check_pkg("jsonlite", bioc = FALSE)
+
+	tb = jsonlite::fromJSON("https://api.github.com/repos/ontodev/robot/releases")
+	id = tb[1, "id"]
+
+	tb = jsonlite::fromJSON(paste0("https://api.github.com/repos/ontodev/robot/releases/", id, "/assets"))
+	url = tb[1, "browser_download_url"]
+
+
+	temp = tempfile(pattern = "robot_temp_", fileext = ".jar")
+	download.file(url, destfile = temp)
+	simona_opt$robot_jar = temp
+}
+

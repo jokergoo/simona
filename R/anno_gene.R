@@ -237,7 +237,7 @@ ontology_vt = function(
 	if(verbose) {
 		message(qq("Downloading ontology file from @{onto_url}..."))
 	}
-	dag = import_ontology(onto_url, verbose = verbose, ...)
+	dag = import_owl(onto_url, verbose = verbose, ...)
 
 	if(verbose) {
 		message(qq("Downloading annotation file from @{anno_url}..."))

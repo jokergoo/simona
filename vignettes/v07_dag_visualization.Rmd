@@ -173,13 +173,62 @@ dag_circular_viz(tree)
 ```
 
 One useful application is to map GO terms of interest (e.g. significant GO terms
-from function enrichment analysis) to the DAG. In the following example, `sig_go_ids`
-contains 249 significant GO terms from an enrichment analysis.
+from function enrichment analysis) to the DAG. In the following example, `go_tb`
+contains GO terms from an enrichment analysis.
 
 ```{r, fig.width = 10, fig.height = 7}
-sig_go_ids = readRDS(system.file("extdata", "sig_go_ids.rds", package = "simona"))
+go_tb = readRDS(system.file("extdata", "sig_go_tb.rds", package = "simona"))
+sig_go_ids = go_tb$ID[go_tb$p.adjust < 0.01]
 dag_circular_viz(dag, highlight = sig_go_ids)
 ```
+
+In the next example, we will map `-log10(p.adjust)` to the node size.
+
+```{r}
+p.adjust = go_tb$p.adjust[go_tb$p.adjust < 0.01]
+```
+
+`dag_circular_viz()` has a `node_size` argument which allows to set node sizes for terms, thus,
+we only need to calculate node sizes by the adjusted p-values.
+
+In the following code, we defined a simple `node_size_fun()` function that
+linearly interpolates values to node sizes within [2, 10].
+
+```{r}
+node_size_fun = function(x, range = c(2, 10)) {
+    s = (range[2] - range[1])/(quantile(x, 0.95) - min(x)) * (x - min(x)) + range[1]
+    s[s > range[2]] = range[2]
+    s
+}
+```
+
+We also generate a legend for the node sizes:
+
+```{r}
+library(ComplexHeatmap)
+lgd = Legend(title = "p.adjust", at = -log10(c(0.01, 0.001, 0.0001)), 
+    labels = c("0.01", "0.001", "0.0001"), type = "points",
+    size = unit(node_size_fun(-log10(c(0.01, 0.001, 0.0001))), "pt"))
+```
+
+Calculate node sizes:
+
+```{r}
+node_size = rep(2, dag_n_terms(dag))
+names(node_size) = dag_all_terms(dag)
+node_size[sig_go_ids] = node_size_fun(-log10(p.adjust))
+```
+
+And finally make the circular plot:
+
+```{r, fig.width = 10, fig.height = 7}
+dag_circular_viz(dag, 
+    highlight = sig_go_ids,
+    node_size = node_size,
+    edge_transparency = 0.92, 
+    other_legends = lgd)
+```
+
 
 ## Session Info
 
