@@ -49,9 +49,9 @@ all_term_IC_methods = function(require_anno = NULL) {
 	if(is.null(require_anno)) {
 		names(.ALL_IC_METHODS)
 	} else if(require_anno) {
-		names(.ALL_IC_METHODS)[vapply(.ALL_IC_METHODS, function(x) attr(x, "use_anno"), FUN.VALUE = character(1))]
+		names(.ALL_IC_METHODS)[vapply(.ALL_IC_METHODS, function(x) attr(x, "require_anno"), FUN.VALUE = logical(1))]
 	} else {
-		names(.ALL_IC_METHODS)[!vapply(.ALL_IC_METHODS, function(x) attr(x, "use_anno"), FUN.VALUE = character(1))]
+		names(.ALL_IC_METHODS)[!vapply(.ALL_IC_METHODS, function(x) attr(x, "require_anno"), FUN.VALUE = logical(1))]
 	}
 }
 
@@ -61,9 +61,9 @@ all_term_sim_methods = function(require_anno = NULL) {
 	if(is.null(require_anno)) {
 		names(.ALL_TERM_SIM_METHODS)
 	} else if(require_anno) {
-		names(.ALL_TERM_SIM_METHODS)[vapply(.ALL_TERM_SIM_METHODS, function(x) attr(x, "use_anno"), FUN.VALUE = character(1))]
+		names(.ALL_TERM_SIM_METHODS)[vapply(.ALL_TERM_SIM_METHODS, function(x) attr(x, "require_anno"), FUN.VALUE = logical(1))]
 	} else {
-		names(.ALL_TERM_SIM_METHODS)[!vapply(.ALL_TERM_SIM_METHODS, function(x) attr(x, "use_anno"), FUN.VALUE = character(1))]
+		names(.ALL_TERM_SIM_METHODS)[!vapply(.ALL_TERM_SIM_METHODS, function(x) attr(x, "require_anno"), FUN.VALUE = logical(1))]
 	}
 }
 
@@ -73,9 +73,9 @@ all_group_sim_methods = function(require_anno = NULL) {
 	if(is.null(require_anno)) {
 		names(.ALL_GROUP_SIM_METHODS)
 	} else if(require_anno) {
-		names(.ALL_GROUP_SIM_METHODS)[vapply(.ALL_GROUP_SIM_METHODS, function(x) attr(x, "use_anno"), FUN.VALUE = character(1))]
+		names(.ALL_GROUP_SIM_METHODS)[vapply(.ALL_GROUP_SIM_METHODS, function(x) attr(x, "require_anno"), FUN.VALUE = logical(1))]
 	} else {
-		names(.ALL_GROUP_SIM_METHODS)[!vapply(.ALL_GROUP_SIM_METHODS, function(x) attr(x, "use_anno"), FUN.VALUE = character(1))]
+		names(.ALL_GROUP_SIM_METHODS)[!vapply(.ALL_GROUP_SIM_METHODS, function(x) attr(x, "require_anno"), FUN.VALUE = logical(1))]
 	}
 }
 
