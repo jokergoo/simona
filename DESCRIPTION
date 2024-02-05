@@ -1,8 +1,8 @@
 Package: simona
 Type: Package
 Title: Semantic Similarity in Bio-Ontologies
-Version: 1.1.8
-Date: 2024-01-18
+Version: 1.1.10
+Date: 2024-02-05
 Authors@R: person("Zuguang", "Gu", email = "z.gu@dkfz.de", role = c("aut", "cre"),
                   comment = c('ORCID'="0000-0002-7395-8709"))
 Depends: R (>= 4.1.0)
@@ -11,7 +11,7 @@ Imports: methods, Rcpp, matrixStats, GetoptLong, grid, GlobalOptions,
          grDevices, stats, utils, shiny
 Suggests: knitr, testthat, BiocManager, GO.db, org.Hs.eg.db, proxyC, AnnotationDbi,
           Matrix, DiagrammeR, ragg, png, InteractiveComplexHeatmap, UniProtKeywords,
-          simplifyEnrichment, AnnotationHub
+          simplifyEnrichment, AnnotationHub, jsonlite
 LinkingTo: Rcpp
 VignetteBuilder: knitr
 Description: This package implements infrastructures for ontology analysis by offering 

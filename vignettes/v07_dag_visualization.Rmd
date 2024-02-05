@@ -179,6 +179,8 @@ contains GO terms from an enrichment analysis.
 ```{r, fig.width = 10, fig.height = 7}
 go_tb = readRDS(system.file("extdata", "sig_go_tb.rds", package = "simona"))
 sig_go_ids = go_tb$ID[go_tb$p.adjust < 0.01]
+# make sure `sig_go_ids` all in current GO.db version
+sig_go_ids = intersect(sig_go_ids, dag_all_terms(dag))
 dag_circular_viz(dag, highlight = sig_go_ids)
 ```
 
