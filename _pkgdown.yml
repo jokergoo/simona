@@ -1,1 +1,34 @@
 destination: docs
+
+navbar:
+  title: "simona"
+  left:
+    - text: "Articles"
+      menu:
+        - text: "ontology_DAG: a class for ontology data"
+          href: articles/v01_dag.html
+        - text: "Gene Ontology"
+          href: articles/v02_GO.html
+        - text: "Import ontology files"
+          href: articles/v03_import.html
+        - text: "Information content"
+          href: articles/v04_information_content.html
+        - text: "Term similarity"
+          href: articles/v05_term_similarity.html
+        - text: "Similarity between two groups of terms"
+          href: articles/v06_group_similarity.html
+        - text: "Visualize DAGs"
+          href: articles/v07_dag_visualization.html
+        - text: "Random DAGs"
+          href: articles/v08_random.html
+        - text: "Shiny app"
+          href: articles/v09_shiny.html
+        - text: "Functional enrichment"
+          href: articles/v10_enrichment.html
+    - text: "Reference"
+      href: reference/index.html
+
+
+template:
+  includes:
+    after_body: "<style>nav[data-toggle='toc'] .nav .nav {display: block;}</style>"

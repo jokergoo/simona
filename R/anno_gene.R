@@ -106,6 +106,21 @@ sus	vt	https://download.rgd.mcw.edu/ontology/annotated_rgd_objects_by_ontology/s
 "), header = TRUE)
 
 
+read_table_from_url = function(url, ...) {
+	con = url(url)
+	oe = try(res <- read.table(con, ...), silent = TRUE)
+
+	if(inherits(oe, "try-error")) {
+		if(grepl("Timeout", oe)) {
+			stop_wrap(qq("URL '@{url}': Timeout of 60 seconds was reached. Please increase `options(timeout = ...)`."))
+		} else {
+			stop(oe)
+		}
+	} else {
+		return(res)
+	}
+}
+
 organism_map = c("human" = "homo",
 	             "mouse" = "mus",
 	             "rat" = "rattus",
@@ -134,7 +149,7 @@ ontology_chebi = function(
 	if(verbose) {
 		message(qq("Downloading annotation file from @{anno_url}..."))
 	}
-	anno_tb = read.table(url(anno_url), comment.char = "!", sep = "\t", quote = "")
+	anno_tb = read_table_from_url(anno_url, comment.char = "!", sep = "\t", quote = "")
 	anno = split(anno_tb[[3]], anno_tb[[5]])
 
 	add_annotation(dag, anno)
@@ -161,7 +176,7 @@ ontology_hp = function(
 	if(verbose) {
 		message(qq("Downloading annotation file from @{anno_url}..."))
 	}
-	anno_tb = read.table(url(anno_url), comment.char = "!", sep = "\t", quote = "")
+	anno_tb = read_table_from_url(anno_url, comment.char = "!", sep = "\t", quote = "")
 	anno = split(anno_tb[[3]], anno_tb[[5]])
 
 	add_annotation(dag, anno)
@@ -188,7 +203,7 @@ ontology_pw = function(
 	if(verbose) {
 		message(qq("Downloading annotation file from @{anno_url}..."))
 	}
-	anno_tb = read.table(url(anno_url), comment.char = "!", sep = "\t", quote = "")
+	anno_tb = read_table_from_url(anno_url, comment.char = "!", sep = "\t", quote = "")
 	anno = split(anno_tb[[3]], anno_tb[[5]])
 
 	add_annotation(dag, anno)
@@ -215,7 +230,7 @@ ontology_rdo = function(
 	if(verbose) {
 		message(qq("Downloading annotation file from @{anno_url}..."))
 	}
-	anno_tb = read.table(url(anno_url), comment.char = "!", sep = "\t", quote = "")
+	anno_tb = read_table_from_url(anno_url, comment.char = "!", sep = "\t", quote = "")
 	anno = split(anno_tb[[3]], anno_tb[[5]])
 
 	add_annotation(dag, anno)
@@ -242,7 +257,7 @@ ontology_vt = function(
 	if(verbose) {
 		message(qq("Downloading annotation file from @{anno_url}..."))
 	}
-	anno_tb = read.table(url(anno_url), comment.char = "!", sep = "\t", quote = "")
+	anno_tb = read_table_from_url(anno_url, comment.char = "!", sep = "\t", quote = "")
 	anno = split(anno_tb[[3]], anno_tb[[5]])
 
 	add_annotation(dag, anno)

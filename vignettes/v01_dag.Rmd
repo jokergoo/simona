@@ -2,14 +2,7 @@
 title: "ontology_DAG: a class for ontology data"
 author: "Zuguang Gu ( z.gu@dkfz.de )"
 date: '`r Sys.Date()`'
-output: 
-  html_vignette:
-    css: main.css
-    toc: true
-vignette: >
-  %\VignetteIndexEntry{01. ontology_DAG: a class for ontology data}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: html_vignette
 ---
 
 ```{r, echo = FALSE, message = FALSE}

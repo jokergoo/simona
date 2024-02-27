@@ -33,15 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.12</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
@@ -81,6 +78,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../reference/index.html">Reference</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -105,7 +105,7 @@
       <h1 data-toc-skip>Functional enrichment</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2023-12-15</h4>
+            <h4 data-toc-skip class="date">2024-02-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/vignettes/v10_enrichment.Rmd" class="external-link"><code>vignettes/v10_enrichment.Rmd</code></a></small>
       <div class="hidden name"><code>v10_enrichment.Rmd</code></div>
@@ -165,13 +165,13 @@
 <span><span class="co">## GO:0070647 protein modification by small protein conjugation or removal     41</span></span>
 <span><span class="co">## GO:1901991   negative regulation of mitotic cell cycle phase transition     13</span></span>
 <span><span class="co">## GO:0031648                                      protein destabilization      6</span></span>
-<span><span class="co">##            n_anno n_items n_all log2_fold_enrichment  z_score      p_value</span></span>
-<span><span class="co">## GO:0016567    682     500 18614            0.9339713 4.024918 0.0002039164</span></span>
-<span><span class="co">## GO:0032446    756     500 18614            0.8259988 3.603929 0.0006735261</span></span>
-<span><span class="co">## GO:0045930    226     500 18614            1.3981372 4.110105 0.0004211551</span></span>
-<span><span class="co">## GO:0070647    897     500 18614            0.7669040 3.578373 0.0006562499</span></span>
-<span><span class="co">## GO:1901991    179     500 18614            1.4349401 3.805279 0.0011276793</span></span>
-<span><span class="co">## GO:0031648     48     500 18614            2.2183162 4.210722 0.0017186058</span></span>
+<span><span class="co">##            n_gs n_genes n_all log2_fold_enrichment  z_score      p_value</span></span>
+<span><span class="co">## GO:0016567  682     500 18614            0.9339713 4.024918 0.0002039164</span></span>
+<span><span class="co">## GO:0032446  756     500 18614            0.8259988 3.603929 0.0006735261</span></span>
+<span><span class="co">## GO:0045930  226     500 18614            1.3981372 4.110105 0.0004211551</span></span>
+<span><span class="co">## GO:0070647  897     500 18614            0.7669040 3.578373 0.0006562499</span></span>
+<span><span class="co">## GO:1901991  179     500 18614            1.4349401 3.805279 0.0011276793</span></span>
+<span><span class="co">## GO:0031648   48     500 18614            2.2183162 4.210722 0.0017186058</span></span>
 <span><span class="co">##             p_adjust depth</span></span>
 <span><span class="co">## GO:0016567 0.1976799     8</span></span>
 <span><span class="co">## GO:0032446 0.1976799     7</span></span>
@@ -222,7 +222,7 @@
 <span><span class="co">##   Source: UniProt Keywords </span></span>
 <span><span class="co">##   1202 terms / 1348 relations</span></span>
 <span><span class="co">##   Root: ~~all~~ </span></span>
-<span><span class="co">##   Terms: 2Fe-2S, 3D-structure, 3Fe-4S, 4Fe-4S, ...</span></span>
+<span><span class="co">##   Terms: KW-0001, KW-0002, KW-0003, KW-0004, ...</span></span>
 <span><span class="co">##   Max depth: 6 </span></span>
 <span><span class="co">##   Avg number of parents: 1.12</span></span>
 <span><span class="co">##   Avg number of children: 1.07</span></span>
@@ -255,13 +255,13 @@
 <p><img src="v10_enrichment_files/figure-html/unnamed-chunk-15-1.png" width="528" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##                              id cluster</span></span>
-<span><span class="co">## 1                  Angiogenesis       1</span></span>
-<span><span class="co">## 2                     Apoptosis       1</span></span>
-<span><span class="co">## 3                      Cataract       2</span></span>
-<span><span class="co">## 4 Cilium biogenesis/degradation       1</span></span>
-<span><span class="co">## 5                       Disease       2</span></span>
-<span><span class="co">## 6           Glycosyltransferase       3</span></span></code></pre>
+<pre><code><span><span class="co">##        id cluster</span></span>
+<span><span class="co">## 1 KW-0037       1</span></span>
+<span><span class="co">## 2 KW-0053       1</span></span>
+<span><span class="co">## 3 KW-0328       2</span></span>
+<span><span class="co">## 4 KW-0393       3</span></span>
+<span><span class="co">## 5 KW-0482       2</span></span>
+<span><span class="co">## 6 KW-0493       4</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="ontologies-from-rgd">Ontologies from RGD<a class="anchor" aria-label="anchor" href="#ontologies-from-rgd"></a>
@@ -341,41 +341,42 @@
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
 <span><span class="co">## [1] simplifyEnrichment_1.11.1 BiocGenerics_0.48.1      </span></span>
-<span><span class="co">## [3] ComplexHeatmap_2.18.0     simona_1.1.6             </span></span>
+<span><span class="co">## [3] ComplexHeatmap_2.18.0     simona_1.1.12            </span></span>
 <span><span class="co">## [5] knitr_1.44               </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##  [1] blob_1.2.4              Biostrings_2.68.1       bitops_1.0-7           </span></span>
 <span><span class="co">##  [4] fastmap_1.1.1           RCurl_1.98-1.12         UniProtKeywords_0.99.6 </span></span>
 <span><span class="co">##  [7] promises_1.2.1          digest_0.6.33           mime_0.12              </span></span>
-<span><span class="co">## [10] lifecycle_1.0.4         cluster_2.1.4           ellipsis_0.3.2         </span></span>
-<span><span class="co">## [13] NLP_0.2-1               KEGGREST_1.40.1         RSQLite_2.3.1          </span></span>
-<span><span class="co">## [16] magrittr_2.0.3          compiler_4.3.1          rlang_1.1.2            </span></span>
-<span><span class="co">## [19] sass_0.4.8              tools_4.3.1             igraph_1.6.0           </span></span>
-<span><span class="co">## [22] yaml_2.3.7              bit_4.0.5               scatterplot3d_0.3-44   </span></span>
-<span><span class="co">## [25] xml2_1.3.6              RColorBrewer_1.1-3      purrr_1.0.2            </span></span>
-<span><span class="co">## [28] desc_1.4.2              stats4_4.3.1            GOSemSim_2.26.1        </span></span>
-<span><span class="co">## [31] tm_0.7-11               xtable_1.8-4            colorspace_2.1-0       </span></span>
-<span><span class="co">## [34] GO.db_3.17.0            iterators_1.0.14        cli_3.6.2              </span></span>
-<span><span class="co">## [37] rmarkdown_2.25          crayon_1.5.2            ragg_1.2.6             </span></span>
-<span><span class="co">## [40] RcppParallel_5.1.7      httr_1.4.7              rjson_0.2.21           </span></span>
-<span><span class="co">## [43] DBI_1.1.3               cachem_1.0.8            stringr_1.5.0          </span></span>
-<span><span class="co">## [46] zlibbioc_1.46.0         parallel_4.3.1          AnnotationDbi_1.62.2   </span></span>
-<span><span class="co">## [49] XVector_0.40.0          proxyC_0.3.3            matrixStats_1.2.0      </span></span>
-<span><span class="co">## [52] vctrs_0.6.4             Matrix_1.6-1.1          slam_0.1-50            </span></span>
-<span><span class="co">## [55] jsonlite_1.8.8          IRanges_2.36.0          GetoptLong_1.0.5       </span></span>
-<span><span class="co">## [58] S4Vectors_0.40.2        bit64_4.0.5             clue_0.3-65            </span></span>
-<span><span class="co">## [61] magick_2.8.0            systemfonts_1.0.5       foreach_1.5.2          </span></span>
-<span><span class="co">## [64] jquerylib_0.1.4         glue_1.6.2              pkgdown_2.0.7          </span></span>
-<span><span class="co">## [67] codetools_0.2-19        stringi_1.7.12          Polychrome_1.5.1       </span></span>
-<span><span class="co">## [70] shape_1.4.6             later_1.3.2             GenomeInfoDb_1.36.4    </span></span>
-<span><span class="co">## [73] htmltools_0.5.7         GenomeInfoDbData_1.2.10 circlize_0.4.15        </span></span>
-<span><span class="co">## [76] R6_2.5.1                textshaping_0.3.7       doParallel_1.0.17      </span></span>
-<span><span class="co">## [79] rprojroot_2.0.3         lattice_0.21-9          evaluate_0.22          </span></span>
-<span><span class="co">## [82] shiny_1.8.0             Biobase_2.60.0          png_0.1-8              </span></span>
-<span><span class="co">## [85] memoise_2.0.1           httpuv_1.6.13           bslib_0.6.1            </span></span>
-<span><span class="co">## [88] Rcpp_1.0.11             org.Hs.eg.db_3.17.0     xfun_0.40              </span></span>
-<span><span class="co">## [91] fs_1.6.3                pkgconfig_2.0.3         GlobalOptions_0.1.2</span></span></code></pre>
+<span><span class="co">## [10] lifecycle_1.0.4         cluster_2.1.4           Cairo_1.6-2            </span></span>
+<span><span class="co">## [13] ellipsis_0.3.2          NLP_0.2-1               KEGGREST_1.40.1        </span></span>
+<span><span class="co">## [16] RSQLite_2.3.1           magrittr_2.0.3          compiler_4.3.1         </span></span>
+<span><span class="co">## [19] rlang_1.1.2             sass_0.4.8              tools_4.3.1            </span></span>
+<span><span class="co">## [22] igraph_1.6.0            yaml_2.3.7              bit_4.0.5              </span></span>
+<span><span class="co">## [25] scatterplot3d_0.3-44    xml2_1.3.6              RColorBrewer_1.1-3     </span></span>
+<span><span class="co">## [28] purrr_1.0.2             desc_1.4.2              stats4_4.3.1           </span></span>
+<span><span class="co">## [31] GOSemSim_2.26.1         tm_0.7-11               xtable_1.8-4           </span></span>
+<span><span class="co">## [34] colorspace_2.1-0        GO.db_3.17.0            iterators_1.0.14       </span></span>
+<span><span class="co">## [37] cli_3.6.2               rmarkdown_2.25          crayon_1.5.2           </span></span>
+<span><span class="co">## [40] ragg_1.2.6              RcppParallel_5.1.7      httr_1.4.7             </span></span>
+<span><span class="co">## [43] rjson_0.2.21            DBI_1.1.3               cachem_1.0.8           </span></span>
+<span><span class="co">## [46] stringr_1.5.0           zlibbioc_1.46.0         parallel_4.3.1         </span></span>
+<span><span class="co">## [49] AnnotationDbi_1.62.2    XVector_0.40.0          proxyC_0.3.3           </span></span>
+<span><span class="co">## [52] matrixStats_1.2.0       vctrs_0.6.4             Matrix_1.6-1.1         </span></span>
+<span><span class="co">## [55] slam_0.1-50             jsonlite_1.8.8          IRanges_2.36.0         </span></span>
+<span><span class="co">## [58] GetoptLong_1.0.5        S4Vectors_0.40.2        bit64_4.0.5            </span></span>
+<span><span class="co">## [61] clue_0.3-65             magick_2.8.0            systemfonts_1.0.5      </span></span>
+<span><span class="co">## [64] foreach_1.5.2           jquerylib_0.1.4         glue_1.6.2             </span></span>
+<span><span class="co">## [67] pkgdown_2.0.7           codetools_0.2-19        stringi_1.7.12         </span></span>
+<span><span class="co">## [70] Polychrome_1.5.1        shape_1.4.6             later_1.3.2            </span></span>
+<span><span class="co">## [73] GenomeInfoDb_1.36.4     htmltools_0.5.7         GenomeInfoDbData_1.2.10</span></span>
+<span><span class="co">## [76] circlize_0.4.15         R6_2.5.1                textshaping_0.3.7      </span></span>
+<span><span class="co">## [79] doParallel_1.0.17       rprojroot_2.0.3         lattice_0.21-9         </span></span>
+<span><span class="co">## [82] evaluate_0.22           shiny_1.8.0             Biobase_2.60.0         </span></span>
+<span><span class="co">## [85] png_0.1-8               memoise_2.0.1           httpuv_1.6.13          </span></span>
+<span><span class="co">## [88] bslib_0.6.1             Rcpp_1.0.11             org.Hs.eg.db_3.17.0    </span></span>
+<span><span class="co">## [91] xfun_0.40               fs_1.6.3                pkgconfig_2.0.3        </span></span>
+<span><span class="co">## [94] GlobalOptions_0.1.2</span></span></code></pre>
 </div>
   </div>
 
@@ -405,7 +406,6 @@
   
 
 
-  
-
-  </body>
+  <style>nav[data-toggle='toc'] .nav .nav {display: block;}</style>
+</body>
 </html>

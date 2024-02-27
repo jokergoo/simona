@@ -33,15 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">simona</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.12</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
@@ -81,6 +78,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../reference/index.html">Reference</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -105,7 +105,7 @@
       <h1 data-toc-skip>Import ontology files</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2023-12-15</h4>
+            <h4 data-toc-skip class="date">2024-02-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jokergoo/simona/blob/HEAD/vignettes/v03_import.Rmd" class="external-link"><code>vignettes/v03_import.Rmd</code></a></small>
       <div class="hidden name"><code>v03_import.Rmd</code></div>
@@ -125,8 +125,8 @@
 <span><span class="va">dag1</span> <span class="op">=</span> <span class="fu"><a href="../reference/import_obo.html">import_obo</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/Planteome/plant-ontology/master/po.obo"</span><span class="op">)</span></span>
 <span><span class="va">dag1</span></span></code></pre></div>
 <pre><code><span><span class="co">## An ontology_DAG object:</span></span>
-<span><span class="co">##   Source: po, releases/2023-07-13 </span></span>
-<span><span class="co">##   1656 terms / 1776 relations</span></span>
+<span><span class="co">##   Source: po, releases/2024-02-16 </span></span>
+<span><span class="co">##   1658 terms / 1778 relations</span></span>
 <span><span class="co">##   Root: ~~all~~ </span></span>
 <span><span class="co">##   Terms: PO:0000001, PO:0000002, PO:0000003, PO:0000004, ...</span></span>
 <span><span class="co">##   Max depth: 11 </span></span>
@@ -173,8 +173,8 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dag2</span></span></code></pre></div>
 <pre><code><span><span class="co">## An ontology_DAG object:</span></span>
-<span><span class="co">##   Source: po, releases/2023-07-13 </span></span>
-<span><span class="co">##   1656 terms / 1776 relations</span></span>
+<span><span class="co">##   Source: po, releases/2024-02-16 </span></span>
+<span><span class="co">##   1658 terms / 1778 relations</span></span>
 <span><span class="co">##   Root: ~~all~~ </span></span>
 <span><span class="co">##   Terms: PO:0000001, PO:0000002, PO:0000003, PO:0000004, ...</span></span>
 <span><span class="co">##   Max depth: 11 </span></span>
@@ -215,8 +215,8 @@
 <code class="sourceCode R"><span><span class="va">dag3</span> <span class="op">=</span> <span class="fu"><a href="../reference/import_obo.html">import_owl</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/Planteome/plant-ontology/master/po.owl"</span><span class="op">)</span></span>
 <span><span class="va">dag3</span></span></code></pre></div>
 <pre><code><span><span class="co">## An ontology_DAG object:</span></span>
-<span><span class="co">##   Source: Plant Ontology, http://purl.obolibrary.org/obo/po/releases/2023-07-13/po.owl </span></span>
-<span><span class="co">##   1656 terms / 1776 relations</span></span>
+<span><span class="co">##   Source: Plant Ontology, http://purl.obolibrary.org/obo/po/releases/2024-02-16/po.owl </span></span>
+<span><span class="co">##   1658 terms / 1778 relations</span></span>
 <span><span class="co">##   Root: ~~all~~ </span></span>
 <span><span class="co">##   Terms: PO:0000001, PO:0000002, PO:0000003, PO:0000004, ...</span></span>
 <span><span class="co">##   Max depth: 11 </span></span>
@@ -261,7 +261,7 @@
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] simona_1.1.6 knitr_1.44  </span></span>
+<span><span class="co">## [1] simona_1.1.12 knitr_1.44   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##  [1] sass_0.4.8            xml2_1.3.6            shape_1.4.6          </span></span>
@@ -346,7 +346,6 @@ $(document).ready(function(){
   
 
 
-  
-
-  </body>
+  <style>nav[data-toggle='toc'] .nav .nav {display: block;}</style>
+</body>
 </html>

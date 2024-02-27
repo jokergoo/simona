@@ -2,6 +2,7 @@ pandoc: 2.11.4
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
+  simona: simona.html
   v01_dag: v01_dag.html
   v02_GO: v02_GO.html
   v03_import: v03_import.html
@@ -12,5 +13,5 @@ articles:
   v08_random: v08_random.html
   v09_shiny: v09_shiny.html
   v10_enrichment: v10_enrichment.html
-last_built: 2023-12-15T08:24Z
+last_built: 2024-02-27T19:21Z
 

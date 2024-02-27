@@ -327,6 +327,15 @@ singleton_ontology = function(term) {
 	)
 }
 
+#' Add annotations to the DAG object
+#' 
+#' @param dag An `ontology_DAG` object.
+#' @param annotation A list of character vectors which contain items annotated to the terms. Names of the list should be the term names. In the DAG, items
+#'                   annotated to a term will also be annotated to its parents. Such merging
+#'                   is applied automatically in the package.
+#' 
+#' @return An `ontology_DAG` object.
+#' @export
 add_annotation = function(dag, annotation) {
 	if(!is.null(annotation)) {
 		annotation = lapply(annotation, as.character)
