@@ -70,9 +70,11 @@ import_obo = function(file, relation_type = character(0), inherit_relations = TR
 		lt = .wrap_relations(lt_relations, type = "relation")
 		relation_meta = lt$meta
 		relation_relations = lt$relations
+		alternative_terms = lt$alternative_terms
 	} else {
 		relation_meta = data.frame()
 		relation_relations = data.frame()
+		alternative_terms = list()
 	}
 
 	relations_id_to_name = structure(ifelse(is.na(relation_meta$name), relation_meta$id, relation_meta$name), names = relation_meta$id)
@@ -114,9 +116,9 @@ import_obo = function(file, relation_type = character(0), inherit_relations = TR
 	lt = .wrap_relations(lt_terms, type = "term")
 	term_meta = lt$meta
 	term_relations = lt$relations
-	
-	term_relations$relation = unname(relations_id_to_name[term_relations$relation])
+	alternative_terms = lt$alternative_terms
 
+	term_relations$relation = unname(relations_id_to_name[term_relations$relation])
 
 	## some meta for the whole ontology
 	for(i in seq_along(ln)) {
@@ -140,7 +142,7 @@ import_obo = function(file, relation_type = character(0), inherit_relations = TR
 	idmap = structure(internal_id, names = term_meta$id)
 	
 	dag = create_ontology_DAG(parents = idmap[term_relations$parent], children = idmap[term_relations$child], relations = term_relations$relation,
-		source = paste0(ontology, ", ", version), relations_DAG = relations_DAG, verbose = verbose, ...)
+		source = paste0(ontology, ", ", version), relations_DAG = relations_DAG, alternative_terms = alternative_terms, verbose = verbose, ...)
 	rownames(term_meta) = internal_id
 
 	term_meta = term_meta[dag@terms, , drop = FALSE]
@@ -182,6 +184,36 @@ import_obo = function(file, relation_type = character(0), inherit_relations = TR
 }
 
 .wrap_relations = function(lt_data, type = "term") {
+
+	if(type == "term") {		
+		l = sapply(lt_data, function(x) x$is_obsolete == "true" && (length(x$replaced_by) > 0 || length(x$consider) > 0))
+		alternative_terms = lt_data[l]
+		names(alternative_terms) = sapply(alternative_terms, function(x) x$id)
+		alternative_terms = lapply(alternative_terms, function(x) {
+			if(length(x$replaced_by)) {
+				x["replaced_by"]
+			} else {
+				x["consider"]
+			}
+		})
+		alternative_terms = lapply(alternative_terms, function(x) unname(unlist(x)))
+
+		l = sapply(lt_data, function(x) length(x$alt_id) > 0)
+		if(any(l)) {
+			alternative_terms2 = lt_data[l]
+			alt_lt = lapply(alternative_terms2, function(x) {
+				data.frame(id = rep(x$id, length(x$alt_id)), alt_id = x$alt_id)
+			})
+			alternative_terms2 = do.call(rbind, alt_lt)
+			alternative_terms2 = split(alternative_terms2$id, alternative_terms2$alt_id)
+
+			alternative_terms = c(alternative_terms, alternative_terms2)
+		}
+		
+	} else {
+		alternative_terms = list()
+	}
+
 	## terms
 	lt_data = .validate_relations(lt_data)
 	all_elements = vapply(lt_data, "[[", "id", FUN.VALUE = character(1))
@@ -211,8 +243,8 @@ import_obo = function(file, relation_type = character(0), inherit_relations = TR
 	
 	relations = data.frame(child = child, parent = unname(parent), relation = names(parent))
 	relations = relations[relations$child != relations$parent, , drop = FALSE]
-	
-	list(meta = meta, relations = relations)
+
+	list(meta = meta, relations = relations, alternative_terms = alternative_terms)
 }
 
 process_obo_stanza = function(ln, relation_type = "part_of") {
@@ -232,6 +264,13 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 		} else {
 			lt$name = NA_character_
 		}
+	}
+
+	i = grep("^alt_id:", ln)
+	if(length(i)) {
+		lt$alt_id = gsub("^alt_id: (.*)$", "\\1", ln[i])
+	} else {
+		lt$alt_id = character(0)
 	}
 
 	i = grep("^namespace:", ln)
@@ -285,8 +324,28 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 	i = grep("^is_obsolete:", ln)
 	if(length(i)) {
 		lt$is_obsolete = gsub("^is_obsolete: (.*)$", "\\1", ln[i])
+
+		i = grep("^replaced_by:", ln)
+		if(length(i)) {
+			lt$replaced_by = gsub("^replaced_by: (.*)$", "\\1", ln[i])
+		} else {
+			lt$replaced_by = character(0)
+		}
+
+		if(length(lt$replaced_by) == 0) {
+			i = grep("^consider:", ln)
+			if(length(i)) {
+				lt$consider = gsub("^consider: (.*)$", "\\1", ln[i])
+			} else {
+				lt$consider = character(0)
+			}
+		} else {
+			lt$consider = character(0)
+		}
 	} else {
 		lt$is_obsolete = "false"
+		lt$replaced_by = character(0)
+		lt$consider = character(0)
 	}
 
 	# specific for Typedef
@@ -308,9 +367,9 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 }
 
 
-.owl_get_text = function(nodes, xpath, default = NA_character_, return_list = FALSE) {
+.owl_get_text = function(nodes, xpath, default = NA_character_, return_list = FALSE, ...) {
 	if(return_list) {
-		lapply(xml_find_all(nodes, xpath, flatten = FALSE), function(x) {
+		lapply(xml_find_all(nodes, xpath, flatten = FALSE, ...), function(x) {
 			if(length(x) == 0) {
 				character(0)
 			} else {
@@ -318,7 +377,7 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 			}
 		})
 	} else {
-		vapply(xml_find_all(nodes, xpath, flatten = FALSE), function(x) {
+		vapply(xml_find_all(nodes, xpath, flatten = FALSE, ...), function(x) {
 			if(length(x) == 0) {
 				default
 			} else {
@@ -328,8 +387,8 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 	}
 }
 
-.owl_get_attr = function(nodes, xpath, attr, default = NA_character_) {
-	lapply(xml_find_all(nodes, xpath, flatten = FALSE), function(x) {
+.owl_get_attr = function(nodes, xpath, attr, default = NA_character_, ...) {
+	lapply(xml_find_all(nodes, xpath, flatten = FALSE, ...), function(x) {
 		xml_attr(x, attr)
 	})
 }
@@ -338,7 +397,7 @@ process_obo_stanza = function(ln, relation_type = "part_of") {
 #' @details `import_owl()` only recognizes `<owl:Class>` and `<owl:ObjectProperty>`. If the .owl file does not contain these tags,
 #'     please use `import_ontology()` directly.
 #' @export
-#' @importFrom xml2 read_xml xml_find_all xml_attr xml_text
+#' @importFrom xml2 read_xml xml_find_all xml_attr xml_text xml_ns
 #' @export
 #' @examples
 #' \donttest{
@@ -433,6 +492,13 @@ import_owl = function(file, relation_type = character(0), inherit_relations = TR
 	value = .owl_get_attr(Class, ".//rdfs:subClassOf/owl:Restriction/*[self::owl:someValuesFrom or self::owl:allValuesFrom or self::owl:onClass]", "resource")
 	property = .owl_get_attr(Class, ".//rdfs:subClassOf/owl:Restriction/*[self::owl:someValuesFrom or self::owl:allValuesFrom or self::owl:onClass]/preceding-sibling::owl:onProperty", "resource")
 
+	ns = xml_ns(owl)
+	obo_ns = names(ns)[ns == "http://purl.obolibrary.org/obo/"]
+	oboInOwl_ns = names(ns)[ns == "http://www.geneontology.org/formats/oboInOwl#"]
+
+	replaced_by = .owl_get_attr(Class, paste0(".//", obo_ns, ":IAO_0100001"), "resource", character(0))
+	consider = .owl_get_text(Class, paste0(".//", oboInOwl_ns, ":consider"), character(0), return_list = TRUE)
+
 	lt_terms = vector("list", length(id))
 	for(i in seq_along(id)) {
 		lt_terms[[i]]$id = id[i]
@@ -441,6 +507,8 @@ import_owl = function(file, relation_type = character(0), inherit_relations = TR
 		lt_terms[[i]]$def = def[i]
 		lt_terms[[i]]$namespace = namespace[i]
 		lt_terms[[i]]$is_obsolete = is_obsolete[i]
+		lt_terms[[i]]$replaced_by = replaced_by[[i]]
+		lt_terms[[i]]$consider = consider[[i]]
 		
 		rlv = value[[i]]
 		rlp = relations_id_to_name[ property[[i]] ]
@@ -511,7 +579,7 @@ import_owl = function(file, relation_type = character(0), inherit_relations = TR
 	idmap = structure(internal_id, names = term_meta$id)
 
 	dag = create_ontology_DAG(parents = idmap[term_relations$parent], children = idmap[term_relations$child], relations = term_relations$relation,
-		source = paste0(ontology, ", ", version), relations_DAG = relations_DAG, verbose = verbose, ...)
+		source = paste0(ontology, ", ", version), relations_DAG = relations_DAG, alternative_terms = lt$alternative_terms, verbose = verbose, ...)
 	rownames(term_meta) = internal_id
 
 	term_meta = term_meta[dag@terms, , drop = FALSE]

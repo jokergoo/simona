@@ -410,6 +410,32 @@ children = c("b", "c", "c", "z", "y", "z")
 create_ontology_DAG(parents, children)
 ```
 
+## Alternative terms
+
+During the development of an ontology, old terms may be replaced by new terms. In the `.obo` format,
+there are the following three tags: `alt_id`, `replaced_by` and `consider`. The last two tags are used
+especially for obsolete (removed) terms. If there is only one-to-one mapping between the alternative term IDs
+and DAG term IDs, the mapping can be provided as a named vector. The mapping variable is filtered and saved
+in the `alternative_terms` slot of the DAG object.
+
+```{r, message = FALSE}
+parents  = c("a", "a", "b", "b", "c", "d")
+children = c("b", "c", "c", "d", "e", "f")
+alt = c("old_a" = "a", "old_b" = "b")
+dag = create_ontology_DAG(parents, children, alternative_terms = alt)
+dag@alternative_terms
+```
+
+If the mapping is one-to-many, the mapping variable should be provided as a named list.
+There are several filterings. First, the non-DAG term IDs in the mapping variable are removed. If the mapping
+for an alternative ID is still one-to-many, the first DAG term is used. 
+
+```{r, message = FALSE}
+alt = list("old_a" = c("a", "b", "x"), "old_y" = "y")
+dag = create_ontology_DAG(parents, children, alternative_terms = alt)
+dag@alternative_terms
+```
+
 ## Sub-DAG
 
 The following code returns a sub-DAG where the input term is picked

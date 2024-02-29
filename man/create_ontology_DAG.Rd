@@ -13,6 +13,7 @@ create_ontology_DAG(
   annotation = NULL,
   remove_cyclic_paths = FALSE,
   remove_rings = FALSE,
+  alternative_terms = list(),
   verbose = simona_opt$verbose
 )
 }
@@ -39,6 +40,12 @@ will be an error that lists all cyclic paths.}
 
 \item{remove_rings}{There might be rings that are isolated to the main DAG where there are no roots on the rings, thus they cannot be attached to the main DAG. If the value
 of \code{remove_rings} is set to \code{TRUE}, such rings are removed.}
+
+\item{alternative_terms}{A named list or vector that contains mappings from alternative term IDs to terms used in the DAG. In an ontology, there
+might be old terms IDs marked as "replaced_by", "consider" or "alt_id" in ".obo" file. You can provide mappings from old term iDs to current term IDs with this argument.
+If it is a one-to-one mapping, the mapping
+can be a named vector where alternative term IDs are names and DAG term IDs are values. It it is a one-to-many mapping, the variable
+should be a named list where each member vector will first be matched to the DAG terms. If the mapping is still one-to-many, the first one is selected.}
 
 \item{verbose}{Whether to print messages.}
 }

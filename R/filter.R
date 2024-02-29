@@ -126,7 +126,7 @@ dag_filter = function(dag, terms = NULL, relations = NULL, root = NULL, leaves =
 
 	dag2 = create_ontology_DAG(parents = parents, children = children,
 		relations = v_relations, relations_DAG = dag@relations_DAG, 
-		annotation = annotation, source = dag@source)
+		annotation = annotation, alternative_terms = dag@alternative_terms, source = dag@source)
 
 	meta = mcols(dag)
 	if(!is.null(meta)) {

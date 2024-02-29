@@ -35,6 +35,8 @@ The relations are represented as integers. The character name of the relations i
 
 \item{\code{leaves}}{An integer vector of the indicies of leaf terms.}
 
+\item{\code{alternative_terms}}{A named character vector of mappings between alternative terms to DAG terms.}
+
 \item{\code{tpl_sorted}}{An integer vector of reordered term indices which has been topologically sorted in the DAG. Terms are sorted first by the depth (maximal
 distance from root), then the number of child terms, then the number of parent terms, and last the term names.}
 

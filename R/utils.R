@@ -5,14 +5,30 @@ term_to_node_id = function(dag, term, strict = TRUE, add_name = FALSE) {
 	} else if(length(term) == 1) {
 		i = which(dag@terms == term)
 
+		if(length(i) == 0 && length(dag@alternative_terms)) {
+			term2 = dag@alternative_terms[term]
+			if(is.na(term2)) {
+				stop("Cannot find term: ", term)
+			} else {
+				i = which(dag@terms == term2)
+			}	
+		}
+
 		if(length(i) == 0) {
 			stop("Cannot find term: ", term)
-		}
+		} 
 
 		id = i
 	} else if(length(term) > 1) {
 		unique_term = unique(term)
-		i = which(dag@terms %in% unique_term)
+		l = dag@terms %in% unique_term
+		if(sum(l) < length(unique_term) && length(dag@alternative_terms)) {
+			unique_term2 = dag@alternative_terms[setdiff(unique_term, dag@terms[l])]
+			unique_term2 = unique_term2[!is.na(unique_term2)]
+			l2 = dag@terms %in% unique_term2
+			l = l | l2
+		}
+		i = which(l)
 
 		if(length(i) == 0) {
 			stop("Cannot find all these terms.")

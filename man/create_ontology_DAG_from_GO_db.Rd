@@ -9,6 +9,7 @@ create_ontology_DAG_from_GO_db(
   relations = "part of",
   org_db = NULL,
   evidence_code = NULL,
+  retrieve_alternative = FALSE,
   verbose = simona_opt$verbose
 )
 }
@@ -25,6 +26,8 @@ directly the \code{\link[org.Hs.eg.db:org.Hs.egBASE]{org.Hs.eg.db::org.Hs.eg.db}
 to the object. For other non-model organisms, consider to use the \strong{AnnotationHub} package to find one.}
 
 \item{evidence_code}{A vector of evidence codes for gene annotation to GO terms. See \url{https://geneontology.org/docs/guide-go-evidence-codes/}.}
+
+\item{retrieve_alternative}{Whether to retrieve alternative/obsolete GO terms from geneontology.org?}
 
 \item{verbose}{Whether to print messages.}
 }

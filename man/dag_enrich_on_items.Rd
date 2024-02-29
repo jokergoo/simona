@@ -27,8 +27,10 @@ A data frame with the following columns:
 \itemize{
 \item \code{term}: Term names.
 \item \code{n_hits}: Number of items in \code{items} intersecting to \code{t}'s annotated items.
-\item \code{n_anno}: Number of annotated items of \code{t}.
-\item \code{n_items}: Number of items in \code{items} intersecting to all annotated items in the DAG.
+\item \code{n_anno}: Number of annotated items of \code{t}. Specifically for \code{dag_enrich_on_genes()}, this column
+is renamed to \code{n_gs}.
+\item \code{n_items}: Number of items in \code{items} intersecting to all annotated items in the DAG. Specifically
+for \code{dag_enrich_on_genes()}, this column is renamed to \code{n_genes}.
 \item \code{n_all}: Number of all annotated items in the DAG.
 \item \code{log2_fold_enrichment}: Defined as log2(observation/expected).
 \item \code{z_score}: Defined as (observed-expected)/sd.

@@ -16,6 +16,7 @@
 #' @slot source The source of the ontology. A character scalar only used as a mark of the returned object.
 #' @slot root An integer scalar of the root term.
 #' @slot leaves An integer vector of the indicies of leaf terms.
+#' @slot alternative_terms A named character vector of mappings between alternative terms to DAG terms.
 #' @slot tpl_sorted An integer vector of reordered term indices which has been topologically sorted in the DAG. Terms are sorted first by the depth (maximal
 #'       distance from root), then the number of child terms, then the number of parent terms, and last the term names.
 #' @slot tpl_pos The position of the original term in the topologically sorted path (similar as the rank), e.g. the value of the first element in the vector
@@ -45,6 +46,7 @@ ontology_DAG = setClass("ontology_DAG",
 		      "source" = "character",
 		      "root" = "integer",
 		      "leaves" = "integer",
+		      "alternative_terms" = "character",
 		      "tpl_sorted" = "integer",
 		      "tpl_pos" = "integer",
 		      "annotation" = "list",
@@ -71,6 +73,11 @@ ontology_DAG = setClass("ontology_DAG",
 #'       will be an error that lists all cyclic paths.
 #' @param remove_rings There might be rings that are isolated to the main DAG where there are no roots on the rings, thus they cannot be attached to the main DAG. If the value
 #'        of `remove_rings` is set to `TRUE`, such rings are removed.
+#' @param alternative_terms A named list or vector that contains mappings from alternative term IDs to terms used in the DAG. In an ontology, there
+#'            might be old terms IDs marked as "replaced_by", "consider" or "alt_id" in ".obo" file. You can provide mappings from old term iDs to current term IDs with this argument. 
+#'            If it is a one-to-one mapping, the mapping
+#'            can be a named vector where alternative term IDs are names and DAG term IDs are values. It it is a one-to-many mapping, the variable
+#'            should be a named list where each member vector will first be matched to the DAG terms. If the mapping is still one-to-many, the first one is selected.
 #' @param verbose Whether to print messages.
 #' 
 #' @return An `ontology_DAG` object.
@@ -109,7 +116,7 @@ ontology_DAG = setClass("ontology_DAG",
 #' dag = create_ontology_DAG(c("a-b", "a-c", "b-c", "b-d", "c-e", "e-f"))
 create_ontology_DAG = function(parents, children, relations = NULL, relations_DAG = NULL,
 	source = "Ontology", annotation = NULL, remove_cyclic_paths = FALSE, remove_rings = FALSE,
-	verbose = simona_opt$verbose) {
+	alternative_terms = list(), verbose = simona_opt$verbose) {
 
 	if(missing(children)) {
 		if(any(grepl("\\s+-\\s+", parents))) {
@@ -212,7 +219,35 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 			stop("`relations_DAG` should be constructed by `create_ontology_DAG()`.")
 		}
 	}
-		
+
+	alt_var = character(0)
+	if(length(alternative_terms)) {
+		# change alternative_terms to a named vector
+		if(is.atomic(alternative_terms)) {
+			if(is.null(names(alternative_terms))) {
+				stop("`alternative_terms` should be a named vector.")
+			}
+
+			alt_var = alternative_terms[alternative_terms %in% terms]
+			alt_var = alt_var[!is.na(alt_var)]
+		} else if(is.list(alternative_terms)) {
+			if(is.null(names(alternative_terms))) {
+				stop("`alternative_terms` should be a named list.")
+			}
+			alternative_terms = lapply(alternative_terms, function(x) {
+				x = x[!is.na(x)]
+				intersect(x, terms)
+			})
+			alternative_terms = alternative_terms[sapply(alternative_terms, length) > 0]
+
+			if(length(alternative_terms)) {
+				alt_var = sapply(alternative_terms, function(x) x[1])
+			}
+		} else {
+			stop("`alternative_terms` should be a named vector of a named list.")
+		}
+	}
+
 	dag = ontology_DAG(
 		terms = terms,
 		n_terms = length(terms),
@@ -224,6 +259,7 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 		source = source,
 		root = root,
 		leaves = leaves,
+		alternative_terms = alt_var,
 		term_env = new.env(parent = emptyenv())
 	)
 
@@ -259,6 +295,7 @@ create_ontology_DAG = function(parents, children, relations = NULL, relations_DA
 				source = source,
 				root = root,
 				leaves = leaves,
+				alternative_terms = alt_var,
 				term_env = new.env(parent = emptyenv())
 			)
 		} else {
@@ -456,6 +493,7 @@ setMethod("show",
 #'            directly the [`org.Hs.eg.db::org.Hs.eg.db`] object for human, then the gene annotation to GO terms will be added
 #'            to the object. For other non-model organisms, consider to use the **AnnotationHub** package to find one.
 #' @param evidence_code A vector of evidence codes for gene annotation to GO terms. See \url{https://geneontology.org/docs/guide-go-evidence-codes/}.
+#' @param retrieve_alternative Whether to retrieve alternative/obsolete GO terms from geneontology.org?
 #' @param verbose Whether to print messages.
 #' 
 #' @return An `ontology_DAG` object.
@@ -465,7 +503,7 @@ setMethod("show",
 #' dag = create_ontology_DAG_from_GO_db()
 #' dag
 create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = "part of", org_db = NULL, 
-	evidence_code = NULL, verbose = simona_opt$verbose) {
+	evidence_code = NULL, retrieve_alternative = FALSE, verbose = simona_opt$verbose) {
 
 	check_pkg("GO.db", bioc = TRUE)
 
@@ -526,9 +564,106 @@ create_ontology_DAG_from_GO_db = function(namespace = "BP", relations = "part of
 
 	relations_DAG = create_ontology_DAG(c("regulates", "regulates"), c("negatively regulates", "positively regulates"))
 
+	alternative_terms = list()
+	if(retrieve_alternative) {
+		db_info = GO.db::GO_dbInfo()
+		obo_version = db_info$value[db_info$name == "GOSOURCEDATE"]
+		obo_url = paste0("https://release.geneontology.org/", obo_version, "/ontology/go-basic.obo")
+
+		if(verbose) {
+			message("Downloading ", obo_url, " to get the alternative terms.")
+		}
+		op = getOption("timeout")
+		options(timeout = 999999999)
+		on.exit(options(timeout = op))
+		con = url(obo_url)
+		ln = readLines(con)
+		close(con)
+
+		if(verbose) {
+			message("Retrieving mappings between alternative terms to DAG terms.")
+		}
+		ind_stanza = c(grep("^\\[.*\\]$", ln), length(ln))
+		ind1 = grep("^\\[Term\\]$", ln)
+
+		ind2 = cpp_match_index(ind1, ind_stanza[-1]-1)
+		n = length(ind1)
+
+		process_obo_alternative = function(ln) {
+
+			lt = list()
+			i = grep("^id:", ln)
+			lt$id = gsub("^id: (\\S+)(\\s*.*)$", "\\1", ln[i])[1]
+
+			i = grep("^alt_id:", ln)
+			if(length(i)) {
+				lt$alt_id = gsub("^alt_id: (.*)$", "\\1", ln[i])
+			} else {
+				lt$alt_id = character(0)
+			}
+			
+			i = grep("^is_obsolete:", ln)
+			if(length(i)) {
+				lt$is_obsolete = gsub("^is_obsolete: (.*)$", "\\1", ln[i])
+
+				i = grep("^replaced_by:", ln)
+				if(length(i)) {
+					lt$replaced_by = gsub("^replaced_by: (.*)$", "\\1", ln[i])
+				} else {
+					lt$replaced_by = character(0)
+				}
+
+				if(length(lt$replaced_by) == 0) {
+					i = grep("^consider:", ln)
+					if(length(i)) {
+						lt$consider = gsub("^consider: (.*)$", "\\1", ln[i])
+					} else {
+						lt$consider = character(0)
+					}
+				} else {
+					lt$consider = character(0)
+				}
+			} else {
+				lt$is_obsolete = "false"
+				lt$replaced_by = character(0)
+				lt$consider = character(0)
+			}
+
+			lt
+		}
+
+
+		lt_terms = vector("list", n)
+		for(i in seq_len(n)) {
+			lt_terms[[i]] = process_obo_alternative(ln[seq(ind1[i], ind2[i])])
+		}
+
+		l = sapply(lt_terms, function(x) x$is_obsolete == "true" && (length(x$replaced_by) > 0 || length(x$consider) > 0))
+		alternative_terms = lt_terms[l]
+		names(alternative_terms) = sapply(alternative_terms, function(x) x$id)
+		alternative_terms = lapply(alternative_terms, function(x) {
+			if(length(x$replaced_by)) {
+				x["replaced_by"]
+			} else {
+				x["consider"]
+			}
+		})
+		alternative_terms = lapply(alternative_terms, function(x) unname(unlist(x)))
+
+		l = sapply(lt_terms, function(x) length(x$alt_id) > 0)
+		alternative_terms2 = lt_terms[l]
+		alt_lt = lapply(alternative_terms2, function(x) {
+			data.frame(id = rep(x$id, length(x$alt_id)), alt_id = x$alt_id)
+		})
+		alternative_terms2 = do.call(rbind, alt_lt)
+		alternative_terms2 = split(alternative_terms2$id, alternative_terms2$alt_id)
+
+		alternative_terms = c(alternative_terms, alternative_terms2)
+	}
+
 	go_db_version = read.dcf(system.file("DESCRIPTION", package = "GO.db"))[1, "Version"]
 	dag = create_ontology_DAG(parents = df[, 2], children = df[, 1], relations = df[, 3], relations_DAG = relations_DAG,
-		annotation = annotation, source = paste0("GO ", namespace, " / GO.db package ", go_db_version))
+		annotation = annotation, source = paste0("GO ", namespace, " / GO.db package ", go_db_version), alternative_terms = alternative_terms)
 
 	go = GO.db::GOTERM[dag@terms]
 	meta = data.frame(id = AnnotationDbi::GOID(go),
