@@ -2,6 +2,7 @@
 #' Import ontologies already having gene annotations
 #' 
 #' @param organism Organism.
+#' @param gene_annotation Whether to add gene annotations to the DAG.
 #' @param verbose Whether to print messages?
 #' @param ... Pass to [`create_ontology_DAG()`].
 #' 
@@ -20,7 +21,7 @@
 #' @export
 #' @importFrom utils data read.table
 #' @rdname ontology
-ontology_kw = function(organism = "human", verbose = simona_opt$verbose, ...) {
+ontology_kw = function(organism = "human", gene_annotation = TRUE, verbose = simona_opt$verbose, ...) {
 
 	check_pkg("UniProtKeywords", bioc = TRUE)
 
@@ -57,10 +58,13 @@ ontology_kw = function(organism = "human", verbose = simona_opt$verbose, ...) {
 
 	mcols(dag) = meta
 
-	annotation = UniProtKeywords::load_keyword_genesets(organism)
-	names(annotation) = map[names(annotation)]
-	add_annotation(dag, annotation)
-
+	if(gene_annotation) {
+		annotation = UniProtKeywords::load_keyword_genesets(organism)
+		names(annotation) = map[names(annotation)]
+		dag = add_annotation(dag, annotation)
+	}
+	
+	dag
 }
 
 
@@ -132,6 +136,7 @@ organism_map = c("human" = "homo",
 #' @export
 ontology_chebi = function(
 	organism = c("human", "mouse", "rat", "pig", "dog"), 
+	gene_annotation = TRUE,
 	verbose = simona_opt$verbose, ...) {
 	
 	organism = match.arg(organism)[1]
@@ -146,20 +151,25 @@ ontology_chebi = function(
 	}
 	dag = import_ontology(onto_url, verbose = verbose, ...)
 
-	if(verbose) {
-		message(qq("Downloading annotation file from @{anno_url}..."))
-	}
-	anno_tb = read_table_from_url(anno_url, comment.char = "!", sep = "\t", quote = "")
-	anno = split(anno_tb[[3]], anno_tb[[5]])
+	if(gene_annotation) {
+		if(verbose) {
+			message(qq("Downloading annotation file from @{anno_url}..."))
+		}
+		anno_tb = read_table_from_url(anno_url, comment.char = "!", sep = "\t", quote = "")
+		anno = split(anno_tb[[3]], anno_tb[[5]])
 
-	add_annotation(dag, anno)
+		dag = add_annotation(dag, anno)
+	}
+
+	dag
 }
 
 
 #' @rdname ontology
 #' @export
 ontology_hp = function(
-	organism = c("human", "mouse"), verbose = simona_opt$verbose, ...) {
+	organism = c("human", "mouse"), gene_annotation = TRUE,
+	verbose = simona_opt$verbose, ...) {
 	
 	organism = match.arg(organism)[1]
 	organism = organism_map[organism]
@@ -173,19 +183,24 @@ ontology_hp = function(
 	}
 	dag = import_ontology(onto_url, verbose = verbose, ...)
 
-	if(verbose) {
-		message(qq("Downloading annotation file from @{anno_url}..."))
-	}
-	anno_tb = read_table_from_url(anno_url, comment.char = "!", sep = "\t", quote = "")
-	anno = split(anno_tb[[3]], anno_tb[[5]])
+	if(gene_annotation) {
+		if(verbose) {
+			message(qq("Downloading annotation file from @{anno_url}..."))
+		}
+		anno_tb = read_table_from_url(anno_url, comment.char = "!", sep = "\t", quote = "")
+		anno = split(anno_tb[[3]], anno_tb[[5]])
 
-	add_annotation(dag, anno)
+		dag = add_annotation(dag, anno)
+	}
+
+	dag
 }
 
 #' @rdname ontology
 #' @export
 ontology_pw = function(
 	organism = c("human", "mouse", "rat", "pig", "dog", "chimpanzee"),
+	gene_annotation = TRUE,
 	verbose = simona_opt$verbose, ...) {
 	
 	organism = match.arg(organism)[1]
@@ -200,19 +215,24 @@ ontology_pw = function(
 	}
 	dag = import_ontology(onto_url, verbose = verbose, ...)
 
-	if(verbose) {
-		message(qq("Downloading annotation file from @{anno_url}..."))
-	}
-	anno_tb = read_table_from_url(anno_url, comment.char = "!", sep = "\t", quote = "")
-	anno = split(anno_tb[[3]], anno_tb[[5]])
+	if(gene_annotation) {
+		if(verbose) {
+			message(qq("Downloading annotation file from @{anno_url}..."))
+		}
+		anno_tb = read_table_from_url(anno_url, comment.char = "!", sep = "\t", quote = "")
+		anno = split(anno_tb[[3]], anno_tb[[5]])
 
-	add_annotation(dag, anno)
+		dag = add_annotation(dag, anno)
+	}
+
+	dag
 }
 
 #' @rdname ontology
 #' @export
 ontology_rdo = function(
 	organism = c("human", "mouse", "rat", "pig", "dog", "chimpanzee"),
+	gene_annotation = TRUE,
 	verbose = simona_opt$verbose, ...) {
 	
 	organism = match.arg(organism)[1]
@@ -227,19 +247,24 @@ ontology_rdo = function(
 	}
 	dag = import_ontology(onto_url, verbose = verbose, ...)
 
-	if(verbose) {
-		message(qq("Downloading annotation file from @{anno_url}..."))
-	}
-	anno_tb = read_table_from_url(anno_url, comment.char = "!", sep = "\t", quote = "")
-	anno = split(anno_tb[[3]], anno_tb[[5]])
+	if(gene_annotation) {
+		if(verbose) {
+			message(qq("Downloading annotation file from @{anno_url}..."))
+		}
+		anno_tb = read_table_from_url(anno_url, comment.char = "!", sep = "\t", quote = "")
+		anno = split(anno_tb[[3]], anno_tb[[5]])
 
-	add_annotation(dag, anno)
+		dag = add_annotation(dag, anno)
+	}
+
+	dag
 }
 
 #' @rdname ontology
 #' @export
 ontology_vt = function(
 	organism = c("human", "mouse", "rat", "pig", "dog", "chimpanzee"),
+	gene_annotation = TRUE,
 	verbose = simona_opt$verbose, ...) {
 	
 	organism = match.arg(organism)[1]
@@ -254,13 +279,17 @@ ontology_vt = function(
 	}
 	dag = import_owl(onto_url, verbose = verbose, ...)
 
-	if(verbose) {
-		message(qq("Downloading annotation file from @{anno_url}..."))
-	}
-	anno_tb = read_table_from_url(anno_url, comment.char = "!", sep = "\t", quote = "")
-	anno = split(anno_tb[[3]], anno_tb[[5]])
+	if(gene_annotation) {
+		if(verbose) {
+			message(qq("Downloading annotation file from @{anno_url}..."))
+		}
+		anno_tb = read_table_from_url(anno_url, comment.char = "!", sep = "\t", quote = "")
+		anno = split(anno_tb[[3]], anno_tb[[5]])
 
-	add_annotation(dag, anno)
+		dag = add_annotation(dag, anno)
+	}
+
+	dag
 }
 
 #' @details

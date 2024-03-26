@@ -10,30 +10,44 @@
 \alias{ontology_go}
 \title{Import ontologies already having gene annotations}
 \usage{
-ontology_kw(organism = "human", verbose = simona_opt$verbose, ...)
-
-ontology_chebi(
-  organism = c("human", "mouse", "rat", "pig", "dog"),
+ontology_kw(
+  organism = "human",
+  gene_annotation = TRUE,
   verbose = simona_opt$verbose,
   ...
 )
 
-ontology_hp(organism = c("human", "mouse"), verbose = simona_opt$verbose, ...)
+ontology_chebi(
+  organism = c("human", "mouse", "rat", "pig", "dog"),
+  gene_annotation = TRUE,
+  verbose = simona_opt$verbose,
+  ...
+)
+
+ontology_hp(
+  organism = c("human", "mouse"),
+  gene_annotation = TRUE,
+  verbose = simona_opt$verbose,
+  ...
+)
 
 ontology_pw(
   organism = c("human", "mouse", "rat", "pig", "dog", "chimpanzee"),
+  gene_annotation = TRUE,
   verbose = simona_opt$verbose,
   ...
 )
 
 ontology_rdo(
   organism = c("human", "mouse", "rat", "pig", "dog", "chimpanzee"),
+  gene_annotation = TRUE,
   verbose = simona_opt$verbose,
   ...
 )
 
 ontology_vt(
   organism = c("human", "mouse", "rat", "pig", "dog", "chimpanzee"),
+  gene_annotation = TRUE,
   verbose = simona_opt$verbose,
   ...
 )
@@ -42,6 +56,8 @@ ontology_go(...)
 }
 \arguments{
 \item{organism}{Organism.}
+
+\item{gene_annotation}{Whether to add gene annotations to the DAG.}
 
 \item{verbose}{Whether to print messages?}
 
