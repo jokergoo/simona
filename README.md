@@ -15,7 +15,7 @@ Bioinformatics 2017"](https://doi.org/10.1093/bib/bbw067).
 
 ## Citation
 
-Zuguang Gu. simona: a comprehensive R package for semantic similarity analysis on bio-ontologies. bioRxiv, 2023. https://doi.org/10.1101/2023.12.03.569758
+Zuguang Gu. simona: a comprehensive R package for semantic similarity analysis on bio-ontologies. BMC Genomics, 2024. https://doi.org/10.1186/s12864-024-10759-4
 
 ## Install
 
